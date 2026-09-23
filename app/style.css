@@ -22,6 +22,8 @@ body {
 /* ---------- 幕 ---------- */
 .maku {
   min-height: 100vh;
+  /* ★スマホは 上下の 帯 (URL 欄など) を 除いた 高さ。100vh だと 帯のぶん はみ出す */
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,15 +149,18 @@ body {
 .line.kyaku::before { content: "— "; }
 
 /* 数字と 鉤括弧だけ 立てる (打ち終わってから付く) */
+/* ★太字は 大きさでも 立てる (2026-09-23 スマホ確認で 指摘)。
+   ★声なら 音量で つく 強弱が、文字では 0 から 作らねばならない (決定㉚)。
+   ★上げすぎると 行の高さが 揺れて 読みにくいので、行間を 少し 広く 取ってある。 */
 .kazu {
   font-family: var(--sans);
   font-weight: bold;
   color: #8c241e;
-  font-size: 1.06em;
-  letter-spacing: 0.01em;
+  font-size: 1.22em;
+  letter-spacing: 0.02em;
 }
-.line.sage .kazu { color: inherit; font-size: 1em; }
-.kagi { font-style: normal; color: #3d6b52; font-weight: bold; }
+.line.sage .kazu { color: inherit; font-size: 1.12em; }
+.kagi { font-style: normal; color: #3d6b52; font-weight: bold; font-size: 1.1em; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
@@ -231,6 +236,9 @@ footer .credit { opacity: 0.75; }
   font-family: var(--sans); font-size: 1rem; padding: 9px 12px;
   border: 1px solid #b9ab96; border-radius: 4px; min-width: 14em; flex: 1 1 14em;
 }
+/* ★ボタンは 縮ませない。★縮むと 中の字だけが 消え、枠だけが 残る
+   (2026-09-23 スマホで「言ってみる」の 字が 出ない、として 見つかった) */
+.freeform .btn { flex: 0 0 auto; white-space: nowrap; }
 
 /* ---------- 数字の絵図 (本題) ---------- */
 .figure {
@@ -361,7 +369,9 @@ footer .credit { opacity: 0.75; }
    ★2026-09-23: 幅 375px での 見え方を 計算して 手を打ったもの。★実機は 未確認。 */
 @media (max-width: 480px) {
   .koza { padding: 12px 12px 130px; }
-  .maku-inner { padding: 30px 16px 26px; margin: 10px; }
+  /* ★上下に 縞を 見せる。10px だと 幕が 額縁に 見えず、ただの 暗い画面に なる
+     (2026-09-23 スマホ確認。★意図した 見た目では なかった) */
+  .maku-inner { padding: 26px 15px 22px; margin: 30px 12px; }
   .nerai { padding: 12px 13px; font-size: 0.88rem; max-width: 100%; }
   .nagare { max-width: 100%; padding-left: 1.3em; font-size: 0.88rem; }
   .chui { max-width: 100%; font-size: 0.74rem; }

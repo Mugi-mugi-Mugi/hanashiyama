@@ -53,6 +53,14 @@
       return out;
     },
 
+    /** 手書き・県・今日 を ひと並びに (似ているかを 見るのに 要る) */
+    allStories(data) {
+      return (data.stories || []).concat(
+        data.prefStories || [],
+        Object.keys(data.today || {}).reduce((a, k) => a.concat(data.today[k]), [])
+      );
+    },
+
     /** カタカナ → ひらがな */
     hira(t) {
       return (t || "").replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0x60));
@@ -123,8 +131,33 @@
       const fresh = all.filter((c) => !sages.has(c.story.sage));
       if (fresh.length) all = fresh;
       if (!all.length) return null;
+      // ★もう一席が 前の席と 似ないように (2026-09-23 スマホ確認で 指摘)
+      //   ★「似ている」= ★出典の事実が 同じ / ★立てた 思い込みが 同じ。
+      //   ここが 重なると、オチの型が 違っても ★客には「さっきと同じ話」に 聞こえる。
+      //   思い込みの 重なりを 事実の 2 倍で 数えるのは、客が 覚えて帰るのが
+      //   ★数字では なく「何を ひっくり返されたか」の ほうだから。
+      const has0 = (c, key, v) => ((c.story.hooks && c.story.hooks[key]) || []).includes(v);
+      const hadBelief = preferBelief ? all.some((c) => has0(c, "beliefs", preferBelief)) : false;
+      const told = Core.allStories(data).filter((s) => shown.has(s.id));
+      if (told.length) {
+        const usedF = new Set(), usedB = new Set();
+        told.forEach((s) => {
+          (s.facts || []).forEach((f) => usedF.add(f));
+          ((s.hooks || {}).beliefs || []).forEach((b) => usedB.add(b));
+        });
+        const sim = (s) =>
+          (s.facts || []).filter((f) => usedF.has(f)).length +
+          2 * (((s.hooks || {}).beliefs || []).filter((b) => usedB.has(b)).length);
+        const lo = Math.min.apply(null, all.map((c) => sim(c.story)));
+        all = all.filter((c) => sim(c.story) === lo);
+      }
       const has = (c, key, v) => ((c.story.hooks && c.story.hooks[key]) || []).includes(v);
       const byBelief = preferBelief ? all.filter((c) => has(c, "beliefs", preferBelief)) : [];
+      // ★同じ筋の噺は 在るが、似るので 外した ―― のか
+      //   ★そもそも 持ち合わせが 無い のか。★客には 別ごとなので 言い分ける
+      const note = hadBelief && !byBelief.length
+        ? "その筋の噺は もう一席ございますが、続けますと 似てまいります。趣を変えて。"
+        : "いただいた手がかりの噺は、あいにく持ち合わせがございません。かわりに、今日という日で一席。";
       const byPref = input.pref ? all.filter((c) => has(c, "prefectures", input.pref)) : [];
       if (byBelief.length) return { story: byBelief[0].story, chosenBy: "belief", switchNote: null };
       if (byPref.length) {
@@ -137,7 +170,7 @@
       return {
         story: all[0].story,
         chosenBy: "today",
-        switchNote: preferBelief || input.pref ? "いただいた手がかりの噺は、またの機会に。今日という日で、一席。" : null,
+        switchNote: preferBelief || input.pref ? note : null,
       };
     },
 
@@ -232,6 +265,10 @@
 
   root.HanashiCore = Core;
   if (typeof document === "undefined" || !root.HANASHI) return;
+
+  // ★読み直し (F5) でも 一番上から 見せる。
+  //   ブラウザは 既定で「前に 見ていた 高さ」に 戻すので、幕の 途中から 始まる
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
   // ==================================================================
   // 高座 (語りの進行)
@@ -645,6 +682,7 @@
       input.type = "text";
       input.placeholder = "例: 旭山動物園 / 城めぐり / 雪";
       input.setAttribute("aria-label", "お好きなもの");
+      input.setAttribute("enterkeyhint", "send");
       const ok = document.createElement("button");
       ok.type = "submit";
       ok.className = "btn choice";
@@ -655,7 +693,9 @@
       skip.textContent = "とくに無い";
       form.append(input, ok, skip);
       box.appendChild(form);
-      input.focus();
+      // ★スマホでは 触れて 初めて 文字盤を 出す。
+      //   先に 出すと 文字盤が 下半分を 覆い、下の ボタンが 隠れる (2026-09-23)
+      if (!(root.matchMedia && root.matchMedia("(max-width: 640px)").matches)) input.focus();
       const done = (text) => {
         box.innerHTML = "";
         if (text) {
@@ -665,6 +705,8 @@
           $("talk").appendChild(me);
         }
         const m = Core.match(H, text || "");
+        // ★辞書に 当たった = 客が 手がかりを 出した。一席目の固定より こちらを 立てる
+        state.gaveHandle = m.hits.length > 0;
         // ★記録に 生の入力を 長く残さない (辞書を育てるのに要る ぶんだけ)
         log("free", null, { text: (text || "").slice(0, 30), hit: m.hits.map((h) => h.word).slice(0, 5) });
         if (!m.hits.length) return say(text ? "ほう、" + text + "。……それにちなんだ噺は、まだ持っておりません。こちらから伺います。" : "さようで。では、こちらから伺います。", "shi", askBelief);
@@ -714,13 +756,21 @@
   }
 
   // ★トップの 一席目は 観光地の噺で 固定 (SPEC §11)
+  // ★2026-09-23 に 範囲を 狭めた: ★「手がかりを もらっていない ときだけ」掛ける。
+  //   ★前は 客が「動物園」と 打っても、「思う」と 答えても この固定が 勝ち、
+  //     ★「では、その話を一席」と 言った 直後に 新幹線の噺が 出ていた。
+  //   ★§11 の ねらいは「既定で 動物の噺から 始めない」こと であって、
+  //     ★客が 自分で 言ったものを 握りつぶす ことでは ない。
   //   昨年の 応募 6 件は ★全件が レッサーパンダ題材。トップで 動物園の話が 出ると
   //   構造が まるで 違っても「去年の 焼き直し」に 見える。
   //   ★血統・動物の 噺は ★園の 入口 (?kin=) から 来た人と、二席目以降に 回す。
   const TOP_FIRST = ["S11", "S12", "S08"];   // 新幹線 / 恐竜との落差 / コンサートの夜
 
   function begin(preferBelief) {
-    if (!state.kin && state.count === 0) {
+    // ★TOP_FIRST は「手がかりが 何も 無いとき の 一席目」。
+    //   ★客が「動物園」と 言ったのに 新幹線の噺を 出しては いけない (2026-09-23 指摘)。
+    //   ★昨年と 似て見えるのを 避けるのが 目的なので、★客が 自分で 言った ときは 外す。
+    if (!state.kin && state.count === 0 && !preferBelief && !state.gaveHandle) {
       const pick = TOP_FIRST
         .map((id) => H.stories.find((x) => x.id === id))
         .filter((x) => x && !state.shown.has(x.id));
@@ -927,7 +977,13 @@
   function nextStory() {
     $("choices").innerHTML = "";
     $("sageBox").hidden = true;
-    const last = state.input.beliefs[state.input.beliefs.length - 1] || null;
+    // ★同じ 思い込みで 二席 続けない (続けると「さっきと同じ話」に なる)
+    const usedB = new Set();
+    Core.allStories(H)
+      .filter((s) => state.shown.has(s.id))
+      .forEach((s) => ((s.hooks || {}).beliefs || []).forEach((b) => usedB.add(b)));
+    const rest = state.input.beliefs.filter((b) => !usedB.has(b));
+    const last = rest[rest.length - 1] || null;
     // ★出口固定 (SPEC §2)。園の入口は「入口」であって「出口」では ない。
     //   よその園の話で 終わらせず、★必ず 西山公園そのものの 噺へ 送る。
     if (state.kin && !state.sentHome) {
@@ -1233,6 +1289,10 @@
   // ★「はじめから」は ★園の入口も 含めて まっさらに 戻す
   //   単に reload すると ?kin= が 残り、同じ園から 始まってしまう
   $("restart").addEventListener("click", () => {
+    // ★読み直しでも 入口へ 戻す。★そのままだと ブラウザが
+    //   ★前に 見ていた 高さを 覚えていて、少し 下がった ところに 出る (2026-09-23)
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    root.scrollTo(0, 0);
     const base = location.href.split("?")[0].split("#")[0];
     if (location.href === base) location.reload();
     else location.href = base;
