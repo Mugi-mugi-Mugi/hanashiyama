@@ -68,7 +68,7 @@ ok(missing.length === 0, "app.js が触る id はすべて index.html にある"
  * @param seed  選択肢の何番目を押すか (0 なら常に先頭、1 なら 2 番目…)
  * @param date  今日の日付 (暦の噺を出すため)
  */
-function runPass(seed, date, word, kin, viaList) {
+function runPass(seed, date, word, kin, viaList, plan) {
   const byId = {};
   ids.forEach((i) => {
     byId[i] = el("div");
@@ -106,16 +106,22 @@ function runPass(seed, date, word, kin, viaList) {
     const btns = [];
     (function walk(n) {
       n.children.forEach((c) => {
-        if (c.handlers.click && c.handlers.click.length) btns.push(() => c.click());
+        if (c.handlers.click && c.handlers.click.length) btns.push({ t: c.textContent, f: () => c.click() });
         else if (c.handlers.submit && c.handlers.submit.length) {
           const inp = c.children.find((x) => x.tagName === "INPUT");
           if (inp) inp.value = word !== undefined ? word
             : ["", "旭山動物園", "恐竜", "つつじ", "ぜんぜん知らない言葉"][nth % 5];
-          btns.push(() => c.handlers.submit.forEach((f) => f({ preventDefault() {} })));
+          btns.push({ t: "(打ち込み)", f: () => c.handlers.submit.forEach((f) => f({ preventDefault() {} })) });
         } else walk(c);
       });
     })(node);
-    return btns.length ? btns[Math.min(seed, btns.length - 1)] : null;
+    if (!btns.length) return null;
+    // ★答えを 指定して 通す (県を 選ばせる ような 筋を 試すのに 要る)
+    if (plan && plan.length) {
+      const i = btns.findIndex((b) => b.t.indexOf(plan[0]) >= 0);
+      if (i >= 0) { plan.shift(); return btns[i].f; }
+    }
+    return btns[Math.min(seed, btns.length - 1)].f;
   };
 
   let err = null, clicks = 0, listPicked = false, listCount = 0;
@@ -230,6 +236,38 @@ ok(!/どちらからお越しで/.test(txtk), "県を 聞き直さない (入口
 const ra = runPass(0, "2026-09-23", "", "ikeda");
 ok(/池田動物園から お越し/.test(ra.err ? "" : ra.byId.talk.children.map((c) => c.textContent).join(" ")),
    "alias (ikeda) でも 園を 引ける");
+
+
+// ★README の 決まり 1「あなたの県から 始める」が 本当に 効いているか
+//   ★2026-09-23 まで TOP_FIRST が これを 押しのけ、★県の噺が 一度も 出ていなかった
+const prefCase = (label, plan, want) => {
+  const r = runPass(0, "2026-09-23", "", "", false, plan.slice());
+  const first = r.err ? "(落ちた)" : r.told[0];
+  ok(first === want, label + " の一席目が " + want + " (" + first + ")" +
+     (r.err ? " → " + r.err.message : ""));
+};
+prefCase("山口県", ["県外から", "中国・四国", "山口県", "思う"], "S01");
+prefCase("福井県", ["この福井から", "思う"], "S10");
+prefCase("新潟県", ["県外から", "中部", "新潟県", "思う"], "S14");
+const tk = runPass(0, "2026-09-23", "", "", false, ["県外から", "関東", "東京都", "思う"]);
+ok(!tk.err && ["S02", "S13"].indexOf(tk.told[0]) >= 0,
+   "東京都 の一席目が 東京の噺 (" + (tk.told[0] || "?") + ")");
+// ★県を 言わない客は これまで通り 観光地の噺から (SPEC §11)
+const deny3 = ["いや、どうだか", "いや、どうだか", "いや、どうだか"];
+const noPref = runPass(0, "2026-09-23", "", "", false, ["言わずにおく"].concat(deny3));
+ok(!noPref.err && ["S11", "S12", "S08"].indexOf(noPref.told[0]) >= 0,
+   "県を 言わない客は 観光地の噺から (" + (noPref.told[0] || "?") + ")");
+// ★手書きの噺が 無い県は 観光地の噺に 落ちる (レッサーパンダの 自動席を 先頭に しない)
+const noStory = runPass(0, "2026-09-23", "", "", false,
+                        ["県外から", "九州・沖縄", "佐賀県"].concat(deny3));
+ok(!noStory.err && ["S11", "S12", "S08"].indexOf(noStory.told[0]) >= 0,
+   "手書きの噺が 無い県は 観光地の噺から (" + (noStory.told[0] || "?") + ")");
+// ★その県の 問いを 否定した客には、その噺で 落とさない
+//   (★「そうは思わない」と 言われた ものを ひっくり返しても、客の中で もう 立っていない)
+const denied = runPass(0, "2026-09-23", "", "", false,
+                       ["県外から", "中国・四国", "山口県"].concat(deny3));
+ok(!denied.err && denied.told[0] !== "S01",
+   "否定された 思い込みの噺では 始めない (" + (denied.told[0] || "?") + ")");
 
 console.log(fail.length ? "FAIL " + fail.length + " 件" : "ALL OK");
 process.exit(fail.length ? 1 : 0);
