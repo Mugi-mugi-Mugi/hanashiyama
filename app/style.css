@@ -1,0 +1,393 @@
+:root {
+  --ink: #1d1a16;
+  --paper: #f6f0e3;
+  --wood: #2e2119;
+  --vermilion: #b8322a;
+  --gold: #c9a24a;
+  --muted: #6d6256;
+  --serif: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
+  --sans: "Yu Gothic UI", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--wood);
+  color: var(--ink);
+  font-family: var(--serif);
+  line-height: 1.9;
+}
+
+/* ---------- 幕 ---------- */
+.maku {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* ★定式幕 (黒・萌黄・柿) の 三色。白は 定式幕に 無く、広い画面で 目を 引きすぎた */
+  background: repeating-linear-gradient(90deg,
+    #17150f 0 64px, #2f6b40 64px 128px, #17150f 128px 192px, #9c4a24 192px 256px);
+  text-align: center;
+}
+.maku-inner {
+  background: rgba(20, 16, 12, 0.90);
+  color: #f6f0e3;
+  padding: 44px 44px 36px;
+  border: 2px solid var(--gold);
+  max-width: 640px;              /* ★狭すぎて 文が 途中で 折れていた */
+  margin: 24px;
+}
+.maku h1 {
+  font-size: clamp(3rem, 14vw, 5rem);
+  letter-spacing: 0.35em;
+  margin: 8px 0 4px;
+  text-indent: 0.35em;
+}
+.koban { color: var(--gold); letter-spacing: 0.4em; margin: 0; font-size: 0.9rem; }
+.maku .sub { opacity: 0.9; margin: 0 0 18px; }
+.nagare {
+  text-align: left; font-family: var(--sans); font-size: 0.92rem;
+  line-height: 1.95; margin: 0 auto 24px; padding-left: 1.6em; max-width: 30em; opacity: 0.9;
+  line-break: strict;
+}
+.nagare li { margin-bottom: 4px; }
+.chui {
+  font-family: var(--sans); font-size: 0.78rem; opacity: 0.62;
+  margin: 22px auto 0; max-width: 41em; text-align: left;
+  list-style: none; padding: 0; line-height: 1.85; line-break: strict;
+}
+.chui li { padding-left: 1em; text-indent: -1em; margin-bottom: 2px; }
+.chui li::before { content: "・"; color: var(--gold); opacity: 0.8; }
+
+/* ---------- 高座 ---------- */
+.koza {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 16px 16px 120px;
+  min-height: 100vh;
+  background: var(--paper);
+  cursor: pointer;
+}
+.kozatop { display: flex; justify-content: flex-end; padding: 4px 0 12px; }
+.mekuri {
+  background: #fff;
+  border: 1px solid #d8cdb9;
+  padding: 10px 14px;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  box-shadow: 2px 2px 0 #d8cdb9;
+}
+.mekuri.flip { animation: flip 0.5s ease; }
+@keyframes flip { from { transform: rotateX(-90deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.talk { min-height: 40vh; }
+/* ★声の 大小・抑揚の 代わり。文字の 大きさ・太さ・色で 強弱を つける
+   (docs/参考/20260920_はなし山のサゲ作法.md §5) */
+.line {
+  margin: 0 0 16px;
+  font-size: 1.18rem;
+  animation: rise 0.35s ease;
+}
+/* まくら = 声を張る立ち上がり */
+.line.makura {
+  font-size: 1.42rem;
+  letter-spacing: 0.02em;
+  line-height: 1.85;
+}
+/* 問い = 客に向き直る */
+.line.toi {
+  font-weight: bold;
+  font-size: 1.26rem;
+  background: #fff;
+  border: 1px solid #d8cdb9;
+  border-left: 5px solid var(--gold);
+  padding: 12px 16px;
+  box-shadow: 2px 2px 0 #e2d8c4;
+}
+/* サゲ = いちばん張る。朱で受ける */
+.line.sage {
+  font-size: 1.62rem;
+  font-weight: bold;
+  line-height: 1.7;
+  color: #8c241e;
+  border-left: 6px solid var(--vermilion);
+  padding: 6px 0 6px 16px;
+  margin-bottom: 10px;
+}
+.line.sage::before {
+  content: "オチ";
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.7rem;
+  font-weight: normal;
+  letter-spacing: 0.3em;
+  color: var(--vermilion);
+  margin-bottom: 2px;
+}
+/* 追い足し = 声を落とす断り */
+.line.ato {
+  font-size: 1rem;
+  color: var(--muted);
+  padding-left: 22px;
+}
+/* 客の答え = 別の声 */
+.line.kyaku {
+  text-align: right;
+  color: #4b4238;
+  font-family: var(--sans);
+  font-size: 1rem;
+  background: #efe7d6;
+  border-radius: 14px 14px 2px 14px;
+  padding: 8px 14px;
+  margin-left: auto;
+  max-width: 78%;
+  width: fit-content;
+}
+.line.kyaku::before { content: "— "; }
+
+/* 数字と 鉤括弧だけ 立てる (打ち終わってから付く) */
+.kazu {
+  font-family: var(--sans);
+  font-weight: bold;
+  color: #8c241e;
+  font-size: 1.06em;
+  letter-spacing: 0.01em;
+}
+.line.sage .kazu { color: inherit; font-size: 1em; }
+.kagi { font-style: normal; color: #3d6b52; font-weight: bold; }
+
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.choices { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 24px; }
+.btn {
+  font-family: var(--sans);
+  font-size: 1rem;
+  padding: 10px 18px;
+  border-radius: 4px;
+  border: 1px solid var(--ink);
+  background: #fff;
+  cursor: pointer;
+}
+.btn.primary { background: var(--vermilion); border-color: var(--vermilion); color: #fff; }
+.btn.ghost { border-color: #b9ab96; color: var(--muted); }
+.btn.big { font-size: 1.1rem; padding: 14px 32px; }
+.btn.choice { border-color: #b9ab96; }
+.btn.choice:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+/* ---------- 札 ---------- */
+.sagebox { margin-top: 20px; }
+#card { width: 100%; height: auto; border: 1px solid #d8cdb9; background: #fff; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.sources { margin-top: 16px; font-size: 0.9rem; font-family: var(--sans); }
+.sources li { margin-bottom: 12px; }
+.sources blockquote { margin: 4px 0; padding-left: 10px; border-left: 3px solid #d8cdb9; color: var(--muted); }
+
+/* ---------- 足元 ---------- */
+.footbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: rgba(46, 33, 25, 0.95);
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+}
+.link {
+  background: none; border: none; cursor: pointer;
+  color: #e9dcc6; font-family: var(--sans); font-size: 0.9rem;
+  text-decoration: underline;
+}
+
+/* ---------- 場 ---------- */
+.panel {
+  position: fixed; inset: 8% 5%;
+  overflow: auto;
+  background: var(--paper);
+  border: 2px solid var(--gold);
+  padding: 24px;
+  font-family: var(--sans);
+  z-index: 10;
+}
+.bah { font-family: var(--serif); font-size: 1.15rem; margin-top: 0; }
+.batable { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 0.95rem; }
+.batable th, .batable td { border-bottom: 1px solid #d8cdb9; padding: 6px 8px; text-align: left; }
+.batable th { color: var(--muted); font-weight: normal; }
+.note { font-size: 0.85rem; color: var(--muted); }
+
+footer {
+  max-width: 680px; margin: 0 auto; padding: 16px 16px 80px;
+  color: #e9dcc6; font-size: 0.82rem; font-family: var(--sans);
+}
+footer .credit { opacity: 0.75; }
+
+@media (prefers-reduced-motion: reduce) {
+  .line, .mekuri.flip { animation: none; }
+}
+
+/* 自由入力 */
+.freeform { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.freeform input {
+  font-family: var(--sans); font-size: 1rem; padding: 9px 12px;
+  border: 1px solid #b9ab96; border-radius: 4px; min-width: 14em; flex: 1 1 14em;
+}
+
+/* ---------- 数字の絵図 (本題) ---------- */
+.figure {
+  margin: 4px 0 20px;
+  padding: 14px 16px 6px;
+  background: #fff;
+  border: 1px solid #d8cdb9;
+  box-shadow: 2px 2px 0 #d8cdb9;
+  animation: rise 0.35s ease;
+}
+.figure svg { width: 100%; height: auto; display: block; }
+.figt { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
+.figl { font-family: var(--sans); font-size: 19px; fill: var(--muted); }
+.figv { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
+.fign { font-family: var(--sans); font-size: 17px; fill: #9a9088; }
+.figb { fill: var(--vermilion); }
+
+/* ---------- タネ明かし ---------- */
+.tane { margin-top: 14px; border-top: 1px solid #d8cdb9; padding-top: 10px; }
+.tane > summary { cursor: pointer; font-family: var(--sans); font-weight: bold; }
+.tane .lead { font-size: 0.85rem; color: var(--muted); margin: 6px 0 4px; }
+.tane ul { padding-left: 1.2em; }
+.tane .why { margin: 2px 0 0; color: var(--muted); font-size: 0.85rem; }
+.figt2 { fill: #e7dfcd; }   /* 割合の絵図で、全体 (100%) を示す薄い帯 */
+
+/* 噂の一言 (数字が割れているところを、ネタとして置いたもの) */
+.line.uwasa {
+  color: var(--muted);
+  font-size: 1.05rem;
+  border-left: 3px dotted #c9b9a0;
+  padding-left: 12px;
+}
+
+/* あて推量 — 出典に「なぜ」が無いところを、噺家が引き受けて推し量る。
+   ★事実と見た目をはっきり分ける (これを事実だと思われては困る) */
+.line.suiryo {
+  background: #efeadc;
+  border: 1px dashed #b9ab96;
+  padding: 14px 16px 12px;
+  color: #4b4238;
+  font-size: 1.1rem;
+}
+.line.suiryo::before {
+  content: "あて推量";
+  display: block;
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: #9a8f7c;
+  margin-bottom: 4px;
+}
+
+/* 振り — 何の噺かを名乗り、客の頭に問いを立てる一言 (答えは言わない) */
+.line.furi {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #7b2b25;
+  border-bottom: 2px solid var(--gold);
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+/* 台詞 (圓朝の 一字+カギ括弧)。地の文と 見た目を 分ける */
+.line.serifu { font-size: 1.22rem; margin-left: 8px; }
+.line.serifu.kyaku2 { color: #2f5d4a; }          /* 来訪者の声 */
+.line.serifu.watashi { color: #7b2b25; }          /* 語り手の側の声・常識のツッコミ */
+/* オチの直前の空白 (法則2)。声なら息をのむところ */
+.ma { height: 4.2rem; }
+/* 傍点 — 太字より弱く、話芸の抑揚に近い */
+.ten { text-emphasis: filled dot; -webkit-text-emphasis: filled dot; font-style: normal; }
+
+/* ★一行を 長くしない (作噺法則 5-3: 速く読ませないことが価値)。
+   絵図・挿し絵・札は 幅いっぱいのまま、文字の行だけ 詰める */
+.line { max-width: 26em; }
+.line.kyaku { margin-left: auto; }
+/* 上下 (かみしも) — 話者で 左右に 振る。客は右、レジ係は左 */
+.line.serifu.kyaku2 { margin-left: auto; text-align: right; }
+.line.serifu.watashi { margin-right: auto; }
+
+/* 噺の途中に出す小さな写真 (手描きの挿し絵から差し替え。2026-09-23) */
+.shashin {
+  margin: 2px 0 18px;
+  max-width: 260px;
+  animation: rise 0.4s ease;
+}
+.shashin img {
+  width: 100%; height: auto; display: block;
+  border: 1px solid #d8cdb9; box-shadow: 3px 3px 0 #d8cdb9;
+}
+.shashin figcaption {
+  font-family: var(--sans); font-size: 0.68rem; color: #9a8f7c;
+  margin-top: 4px; line-height: 1.5;
+}
+
+/* 幕: 何のための一席かを先に言う */
+.nerai {
+  font-family: var(--sans); font-size: 0.95rem; line-height: 1.9;
+  text-align: left; max-width: 30em; margin: 0 auto 22px;
+  padding: 16px 18px; border: 1px solid var(--gold); background: rgba(201,162,74,0.10);
+  /* ★日本語の 折れどころ。単語の 途中で 切らない */
+  line-break: strict; overflow-wrap: break-word;
+}
+.nerai b { color: var(--gold); }
+
+/* 全国の園からの入口 */
+.kingrid { display: flex; flex-wrap: wrap; gap: 8px; }
+.kingrid button {
+  font-family: var(--sans); font-size: 0.92rem; cursor: pointer;
+  color: var(--ink); background: #fff; border: 1px solid #d8cdb9;
+  padding: 9px 14px; border-radius: 3px;
+}
+.kingrid button:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+.kingrid button b { color: var(--vermilion); font-size: 0.78rem; margin-left: 6px; font-weight: normal; }
+.kinpref { font-family: var(--sans); font-size: 0.78rem; color: var(--muted); margin: 14px 0 4px; }
+
+/* 幕: 2 つのボタンを横に並べる (2026-09-23) */
+.makubtn { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn.ghost2 {
+  background: transparent; color: var(--gold);
+  border: 2px solid var(--gold);
+}
+.btn.ghost2:hover { background: var(--gold); color: #1d1a16; }
+
+/* 絵図は 机上で 大きくなりすぎないように (viewBox 440 を 等倍前後で 使う) */
+.figure { max-width: 480px; }
+
+/* ================= スマホ (幅 480px 以下) =================
+   ★2026-09-23: 幅 375px での 見え方を 計算して 手を打ったもの。★実機は 未確認。 */
+@media (max-width: 480px) {
+  .koza { padding: 12px 12px 130px; }
+  .maku-inner { padding: 30px 16px 26px; margin: 10px; }
+  .nerai { padding: 12px 13px; font-size: 0.88rem; max-width: 100%; }
+  .nagare { max-width: 100%; padding-left: 1.3em; font-size: 0.88rem; }
+  .chui { max-width: 100%; font-size: 0.74rem; }
+  /* ★幕の縞は 細くする (広い画面用の 64px だと スマホで 縞が 3 本しか 見えない) */
+  .maku { background-size: 132px 100%; }
+
+  /* 幕の 2 つのボタンは 縦に 積む (横だと 369px 要り、303px しか 無い) */
+  .makubtn { flex-direction: column; }
+  .makubtn .btn.big { width: 100%; font-size: 1.05rem; padding: 14px 12px; }
+
+  /* 指で 押せる 大きさに (足元の 小さい字が 押しにくい) */
+  .footbar .link { padding: 10px 8px; font-size: 0.92rem; }
+  .btn { padding: 12px 16px; }
+  .kingrid { gap: 7px; }
+  .kingrid button { font-size: 0.9rem; padding: 10px 12px; }
+
+  /* 文字の 強弱は 保ちつつ 少し 詰める */
+  .line { font-size: 1.1rem; max-width: 100%; }
+  .line.makura { font-size: 1.26rem; }
+  .line.furi { font-size: 1.16rem; }
+  .line.sage { font-size: 1.36rem; padding-left: 12px; }
+  .line.toi { font-size: 1.14rem; padding: 10px 12px; }
+  .line.serifu { font-size: 1.1rem; margin-left: 0; }
+  .line.kyaku, .line.serifu.kyaku2 { max-width: 88%; }
+
+  .shashin { max-width: 200px; }
+  .ma { height: 3.2rem; }
+  .figure { max-width: 100%; padding: 10px 10px 4px; }
+}

@@ -1,0 +1,676 @@
+{
+  "_meta": {
+    "title": "日本で レッサーパンダを 飼育している 園館の 一覧",
+    "generated": "2026-09-20",
+    "source_policy": "各園の 公式サイト を 第一の 出典とし、園の 洗い出しには 日本動物園水族館協会(JAZA) の 飼育動物検索 を 使った。個人サイト・まとめサイト・Wikipedia は 出典に していない。",
+    "zoo_list_origin": [
+      {
+        "name": "JAZA 飼育動物検索「レッサーパンダ」",
+        "url": "https://www.jaza.jp/animal/search?_keyword=%E3%83%AC%E3%83%83%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%80&_method=true",
+        "note": "和名 3 件 (レッサーパンダ / ネパールレッサーパンダ / シセンレッサーパンダ)。掲載園館は シセン 56 館・ネパール 1 館 (熱川バナナワニ園)・レッサーパンダ 0 館 = 計 57 館 (2026-09-20 取得)"
+      },
+      {
+        "name": "西山動物園の 移動記録",
+        "url": "data/derived/redpanda_moves.csv",
+        "note": "移動先 29 園 + 来園元 14 園 (八木山の 2 表記を 1 園に 正規化) = 32 園。うち 30 園は JAZA 掲載と 一致。JAZA 掲載なし = 甲府市遊亀公園附属動物園 / ひらかたパーク"
+      }
+    ],
+    "counts": {
+      "zoos_total": 59,
+      "status_kept": 57,
+      "status_unconfirmed": 2,
+      "prefectures_listed": 33,
+      "prefectures_kept": 32,
+      "prefectures_without_zoo": 15
+    },
+    "prefectures_kept": [
+      "京都府",
+      "兵庫県",
+      "北海道",
+      "千葉県",
+      "和歌山県",
+      "埼玉県",
+      "大阪府",
+      "宮城県",
+      "宮崎県",
+      "富山県",
+      "山口県",
+      "岡山県",
+      "広島県",
+      "徳島県",
+      "愛媛県",
+      "愛知県",
+      "東京都",
+      "栃木県",
+      "沖縄県",
+      "熊本県",
+      "石川県",
+      "神奈川県",
+      "福井県",
+      "福岡県",
+      "秋田県",
+      "群馬県",
+      "茨城県",
+      "長崎県",
+      "長野県",
+      "静岡県",
+      "高知県",
+      "鹿児島県"
+    ],
+    "prefectures_without_zoo": [
+      "青森県",
+      "岩手県",
+      "山形県",
+      "福島県",
+      "新潟県",
+      "山梨県",
+      "岐阜県",
+      "三重県",
+      "滋賀県",
+      "奈良県",
+      "鳥取県",
+      "島根県",
+      "香川県",
+      "佐賀県",
+      "大分県"
+    ],
+    "caveats": [
+      "status は 2026-09-20 時点で 公式ページに 掲載が あったか だけ。個体の 生死・移動は 反映されない。",
+      "quote は 公式ページの 原文の 抜き書き。40 字前後に 切っている。",
+      "nishiyamaLink は redpanda_moves.csv (西山動物園の 68 頭) の 移動記録。移動先での その後は 含まない。",
+      "この一覧は JAZA 非加盟の 施設を 網羅していない。JAZA に 載らない 園で 飼育している 可能性が 残る。"
+    ]
+  },
+  "items": [
+    {
+      "pref": "兵庫県",
+      "zoo": "神戸市立王子動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "シセンレッサーパンダ｜動物図鑑｜神戸市立王子動物園",
+      "url": "https://www.kobe-ojizoo.jp/animal/pictorial/detail.php?id=59",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から3頭 (1987年 遊遊（ユウユウ）、2014年 ミンファ、2016年 ティアラ) の 移動記録あり",
+      "note": "公式「動物図鑑」ページ。園内案内にも「カワウソ、レッサーパンダのかわいいしぐさも間近で観察できます」とある https://www.kobe-ojizoo.jp/area/animal/"
+    },
+    {
+      "pref": "大阪府",
+      "zoo": "天王寺動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "2006年7月4日生まれのシュウナさん、19歳になりました。",
+      "url": "https://www.tennojizoo.jp/category/blog/%E3%83%AC%E3%83%83%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%80/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から2頭 (1991年 麗麗（レイレイ）、2017年 咲弥（さくや）) の 移動記録あり",
+      "note": "公式ブログのレッサーパンダカテゴリ。2026-09-12付「国際レッサーパンダデー」記事で確認。メルは2025年3月死亡と別記事にあり"
+    },
+    {
+      "pref": "長野県",
+      "zoo": "長野市茶臼山動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "お母さんの『ミルク』とはずっと一緒で",
+      "url": "https://www.city.nagano.nagano.jp/n042000/contents/p016436.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から3頭 (1988年 陽陽（ヨウヨウ）、2009年 チャオ、2021年 ムータン) / 西山動物園へ1頭 (1988年 友友（ユウユウ）) の 移動記録あり",
+      "note": "長野市公式サイト(動物園運営者)。2025年11月公開の赤ちゃん(愛称ミロ)と母ミルクを取材した記事"
+    },
+    {
+      "pref": "山口県",
+      "zoo": "周南市徳山動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダデーinとくやま２０２５",
+      "url": "https://tokuyama-zoo.jp/as/cms/view.php?m=cel&k=A01uFiuS1L&id=301",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1990年 天天（テンテン）) / 西山動物園へ1頭 (1990年 平平（ピンピン）) の 移動記録あり",
+      "note": "本文はCMSの不具合で「記事が見つかりません」と表示され読めず、タイトルのみで2025年開催を確認。動物紹介ページ(id=34)にもシセンレッサーパンダの掲載あり(個体名の記載なし)"
+    },
+    {
+      "pref": "宮城県",
+      "zoo": "仙台市八木山動物公園フジサキの杜",
+      "status": "公式ページに飼育記載あり",
+      "quote": "ティエン（オス）",
+      "url": "https://www.city.sendai.jp/zoo/news/animals/summer_redpanda.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から2頭 (1990年 松松（スイスイ）、2010年 シュララ) / 西山動物園へ2頭 (1990年 美美（メイメイ）、2026年 アケビ) の 移動記録あり",
+      "note": "夏場の展示に関する公式ページの写真キャプションより個体名を確認。別記事でアケビが2026年1-2月に鯖江市西山動物園へ移動と記載あり"
+    },
+    {
+      "pref": "山梨県",
+      "zoo": "甲府市遊亀公園附属動物園",
+      "status": "確認できず",
+      "quote": "",
+      "url": "https://www.city.kofu.yamanashi.jp/zoo/animal/lesser.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1990年 吉吉（チィチィ）) の 移動記録あり",
+      "note": "動物園は2022年10月から2027年3月まで改修のため休園中(公式サイト koenryokuchi/seibi/progress.html)。1985年に成都市から譲渡された記録はあるが、現在の飼育について公式ページで確認できる記載なし / JAZA レッサーパンダ検索に 掲載なし。2022-10〜2027-03 改修休園中で 該当ページの更新日は 2022-01-20"
+    },
+    {
+      "pref": "秋田県",
+      "zoo": "秋田市大森山動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "令和7年4月14日に鯖江市西山動物園(福井県)からメスの令花",
+      "url": "https://www.city.akita.lg.jp/zoo/information/1045914/1045916/1046291.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から2頭 (1997年 花（ハナ）、2025年 レイファ（令花）) / 西山動物園へ1頭 (2022年 かんた) の 移動記録あり",
+      "note": "秋田市公式サイト。2025年4月に鯖江市西山動物園から令花(レイファ)が来園と記載。他にケンシン・エンミ・ヒナタも在園と別ページ情報あり(未直接確認)"
+    },
+    {
+      "pref": "東京都",
+      "zoo": "江戸川区自然動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "性別：メス、誕生日：2021年6月23日、出身地：大島公園動物園",
+      "url": "https://www.edogawa-kankyozaidan.jp/zoo/introduction/278/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2001年 美美（メイメイ）) の 移動記録あり",
+      "note": "公益財団法人えどがわ環境財団(公式運営)の動物紹介ページ。個体名サクユリ、2024年2月来園・公開"
+    },
+    {
+      "pref": "北海道",
+      "zoo": "旭川市旭山動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "展示場所 レッサーパンダ舎",
+      "url": "https://www.city.asahikawa.hokkaido.jp/asahiyamazoo/zuroku/asia/d056088.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から3頭 (1993年 茜（あかね）、1993年 陽陽（ヤンヤン）、2014年 チャーミン) の 移動記録あり",
+      "note": "公式「動物図録」の シセンレッサーパンダ ページ (更新日 2016-03-28)。2026-03-17 付 お知らせで 個体「茜茜」の 台北動物園への 移動も 掲載 https://www.city.asahikawa.hokkaido.jp/asahiyamazoo/news-blog/osirase/d083652.html"
+    },
+    {
+      "pref": "山口県",
+      "zoo": "秋吉台自然動物公園サファリランド",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダエサやり体験",
+      "url": "https://www.safariland.jp/cgi-bin/disp.cgi?code=10296&mode=one&no=3",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1993年 香（かおり）) の 移動記録あり",
+      "note": "公式サイトのイベント情報ページ。文字コードの問題でページ本文はツールで正しく表示できなかったが、検索エンジン経由で取得したタイトル文字列「【平日限定】レッサーパンダエサやり体験［イベント情報］」を確認。動物図鑑ページ(zukan/index.shtml)にも掲載あり(画像リンクのみで個体名等は未確認)"
+    },
+    {
+      "pref": "広島県",
+      "zoo": "広島市安佐動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダ ／ Red Panda",
+      "url": "http://www.asazoo.jp/animal/zone07/1369.php",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1993年 楠（くす）) / 西山動物園へ1頭 (1993年 好好（コウコウ）) の 移動記録あり",
+      "note": "公式サイトは https 非対応(http のみ)で WebFetch が失敗。親エージェントが 2026-09-20 に http で再取得し、動物紹介「西園の動物（ゾーン7）」に掲載を確認"
+    },
+    {
+      "pref": "京都府",
+      "zoo": "京都市動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "当園で飼育しているのはシセンレッサーパンダで",
+      "url": "https://zoo.city.kyoto.lg.jp/zoo/animals/a_fulgens",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1993年 梢（こずえ）) / 西山動物園へ1頭 (2015年 ムータン) の 移動記録あり",
+      "note": "同ページにオスのウーロン・メスのミーミーが暮らしている旨の記載あり。"
+    },
+    {
+      "pref": "兵庫県",
+      "zoo": "姫路市立動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "現在はメスの「ミホ」が暮らしており",
+      "url": "https://www.city.himeji.lg.jp/dobutuen/0000007346.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から2頭 (1994年 サイサイ、2007年 マリモ) の 移動記録あり",
+      "note": "「ほ乳類の仲間たち」ページのレッサーパンダ紹介欄。"
+    },
+    {
+      "pref": "北海道",
+      "zoo": "釧路市動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "愛称：コーアイ、シンゲン、アスナロ、リム、レラ",
+      "url": "https://www.city.kushiro.lg.jp/zoo/shoukai/1001527/1001528/1001554.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1995年 サバタロウ) / 西山動物園へ1頭 (1996年 マリモ) の 移動記録あり",
+      "note": "個体情報の表に5頭のレッサーパンダが記載。"
+    },
+    {
+      "pref": "岡山県",
+      "zoo": "池田動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "しずく／メス",
+      "url": "https://ikedazoo.jp/animal/mammalian/%E3%83%AC%E3%83%83%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%80-3/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1994年 春春（チュンチュン）) / 西山動物園へ1頭 (2015年 たいよう) の 移動記録あり",
+      "note": "同ページに「きなこ／メス」も記載あり、計2頭。"
+    },
+    {
+      "pref": "静岡県",
+      "zoo": "三島市立公園楽寿園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "ルル　カカ　レッサーパンダ",
+      "url": "https://www.city.mishima.shizuoka.jp/site/rakujyuen/5419.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から2頭 (1996年 涼（リョウ）、1996年 コウヘイ) の 移動記録あり",
+      "note": "動物紹介ページの見出しと個体写真キャプション。トップページ (rakujyuen/) からリンクされている公式ページ。"
+    },
+    {
+      "pref": "長崎県",
+      "zoo": "長崎バイオパーク",
+      "status": "公式ページに飼育記載あり",
+      "quote": "現在、バイオパークでは1ペア2頭のレッサーパンダを飼育していて",
+      "url": "https://www.biopark.co.jp/animals/mammal/lesserpanda.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1999年 ツヨシ) / 西山動物園へ1頭 (1999年 チャチャ) の 移動記録あり",
+      "note": ""
+    },
+    {
+      "pref": "富山県",
+      "zoo": "富山市ファミリーパーク",
+      "status": "公式ページに飼育記載あり",
+      "quote": "♀　あんこ　2013年 6月22日生まれ",
+      "url": "https://www.toyama-familypark.jp/zukan/744",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (1998年 トミー) の 移動記録あり",
+      "note": "同ページに「♀ ホーリー 2016年6月2日生まれ」も記載あり、計2頭。"
+    },
+    {
+      "pref": "神奈川県",
+      "zoo": "横浜市立よこはま動物園ズーラシア",
+      "status": "公式ページに飼育記載あり",
+      "quote": "ハマはナイトが初めてという事で、ウロウロと歩き回ったり",
+      "url": "https://www.hama-midorinokyokai.or.jp/zoo/zoorasia/details/2026/post-558900.php",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2003年 コウセイ) の 移動記録あり",
+      "note": "公式サイト内の飼育日誌ブログ (2026-08-17付、レッサーパンダ成長記23)。動物紹介ページ https://www.hama-midorinokyokai.or.jp/zoo/zoorasia/animal/subarctic/post_38/ は種の解説のみで頭数記載なし。"
+    },
+    {
+      "pref": "大阪府",
+      "zoo": "ひらかたパーク",
+      "status": "確認できず",
+      "quote": "",
+      "url": "https://www.hirakatapark.co.jp/animal/wonder/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2004年 キララ) / 西山動物園へ1頭 (2004年 純純（シュンシュン）) の 移動記録あり",
+      "note": "公式ページ「ワンダーガーデン」を直接確認したがレッサーパンダの記載なし。ニュース記事 (2024-12-13付ひらかたパーク公式リリース経由の報道) によると同施設は2025-01-13で営業終了し、飼育動物 (レッサーパンダ「与作」「栄作」含む) は他園へ移動と報じられている。公式一次情報としては未確認のため『確認できず』とした。 / JAZA レッサーパンダ検索に 掲載なし。2026-09-20 に 公式サイト(トップ / animal / animal/wonder)を 取得したが レッサーパンダの記載 0 件"
+    },
+    {
+      "pref": "東京都",
+      "zoo": "東京都多摩動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "当園での飼育状況（2025年10月3日現在）6頭（オス2、メス4）",
+      "url": "https://www.metro.tokyo.lg.jp/information/press/2025/10/2025100314",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から2頭 (2012年 純純（シュンシュン）、2024年 カイト) / 西山動物園へ1頭 (2019年 かのこ) の 移動記録あり",
+      "note": "動物園公式サイト(tokyo-zoo.net)内の個別ページは特定できず、同一運営者(東京都)の公式報道発表で確認した"
+    },
+    {
+      "pref": "千葉県",
+      "zoo": "市川市動植物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "大放飼場にはソラが暮らしています",
+      "url": "https://www.city.ichikawa.lg.jp/site/zoo/2822.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園へ1頭 (2008年 ミンファ) の 移動記録あり",
+      "note": ""
+    },
+    {
+      "pref": "埼玉県",
+      "zoo": "東武動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "当園でも頻繁ににおい付けの行動が見られます。",
+      "url": "https://www.tobuzoo.com/zoo/list/2217.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2011年 来来（ライライ）) の 移動記録あり",
+      "note": ""
+    },
+    {
+      "pref": "和歌山県",
+      "zoo": "アドベンチャーワールド",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダは一頭一頭性格も個性も異なります。",
+      "url": "https://www.aws-s.com/en/topics/detail?id=top4646",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から2頭 (2013年 シンシン、2020年 ミルキー) の 移動記録あり",
+      "note": "2026-06-27付の公式トピックス記事(個体「雲雲」の妊娠確認)で確認。2025-07-19からブリーディングセンターで展示開始"
+    },
+    {
+      "pref": "神奈川県",
+      "zoo": "川崎市夢見ヶ崎動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "動物公園では、孟宗竹の葉を主食にしています。",
+      "url": "https://www.city.kawasaki.jp/530/page/0000021632.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2012年 ファファ) の 移動記録あり",
+      "note": "ページ最終更新は2025-04-16と表示"
+    },
+    {
+      "pref": "徳島県",
+      "zoo": "とくしま動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダ",
+      "url": "https://tokushimazoo.jp/animals/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2012年 ミンミン) の 移動記録あり",
+      "note": "現行の動物紹介一覧(animals_sys/item.cgi?Id=21)に掲載。個体「ミンミン」は2024年に死亡したとの別お知らせがあり、現在在園中の個体名までは確認できていない"
+    },
+    {
+      "pref": "埼玉県",
+      "zoo": "埼玉県こども動物自然公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "大きな木の上でくつろぐレッサーパンダ。",
+      "url": "https://www.parks.or.jp/sczoo/guide/000/000328.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2015年 ソウソウ) の 移動記録あり",
+      "note": ""
+    },
+    {
+      "pref": "兵庫県",
+      "zoo": "姫路セントラルパーク",
+      "status": "公式ページに飼育記載あり",
+      "quote": "園内の人気者、レッサーパンダにえさをあげられます。",
+      "url": "https://www.central-park.co.jp/safari/feeding/1045/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園へ1頭 (2013年 キラリ) の 移動記録あり",
+      "note": ""
+    },
+    {
+      "pref": "静岡県",
+      "zoo": "伊豆シャボテン動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "「ヨモギ」、「コナツ」、「めいしゃん」、「ライム」の4頭が暮らしています。",
+      "url": "https://izushaboten.com/animal/redpanda/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2020年 梅香（めいしゃん）) の 移動記録あり",
+      "note": ""
+    },
+    {
+      "pref": "静岡県",
+      "zoo": "静岡市立日本平動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "自然の中で動き回るレッサーパンダの愛らしい姿を間近で観察することができる。",
+      "url": "https://www.nhdzoo.jp/facilities/lesserpanda.php",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園へ1頭 (2018年 まつば) の 移動記録あり",
+      "note": ""
+    },
+    {
+      "pref": "東京都",
+      "zoo": "東京都立大島公園動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダ（シセンレッサーパンダ）",
+      "url": "https://www.soumu.metro.tokyo.lg.jp/11osima/osima/park/zoo/zoo",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2022年 ピースケ) の 移動記録あり",
+      "note": "「なかよし広場・なかよし牧場」内の展示として案内"
+    },
+    {
+      "pref": "石川県",
+      "zoo": "いしかわ動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "「かえで」の５頭を飼育展示しています。",
+      "url": "https://www.ishikawazoo.jp/guide/animal/promenade.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園から1頭 (2025年 かえで) の 移動記録あり",
+      "note": "オス「ヒナタ」、メス「アヤメ」「マリン」「サン」「かえで」の計5頭と明記"
+    },
+    {
+      "pref": "静岡県",
+      "zoo": "熱川バナナワニ園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "当園では現在、レッサーパンダを10頭飼育しています。",
+      "url": "https://bananawani.jp/lesser-panda/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "日本で唯一ニシレッサーパンダを飼育、との記載あり"
+    },
+    {
+      "pref": "千葉県",
+      "zoo": "市原ぞうの国",
+      "status": "公式ページに飼育記載あり",
+      "quote": "市原ぞうの国",
+      "url": "https://zounokuni.com/red-panda/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "公式サイトのシセンレッサーパンダ紹介ページに施設名として明記。頭数の明記文は確認できず"
+    },
+    {
+      "pref": "群馬県",
+      "zoo": "群馬サファリパーク",
+      "status": "公式ページに飼育記載あり",
+      "quote": "シセンレッサーパンダに会える場所",
+      "url": "https://safari.co.jp/animal/sichuan-red-panda/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "「ふれあいパーク」で展示、ともみち動物紹介ページに記載"
+    },
+    {
+      "pref": "東京都",
+      "zoo": "羽村市動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "シセンレッサーパンダ",
+      "url": "https://hamurazoo.jp/animals/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "動物紹介一覧ページの見出しに掲載。2026-09-19に赤ちゃん公開のニュースあり"
+    },
+    {
+      "pref": "長崎県",
+      "zoo": "九十九島動植物園 森きらら",
+      "status": "公式ページに飼育記載あり",
+      "quote": "森きららでは、ミカン（メス）、メイファ（メス）の２頭を飼育しています。",
+      "url": "https://www.morikirara.jp/animal/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "個体名（ミカン、メイファ）付きで現在の飼育頭数を明記"
+    },
+    {
+      "pref": "北海道",
+      "zoo": "札幌市円山動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "展示動物2種（ヒマラヤグマ、レッサーパンダ）",
+      "url": "https://www.city.sapporo.jp/zoo/b_f/b_25/b_25.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "アジアゾーン「高山館」の展示動物として記載。個別ニュースページでは「エイタ」「プーアル」「ヒナギク」等の記載あり"
+    },
+    {
+      "pref": "栃木県",
+      "zoo": "那須どうぶつ王国",
+      "status": "公式ページに飼育記載あり",
+      "quote": "那須どうぶつ王国の「アジアの森」では、のびのびと過ごす姿をご覧いただけます。",
+      "url": "https://nasu-oukoku.com/?p=3879",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "公式ページ表記は「ヒガシレッサーパンダ」。2026年に子の一般公開ニュースあり"
+    },
+    {
+      "pref": "福井県",
+      "zoo": "鯖江市西山動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダの繁殖数では、国内で有数を誇る西山動物園。",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/panda/redpanda.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": "西山動物園そのもの (福井県鯖江市)",
+      "note": "かんた・たいよう・ティアラ等9頭を個体名付きで紹介"
+    },
+    {
+      "pref": "静岡県",
+      "zoo": "浜松市動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "雄「チイタ」「ランマル」雌「キララ」「アラタ」「ニーコ」を飼育中。",
+      "url": "https://www.hamazoo.net/mammals02.php",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": ""
+    },
+    {
+      "pref": "高知県",
+      "zoo": "高知県立のいち動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "性別 オス 生年月日 2008年6月16日",
+      "url": "https://noichizoo.or.jp/park/zoo/temperate/lesser-panda.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "個体「カイ」のプロフィール欄より引用"
+    },
+    {
+      "pref": "福岡県",
+      "zoo": "福岡市動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "マリモ ♀ 2008.6.24 生",
+      "url": "https://zoo.city.fukuoka.lg.jp/animals/detail/21",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": ""
+    },
+    {
+      "pref": "宮崎県",
+      "zoo": "宮崎市フェニックス自然動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダ",
+      "url": "https://www.miyazaki-city-zoo.jp/animals/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "園内の動物たち一覧(6番目)に掲載。個体名の記載は確認できず"
+    },
+    {
+      "pref": "千葉県",
+      "zoo": "千葉市動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "大人気のシセンレッサーパンダやコツメカワウソをはじめ",
+      "url": "https://www.city.chiba.jp/zoo/zone/zone-05.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "小動物ゾーンの紹介ページより"
+    },
+    {
+      "pref": "神奈川県",
+      "zoo": "野毛山動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "【ﾚｯｻｰﾊﾟﾝﾀﾞ】どうぶつガイド",
+      "url": "https://www.hama-midorinokyokai.or.jp/zoo/nogeyama/details/post-461.php",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "繰り返し開催中の飼育員ガイドのページ。個体名の記載は本文になし"
+    },
+    {
+      "pref": "茨城県",
+      "zoo": "日立市かみね動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダ",
+      "url": "https://www.city.hitachi.lg.jp/zoo/dobutsu_shokai/index.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "動物紹介一覧(食肉目)にリンクあり。個体名の記載は該当詳細ページに無し"
+    },
+    {
+      "pref": "鹿児島県",
+      "zoo": "鹿児島市平川動物公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "♀メロディ（2017/7/6 神戸市立王子動物園うまれ）",
+      "url": "https://hirakawazoo.jp/zookan/%E3%83%AC%E3%83%83%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%80%EF%BC%88%E3%82%B7%E3%82%BB%E3%83%B3%E3%83%AC%E3%83%83%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%80%EF%BC%89/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": ""
+    },
+    {
+      "pref": "東京都",
+      "zoo": "上野動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダ（シセンレッサーパンダ）",
+      "url": "https://www.tokyo-zoo.net/ueno/exhibits/panda-forest/index.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "「パンダのもり」展示エリアの生き物図鑑欄より"
+    },
+    {
+      "pref": "福岡県",
+      "zoo": "到津の森公園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "お父さんの凌凌（りんりん）君と、お母さんの野風（のかぜ）ちゃん。",
+      "url": "https://www.itozu-zoo.jp/friends/entry/75.php",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "4頭(凌凌・野風・笑笑・アシタバ)が暮らしていると記載"
+    },
+    {
+      "pref": "静岡県",
+      "zoo": "富士サファリパーク",
+      "status": "公式ページに飼育記載あり",
+      "quote": "開催場所：ふれあい牧場内・レッサーパンダ展示場",
+      "url": "https://www.fujisafari.co.jp/news/event/483149/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "2025-09-11付イベント告知ページで確認。動物紹介ページ https://www.fujisafari.co.jp/animal-fureai/lesser-panda/ は生態説明のみで現在飼育の明記なし"
+    },
+    {
+      "pref": "愛知県",
+      "zoo": "東山動植物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "東山動植物園で飼育しているシセンレッサーパンダのまるこ（メス）が",
+      "url": "https://www.higashiyama.city.nagoya.jp/news/2025/07/post-1325.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "2025-07付公式ニュースで母親個体が現在飼育中と明記。レッサーパンダ舎ページ・ガイドページ単体では現在飼育の明記なし"
+    },
+    {
+      "pref": "愛知県",
+      "zoo": "豊橋総合動植物公園のんほいパーク",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダの放飼場には木が生えています。",
+      "url": "https://www.nonhoi.jp/animal/p437/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": ""
+    },
+    {
+      "pref": "沖縄県",
+      "zoo": "ネオパークオキナワ",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダカフェ～しましましっぽ～",
+      "url": "https://www.neopark.co.jp/animal/%E3%83%AC%E3%83%83%E3%82%B5%E3%83%BC%E3%83%91%E3%83%B3%E3%83%80/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "個体名「さくら」のみ記載。オス「チャル」は2025-05死亡と別ページに記載あり"
+    },
+    {
+      "pref": "熊本県",
+      "zoo": "熊本市動植物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "現在の当園の飼育状況（杏香を含む）：オス1頭、メス2頭",
+      "url": "https://www.city.kumamoto.jp/kiji00369389/index.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "2026-02-17付 熊本市公式報道資料。メス「杏香」は2026-03-24にのんほいパークへ移動予定と記載"
+    },
+    {
+      "pref": "愛媛県",
+      "zoo": "愛媛県立とべ動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "とべ動物園で飼育している3頭のレッサーパンダは、今年の夏でいずれも",
+      "url": "https://www.tobezoo.com/tobetopics/2025/09/309086.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "2025-09付「動物の様子」ページで確認。動物図鑑ページ(000689.html)は2014年時点の生態解説のみで現在飼育の根拠に不十分"
+    },
+    {
+      "pref": "神奈川県",
+      "zoo": "横浜・八景島シーパラダイス",
+      "status": "公式ページに飼育記載あり",
+      "quote": "フォレストリウムの人気者「レッサーパンダ」",
+      "url": "https://www.seaparadise.co.jp/aquaresorts/aquamuseum/facility/labo11.html",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "英語版URLは403。日本語版の施設ページ LABO11『フォレストリウム』で 2026-09-20 に確認。JAZA 区分は水族館"
+    },
+    {
+      "pref": "群馬県",
+      "zoo": "桐生が岡動物園",
+      "status": "公式ページに飼育記載あり",
+      "quote": "レッサーパンダの『フラン』が7月12日に出産したため、",
+      "url": "https://www.city.kiryu.lg.jp/zoo/",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "2026-09時点のトップページ告知(出産に伴いレッサーパンダ舎が臨時休館中)で確認。動物紹介ページ(1017854/index.html)にも「シセンレッサーパンダ」が掲載"
+    },
+    {
+      "pref": "兵庫県",
+      "zoo": "神戸どうぶつ王国",
+      "status": "公式ページに飼育記載あり",
+      "quote": "場所：アジアの森",
+      "url": "https://www.kobe-oukoku.com/animals/83",
+      "checked": "2026-09-20",
+      "nishiyamaLink": null,
+      "note": "公式動物図鑑ページに展示場所として記載。頭数・個体名の記載はページ内になし"
+    }
+  ]
+}

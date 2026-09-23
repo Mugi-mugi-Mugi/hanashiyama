@@ -1,0 +1,953 @@
+{
+  "_meta": {
+    "description": "西山公園が持つもの（エリア・施設・植物・動物・行事・記録・逸話）の洗い出し。はなし山の噺のゴール（札に出す魅力）を増やすための素材。★これは事実台帳ではない。app/data/facts.json へ入れる前に quote と url をもう一度当たること。",
+    "checked_at": "2026-09-21",
+    "scope": "★app/data/facts.json の 37 件にすでに入っているもの（嚮陽渓の由来 / 間部詮勝 / 祈りの道 / 眼鏡型の時計 / つつじ11種5万株 / レッサーパンダ / スキー場 / イルミネーション / 人流 / 100選 / 姉妹都市）は原則外した。重なる場合は note に書いた。",
+    "rule": "quote は curl で保存した原文からそのまま抜いた（要約モデルを通していない）。claim は quote の範囲を超えない。",
+    "source_note": "取得した HTML は c:\\tmp\\sabae_park\\ に保存（2026-09-21）。PDF（西山公園パンフレット）は PDF リーダーで読んだ。",
+    "count": 57
+  },
+  "items": [
+    {
+      "id": "PF01",
+      "name": "西山公園ぜんたい（面積）",
+      "category": "エリア",
+      "claim": "西山公園は鯖江市のほぼ中央にあり、面積は約56ヘクタール。150年余りの歴史がある。",
+      "quote": "鯖江市のほぼ中央に位置し、面積約56ヘクタールの自然豊かな西山公園。150年余りの歴史と美しい景観から、",
+      "source": "鯖江市 観光特集「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "約56ヘクタール",
+        "150年余り"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "56ヘクタールの公園を、一人の殿様が鍬で始めた。"
+    },
+    {
+      "id": "PF02",
+      "name": "嚮陽庭園（4つの庭）",
+      "category": "エリア",
+      "claim": "公園東側の嚮陽庭園は、上段の庭・北の庭・中段の庭・下段の庭の4つで構成されている。",
+      "quote": "公園東側には日本庭園として上段の庭、北の庭、中段の庭、下段の庭で構成される嚮陽庭園があります。",
+      "source": "鯖江市 西山公園パンフレット（PDF）",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/nishiyama-annai.files/nishiyama-panfu.pdf",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "4つの庭"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "庭が4つ。上と北と中と下。……東と西は、ございません。"
+    },
+    {
+      "id": "PF03",
+      "name": "上段の庭",
+      "category": "エリア",
+      "claim": "四阿（あずまや）のある和風庭園で、間部公ゆかりの嚮陽苑を再現したもの。東屋は無料休憩所。",
+      "quote": "四阿（あずまや）のある和風庭園です。間部公ゆかりの嚮陽苑を再現しました。",
+      "source": "鯖江市 公園緑地課「西山公園 上段の庭」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/nishiyama-niwa.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [],
+      "ochiCandidate": "回収",
+      "ochiIdea": "殿様が開いた庭を、いま再現しております。"
+    },
+    {
+      "id": "PF04",
+      "name": "北の庭（花菖蒲と藤棚）",
+      "category": "エリア",
+      "claim": "北の庭は2500株の花菖蒲と藤棚のある庭園。初夏に花菖蒲と藤の花が咲く。",
+      "quote": "2500株の花菖蒲と藤棚のある安らぎの庭園です。",
+      "source": "鯖江市 公園緑地課「西山公園 北の庭」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/kitaniwa.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "2500株"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "つつじ5万株の公園に、花菖蒲が2500株。"
+    },
+    {
+      "id": "PF05",
+      "name": "西山橋・踏雲峡",
+      "category": "施設",
+      "claim": "西山橋は東西2つの山をつなぐ公園のシンボル橋。昭和33年(1958)4月に「踏雲峡・西山橋」として工費2,900千円で完成し、高さ13.5メートル・幅2.0メートルだった。平成16年(2004)に逆V型主塔斜角配置斜張橋として架け替えられた。",
+      "quote": "4月踏雲峡・西山橋が工費2,900千円で完成。高さ13.5メートル、幅2.0m、方林型ラメル式クリーム色。平成16年改築。／平成16年（2004年）：西山橋完成（逆V型主塔斜角配置斜張橋）",
+      "source": "鯖江市 公園緑地課「西山公園の歴史」年表",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "2,900千円",
+        "13.5メートル",
+        "幅2.0m"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "市の年表が、橋の色を「クリーム色」と書き残しております。"
+    },
+    {
+      "id": "PF06",
+      "name": "大噴水",
+      "category": "施設",
+      "claim": "大噴水は30分ずつ稼働し、夜はライトアップされる。市が示す稼働時間表では10時台と11時台の2枠だけが「土日のみ」となっている。",
+      "quote": "※噴水稼働時間 10時00分～10時30分（土日のみ）11時00分～11時30分（土日のみ）12時00分～12時30分 …18時00分～20時00分 ※ライトアップ点灯時間 18時00分～20時00分",
+      "source": "鯖江市 公園緑地課「西山公園 施設のご案内」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/Nishiyama-Shisetsu.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "30分",
+        "8枠"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "噴水の時間割が、10時と11時だけ土日限定でございます。"
+    },
+    {
+      "id": "PF07",
+      "name": "結びの広場・結びのチャイム",
+      "category": "施設",
+      "claim": "西山公園中腹の結びの広場には、四角すいのモニュメントにウィンドチャイムが吊るされた「結びのチャイム」がある。「愛のピース」に同封されたメダルを投入すると音が鳴る。愛のピースは公園管理事務所・西山動物園・鯖江観光協会の3か所で売られている。",
+      "quote": "四角すいのモニュメントにウィンドチャイムが吊るされており、愛のピースに同封されているメダルを、チャイムに投入すれば神秘的な音色が響き、心を癒してくれます。／※愛のピース販売先 公園管理事務所、西山動物園、一般社団法人鯖江観光協会(道の駅西山公園内)",
+      "source": "福井県公式観光サイト ふくいドットコム「結びのチャイム(西山公園)」",
+      "url": "https://www.fuku-e.com/spot/detail_1328.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "3か所"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "末永く結ばれる鐘は、メダルを入れないと鳴りません。"
+    },
+    {
+      "id": "PF08",
+      "name": "愛の鐘・展望台",
+      "category": "施設",
+      "claim": "西山の頂上の「愛の鐘」は市民に時を知らせる鐘で、マリンバの演奏が12時と18時に響く。展望台からは鯖江市街地と遠く白山連峰が見える。",
+      "quote": "西山の頂上にある愛の鐘。マリンバの演奏が12時と18時に響き渡ります。",
+      "source": "鯖江市 観光特集「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "12時",
+        "18時"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "市民に時を知らせる鐘が、一日に2回。"
+    },
+    {
+      "id": "PF09",
+      "name": "パンダらんど・こぱんだらんど",
+      "category": "施設",
+      "claim": "パンダらんどは14種の遊びの機能を持つ複合遊具とジャンボすべり台のあるアスレチック。となりの「こぱんだらんど」は平成26年(2014)3月18日オープンで、面積700平方メートル・新設遊具6基。「おかおのクライム」「しっぽのトンネル」「寝耳ベンチ」など、レッサーパンダの体の部位が遊具の名前になっている。",
+      "quote": "平成26年3月18日に、西山公園の人気の場所「パンダらんど」のとなりに「こぱんだらんど」がオープンいたしました。／整備内容：A=700平方メートル 新設遊具数：6基／レッサーパンダの顔をした「おかおのクライム」／しっぽのトンネル／寝耳ベンチ",
+      "source": "鯖江市 公園緑地課「西山公園「こぱんだらんど」」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/kopanda-open.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "14種",
+        "700平方メートル",
+        "6基"
+      ],
+      "ochiCandidate": "並び",
+      "ochiIdea": "顔、しっぽ、おなか、おてて。……そして、寝耳。"
+    },
+    {
+      "id": "PF10",
+      "name": "松堂庵（名の由来）",
+      "category": "施設",
+      "claim": "嚮陽庭園にある茶室風休憩所「松堂庵」は、本格的な数寄屋造りで、間部公の雅号「松堂」にちなんで名付けられた。平成24年度完成。",
+      "quote": "本格的な数寄屋造りの茶室風休憩所です。間部公の雅号「松堂」にちなんで名付けました。",
+      "source": "鯖江市 西山公園パンフレット（PDF）",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/nishiyama-annai.files/nishiyama-panfu.pdf",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "平成24年度"
+      ],
+      "ochiCandidate": "回収",
+      "ochiIdea": "安政の大獄を指揮した老中の、雅号でございます。",
+      "note": "★既存 docs/調査/20260917_西山公園のオチ素材.md では「命名の由来を書いたページは見つけていない(確度 中)」だった。★このパンフレットで 市の記述として 確認できた = ★穴が 1 つ 埋まった"
+    },
+    {
+      "id": "PF11",
+      "name": "松堂亭",
+      "category": "施設",
+      "claim": "松堂庵の近くに、和室を備えた休憩所「松堂亭」がある。大きな窓があり眺望も楽しめる。",
+      "quote": "松堂庵近くにある和室を備えた休憩所です。大きな窓があり眺望も楽しめます。",
+      "source": "鯖江市 西山公園パンフレット（PDF）",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/nishiyama-annai.files/nishiyama-panfu.pdf",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [],
+      "ochiCandidate": "並び",
+      "ochiIdea": "松堂庵のとなりに、松堂亭。"
+    },
+    {
+      "id": "PF12",
+      "name": "芝生広場（お祭り広場）",
+      "category": "エリア",
+      "claim": "芝生広場は「お祭り広場」とも呼ばれ、四季を通じてたくさんの催し物が行われる。さばえまつりの会場でもある。",
+      "quote": "たくさんの催し物が四季を通じて行われます。",
+      "source": "鯖江市 公園緑地課「西山公園 施設のご案内」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/Nishiyama-Shisetsu.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [],
+      "ochiCandidate": "こじつけ",
+      "ochiIdea": "催し物の広場に、催し物の名前が付いております。"
+    },
+    {
+      "id": "PF13",
+      "name": "ピクニック広場",
+      "category": "エリア",
+      "claim": "園内にピクニック広場があり、キリシマツツジ2,390株・クルメツツジ1,420株・レンゲツツジ1,690株の植栽場所になっている。",
+      "quote": "キリシマツツジ（結びの広場、ピクニック広場南側階段）：2,390株／クルメツツジ（結びの広場、ピクニック広場）：1,420株／レンゲツツジ（ピクニック広場）：1,690株",
+      "source": "鯖江市 公園緑地課「西山公園 桜・つつじ・もみじについて」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/sakura-tsutsuji.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "2,390株",
+        "1,420株",
+        "1,690株"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "ピクニック広場のつつじを、市が1株ずつ数えております。"
+    },
+    {
+      "id": "PF14",
+      "name": "道の駅西山公園（施設の数字）",
+      "category": "施設",
+      "claim": "道の駅西山公園は一般国道417号沿い、設置者は鯖江市。駐車場83台（大型9・小型74）、エレベーターと歩道橋で公園につながる。名物は「つつじソフト」と「西山コロッケ」。",
+      "quote": "路線名 一般国道417号／施設 83台 [大型車9台/小型車74台]／また、道の駅「西山公園」には、エレベーターと歩道橋を設け、西山公園への利便性の向上を図っています。／【飲食物販施設】・つつじソフト・西山コロッケなど",
+      "source": "国土交通省 近畿地方整備局「道の駅 西山公園」",
+      "url": "https://www.kkr.mlit.go.jp/road/michi_no_eki/contents/fukui/nisiyamakouen.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "83台",
+        "大型9台",
+        "小型74台"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "国のページが、トイレの器の数まで書いております。"
+    },
+    {
+      "id": "PF15",
+      "name": "道の駅の「駅長」",
+      "category": "記録",
+      "claim": "道の駅西山公園には、国のページに氏名が載る「駅長」がいる。ただし鉄道の駅ではない。",
+      "quote": "駅長名 伊藤　努／設置者 鯖江市",
+      "source": "国土交通省 近畿地方整備局「道の駅 西山公園」",
+      "url": "https://www.kkr.mlit.go.jp/road/michi_no_eki/contents/fukui/nisiyamakouen.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [],
+      "ochiCandidate": "反転",
+      "ochiIdea": "線路のない駅に、駅長がおります。",
+      "note": "★氏名は 語りに 出さない（個人を 落とさない / サゲ作法 §3）。★「駅長がいる」事実だけ 使う"
+    },
+    {
+      "id": "PF16",
+      "name": "道の駅2階 交流室の料金",
+      "category": "施設",
+      "claim": "道の駅2階の交流室は3部制で、どの時間帯でも3時間2,100円（税別）。1時間の使用でも3時間の料金になる。",
+      "quote": "どの時間帯でも3時間で2,100円（税別）となります。（営利目的の場合は別途料金）※1時間の使用でも3時間の料金となります。",
+      "source": "道の駅西山公園 公式サイト（指定管理者 株式会社ネクサス富士屋）",
+      "url": "https://nishiyama-park.jp/guide/",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "3時間",
+        "2,100円"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "1時間でも、3時間分いただきます。"
+    },
+    {
+      "id": "PF17",
+      "name": "道の駅の食（つつじソフト・吉川ナスバーガー）",
+      "category": "施設",
+      "claim": "道の駅では一年中「つつじソフト」が食べられ、夏は地元のブランド野菜・吉川ナスを使った「吉川ナスバーガー」が出る。",
+      "quote": "一年中楽しめる人気メニュー「つつじソフト」は、ふんわりつつじの香りと上品な甘さが魅力のご当地スイーツ。／夏には、地元のブランド野菜・吉川ナスを使った「吉川ナスバーガー」が登場！",
+      "source": "道の駅西山公園 公式サイト",
+      "url": "https://nishiyama-park.jp/",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [],
+      "ochiCandidate": "こじつけ",
+      "ochiIdea": "つつじの名所のつつじは、食べられます。"
+    },
+    {
+      "id": "PF18",
+      "name": "西山古墳群",
+      "category": "エリア",
+      "claim": "西山公園は総合公園として整備されており、その中に「西山古墳群」が含まれる。長泉寺山の古墳群からは「西山3号墳出土 玉類」が出ており、市指定文化財（第18号・910点）の出土品に含まれる。",
+      "quote": "西山公園は、総合公園として、日本庭園、西山古墳群、西山動物園、芝生広場、大噴水、展望広場、冒険の森などが整備され／西山3号墳出土　玉類",
+      "source": "鯖江市 公園緑地課「西山公園 施設のご案内」／鯖江市 文化課「鯖江市の出土品」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/Nishiyama-Shisetsu.html ・ https://www.city.sabae.fukui.jp/kosodate_kyoiku/manabenoyakata/bunkazai/sabae_bunkazai/koukoshiryo/18-city.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [
+        "910点"
+      ],
+      "ochiCandidate": "並び",
+      "ochiIdea": "日本庭園、古墳、動物園、芝生広場。……古墳。",
+      "note": "★公園内の 古墳の 基数は 市のページで 確認できず。★長泉寺山古墳（市指定 第128号・墳丘長約52m）は 所在地が 小黒町・水落町で ★公園内ではない"
+    },
+    {
+      "id": "PF19",
+      "name": "三十三間堂（小黒町 信仰の道）",
+      "category": "逸話",
+      "claim": "公園の遊歩道へ続く登山道は、江戸時代の中・後期に沿道へ三十三体の観音像が並べられ「三十三間堂」と呼ばれていた、といわれている。園内の「祈りの道」（昭和63年開道・約420体）とは別の、もう一本の石仏の道。",
+      "quote": "この登山道は、江戸時代の中、後期にかけて沿道に三十三体の観音像が並べられ、「三十三間堂」として庶民に崇められていたといわれています。また、西山公園の遊歩道へ続く道です。",
+      "source": "鯖江市オープンデータ「鯖江百景」（市 観光サイト掲載）",
+      "url": "https://www.city.sabae.fukui.jp/kanko_sangyo/kankoshisetsu_meisho/sabaehyakkei/sabae-hyakkei-02.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [
+        "三十三体",
+        "約420体"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "江戸の人が三十三体。平成の人が、四百二十体。",
+      "note": "★既存 F12（祈りの道 約900m・約420体）と 対になる。★F12 の 重複ではない"
+    },
+    {
+      "id": "PF20",
+      "name": "レッサーパンダのいえ",
+      "category": "施設",
+      "claim": "平成28年(2016)3月27日にオープンした新レッサーパンダ舎。屋内展示にブリッジがあり、人の頭上を歩くレッサーパンダを見られる。ギャラリーとラウンジもある。",
+      "quote": "平成28年3月27日にオープンした新レッサーパンダ舎「レッサーパンダのいえ」には、レッサーパンダの屋内展示や屋外展示のほか、生態などを展示するギャラリー、来園者の方々が休憩や多目的に使えるラウンジがあります。屋内展示にはブリッジを設け、人の頭上を歩くレッサーパンダを見ることができ、",
+      "source": "鯖江市西山動物園「ご利用ガイド」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/guide/index.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "平成28年3月27日"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "日本一小さな動物園で、人のほうが見上げております。"
+    },
+    {
+      "id": "PF21",
+      "name": "レッサーパンダライブカメラ",
+      "category": "施設",
+      "claim": "市はレッサーパンダの屋内・屋外展示場にライブカメラを置いている。同時に30人程度までで、1分以上見ると10秒間隔の静止画に切り替わる。",
+      "quote": "設置してあるライブカメラは同時に30人程度の利用が可能なものです。 多くの方に見てもらうため、1分以上の閲覧については、カメラからの映像を静止画（10秒間隔更新）に変えています。",
+      "source": "鯖江市「西山動物園レッサーパンダライブカメラ」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/nishiyamadobutsuen/panda-raibu.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "30人",
+        "1分",
+        "10秒"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "日本中から見られます。ただし、30人まで。"
+    },
+    {
+      "id": "PF22",
+      "name": "動物園から各所への距離",
+      "category": "記録",
+      "claim": "動物園の公式ページは、パンダらんどまで337メートル、道の駅まで350メートルと、1メートル単位で書いている。",
+      "quote": "動物園からパンダらんどまでの距離337ｍ／動物園から道の駅までの距離350ｍ",
+      "source": "鯖江市西山動物園「ご利用ガイド」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/guide/index.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "337m",
+        "350m"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "道の駅まで、350メートルでございます。"
+    },
+    {
+      "id": "PF23",
+      "name": "西山公園駅",
+      "category": "記録",
+      "claim": "福井鉄道福武線の「西山公園駅」は公園から徒歩1分。もとは大正13年(1924)開業の「下鯖江駅」で、1987年(昭和62年)4月10日に駅名が西山公園駅へ改められた。",
+      "quote": "1987年（昭和62年）4月10日：駅名を西山公園駅に改称／●福井鉄道　西山公園駅より　徒歩1分",
+      "source": "Wikipedia「西山公園駅」（脚注は 鯖江市秘書広報課「鯖江市年表 1987年」PDF）／鯖江市 西山公園パンフレット（PDF）",
+      "url": "https://ja.wikipedia.org/wiki/西山公園駅 ・ https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/nishiyama-annai.files/nishiyama-panfu.pdf",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [
+        "徒歩1分",
+        "1987年"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "町の名が付いていた駅が、公園の名になりました。",
+      "note": "★改称の 一次資料（市年表 PDF）は ★未取得。★駅名と 徒歩1分は 市のパンフレットで 確認した"
+    },
+    {
+      "id": "PF24",
+      "name": "桜 1,000本（内訳）",
+      "category": "植物",
+      "claim": "園内の桜は西山402本・東山600本の合計1,000本。樹種は染井吉野850本・山桜133本・八重桜11本・垂れ桜6本で、樹齢は50〜70年。",
+      "quote": "エリア区分 総本数（本）… 西山 402 … 東山 600 … 合計 1000／染井吉野 50から70 350／垂れ桜 20から70 3／八重桜 50から70 4／山桜 50 43",
+      "source": "鯖江市 公園緑地課「西山公園 桜・つつじ・もみじについて」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/sakura-tsutsuji.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "1,000本",
+        "402本",
+        "600本"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "桜が千本。そのうち垂れ桜が、六本。",
+      "note": "★表は 西山・東山 別。★染井吉野 350+500=850 / 垂れ桜 3+3=6 / 八重桜 4+7=11 / 山桜 43+90=133 は ★こちらが 足した。★西山 402 と 東山 600 の 合計は 1002 だが ★市の 合計欄は 1000"
+    },
+    {
+      "id": "PF25",
+      "name": "もみじ 1,600本",
+      "category": "植物",
+      "claim": "園内には1,600本を越えるもみじがあり、平成23年(2011)に「つつじ50,000株、もみじ1,600本達成」と市の年表に記されている。",
+      "quote": "西山公園には1600本を越えるもみじの木があり、秋深まる頃には、色とりどりの美しい紅葉を眺めることができます。／平成23年（2011年）：つつじ 50,000株、もみじ 1,600本達成",
+      "source": "鯖江市 観光特集／鯖江市 公園緑地課「西山公園の歴史」年表",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html ・ https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "1,600本"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "市の年表に、「達成」と書いてございます。"
+    },
+    {
+      "id": "PF26",
+      "name": "花菖蒲 2,500株",
+      "category": "植物",
+      "claim": "北の庭では初夏に2500株の花菖蒲と藤の花が咲く。",
+      "quote": "東山にある北の庭では初夏になると2500株の花菖蒲と藤の花が咲きます。",
+      "source": "鯖江市 観光特集「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "2500株"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "5万株の次が、2500株でございます。",
+      "note": "★見頃の 日付は 市・県の どこにも 書かれていない（「初夏」まで）"
+    },
+    {
+      "id": "PF27",
+      "name": "藤棚（大正3年から）",
+      "category": "植物",
+      "claim": "藤棚は大正3年(1914)、大正天皇即位の御大典記念事業で中腹東側に瓢箪池とともに設置されたのが始まり。",
+      "quote": "中腹東側には瓢箪池や藤棚を設置し、全山に桜を植え、県下でも指折りの桜の名所となりました。",
+      "source": "鯖江市 公園緑地課「西山公園の歴史」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "大正3年"
+      ],
+      "ochiCandidate": "回収",
+      "ochiIdea": "藤棚は、天皇の即位記念でございます。"
+    },
+    {
+      "id": "PF28",
+      "name": "芝桜（西山橋のすそ）",
+      "category": "植物",
+      "claim": "西山と東山を結ぶ西山橋のすそ一面が芝桜でうめつくされる。",
+      "quote": "西山と東山を結ぶ西山橋のすそ一面をうめつくす芝桜もきれいです。",
+      "source": "鯖江市 観光特集「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [],
+      "ochiCandidate": "こじつけ",
+      "ochiIdea": "橋の下にも、花がございます。"
+    },
+    {
+      "id": "PF29",
+      "name": "PGMツツジ 25株",
+      "category": "植物",
+      "claim": "つつじ11種50,025株のうち、いちばん多いのはヒラドツツジ31,400株（公園全体）、いちばん少ないのはPGMツツジ25株で、場所は道の駅西山公園の駐車場だけ。",
+      "quote": "ヒラドツツジ（公園全体）：31,400株／ＰＧＭツツジ(道の駅西山公園 駐車場)：25株／合計：50,025株",
+      "source": "鯖江市 公園緑地課「西山公園 桜・つつじ・もみじについて」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/sakura-tsutsuji.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "31,400株",
+        "25株",
+        "50,025株"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "ヒラドツツジが3万1400株、PGMツツジが、25株。",
+      "note": "★既存 F11（つつじ 11種 5万株）の 内訳。★数の 山と 谷は ★F11 には 入っていない"
+    },
+    {
+      "id": "PF30",
+      "name": "ドウダンツツジ 5,600株",
+      "category": "植物",
+      "claim": "ドウダンツツジは5,600株あり、場所は嚮陽庭園と嚮陽会館駐車場。",
+      "quote": "ドウダンツツジ（嚮陽庭園、嚮陽会館駐車場）：5,600株",
+      "source": "鯖江市 公園緑地課「西山公園 桜・つつじ・もみじについて」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/sakura-tsutsuji.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "5,600株"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "駐車場に、5600株。",
+      "note": "★★ドウダンツツジの「紅葉」は 市・県の どのページにも 記述が 見つからなかった → ★紅葉として 語らない"
+    },
+    {
+      "id": "PF31",
+      "name": "雪吊り",
+      "category": "植物",
+      "claim": "冬は園内の雪吊り風景と木々の雪化粧が見どころとして市が挙げている。",
+      "quote": "冬は、公園内の雪吊り風景と木々の雪化粧がとてもきれい。",
+      "source": "鯖江市 観光特集「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [],
+      "ochiCandidate": "反転",
+      "ochiIdea": "木が折れないように縄でつる。それが、冬の名物でございます。"
+    },
+    {
+      "id": "PF32",
+      "name": "野鳥の宝庫",
+      "category": "植物",
+      "claim": "市のパンフレットは西山公園を「野鳥の宝庫でもある自然豊かな公園」としている。市のオープンデータには3月の「野鳥を観る会」（西山公園お祭り広場、8:00〜11:00、環境課）が載っている。",
+      "quote": "約5万株のつつじや1千6百本のもみじ・1千本の桜の木があり野鳥の宝庫でもある自然豊かな公園です。",
+      "source": "鯖江市 西山公園パンフレット（PDF）／鯖江市オープンデータ event_linkdata",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/nishiyama-annai.files/nishiyama-panfu.pdf",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [],
+      "ochiCandidate": "こじつけ",
+      "ochiIdea": "鳥は、動物園の外にもおります。"
+    },
+    {
+      "id": "PF33",
+      "name": "飼育動物 11種42匹の内訳",
+      "category": "動物",
+      "claim": "2025年7月現在、哺乳類4種26頭・鳥類7種16羽。種類の数では鳥のほうが多い。",
+      "quote": "飼育動物数 2025年7月現在／哺乳類 … 合計 4種 26頭／鳥類 … 合計 7種 16羽",
+      "source": "鯖江市西山動物園「飼育動物紹介」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/animals/animal.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "4種26頭",
+        "7種16羽"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "レッサーパンダの動物園でございますが、種類でいえば、鳥のほうが多い。"
+    },
+    {
+      "id": "PF34",
+      "name": "キジ類5種",
+      "category": "動物",
+      "claim": "鳥類7種のうち5種がキジの仲間（キンケイ・ギンケイ・コサンケイ・ハッカン・チャボ）。えさの表は5種まとめて「キジ類」の一行で、献立は「にわとり用配合飼料・小松菜」。",
+      "quote": "キジ類 10：00ごろ にわとり用配合飼料・小松菜",
+      "source": "鯖江市西山動物園「飼育動物紹介」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/animals/animal.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "5種"
+      ],
+      "ochiCandidate": "並び",
+      "ochiIdea": "レッサーパンダ、テナガザル、ルトン、リスザル、タンチョウ——そして、キジ類。"
+    },
+    {
+      "id": "PF35",
+      "name": "北京動物園からの4次にわたる動物交流",
+      "category": "動物",
+      "claim": "開園の前後に北京動物園から4回に分けて動物が来ている。昭和59年11月 第1次（レッサーパンダ2頭・キジ類）、昭和60年11月 第2次（タンチョウ2羽・キジ類）、昭和62年7月 第3次（フランソワルトン4頭）、平成3年10月 第4次（シロテテナガザル2頭）。",
+      "quote": "昭和59年11月 第1次動物交流　北京動物園よりレッサーパンダ2頭・キジ類が来園／11月 第2次動物交流　北京動物園よりタンチョウ2羽・キジ類が来園／昭和62年7月 第3次動物交流 北京動物園よりフランソワルトン4頭来園／平成3年10月 第4次動物交流 北京動物園よりシロテテナガザル2頭来園",
+      "source": "鯖江市西山動物園「西山動物園の概要」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/info/history.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "第1次〜第4次"
+      ],
+      "ochiCandidate": "並び",
+      "ochiIdea": "日中友好の第1便は、レッサーパンダ2頭と、キジ類。"
+    },
+    {
+      "id": "PF36",
+      "name": "レッサーパンダのミンファ 逃走",
+      "category": "逸話",
+      "claim": "市の動物園公式の年表に、平成20年(2008)の出来事として「レッサーパンダのミンファが逃走し話題となる」と書かれている。",
+      "quote": "平成20年 レッサーパンダのミンファが逃走し話題となる",
+      "source": "鯖江市西山動物園「西山動物園の概要」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/info/history.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "平成20年"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "市が、自分の年表に「逃走」と書いております。",
+      "note": "★落とすのは ★市の 年表の 書きっぷり（お役所の側）。★動物そのものを 落とさない（サゲ作法 §3）"
+    },
+    {
+      "id": "PF37",
+      "name": "アオミミキジの人工授精繁殖",
+      "category": "動物",
+      "claim": "平成19年(2007)6月、アオミミキジの人工受精による繁殖に成功している。",
+      "quote": "平成19年6月 アオミミキジの人工受精による繁殖に成功",
+      "source": "鯖江市西山動物園「西山動物園の概要」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/info/history.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "平成19年6月"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "レッサーパンダで名の通った園の、もうひとつの快挙は、キジでございました。"
+    },
+    {
+      "id": "PF38",
+      "name": "レッサーパンダ3世・7世",
+      "category": "動物",
+      "claim": "平成元年(1989)6月にレッサーパンダ3世が誕生し、市は「日本初」と書いている。平成5年に人工哺育に成功、平成22年(2010)に7世が誕生。",
+      "quote": "平成元年6月 レッサーパンダ3世誕生（日本初）／平成5年 レッサーパンダ人工哺育に成功／平成22年 レッサーパンダ7世誕生",
+      "source": "鯖江市西山動物園「西山動物園の概要」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/info/history.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "3世",
+        "7世"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "何世かを、いまも数えております。"
+    },
+    {
+      "id": "PF39",
+      "name": "リスザルとのふれあい体験",
+      "category": "行事",
+      "claim": "令和8年(2026)4月から10月中の土曜・日曜・祝日に、ボリビアリスザルとのふれあい体験を1日2回（11時・15時）、1回10名、2歳から15歳を対象に行う。ただしゴールデンウィーク期間は開催しない。",
+      "quote": "【開催期間】　令和8年4月から10月中の土曜日、日曜日、祝日 ※ゴールデンウィーク期間は開催しません。／【参加数】　1回あたり　10名　定員になり次第、受付を終了",
+      "source": "鯖江市西山動物園「リスザルとのふれあい体験」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/risuzaruevent.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "1日2回",
+        "10名",
+        "2〜15歳"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "いちばん人が来る大型連休だけ、お休みでございます。"
+    },
+    {
+      "id": "PF40",
+      "name": "はく製と骨格",
+      "category": "動物",
+      "claim": "団体利用の際は、飼育係による説明のほか、鳥のはく製やレッサーパンダのはく製・骨格も用意されている。",
+      "quote": "また、鳥のはく製やレッサーパンダのはく製、骨格なども用意しております。お気軽にご相談ください。",
+      "source": "鯖江市西山動物園「来園時のお願い」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/info/service.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [],
+      "ochiCandidate": "こじつけ",
+      "ochiIdea": "教材にも、なっております。",
+      "note": "★★「動物の 死」に 触れる 形に なりやすい → ★サゲ作法 §3 に 当たる。★使うなら「教材」の 側だけ"
+    },
+    {
+      "id": "PF41",
+      "name": "赤ちゃんの一般公開は20分",
+      "category": "行事",
+      "claim": "2026年6月26日生まれの双子の一般公開は、令和8年10月7日(水)14時00分〜14時20分。当面は体力を考慮して20分間とされている。",
+      "quote": "【公開日時】令和8年10月7日（水曜日）14時00分～14時20分まで ※当面は赤ちゃんの体力を考慮し、公開時間を20分間とさせて頂きます。",
+      "source": "鯖江市西山動物園「動物園ニュース」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/news/index.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "10月7日",
+        "20分"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "会える時間は、一日20分でございます。",
+      "note": "★既存 F17（誕生日と 双子）と 重なる。★「20分」は F17 に 入っていない"
+    },
+    {
+      "id": "PF42",
+      "name": "トレーディングカード 第3弾",
+      "category": "行事",
+      "claim": "令和8年9月19日から、西山動物園公式レッサーパンダ・トレーディングカード第3弾を発売。全9種類（通常7種＋レア2種）、1パック200円、「レッサーパンダのいえ」ラウンジの自動販売機で売る。10月17日にレアカードを1種追加予定。",
+      "quote": "トレーディングカード　全9種類 通常7種類＋レアカード2種類（レアカードは特典映像付き）／価格　  1枚（1パック）200円（税込）／【発売場所】レッサーパンダのいえラウンジ　自動販売機にて販売",
+      "source": "鯖江市西山動物園「動物園ニュース」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/news/index.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "全9種類",
+        "200円"
+      ],
+      "ochiCandidate": "こじつけ",
+      "ochiIdea": "入園は無料。カードは、200円でございます。"
+    },
+    {
+      "id": "PF43",
+      "name": "PayPay募金の上限",
+      "category": "行事",
+      "claim": "令和8年9月19日から、動物園管理事務所前でPayPayによる募金受付を開始した。寄附上限は1回30万円まで。",
+      "quote": "■ 募金場所　動物園管理事務所前／■ 寄附上限　1回30万円まで",
+      "source": "鯖江市西山動物園「動物園ニュース」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/news/index.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "30万円"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "日本一小さな動物園の募金に、上限30万円。"
+    },
+    {
+      "id": "PF44",
+      "name": "もみじまつり（11月上旬）",
+      "category": "行事",
+      "claim": "国土交通省のページは「11月上旬の『もみじ祭り』開催時には多くの観光客で賑わいます」と書いている。2026年の日程は未発表。",
+      "quote": "毎年５月上旬の「つつじ祭り」、１１月上旬の「もみじ祭り」開催時には多くの観光客で賑わいます。",
+      "source": "国土交通省 近畿地方整備局「道の駅 西山公園」",
+      "url": "https://www.kkr.mlit.go.jp/road/michi_no_eki/contents/fukui/nisiyamakouen.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [
+        "11月上旬"
+      ],
+      "ochiCandidate": "並び",
+      "ochiIdea": "つつじ祭りと、もみじ祭り。その間が、半年ございます。",
+      "note": "★2026年の 開催日は 市・県の どこにも 出ていない（2026-09-21 時点）"
+    },
+    {
+      "id": "PF45",
+      "name": "夜桜の夕べ（4月上旬）",
+      "category": "行事",
+      "claim": "4月上旬には園内を幻想的に彩る「夜桜の夕べ」が開かれる。",
+      "quote": "4月上旬には園内を幻想的に彩る「夜桜の夕べ」が開かれます。",
+      "source": "鯖江市 観光特集「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [
+        "4月上旬"
+      ],
+      "ochiCandidate": "こじつけ",
+      "ochiIdea": "つつじの前に、桜がございます。"
+    },
+    {
+      "id": "PF46",
+      "name": "松堂庵 呈茶サービス（令和8年度）",
+      "category": "行事",
+      "claim": "嚮陽庭園の松堂庵で、令和8年度は4月〜11月に茶道体験（呈茶）を行う。時間は午前10時から午後3時まで。市のページは実施日を色で分け、赤が抹茶・青が煎茶。荒天時は中止。市民主役事業として市民団体と連携して実施している。",
+      "quote": "★実施日が 赤の場合は抹茶 、 青の場合は煎茶 です。／時間 午前10時から午後3時まで ※荒天時は中止します。／西山公園「松堂庵」茶道体験（呈茶サービス）は、市民主役事業として、市民団体の提案と協力のもと、連携して実施しています。",
+      "source": "鯖江市 公園緑地課「西山公園で茶道体験してみませんか」（最終更新 2026年4月20日）",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/Koen0120260420.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "10時〜15時"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "抹茶の日と煎茶の日が、色分けしてございます。",
+      "note": "★公式は 日付の 列挙のみ。★月ごとの 日数を こちらが 数えた = 4月 6日 / 5月 8日 / 6月 1日 / 9月 3日 / 10月 1日 / 11月 2日 の ★計 21 日（5月3日の つつじまつり 茶席は 別記のため 含めず）"
+    },
+    {
+      "id": "PF47",
+      "name": "夕涼みZOO（2026）",
+      "category": "行事",
+      "claim": "令和8年8月13日(木)〜16日(日)、開園時間を18時まで延長してガイドなどを行った。3種類のサルのガイドもあった。",
+      "quote": "◆開催期間　　令和8年8月13日（木曜日）～16日（日曜日）／西山動物園で暮らす3種類のサルのおはなし～シロテテナガザル・フランソワルトン・ボリビアリスザル～",
+      "source": "鯖江市西山動物園「動物園ニュース」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/news/index.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "8/13〜8/16"
+      ],
+      "ochiCandidate": "自虐",
+      "ochiIdea": "お盆に開けるのは、帰省の方のためでございます。"
+    },
+    {
+      "id": "PF48",
+      "name": "国際レッサーパンダデー（2026）",
+      "category": "行事",
+      "claim": "令和8年9月19日(土)〜23日(水)、期間中は18時まで開園を延長。特別展示「命のバトン」は11月1日(日)まで続く。レッサーパンダガイドは11時。",
+      "quote": "◆開催日　　令和8年9月19日（土曜日）～9月23日（水曜日）※期間中は開園時間を18時まで延長します。／※特別展示は11月1日(日曜日)まで継続します。",
+      "source": "鯖江市西山動物園「動物園ニュース」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/news/index.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "9/19〜9/23",
+        "11/1まで"
+      ],
+      "ochiCandidate": "回収",
+      "ochiIdea": "記念日は5日間。展示は、11月まで。",
+      "note": "★既存 F18 と 重なる。★「18時まで延長」「命のバトン 11/1まで」は F18 に 入っていない"
+    },
+    {
+      "id": "PF49",
+      "name": "スノーフェスタ（1月）",
+      "category": "行事",
+      "claim": "冬の1月には「スノーフェスタ」が開かれ、かまくら作りや雪中宝探しなどの雪遊びができる。2026年の開催実績・2027年の日程は未確認。",
+      "quote": "1月にはスノーフェスタも開かれます。／かまくら作りや雪中宝探しなど雪遊びを楽しめるイベント『スノーフェスタ』。",
+      "source": "鯖江市 観光特集「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [
+        "1月"
+      ],
+      "ochiCandidate": "回収",
+      "ochiIdea": "スキー場のあった山で、いまは雪中宝探しでございます。",
+      "note": "★既存 F13（昭和35年 スキー場利用 7,000人）と つながる。★2026年の 開催実績は 既存 docs でも 見つかっていない"
+    },
+    {
+      "id": "PF50",
+      "name": "つつじまつり 第65回（2026）",
+      "category": "行事",
+      "claim": "2026年のさばえつつじまつりは第65回で、5月3日(日)〜5日(火)に開かれたとされる。市・県の公式ページでは原文を確認できていない。",
+      "quote": "（確認できた原文なし）",
+      "source": "情報サイトの記述のみ（県公式 ふくいドットコムの 該当ページは 2026-09-21 時点で 404）",
+      "url": "https://www.fuku-e.com/event/detail_5952.html",
+      "checked": "2026-09-21",
+      "confidence": "medium",
+      "numbers": [
+        "第65回"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "65回目でございます。始まりは、市長の出張のついででございました。",
+      "note": "★★原文 未確認。★「第65回」「5/3〜5」は ★検索結果の 要約のみ → ★語りに 使う前に ★再確認が 要る"
+    },
+    {
+      "id": "PF51",
+      "name": "愛の鐘は1年で建て替えた",
+      "category": "逸話",
+      "claim": "昭和35年(1960)に木造の「愛の鐘」が吹鳴を始め、翌 昭和36年(1961)に鉄筋コンクリートで再建されている。",
+      "quote": "昭和35年（1960年）：愛の鐘（木造）吹鳴第1回つつじ祭りの開催／昭和36年（1961年）：愛の鐘（鉄筋コンクリート）の再建",
+      "source": "鯖江市 公園緑地課「西山公園の歴史」年表",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "1960年",
+        "1961年"
+      ],
+      "ochiCandidate": "落差",
+      "ochiIdea": "木で建てて、翌年、コンクリートでございます。"
+    },
+    {
+      "id": "PF52",
+      "name": "野球場に4年かけた",
+      "category": "逸話",
+      "claim": "市の年表では、昭和48年(1973)「野球場造成（便所）」、49年「野球場外野法面整備」、50年「野球場スタンド整備」、51年「野球場整備」と4年つづけて野球場が出てくる。",
+      "quote": "・昭和48年（1973年）：野球場造成（便所）・昭和49年（1974年）：野球場外野法面整備・昭和50年（1975年）：野球場スタンド整備・昭和51年（1976年）：野球場整備",
+      "source": "鯖江市 公園緑地課「西山公園の歴史」年表",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "4年"
+      ],
+      "ochiCandidate": "並び",
+      "ochiIdea": "造成、外野の法面、スタンド、そして——整備。"
+    },
+    {
+      "id": "PF53",
+      "name": "桜の名所が先だった",
+      "category": "逸話",
+      "claim": "大正3年(1914)の大正天皇即位の御大典記念事業で、嚮陽公園を「西山公園」と改称し、町民総出で修復して全山に桜を植え、県下でも指折りの桜の名所になった。つつじの植栽が始まるのは44年あとの昭和33年。",
+      "quote": "ついで、大正3年（1914年）には大正天皇即位の御大典記念事業として、嚮陽公園を「西山公園」と改称し、町民総出による修復も行われ、大広場の造営、中腹東側には瓢箪池や藤棚を設置し、全山に桜を植え、県下でも指折りの桜の名所となりました。",
+      "source": "鯖江市 公園緑地課「西山公園の歴史」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "大正3年",
+        "昭和33年",
+        "44年"
+      ],
+      "ochiCandidate": "反転",
+      "ochiIdea": "つつじの名所は、もとは桜の名所でございました。",
+      "note": "★「44年」は こちらの 引き算（1958−1914）"
+    },
+    {
+      "id": "PF54",
+      "name": "町立嚮陽公園",
+      "category": "逸話",
+      "claim": "明治22年(1889)の町村制で鯖江町となり、嚮陽渓は「町立嚮陽公園」として管理されることになった。",
+      "quote": "明治22年（1889年）の町村制に伴い鯖江町となって、嚮陽渓は「町立嚮陽公園」として管理されることになりました。",
+      "source": "鯖江市 公園緑地課「西山公園の歴史」",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "明治22年"
+      ],
+      "ochiCandidate": "回収",
+      "ochiIdea": "殿様の庭が、町のものになりました。"
+    },
+    {
+      "id": "PF55",
+      "name": "西山動物園友の会",
+      "category": "逸話",
+      "claim": "平成14年(2002)に「西山動物園友の会」が設立されている。",
+      "quote": "・平成14年（2002年）：西山動物園友の会設立",
+      "source": "鯖江市 公園緑地課「西山公園の歴史」年表",
+      "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [
+        "平成14年"
+      ],
+      "ochiCandidate": "律儀",
+      "ochiIdea": "入園無料の動物園に、友の会がございます。"
+    },
+    {
+      "id": "PF56",
+      "name": "開園時間の書き方",
+      "category": "逸話",
+      "claim": "動物園の開園時間は、市のサイトの複数のページで「午前9時～午後16時30分」と書かれている。公園のパンフレットでは「午前9時～午後4時30分」。",
+      "quote": "開園時間 午前9時～午後16時30分",
+      "source": "鯖江市西山動物園「西山動物園の概要」「来園時のお願い」",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/info/history.html ・ https://www.city.sabae.fukui.jp/nishiyama_zoo/info/service.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [],
+      "ochiCandidate": "自虐",
+      "ochiIdea": "午後の16時30分まで、開いております。",
+      "note": "★お役所の 書き方を 落とす形（サゲ作法 §3 で 許されている側）。★個人は 落とさない"
+    },
+    {
+      "id": "PF57",
+      "name": "嚮陽渓の石碑と胸像",
+      "category": "逸話",
+      "claim": "東山の一角に「嚮陽渓」の石碑があり、園内には間部詮勝公の胸像がある。市のオープンデータには「藩主就任200年・生誕210年記念『間部詮勝公顕彰祭』」が胸像・嚮陽渓碑前広場で行われた記録がある。",
+      "quote": "東山の一角にたたずむ「嚮陽渓」の石碑。150年余りの鯖江の歴史を物語っています。／藩主就任200年・生誕210年記念「間部詮勝公顕彰祭」　西山公園間部詮勝公胸像・嚮陽渓碑前広場",
+      "source": "鯖江市 観光特集／鯖江市オープンデータ event_linkdata",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "checked": "2026-09-21",
+      "confidence": "high",
+      "numbers": [],
+      "ochiCandidate": "回収",
+      "ochiIdea": "石碑の前で、いまも顕彰祭がございます。",
+      "note": "★顕彰祭の 年は ★オープンデータの 年度（2014年度）。★近年の 開催は 未確認"
+    }
+  ]
+}

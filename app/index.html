@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>はなし山 — 西山公園がオチを探す</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- 幕 -->
+  <section id="maku" class="maku">
+    <div class="maku-inner">
+      <p class="koban">福井県鯖江市・西山公園</p>
+      <h1>はなし山</h1>
+      <p class="sub">道の駅のレジから、この公園の知られていない話を一席。</p>
+      <p class="nerai">
+        福井県鯖江市の<b>西山公園</b>。<br>
+        名前も知らない、行く用もない。たぶん、そういう場所だと思います。<br>
+        一席聞いたあとで、<b>ちょっと気になった</b>——そこまで持っていけたら、この噺家の勝ちでございます。
+      </p>
+      <ol class="nagare">
+        <li>はじめに「行ってみたい気持ち」を伺います (ここが出発点)</li>
+        <li>あなたの県・好きなもの・今日の日付に合わせて、噺をひとつ語ります</li>
+        <li>もう一度「行ってみたい気持ち」を伺います (どれだけ動いたか)</li>
+        <li>最後に、オチを書いた札を1枚さしあげます</li>
+      </ol>
+      <div class="makubtn">
+        <button id="open" class="btn primary big">幕を開ける</button>
+        <button id="kinList" class="btn big ghost2">全国の動物園から</button>
+      </div>
+      <ul class="chui">
+        <li>語りはすべて、鯖江市のオープンデータと、出典を確かめた事実だけでできています。</li>
+        <li>レジ係「はなし山」は実在の人物ではありません。噺は人が書いています。</li>
+        <li>この端末の中だけで動きます。外への通信はありません。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 高座 -->
+  <main id="koza" class="koza" hidden>
+    <div class="kozatop">
+      <div class="mekuri" id="mekuri">はなし山</div>
+    </div>
+
+    <div id="talk" class="talk" aria-live="polite"></div>
+    <div id="choices" class="choices"></div>
+
+    <div id="sageBox" class="sagebox" hidden>
+      <canvas id="card" width="1080" height="1350" aria-label="オチ札"></canvas>
+      <div class="actions">
+        <button id="save" class="btn primary">この札をもらう</button>
+        <button id="copyCard" class="btn">オチの文を写す</button>
+        <button id="again" class="btn">もう一席</button>
+        <button id="sourcesBtn" class="btn ghost">タネ明かし (出典)</button>
+      </div>
+      <div id="sources" class="sources" hidden></div>
+    </div>
+
+    <div class="footbar">
+      <button id="skip" class="link">早送り</button>
+      <button id="typeBtn" class="link">文字の出し方</button>
+      <button id="other" class="link">別の噺</button>
+      <button id="baBtn" class="link">場</button>
+      <button id="restart" class="link">はじめから</button>
+    </div>
+  </main>
+
+  <!-- 全国の園からの入口 -->
+  <section id="kin" class="panel" hidden>
+    <h2 class="bah">全国の動物園から — 鯖江うまれの子が渡った先</h2>
+    <p class="note" id="kinNote"></p>
+    <div id="kinBody"></div>
+    <div class="actions"><button id="closeKin" class="btn ghost">閉じる</button></div>
+  </section>
+
+  <!-- 場 -->
+  <section id="ba" class="panel" hidden>
+    <h2 class="bah">場 — この端末で、どの噺が気持ちを動かしたか</h2>
+    <div id="baBody"></div>
+    <div class="actions">
+      <button id="exportLog" class="btn ghost">記録を書き出す</button>
+      <button id="clearLog" class="btn ghost">記録を消す</button>
+      <button id="closeBa" class="btn ghost">閉じる</button>
+    </div>
+    <p class="note">記録はこの端末の中だけに残ります。外へは送りません。</p>
+  </section>
+
+  <footer>
+    <p>語りは、出典を確かめた事実だけで作っています。各席の「タネ明かし」から原文を見られます。</p>
+    <p class="credit">データ: 鯖江市オープンデータ (CC BY 2.1 JP) ほか。人流データ提供元：(株)Agoop。<span id="built"></span></p>
+  </footer>
+
+  <script src="data/bundle.js"></script>
+  <script src="data/kin.js"></script>
+  <script src="data/img.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

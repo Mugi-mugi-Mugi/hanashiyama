@@ -1,0 +1,5172 @@
+{
+ "_meta": {
+  "title": "はなし山 自由入力の辞書 (客の言葉 → 信念 / 都道府県 / 季節)",
+  "作り方": "語は 4 つの手元データからだけ 採った。① data/derived/redpanda_zoos.json の 59 園の 園名と略称 → pref + b_zoo_big / ② data/derived/pref_meibutsu.json の 47 県の 名物 142 と 県名・旧国名・主要都市名 → pref / ③ app/data/stories.json の beliefs 12 枚から 連想される 一般語 → belief / ④ 季節語 (桜・つつじ・紅葉・イルミ・雪) → season。思いつきで 足していない。外部 API・外部検索は 使っていない",
+  "使い方": "入力を NFKC 正規化して 3 つの当て方で 部分一致を とる。(a) word を 原文に そのまま / (b) word が かなだけ で 3 文字以上なら カタカナ→ひらがな に 直した 原文に / (c) kana が ★4 文字以上 のときだけ 同じく ひらがなに 直した 原文に。kana を 3 文字で 使うと 『鳴門=なると』が『〜になるとしたら』に、『秋田=あきた』が『飽きた』に 当たる。2 文字だと 『城=しろ』が『おもしろい』に 当たる。当たった語のうち、より長い 当たり語の 一部に なっているもの (城 ⊂ 城下町 / 旭山 ⊂ 旭山動物園 / 桜 ⊂ 桜島 / 秋 ⊂ 秋田) は 捨てる。同じ長さの 言い換え (めがね と 眼鏡、つつじ と ツツジ) は 両方 残す。残りを weight の 大きい順 (同点は 長い語) に 見て belief / pref / season を 決める",
+  "weight": "3 = 固有名詞 (園名・県名・都市名)、2 = 名物・季節語、1 = 一般語",
+  "src": "その語を どこから 採ったか (zoo / place / meibutsu / general)。辞書を 直すときの 手がかり",
+  "入れなかった語": "地名の 蔑称・取り違えネタ、災害 (震災・原爆・噴火・降灰・地震)、戦跡・基地、信仰を 笑いにする語。県またぎ・県内競合で どちらとも 言えない語 (富士山・大山・ぶどう・桃・そば・温泉)。詳細は docs/調査/20260921_自由入力の辞書.md",
+  "checked": "2026-09-20",
+  "count": 573,
+  "manual_added": "2026-09-21 に、監査で 取りこぼしが 出た 一般語を 追加"
+ },
+ "entries": [
+  {
+   "word": "仙台市八木山動物公園フジサキの杜",
+   "kana": "せんだいしやぎやまどうぶつこうえんふじさきのもり",
+   "belief": "b_zoo_big",
+   "pref": "宮城県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "秋吉台自然動物公園サファリランド",
+   "kana": "あきよしだいしぜんどうぶつこうえんさふぁりらんど",
+   "belief": "b_zoo_big",
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "よこはま動物園ズーラシア",
+   "kana": "よこはまどうぶつえんずーらしあ",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "埼玉県こども動物自然公園",
+   "kana": "さいたまけんこどもどうぶつしぜんこうえん",
+   "belief": "b_zoo_big",
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "甲府市遊亀公園附属動物園",
+   "kana": "こうふしゆうきこうえんふぞくどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "山梨県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "アドベンチャーワールド",
+   "kana": "あどべんちゃーわーるど",
+   "belief": "b_zoo_big",
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "フェニックス自然動物園",
+   "kana": "ふぇにっくすしぜんどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "伊豆シャボテン動物公園",
+   "kana": "いずしゃぼてんどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "富山市ファミリーパーク",
+   "kana": "とやましふぁみりーぱーく",
+   "belief": "b_zoo_big",
+   "pref": "富山県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "八景島シーパラダイス",
+   "kana": "はっけいじましーぱらだいす",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "姫路セントラルパーク",
+   "kana": "ひめじせんとらるぱーく",
+   "belief": "b_zoo_big",
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "秋吉台サファリランド",
+   "kana": "あきよしだいさふぁりらんど",
+   "belief": "b_zoo_big",
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "こども動物自然公園",
+   "kana": "こどもどうぶつしぜんこうえん",
+   "belief": "b_zoo_big",
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "ネオパークオキナワ",
+   "kana": "ねおぱーくおきなわ",
+   "belief": "b_zoo_big",
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "三島市立公園楽寿園",
+   "kana": "みしましりつこうえんらくじゅえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "富士サファリパーク",
+   "kana": "ふじさふぁりぱーく",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "広島市安佐動物公園",
+   "kana": "ひろしましあさどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "広島県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "江戸川区自然動物園",
+   "kana": "えどがわくしぜんどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "神戸市立王子動物園",
+   "kana": "こうべしりつおうじどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "秋田市大森山動物園",
+   "kana": "あきたしおおもりやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "秋田県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "群馬サファリパーク",
+   "kana": "ぐんまさふぁりぱーく",
+   "belief": "b_zoo_big",
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "豊橋総合動植物公園",
+   "kana": "とよはしそうごうどうしょくぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "長野市茶臼山動物園",
+   "kana": "ながのしちゃうすやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "九十九島動植物園",
+   "kana": "くじゅうくしまどうしょくぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "周南市徳山動物園",
+   "kana": "しゅうなんしとくやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "夢見ヶ崎動物公園",
+   "kana": "ゆめみがさきどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "旭川市旭山動物園",
+   "kana": "あさひかわしあさひやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "札幌市円山動物園",
+   "kana": "さっぽろしまるやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "熱川バナナワニ園",
+   "kana": "あたがわばななわにえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "神戸どうぶつ王国",
+   "kana": "こうべどうぶつおうこく",
+   "belief": "b_zoo_big",
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "那須どうぶつ王国",
+   "kana": "なすどうぶつおうこく",
+   "belief": "b_zoo_big",
+   "pref": "栃木県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "長崎バイオパーク",
+   "kana": "ながさきばいおぱーく",
+   "belief": "b_zoo_big",
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "鯖江市西山動物園",
+   "kana": "さばえしにしやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "いしかわ動物園",
+   "kana": "いしかわどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "石川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "とくしま動物園",
+   "kana": "とくしまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "徳島県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "のいち動物公園",
+   "kana": "のいちどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "高知県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "のんほいパーク",
+   "kana": "のんほいぱーく",
+   "belief": "b_zoo_big",
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "ひらかたパーク",
+   "kana": "ひらかたぱーく",
+   "belief": "b_zoo_big",
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "よこはま動物園",
+   "kana": "よこはまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "シャボテン公園",
+   "kana": "しゃぼてんこうえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "八木山動物公園",
+   "kana": "やぎやまどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "宮城県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "千葉市動物公園",
+   "kana": "ちばしどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "大島公園動物園",
+   "kana": "おおしまこうえんどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "姫路市立動物園",
+   "kana": "ひめじしりつどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "市川市動植物園",
+   "kana": "いちかわしどうしょくぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "恩賜上野動物園",
+   "kana": "おんしうえのどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "桐生が岡動物園",
+   "kana": "きりゅうがおかどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "熊本市動植物園",
+   "kana": "くまもとしどうしょくぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "熊本県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "羽村市動物公園",
+   "kana": "はむらしどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "かみね動物園",
+   "kana": "かみねどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "茨城県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "バナナワニ園",
+   "kana": "ばななわにえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "京都市動物園",
+   "kana": "きょうとしどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "京都府",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "到津の森公園",
+   "kana": "いとうづのもりこうえん",
+   "belief": "b_zoo_big",
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "多摩動物公園",
+   "kana": "たまどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "大森山動物園",
+   "kana": "おおもりやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "秋田県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "天王寺動物園",
+   "kana": "てんのうじどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "安佐動物公園",
+   "kana": "あさどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "広島県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "市原ぞうの国",
+   "kana": "いちはらぞうのくに",
+   "belief": "b_zoo_big",
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "平川動物公園",
+   "kana": "ひらかわどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "日本平動物園",
+   "kana": "にほんだいらどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "東山動植物園",
+   "kana": "ひがしやまどうしょくぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "東武動物公園",
+   "kana": "とうぶどうぶつこうえん",
+   "belief": "b_zoo_big",
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "浜松市動物園",
+   "kana": "はままつしどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "福岡市動物園",
+   "kana": "ふくおかしどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "茶臼山動物園",
+   "kana": "ちゃうすやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "野毛山動物園",
+   "kana": "のげやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "釧路市動物園",
+   "kana": "くしろしどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "さいたま市",
+   "kana": "さいたまし",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "とべ動物園",
+   "kana": "とべどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "ズーラシア",
+   "kana": "ずーらしあ",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "上野動物園",
+   "kana": "うえのどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "円山動物園",
+   "kana": "まるやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "多摩動物園",
+   "kana": "たまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "姫路動物園",
+   "kana": "ひめじどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "徳山動物園",
+   "kana": "とくやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "旭山動物園",
+   "kana": "あさひやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "東山動物園",
+   "kana": "ひがしやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "池田動物園",
+   "kana": "いけだどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "岡山県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "王子動物園",
+   "kana": "おうじどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "西山動物園",
+   "kana": "にしやまどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "釧路動物園",
+   "kana": "くしろどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "ぞうの国",
+   "kana": "ぞうのくに",
+   "belief": "b_zoo_big",
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "ひらパー",
+   "kana": "ひらぱー",
+   "belief": "b_zoo_big",
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "会津若松",
+   "kana": "あいづわかまつ",
+   "belief": null,
+   "pref": "福島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "到津の森",
+   "kana": "いとうづのもり",
+   "belief": "b_zoo_big",
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "吉田松陰",
+   "kana": "よしだしょういん",
+   "belief": "b_bakumatsu",
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "general"
+  },
+  {
+   "word": "和歌山県",
+   "kana": "わかやまけん",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "坂本龍馬",
+   "kana": "さかもとりょうま",
+   "belief": "b_bakumatsu",
+   "pref": "高知県",
+   "season": null,
+   "weight": 3,
+   "src": "general"
+  },
+  {
+   "word": "夢見ヶ崎",
+   "kana": "ゆめみがさき",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "桐生が岡",
+   "kana": "きりゅうがおか",
+   "belief": "b_zoo_big",
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "森きらら",
+   "kana": "もりきらら",
+   "belief": "b_zoo_big",
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "神奈川県",
+   "kana": "かながわけん",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "遊亀公園",
+   "kana": "ゆうきこうえん",
+   "belief": "b_zoo_big",
+   "pref": "山梨県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "鹿児島県",
+   "kana": "かごしまけん",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "いわき",
+   "kana": "いわき",
+   "belief": null,
+   "pref": "福島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "つくば",
+   "kana": "つくば",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "三重県",
+   "kana": "みえけん",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "久留米",
+   "kana": "くるめ",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "京都府",
+   "kana": "きょうとふ",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "伊万里",
+   "kana": "いまり",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "佐世保",
+   "kana": "させぼ",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "佐賀県",
+   "kana": "さがけん",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "八景島",
+   "kana": "はっけいじま",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "八木山",
+   "kana": "やぎやま",
+   "belief": "b_zoo_big",
+   "pref": "宮城県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "兵庫県",
+   "kana": "ひょうごけん",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "北九州",
+   "kana": "きたきゅうしゅう",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "北海道",
+   "kana": "ほっかいどう",
+   "belief": null,
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "千葉県",
+   "kana": "ちばけん",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "名古屋",
+   "kana": "なごや",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "和歌山",
+   "kana": "わかやま",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "四日市",
+   "kana": "よっかいち",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "埼玉県",
+   "kana": "さいたまけん",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "大分県",
+   "kana": "おおいたけん",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "大阪府",
+   "kana": "おおさかふ",
+   "belief": null,
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "天王寺",
+   "kana": "てんのうじ",
+   "belief": "b_zoo_big",
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "奈良県",
+   "kana": "ならけん",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "姫セン",
+   "kana": "ひめせん",
+   "belief": "b_zoo_big",
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "宇和島",
+   "kana": "うわじま",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "宇都宮",
+   "kana": "うつのみや",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "宮古島",
+   "kana": "みやこじま",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "宮城県",
+   "kana": "みやぎけん",
+   "belief": null,
+   "pref": "宮城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "宮崎県",
+   "kana": "みやざきけん",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "富山県",
+   "kana": "とやまけん",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "山口県",
+   "kana": "やまぐちけん",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "山形県",
+   "kana": "やまがたけん",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "山梨県",
+   "kana": "やまなしけん",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岐阜県",
+   "kana": "ぎふけん",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岡山県",
+   "kana": "おかやまけん",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岩手県",
+   "kana": "いわてけん",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "島根県",
+   "kana": "しまねけん",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "広島県",
+   "kana": "ひろしまけん",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "徳島県",
+   "kana": "とくしまけん",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "愛媛県",
+   "kana": "えひめけん",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "愛知県",
+   "kana": "あいちけん",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "新潟県",
+   "kana": "にいがたけん",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "日本平",
+   "kana": "にほんだいら",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "東京都",
+   "kana": "とうきょうと",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "栃木県",
+   "kana": "とちぎけん",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "楽寿園",
+   "kana": "らくじゅえん",
+   "belief": "b_zoo_big",
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "横須賀",
+   "kana": "よこすか",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "沖縄県",
+   "kana": "おきなわけん",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "湯布院",
+   "kana": "ゆふいん",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "滋賀県",
+   "kana": "しがけん",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "熊本県",
+   "kana": "くまもとけん",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "由布院",
+   "kana": "ゆふいん",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "石垣島",
+   "kana": "いしがきじま",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "石川県",
+   "kana": "いしかわけん",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "神奈川",
+   "kana": "かながわ",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "福井県",
+   "kana": "ふくいけん",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "福岡県",
+   "kana": "ふくおかけん",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "福島県",
+   "kana": "ふくしまけん",
+   "belief": null,
+   "pref": "福島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "秋田県",
+   "kana": "あきたけん",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "群馬県",
+   "kana": "ぐんまけん",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "茨城県",
+   "kana": "いばらきけん",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "茶臼山",
+   "kana": "ちゃうすやま",
+   "belief": "b_zoo_big",
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "軽井沢",
+   "kana": "かるいざわ",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "野毛山",
+   "kana": "のげやま",
+   "belief": "b_zoo_big",
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "長崎県",
+   "kana": "ながさきけん",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "長野県",
+   "kana": "ながのけん",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "青森県",
+   "kana": "あおもりけん",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "静岡県",
+   "kana": "しずおかけん",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "香川県",
+   "kana": "かがわけん",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "高知県",
+   "kana": "こうちけん",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "高野山",
+   "kana": "こうやさん",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鳥取県",
+   "kana": "とっとりけん",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鹿児島",
+   "kana": "かごしま",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "三河",
+   "kana": "みかわ",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "三重",
+   "kana": "みえ",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "上州",
+   "kana": "じょうしゅう",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "上野",
+   "kana": "うえの",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "下関",
+   "kana": "しものせき",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "中津",
+   "kana": "なかつ",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "丸亀",
+   "kana": "まるがめ",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "丹後",
+   "kana": "たんご",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "五島",
+   "kana": "ごとう",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "京都",
+   "kana": "きょうと",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "今治",
+   "kana": "いまばり",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "仙台",
+   "kana": "せんだい",
+   "belief": null,
+   "pref": "宮城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "伊予",
+   "kana": "いよ",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "伊賀",
+   "kana": "いが",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "但馬",
+   "kana": "たじま",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "佐賀",
+   "kana": "さが",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "信州",
+   "kana": "しんしゅう",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "信濃",
+   "kana": "しなの",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "倉敷",
+   "kana": "くらしき",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "備前",
+   "kana": "びぜん",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "八戸",
+   "kana": "はちのへ",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "兵庫",
+   "kana": "ひょうご",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "出雲",
+   "kana": "いずも",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "函館",
+   "kana": "はこだて",
+   "belief": null,
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "別府",
+   "kana": "べっぷ",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "前橋",
+   "kana": "まえばし",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "加賀",
+   "kana": "かが",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "千葉",
+   "kana": "ちば",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "博多",
+   "kana": "はかた",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "唐津",
+   "kana": "からつ",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "因幡",
+   "kana": "いなば",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "土佐",
+   "kana": "とさ",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "埼玉",
+   "kana": "さいたま",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "大分",
+   "kana": "おおいた",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "大垣",
+   "kana": "おおがき",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "大津",
+   "kana": "おおつ",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "大阪",
+   "kana": "おおさか",
+   "belief": null,
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "天草",
+   "kana": "あまくさ",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "奄美",
+   "kana": "あまみ",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "奈良",
+   "kana": "なら",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "姫路",
+   "kana": "ひめじ",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "宇治",
+   "kana": "うじ",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "安芸",
+   "kana": "あき",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "宮城",
+   "kana": "みやぎ",
+   "belief": null,
+   "pref": "宮城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "宮崎",
+   "kana": "みやざき",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "富山",
+   "kana": "とやま",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "対馬",
+   "kana": "つしま",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "小樽",
+   "kana": "おたる",
+   "belief": null,
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "尾張",
+   "kana": "おわり",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "尾道",
+   "kana": "おのみち",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "山口",
+   "kana": "やまぐち",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "山形",
+   "kana": "やまがた",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "山梨",
+   "kana": "やまなし",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岐阜",
+   "kana": "ぎふ",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岡山",
+   "kana": "おかやま",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岡崎",
+   "kana": "おかざき",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岩国",
+   "kana": "いわくに",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "岩手",
+   "kana": "いわて",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "島原",
+   "kana": "しまばら",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "島根",
+   "kana": "しまね",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "川崎",
+   "kana": "かわさき",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "常陸",
+   "kana": "ひたち",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "広島",
+   "kana": "ひろしま",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "庄内",
+   "kana": "しょうない",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "延岡",
+   "kana": "のべおか",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "弘前",
+   "kana": "ひろさき",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "彦根",
+   "kana": "ひこね",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "徳島",
+   "kana": "とくしま",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "志摩",
+   "kana": "しま",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "愛媛",
+   "kana": "えひめ",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "愛知",
+   "kana": "あいち",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "成田",
+   "kana": "なりた",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "房総",
+   "kana": "ぼうそう",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "指宿",
+   "kana": "いぶすき",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "播磨",
+   "kana": "はりま",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "敦賀",
+   "kana": "つるが",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "新宿",
+   "kana": "しんじゅく",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "新潟",
+   "kana": "にいがた",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "旭山",
+   "kana": "あさひやま",
+   "belief": "b_zoo_big",
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "zoo"
+  },
+  {
+   "word": "旭川",
+   "kana": "あさひかわ",
+   "belief": null,
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "札幌",
+   "kana": "さっぽろ",
+   "belief": null,
+   "pref": "北海道",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "東京",
+   "kana": "とうきょう",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "松山",
+   "kana": "まつやま",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "松本",
+   "kana": "まつもと",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "松江",
+   "kana": "まつえ",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "松陰",
+   "kana": "しょういん",
+   "belief": "b_bakumatsu",
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "general"
+  },
+  {
+   "word": "栃木",
+   "kana": "とちぎ",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "横浜",
+   "kana": "よこはま",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "水戸",
+   "kana": "みと",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "沖縄",
+   "kana": "おきなわ",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "沼津",
+   "kana": "ぬまづ",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "津軽",
+   "kana": "つがる",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "浅草",
+   "kana": "あさくさ",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "浜松",
+   "kana": "はままつ",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "淡路",
+   "kana": "あわじ",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "渋谷",
+   "kana": "しぶや",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "滋賀",
+   "kana": "しが",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "熊本",
+   "kana": "くまもと",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "熱海",
+   "kana": "あたみ",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "犬山",
+   "kana": "いぬやま",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "琉球",
+   "kana": "りゅうきゅう",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "甲州",
+   "kana": "こうしゅう",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "甲府",
+   "kana": "こうふ",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "甲斐",
+   "kana": "かい",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "白浜",
+   "kana": "しらはま",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "盛岡",
+   "kana": "もりおか",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "石川",
+   "kana": "いしかわ",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "神戸",
+   "kana": "こうべ",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "福井",
+   "kana": "ふくい",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "福山",
+   "kana": "ふくやま",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "福岡",
+   "kana": "ふくおか",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "福島",
+   "kana": "ふくしま",
+   "belief": null,
+   "pref": "福島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "秋田",
+   "kana": "あきた",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "米子",
+   "kana": "よなご",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "米沢",
+   "kana": "よねざわ",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "紀伊",
+   "kana": "きい",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "紀州",
+   "kana": "きしゅう",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "美濃",
+   "kana": "みの",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "群馬",
+   "kana": "ぐんま",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "肥後",
+   "kana": "ひご",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "能登",
+   "kana": "のと",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "舞鶴",
+   "kana": "まいづる",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "船橋",
+   "kana": "ふなばし",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "若狭",
+   "kana": "わかさ",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "茨城",
+   "kana": "いばらき",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "薩摩",
+   "kana": "さつま",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "西宮",
+   "kana": "にしのみや",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "讃岐",
+   "kana": "さぬき",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "豊後",
+   "kana": "ぶんご",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "豊橋",
+   "kana": "とよはし",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "越中",
+   "kana": "えっちゅう",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "越前",
+   "kana": "えちぜん",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "越後",
+   "kana": "えちご",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "近江",
+   "kana": "おうみ",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "遠州",
+   "kana": "えんしゅう",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "那覇",
+   "kana": "なは",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "郡山",
+   "kana": "こおりやま",
+   "belief": null,
+   "pref": "福島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "都城",
+   "kana": "みやこのじょう",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "金沢",
+   "kana": "かなざわ",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鈴鹿",
+   "kana": "すずか",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鎌倉",
+   "kana": "かまくら",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "長岡",
+   "kana": "ながおか",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "長崎",
+   "kana": "ながさき",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "長州",
+   "kana": "ちょうしゅう",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "長浜",
+   "kana": "ながはま",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "長野",
+   "kana": "ながの",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "阿波",
+   "kana": "あわ",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "隠岐",
+   "kana": "おき",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "霧島",
+   "kana": "きりしま",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "青森",
+   "kana": "あおもり",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "静岡",
+   "kana": "しずおか",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "飛騨",
+   "kana": "ひだ",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "飛鳥",
+   "kana": "あすか",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "香川",
+   "kana": "かがわ",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "駿河",
+   "kana": "するが",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "高山",
+   "kana": "たかやま",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "高岡",
+   "kana": "たかおか",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "高崎",
+   "kana": "たかさき",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "高松",
+   "kana": "たかまつ",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "高知",
+   "kana": "こうち",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鯖江",
+   "kana": "さばえ",
+   "belief": "b_local_park",
+   "pref": "福井県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鳥取",
+   "kana": "とっとり",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鳴門",
+   "kana": "なると",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鶴岡",
+   "kana": "つるおか",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "堺",
+   "kana": "さかい",
+   "belief": null,
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "萩",
+   "kana": "はぎ",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "ジャイアントパンダ",
+   "kana": "じゃいあんとぱんだ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "イルミネーション",
+   "kana": "いるみねーしょん",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "バルーンフェスタ",
+   "kana": "ばるーんふぇすた",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ひたち海浜公園",
+   "kana": "ひたちかいひんこうえん",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "アルペンルート",
+   "kana": "あるぺんるーと",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "レッサーパンダ",
+   "kana": "れっさーぱんだ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "かやぶきの里",
+   "kana": "かやぶきのさと",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "しまなみ海道",
+   "kana": "しまなみかいどう",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "スカイツリー",
+   "kana": "すかいつりー",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "スノーボード",
+   "kana": "すのーぼーど",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "チャンプルー",
+   "kana": "ちゃんぷるー",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ライトアップ",
+   "kana": "らいとあっぷ",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "倉敷美観地区",
+   "kana": "くらしきびかんちく",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "日本アルプス",
+   "kana": "にほんあるぷす",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "熊本ラーメン",
+   "kana": "くまもとらーめん",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "西都原古墳群",
+   "kana": "さいとばるこふんぐん",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "おんせん県",
+   "kana": "おんせんけん",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "お好み焼き",
+   "kana": "おこのみやき",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "きりたんぽ",
+   "kana": "きりたんぽ",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "さくらんぼ",
+   "kana": "さくらんぼ",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ラフランス",
+   "kana": "らふらんす",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "二十世紀梨",
+   "kana": "にじっせいきなし",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "仁淀ブルー",
+   "kana": "によどぶるー",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "今治タオル",
+   "kana": "いまばりたおる",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊根の舟屋",
+   "kana": "いねのふなや",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊香保温泉",
+   "kana": "いかほおんせん",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "唐津くんち",
+   "kana": "からつくんち",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "安政の大獄",
+   "kana": "あんせいのたいごく",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "富岡製糸場",
+   "kana": "とみおかせいしじょう",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "恐竜博物館",
+   "kana": "きょうりゅうはくぶつかん",
+   "belief": "b_dino_only",
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "東京タワー",
+   "kana": "とうきょうたわー",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "琉球ガラス",
+   "kana": "りゅうきゅうがらす",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "白米千枚田",
+   "kana": "しろよねせんまいだ",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "讃岐うどん",
+   "kana": "さぬきうどん",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "郡上おどり",
+   "kana": "ぐじょうおどり",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "金刀比羅宮",
+   "kana": "ことひらぐう",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "阿波おどり",
+   "kana": "あわおどり",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "鳴門の渦潮",
+   "kana": "なるとのうずしお",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "こんぴら",
+   "kana": "こんぴら",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "なまはげ",
+   "kana": "なまはげ",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ます寿司",
+   "kana": "ますずし",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "やちむん",
+   "kana": "やちむん",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "サンゴ礁",
+   "kana": "さんごしょう",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "マンゴー",
+   "kana": "まんごー",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "下呂温泉",
+   "kana": "げろおんせん",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "九十九島",
+   "kana": "くじゅうくしま",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊万里焼",
+   "kana": "いまりやき",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊勢神宮",
+   "kana": "いせじんぐう",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊達政宗",
+   "kana": "だてまさむね",
+   "belief": null,
+   "pref": "宮城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "信州そば",
+   "kana": "しんしゅうそば",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "八丁味噌",
+   "kana": "はっちょうみそ",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "出羽三山",
+   "kana": "でわさんざん",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "出雲大社",
+   "kana": "いずもたいしゃ",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "十和田湖",
+   "kana": "とわだこ",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "厳島神社",
+   "kana": "いつくしまじんじゃ",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "四万十川",
+   "kana": "しまんとがわ",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "城めぐり",
+   "kana": "しろめぐり",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "奈良公園",
+   "kana": "ならこうえん",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "宮崎地鶏",
+   "kana": "みやざきじどり",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "小田原城",
+   "kana": "おだわらじょう",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "岐阜提灯",
+   "kana": "ぎふぢょうちん",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "明治維新",
+   "kana": "めいじいしん",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "有馬温泉",
+   "kana": "ありまおんせん",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "松葉がに",
+   "kana": "まつばがに",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "栗林公園",
+   "kana": "りつりんこうえん",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "武田信玄",
+   "kana": "たけだしんげん",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "濃溝の滝",
+   "kana": "のうみぞのたき",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "熊野古道",
+   "kana": "くまのこどう",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "石見銀山",
+   "kana": "いわみぎんざん",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "草津温泉",
+   "kana": "くさつおんせん",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "袋田の滝",
+   "kana": "ふくろだのたき",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "越前がに",
+   "kana": "えちぜんがに",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "道後温泉",
+   "kana": "どうごおんせん",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "雪の大谷",
+   "kana": "ゆきのおおたに",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "鳥取砂丘",
+   "kana": "とっとりさきゅう",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "黒川温泉",
+   "kana": "くろかわおんせん",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "うどん",
+   "kana": "うどん",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "こけし",
+   "kana": "こけし",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "つつじ",
+   "kana": "つつじ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "early-summer",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ねぶた",
+   "kana": "ねぶた",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "まぐろ",
+   "kana": "まぐろ",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "みかん",
+   "kana": "みかん",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "りんご",
+   "kana": "りんご",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "イルミ",
+   "kana": "いるみ",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "カツオ",
+   "kana": "かつお",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "コキア",
+   "kana": "こきあ",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "スキー",
+   "kana": "すきー",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "スノボ",
+   "kana": "すのぼ",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ツツジ",
+   "kana": "つつじ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "early-summer",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ワイン",
+   "kana": "わいん",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "上高地",
+   "kana": "かみこうち",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "中尊寺",
+   "kana": "ちゅうそんじ",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "五箇山",
+   "kana": "ごかやま",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "佐渡島",
+   "kana": "さどがしま",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "信楽焼",
+   "kana": "しがらきやき",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "偕楽園",
+   "kana": "かいらくえん",
+   "belief": "b_old_famous",
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "兼六園",
+   "kana": "けんろくえん",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "千里浜",
+   "kana": "ちりはま",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "博多織",
+   "kana": "はかたおり",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "善光寺",
+   "kana": "ぜんこうじ",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "四万十",
+   "kana": "しまんと",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "城下町",
+   "kana": "じょうかまち",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "城巡り",
+   "kana": "しろめぐり",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "天守閣",
+   "kana": "てんしゅかく",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "天橋立",
+   "kana": "あまのはしだて",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "太宰府",
+   "kana": "だざいふ",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "宇治茶",
+   "kana": "うじちゃ",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "宍道湖",
+   "kana": "しんじこ",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "小豆島",
+   "kana": "しょうどしま",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "放生会",
+   "kana": "ほうじょうや",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "新幹線",
+   "kana": "しんかんせん",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "明治村",
+   "kana": "めいじむら",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "有田焼",
+   "kana": "ありたやき",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "東大寺",
+   "kana": "とうだいじ",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "東尋坊",
+   "kana": "とうじんぼう",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "松阪牛",
+   "kana": "まつさかうし",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "桃太郎",
+   "kana": "ももたろう",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "永平寺",
+   "kana": "えいへいじ",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "江の島",
+   "kana": "えのしま",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "浜名湖",
+   "kana": "はまなこ",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "淡路島",
+   "kana": "あわじしま",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "瀬戸内",
+   "kana": "せとうち",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "犬山城",
+   "kana": "いぬやまじょう",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "狭山茶",
+   "kana": "さやまちゃ",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "玄武洞",
+   "kana": "げんぶどう",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "琵琶湖",
+   "kana": "びわこ",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "益子焼",
+   "kana": "ましこやき",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "秋吉台",
+   "kana": "あきよしだい",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "秋田犬",
+   "kana": "あきたいぬ",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "粉もん",
+   "kana": "こなもん",
+   "belief": null,
+   "pref": "大阪府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "縁結び",
+   "kana": "えんむすび",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "美濃焼",
+   "kana": "みのやき",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "羽黒山",
+   "kana": "はぐろさん",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "耶馬渓",
+   "kana": "やばけい",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "輪島塗",
+   "kana": "わじまぬり",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "近江牛",
+   "kana": "おうみぎゅう",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "錦帯橋",
+   "kana": "きんたいきょう",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "門司港",
+   "kana": "もじこう",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "関さば",
+   "kana": "せきさば",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "静岡茶",
+   "kana": "しずおかちゃ",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "駿河湾",
+   "kana": "するがわん",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "高千穂",
+   "kana": "たかちほ",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ふぐ",
+   "kana": "ふぐ",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "三陸",
+   "kana": "さんりく",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊勢",
+   "kana": "いせ",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊豆",
+   "kana": "いず",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "会津",
+   "kana": "あいづ",
+   "belief": null,
+   "pref": "福島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "佐原",
+   "kana": "さわら",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "佐渡",
+   "kana": "さど",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "剣山",
+   "kana": "つるぎさん",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "吉野",
+   "kana": "よしの",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "宮島",
+   "kana": "みやじま",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "山笠",
+   "kana": "やまかさ",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "川越",
+   "kana": "かわごえ",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "幕末",
+   "kana": "ばくまつ",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "平泉",
+   "kana": "ひらいずみ",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "新米",
+   "kana": "しんまい",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "日光",
+   "kana": "にっこう",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "松島",
+   "kana": "まつしま",
+   "belief": null,
+   "pref": "宮城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "柳川",
+   "kana": "やながわ",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "桜島",
+   "kana": "さくらじま",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "江戸",
+   "kana": "えど",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "海女",
+   "kana": "あま",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "渦潮",
+   "kana": "うずしお",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "知床",
+   "kana": "しれとこ",
+   "belief": null,
+   "pref": "北海道",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "砂丘",
+   "kana": "さきゅう",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "秩父",
+   "kana": "ちちぶ",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "立山",
+   "kana": "たてやま",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "箱根",
+   "kana": "はこね",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "花見",
+   "kana": "はなみ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "spring",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "蔵王",
+   "kana": "ざおう",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "躑躅",
+   "kana": "つつじ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "early-summer",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "那須",
+   "kana": "なす",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "醤油",
+   "kana": "しょうゆ",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "銀座",
+   "kana": "ぎんざ",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "阿蘇",
+   "kana": "あそ",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "雪国",
+   "kana": "ゆきぐに",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "馬肉",
+   "kana": "ばにく",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "黒部",
+   "kana": "くろべ",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "柿",
+   "kana": "かき",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "桜",
+   "kana": "さくら",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "spring",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ゴールデンウィーク",
+   "kana": "ごーるでんうぃーく",
+   "belief": null,
+   "pref": null,
+   "season": "early-summer",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "サファリパーク",
+   "kana": "さふぁりぱーく",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "どうぶつ園",
+   "kana": "どうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "クリスマス",
+   "kana": "くりすます",
+   "belief": null,
+   "pref": null,
+   "season": "winter",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "コンサート",
+   "kana": "こんさーと",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "サングラス",
+   "kana": "さんぐらす",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "ピクニック",
+   "kana": "ぴくにっく",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "日本庭園",
+   "kana": "にほんていえん",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "めがね",
+   "kana": "めがね",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "もみじ",
+   "kana": "もみじ",
+   "belief": null,
+   "pref": null,
+   "season": "autumn",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "パンダ",
+   "kana": "ぱんだ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "動物園",
+   "kana": "どうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "水族館",
+   "kana": "すいぞくかん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "公園",
+   "kana": "こうえん",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "動物",
+   "kana": "どうぶつ",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "化石",
+   "kana": "かせき",
+   "belief": "b_dino_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "史跡",
+   "kana": "しせき",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "名所",
+   "kana": "めいしょ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "地元",
+   "kana": "じもと",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "夜景",
+   "kana": "やけい",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "大名",
+   "kana": "だいみょう",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "天守",
+   "kana": "てんしゅ",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "帰省",
+   "kana": "きせい",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "庭園",
+   "kana": "ていえん",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "恐竜",
+   "kana": "きょうりゅう",
+   "belief": "b_dino_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "散歩",
+   "kana": "さんぽ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "散策",
+   "kana": "さんさく",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "新緑",
+   "kana": "しんりょく",
+   "belief": null,
+   "pref": null,
+   "season": "early-summer",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "武士",
+   "kana": "ぶし",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "歴史",
+   "kana": "れきし",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "殿様",
+   "kana": "とのさま",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "特急",
+   "kana": "とっきゅう",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "眼鏡",
+   "kana": "めがね",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "石垣",
+   "kana": "いしがき",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "紅葉",
+   "kana": "こうよう",
+   "belief": null,
+   "pref": null,
+   "season": "autumn",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "近所",
+   "kana": "きんじょ",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "鉄道",
+   "kana": "てつどう",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "電車",
+   "kana": "でんしゃ",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "侍",
+   "kana": "さむらい",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "冬",
+   "kana": "ふゆ",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "城",
+   "kana": "しろ",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "夜",
+   "kana": "よる",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "春",
+   "kana": "はる",
+   "belief": null,
+   "pref": null,
+   "season": "spring",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "秋",
+   "kana": "あき",
+   "belief": null,
+   "pref": null,
+   "season": "autumn",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "雪",
+   "kana": "ゆき",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "駅",
+   "kana": "えき",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "猫",
+   "kana": "ねこ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "ネコ",
+   "kana": "ねこ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "写真",
+   "kana": "しゃしん",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "カメラ",
+   "kana": "かめら",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "音楽",
+   "kana": "おんがく",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "ライブ",
+   "kana": "らいぶ",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "フェス",
+   "kana": "ふぇす",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "温泉",
+   "kana": "おんせん",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "戦国",
+   "kana": "せんごく",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "神社",
+   "kana": "じんじゃ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "寺",
+   "kana": "てら",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "数字",
+   "kana": "すうじ",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "統計",
+   "kana": "とうけい",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "旅行",
+   "kana": "りょこう",
+   "belief": null,
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  }
+ ]
+}
