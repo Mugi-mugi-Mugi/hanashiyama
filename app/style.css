@@ -358,6 +358,8 @@ footer .credit { opacity: 0.75; }
   opacity: 0.95;
 }
 .chui .rights b { color: var(--gold); font-weight: bold; margin-right: 4px; }
+/* ★いま どの版を 見ているか。★上げ直したのに 変わらない = 前の版が 残っている */
+.chui .built2 { display: inline-block; margin-top: 6px; opacity: 0.8; letter-spacing: 0.04em; }
 
 /* 全国の園からの入口 */
 .kingrid { display: flex; flex-wrap: wrap; gap: 8px; }

@@ -270,6 +270,16 @@
   //   ブラウザは 既定で「前に 見ていた 高さ」に 戻すので、幕の 途中から 始まる
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
+  // ★データを いつ 作ったか。★幕の 中と ページの 足元、両方に 出す。
+  //   ★前は 幕を 開けた あとにしか 入らず、★TOP からは 見えなかった (2026-09-23 指摘)
+  function showBuilt() {
+    const s = "データ作成: " + root.HANASHI.builtAt;
+    const a = document.getElementById("built2");
+    if (a) a.textContent = s;
+    const b = document.getElementById("built");
+    if (b) b.textContent = " / " + s;
+  }
+
   // ==================================================================
   // 高座 (語りの進行)
   // ==================================================================
@@ -579,7 +589,6 @@
     // ★一覧から 選んだときに URL は 書き換えない。
     //   書き換えると ★リロード / F5 で その園に 貼り付いてしまう (2026-09-23 に 発覚)。
     //   ?kin= を 手で 打った人は entry() が 拾うので、入口としては 生きている。
-    $("built").textContent = " / データ作成: " + H.builtAt;
     greet();
   }
 
@@ -1316,6 +1325,8 @@
   });
   // ★「はじめから」は ★園の入口も 含めて まっさらに 戻す
   //   単に reload すると ?kin= が 残り、同じ園から 始まってしまう
+  showBuilt();
+
   $("restart").addEventListener("click", () => {
     // ★読み直しでも 入口へ 戻す。★そのままだと ブラウザが
     //   ★前に 見ていた 高さを 覚えていて、少し 下がった ところに 出る (2026-09-23)
