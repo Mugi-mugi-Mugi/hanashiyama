@@ -352,6 +352,13 @@ footer .credit { opacity: 0.75; }
 }
 .nerai b { color: var(--gold); }
 
+/* 幕の 権利表示。★CC BY は「表示」が 義務、MIT は 応募条件 (2026-09-23) */
+.chui .rights {
+  margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(201,162,74,0.35);
+  opacity: 0.95;
+}
+.chui .rights b { color: var(--gold); font-weight: bold; margin-right: 4px; }
+
 /* 全国の園からの入口 */
 .kingrid { display: flex; flex-wrap: wrap; gap: 8px; }
 .kingrid button {
