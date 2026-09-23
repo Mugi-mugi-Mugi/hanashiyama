@@ -356,7 +356,10 @@ footer .credit { opacity: 0.75; }
 .chui .rights {
   margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(201,162,74,0.35);
   opacity: 0.95;
+  /* ★注意書きの 一項目では なく ★まとまり。中点と ぶら下げを 外す */
+  padding-left: 0; text-indent: 0;
 }
+.chui .rights::before { content: none; }
 .chui .rights b { color: var(--gold); font-weight: bold; margin-right: 4px; }
 /* ★いま どの版を 見ているか。★上げ直したのに 変わらない = 前の版が 残っている */
 .chui .built2 { display: inline-block; margin-top: 6px; opacity: 0.8; letter-spacing: 0.04em; }

@@ -581,6 +581,10 @@
     $("maku").hidden = true;
     $("kin").hidden = true;
     $("koza").hidden = false;
+    // ★足元の 権利表示は 高座に 入ってから。
+    //   ★幕は それ自体が 画面いっぱいなので、下に 覗くと
+    //   ★幕の 注意書きと 同じことが 二度 並ぶ (2026-09-23 指摘)
+    $("foot").hidden = false;
     window.scrollTo(0, 0);
     const e = entry();
     state.input.date = e.date || Core.todayString();
