@@ -115,5 +115,34 @@ expect(C.figSvg({ items: [] }) === "", "項目が無ければ 何も描かない
 const zero = C.figSvg({ title: "t", unit: "人", items: [{ label: "雪の日", value: 0 }, { label: "連休", value: 4550 }] });
 expect(zero.includes("0人") && zero.includes("4,550人"), "0 の項目も 値が出る");
 
+
+// ---- もう一席が 前の席と 似ないこと (2026-09-23 スマホ確認で 指摘) ----------
+//   ★「似ている」= 出典の事実が 同じ / 立てた 思い込みが 同じ。
+//   ★これが 重なると、オチの型が 違っても 客には「さっきと同じ話」に 聞こえる。
+const simInput = { pref: "", beliefs: ["b_shinkansen"], date: "2026-09-23" };
+const s1 = C.choose(H, simInput, "b_shinkansen", [], []);
+expect(s1 && (s1.story.hooks.beliefs || []).includes("b_shinkansen"),
+       "新幹線の手がかり → 新幹線の噺 (" + (s1 && s1.story.id + " " + s1.story.title) + ")");
+const s2 = C.choose(H, simInput, "b_shinkansen", [s1.story.id], [s1.story.sage]);
+const shareF = s2 ? (s2.story.facts || []).filter((f) => (s1.story.facts || []).includes(f)) : [];
+const shareB = s2 ? ((s2.story.hooks || {}).beliefs || []).filter((b) => (s1.story.hooks.beliefs || []).includes(b)) : [];
+expect(s2 && !shareF.length, "二席目が 一席目と 出典を 共有しない (" + (s2 && s2.story.id) + " 共有 " + shareF.join(",") + ")");
+expect(s2 && !shareB.length, "二席目が 一席目と 思い込みを 共有しない (共有 " + shareB.join(",") + ")");
+expect(s2 && /似てまいります|持ち合わせ/.test(s2.switchNote || ""), "筋を 変えるときは つなぎを 言う");
+
+// ---- 客が 打った 手がかりが、一席目の固定より 優先されること ----------------
+//   ★前は「動物園」と 打っても TOP_FIRST が 勝ち、新幹線の噺が 出ていた
+const mz = C.match(H, "動物園");
+expect(mz.belief === "b_zoo_big", "「動物園」が 辞書に 当たる (" + mz.belief + ")");
+const z1 = C.choose(H, { pref: "", beliefs: [mz.belief], date: "2026-09-23" }, mz.belief, [], []);
+expect(z1 && (z1.story.hooks.beliefs || []).includes("b_zoo_big"),
+       "「動物園」→ 動物園の噺 (" + (z1 && z1.story.id + " " + z1.story.title) + ")");
+expect(z1 && ["S11", "S12", "S08"].indexOf(z1.story.id) < 0, "手がかりが あるとき 一席目の固定に 落ちない");
+
+// ---- 全席を ひと並びに できること (似ているかの 判定が これに 乗っている) ----
+expect(C.allStories(H).length === H.stories.length + H.prefStories.length +
+       Object.keys(H.today).reduce((n, k) => n + H.today[k].length, 0),
+       "allStories が 手書き + 県 + 今日 を すべて 返す (" + C.allStories(H).length + " 席)");
+
 console.log(fail ? "FAIL " + fail : "ALL OK");
 process.exit(fail ? 1 : 0);
