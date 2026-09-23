@@ -122,6 +122,24 @@ def m_yen_n(b):
     b["stories"][0]["card"]["big"] = "あ" + chr(92) + "nい"
 
 
+# ---- 外れの返しの 向き ----
+def m_dir(b):
+    """★答えが 真ん中の 問いで、向きのある 返しを 出しっぱなしに する。
+       ★実際に あった 壊れ方 (S08「19時/21時/23時/朝まで」正解 21時 に
+         「もう少し、粘るんでございます」)。★朝まで を 選んだ人には 逆に なる。"""
+    st = b["stories"][0]
+    st["question"] = {"text": "何時まででしょう。",
+                      "choices": ["19時", "日の暮れ", "23時", "25時"], "answer": 1}
+    st["reply"] = {"correct": "ご名答。", "wrong": "それが、もっと多いんで。"}
+    st.pop("fig", None)
+
+
+def m_dir_ok(b):
+    """★通り越した札に 別の返しを 用意すれば 通る"""
+    m_dir(b)
+    b["stories"][0]["reply"]["wrongEach"] = [None, None, "それが、その手前で。", "そこまでは。"]
+
+
 def m_ok(b):
     pass
 
@@ -139,6 +157,8 @@ run(m_ochi, "オチの型が 作法に無い語")
 run(m_invite, "誘い文句を 入れた")
 run(m_rejected, "語らないと決めた言い回しを 入れた")
 run(m_yen_n, "改行のつもりの 円記号 n を 文字として 書いた")
+run(m_dir, "外れの返しの 向きが 選んだ札と 逆")
+run(m_dir_ok, "通り越した札に 別の返しを 書けば 通る", want_ng=False)
 run(m_ok, "壊していない状態 (ここは通るのが正しい)", want_ng=False)
 
 print("FAIL %d 件" % len(fail) if fail else "ALL OK")

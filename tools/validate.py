@@ -324,6 +324,40 @@ def main():
         if q and not (0 <= q["answer"] < len(q["choices"])):
             errors.append(label + ": 問いの answer が選択肢の範囲外")
 
+        # ★外れの返しの「向き」が、選んだ札と 食い違っていないか (2026-09-23)
+        #   ★実際に あった 壊れ方:
+        #     「19時 / 21時 / 23時 / 朝まで」正解 21時 に 対して
+        #     外れの返しが「もう少し、粘るんでございます」―― ★朝まで を 選んだ人には 逆。
+        #   ★向きのある 返しは、答えより 大きい/小さい どちらか 片側にしか 合わない。
+        #   ★正解が 両端なら 向きは 一つに 決まるので 問題ない。
+        #   ★真ん中なら ★通り越した札に wrongEach で 別の返しを 用意すること。
+        if q and q.get("choices"):
+            vals, okv = [], []
+            for c in q["choices"]:
+                m = re.search(r"(\d+(?:\.\d+)?)\s*(万|千)?", c.replace(",", ""))
+                v = float(m.group(1)) * {"万": 10000.0, "千": 1000.0}.get(m.group(2) or "", 1.0) if m else None
+                vals.append(v)
+                if v is not None:
+                    okv.append(v)
+            ordered = len(okv) >= 3 and all(x < y for x, y in zip(okv, okv[1:]))
+            a_i = q["answer"]
+            if ordered and 0 < a_i < len(q["choices"]) - 1:
+                w = (st.get("reply") or {}).get("wrong") or ""
+                each = (st.get("reply") or {}).get("wrongEach") or []
+                UP = ["多", "粘", "偏", "方々", "上"]      # 答えは もっと上、と 言っている
+                DOWN = ["少", "手前", "前でして", "下"]     # 答えは もっと下、と 言っている
+                up, down = any(k in w for k in UP), any(k in w for k in DOWN)
+                bad = []
+                if up:
+                    bad += [j for j in range(a_i + 1, len(q["choices"]))]
+                if down:
+                    bad += [j for j in range(0, a_i)]
+                for j in sorted(set(bad)):
+                    if not (j < len(each) and isinstance(each[j], str) and each[j].strip()):
+                        errors.append("%s: 外れの返し「%s」が、選んだ札「%s」と 向きが 逆 "
+                                      "(reply.wrongEach[%d] を 書くこと)"
+                                      % (label, w, q["choices"][j], j))
+
     # 9. 画面に出る文字に、手元のファイルパスが混ざっていないか
     PATHS = re.compile(r"docs/|data/derived|data/raw|app/data|tools/|\.csv|\.md|\.py|\.xlsx")
     # ★改行のつもりで 「\\n」を 文字として 書いてしまう 事故 (通算 5 回) を 捕まえる

@@ -388,7 +388,10 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                 #   問いを「行き先の数」に振り、サゲで「送り出した側の構え」を明かす形にした。
                 question={"text": "この園から子を渡した先は、全国でいくつあるでしょう。",
                           "choices": ["3園", "10園", "29園", "100園"], "answer": 2},
-                reply={"correct": "よくご存じで。", "wrong": "それが、思いのほか方々へ。"},
+                # ★答えを 通り越した札には ★別の返し (2026-09-23)。
+                #   ★「思いのほか方々へ」は ★少なく見積もった人にしか 合わない。
+                reply={"correct": "よくご存じで。", "wrong": "それが、思いのほか方々へ。",
+                       "wrongEach": [None, None, None, "さすがに、そこまでは渡っておりません。"]},
                 sage=variant(pref + "s", [
                     pref + "へ送り出したのは、日本一小さいといわれる動物園。",
                     pref + "へレッサーパンダを送り出したのは、福井の小さな動物園。",
@@ -454,7 +457,9 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                 ]),
                 question={"text": "この帳面をたどりますと、鯖江の子が渡った先は、いくつの都道府県になるでしょう。",
                           "choices": ["3つほど", "15ほど", "30ほど", "47すべて"], "answer": 1},
-                reply={"correct": "よくご存じで。", "wrong": "それが、思いのほか方々へ。"},
+                reply={"correct": "よくご存じで。", "wrong": "それが、思いのほか方々へ。",
+                       "wrongEach": [None, None, "それが、そこまでは届いておりません。",
+                                     "さすがに、日本じゅうというわけには。"]},
                 sage=variant(pref + "s", [
                     "貸出か交換か譲渡か寄贈か、当の赤い子には、ただの引っ越しで。",
                     "書き分けたその四つ、渡った子にしてみれば、みな同じ引っ越しで。",
@@ -570,7 +575,8 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                 ],
                 question={"text": "その山のつつじは、いま何株あるでしょう。",
                           "choices": ["約5千株", "約2万株", "約5万株", "約50万株"], "answer": 2},
-                reply={"correct": "お見事。", "wrong": "もっと多いんで。"},
+                reply={"correct": "お見事。", "wrong": "もっと多いんで。",
+                       "wrongEach": [None, None, None, "さすがに、そこまでは咲きません。"]},
                 sage=variant(pref + "s", [
                     "あの5万株は、市長が出張先で見た、よその庭のまねでございます。",
                     "5万株の名所、はじまりは、よその庭を見た市長の思いつきで。",
@@ -679,7 +685,8 @@ def build_today(rows):
                 "bottom": "福井県鯖江市 西山動物園の飼育記録より",
             },
             "hooks": {"prefectures": [], "beliefs": ["b_panda_bw"]},
-            "reply": {"correct": "ご名答。", "wrong": "それが、もっと偏っておりまして。"},
+            "reply": {"correct": "ご名答。", "wrong": "それが、もっと偏っておりまして。",
+                      "wrongEach": [None, None, None, "さすがに、みな揃ってとは まいりません。"]},
             "facts": ["F24", "F16", "F08"],
             "evidence": [{"個体名": r["個体名"], "生年月日": r["生年月日"]} for r in rs]
                         + [{"件数": len(rs), "月": m, "日": d, "最古の年": oldest["生年月日"][:4]}],
@@ -834,7 +841,8 @@ def build_today(rows):
         "ochiType": "回収",
         "zekai": "合わせ",
         "tone": "滑稽",
-        "reply": {"correct": "ご名答。", "wrong": "それが、もっと偏っておりまして。"},
+        "reply": {"correct": "ご名答。", "wrong": "それが、もっと偏っておりまして。",
+                      "wrongEach": [None, None, None, "さすがに、みな揃ってとは まいりません。"]},
         "title": "双子の一般公開",
         "onlyYear": 2026,
         "strength": 4,
