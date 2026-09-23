@@ -172,6 +172,9 @@ body {
   border-radius: 4px;
   border: 1px solid var(--ink);
   background: #fff;
+  /* ★字の色を 決め打つ。★指定が 無いと 端末の 既定に 任せることに なり、
+     ★背景と 同じ色に なって「枠だけ 見える」ことが ありうる (2026-09-23) */
+  color: var(--ink);
   cursor: pointer;
 }
 .btn.primary { background: var(--vermilion); border-color: var(--vermilion); color: #fff; }
@@ -231,14 +234,20 @@ footer .credit { opacity: 0.75; }
 }
 
 /* 自由入力 */
-.freeform { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+/* ★打ち込み口は 1 行 まるごと、ボタンは その 下の行 (2026-09-23)。
+   ★横に 並べると 幅が 足りないとき ★ボタンが 縮められ、枠だけ 残って
+   ★中の字が 消えた (スマホで「言ってみる」が 出ない、として 見つかった)。
+   ★縮みようの ない 組み方に して、原因を 断つ。 */
+.freeform { display: block; width: 100%; flex: 1 1 100%; }
 .freeform input {
-  font-family: var(--sans); font-size: 1rem; padding: 9px 12px;
-  border: 1px solid #b9ab96; border-radius: 4px; min-width: 14em; flex: 1 1 14em;
+  font-family: var(--sans);
+  /* ★16px より 小さいと iPhone が 勝手に 拡大する */
+  font-size: 16px;
+  padding: 11px 12px; border: 1px solid #b9ab96; border-radius: 4px;
+  display: block; width: 100%; box-sizing: border-box; margin: 0 0 10px;
 }
-/* ★ボタンは 縮ませない。★縮むと 中の字だけが 消え、枠だけが 残る
-   (2026-09-23 スマホで「言ってみる」の 字が 出ない、として 見つかった) */
-.freeform .btn { flex: 0 0 auto; white-space: nowrap; }
+.freebtn { display: flex; gap: 10px; }
+.freebtn .btn { flex: 1 1 auto; white-space: nowrap; }
 
 /* ---------- 数字の絵図 (本題) ---------- */
 .figure {

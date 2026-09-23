@@ -691,7 +691,13 @@
       skip.type = "button";
       skip.className = "btn choice";
       skip.textContent = "とくに無い";
-      form.append(input, ok, skip);
+      // ★ボタンは 打ち込み口と ★別の行に 分ける (2026-09-23)。
+      //   ★同じ行に 置くと、幅が 足りないとき ★ボタンが 縮められ、
+      //   ★枠だけ 残って 中の字が 消える。★縮みようの ない 組み方に する。
+      const row = document.createElement("div");
+      row.className = "freebtn";
+      row.append(ok, skip);
+      form.append(input, row);
       box.appendChild(form);
       // ★スマホでは 触れて 初めて 文字盤を 出す。
       //   先に 出すと 文字盤が 下半分を 覆い、下の ボタンが 隠れる (2026-09-23)
@@ -742,8 +748,10 @@
             state.input.beliefs.push(b.id);
             say("でしょうな。では、その話を一席。", "shi", () => begin(b.id));
           } else if (state.asked.length >= 3) {
+            (state.denied = state.denied || []).push(b.id);
             say("手強いお客さんだ。では、今日という日で一席。", "shi", begin);
           } else {
+            (state.denied = state.denied || []).push(b.id);
             say("さようで。", "shi", askBelief);
           }
         }
@@ -771,6 +779,26 @@
     //   ★客が「動物園」と 言ったのに 新幹線の噺を 出しては いけない (2026-09-23 指摘)。
     //   ★昨年と 似て見えるのを 避けるのが 目的なので、★客が 自分で 言った ときは 外す。
     if (!state.kin && state.count === 0 && !preferBelief && !state.gaveHandle) {
+      // ★県を いただいていたら ★その県の 手書きの噺から 始める。
+      //   ★README の 決まり 1「あなたの県から 始める」。
+      //   ★TOP_FIRST が これを 押しのけていて、★県の噺が 一度も 出ていなかった
+      //     (2026-09-23 指摘「あなたの県からの始まりが 一度も 当たりません」)。
+      //   ★自動生成の 県の噺 (prefStories) は レッサーパンダ題材なので ここでは 使わない
+      //     —— ★§11 の「既定で 動物の噺から 始めない」は 残す。
+      //   ★否定された 思い込みの 噺は 外す。★「そうは思わない」と 言われた ものを
+      //     ひっくり返しても、客の 中では もう 立っていない。
+      const denied = state.denied || [];
+      const mine = state.input.pref
+        ? H.stories
+            .filter((s) => (s.hooks.prefectures || []).includes(state.input.pref))
+            .filter((s) => !state.shown.has(s.id))
+            .filter((s) => !(s.hooks.beliefs || []).some((b) => denied.includes(b)))
+            .sort((a, b) => (b.strength || 1) - (a.strength || 1))
+        : [];
+      if (mine.length) {
+        state.chosenBy = "pref";
+        return tell(mine[0]);
+      }
       const pick = TOP_FIRST
         .map((id) => H.stories.find((x) => x.id === id))
         .filter((x) => x && !state.shown.has(x.id));
