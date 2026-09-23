@@ -904,7 +904,13 @@
               const ok = j === st.question.answer;
               state.lastCorrect = ok;
               log(ok ? "answer_correct" : "answer_wrong", st);
-              const r = (st.reply && (ok ? st.reply.correct : st.reply.wrong)) || (ok ? "ご名答。" : "それが、違うんで。");
+              // ★外れの 返しは ★選んだ札ごとに 変えられる (2026-09-23)。
+              //   ★「もっと多いんで」は ★答えより 小さい札を 選んだ人にしか 合わない。
+              //   ★答えを 通り越した人に 言うと ★逆のことを 言うことに なる。
+              //   ★wrongEach[選んだ番号] が あれば そちら。無ければ これまで通り wrong。
+              const rep = st.reply || {};
+              const each = rep.wrongEach && rep.wrongEach[j];
+              const r = (ok ? rep.correct : (each || rep.wrong)) || (ok ? "ご名答。" : "それが、違うんで。");
               // ★オチの 直前に 空白を 置く (法則2: 笑いを 一度 切ってから 落とす)
               const toSage = () => say("さて、ここからがオチでございます。", "shi",
                                        () => blank(sage));
