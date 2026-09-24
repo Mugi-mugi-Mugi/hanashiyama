@@ -145,6 +145,34 @@ def story_texts(st, include_wrong_choices=False):
     return parts
 
 
+# ★画面に出る文字のうち、台本では なく app.js に 直接 書いてある もの。
+#   ★これまで どの検査も 見ていなかった。実際に「……」が 1 本 紛れていた (2026-09-24 発見)。
+#   ★語りの 一部として 読まれるので、台本と 同じ 作法が かかる。
+#   ★数字の 検査は かけない (「3 択」「1,000人」など 画面の 案内に 要るため)。
+_JP_LITERAL = re.compile(r'"([^"\
+]*[぀-ヿ一-鿿][^"\
+]*)"')
+_APP_PATHS = re.compile(r"docs/|data/derived|data/raw|app/data|tools/|\.csv|\.md|\.py|\.xlsx")
+
+
+def check_app_text(src, rejected):
+    """app.js の 日本語の 文字列を、台本と 同じ 作法で 見る。→ (errors, 見た本数)"""
+    out = []
+    lines = [s for s in _JP_LITERAL.findall(src) if len(s) >= 6]
+    for s in lines:
+        if "……" in s:
+            out.append("app.js の文言: 「……」を使っている → 「%s」" % s[:40])
+        for w in INVITE_WORDS:
+            if w in s:
+                out.append("app.js の文言: 誘い文句「%s」→ 「%s」" % (w, s[:40]))
+        for r in rejected:
+            if r in s:
+                out.append("app.js の文言: 不採用の言い回し「%s」→ 「%s」" % (r, s[:40]))
+        if _APP_PATHS.search(s):
+            out.append("app.js の文言: 手元のパスらしきもの → 「%s」" % s[:40])
+    return out, len(lines)
+
+
 def main():
     b = load_bundle()
     errors, warns = [], []
@@ -251,8 +279,21 @@ def main():
             if not re.match(r"(噂|うわさ|一説|もっとも|聞くところ|なんでも|ところが|これは)", uw):
                 errors.append("%s: 噂の一言に前置きが無い → 「%s」" % (label, uw[:30]))
 
+        # ★実行時に 画面へ 足されるもの (app.js Core.sageExtra) を 勘定に 入れる。
+        #   ★サゲの うしろに「(没後N年)」が 付く。★N は その場で 引き算して 作る 数。
+        #   ★台本には 書かれていないので、これまで どの検査も 見ていなかった。
+        #   ★引き算の 元に なる 年が 参照事実に 無ければ、出どころの 無い 数に なる。
+        ys = st.get("yearsSince")
+        runtime_extra = ""
+        if ys:
+            if str(ys) not in allowed:
+                errors.append("%s: yearsSince %s の 元に なる 年が 参照事実に 無い "
+                              "(実行時に「没後N年」を 作れない)" % (label, ys))
+            runtime_extra = "(没後0年)"      # ★値は 日によって 変わる。★1 粒として 数える
+
         # V1 (禁3 / 法則13): 本文に出す数字は 2 粒まで。残りは出典カードへ
-        body = " ".join([st.get("furi", ""), st.get("makura", "")] + hondai_lines(st) + [st.get("sage", "")])
+        body = " ".join([st.get("furi", ""), st.get("makura", "")] + hondai_lines(st) +
+                        [st.get("sage", "") + runtime_extra])
         if len(num_values(body)) > 2:
             errors.append("%s: 本文の数字が %d 粒 (2 粒まで。残りは出典へ) → %s"
                           % (label, len(num_values(body)), num_values(body)[:6]))
@@ -384,8 +425,29 @@ def main():
 
     walk(b, "bundle")
 
+    # 11. ★CREDITS.md に 事実の 出典が 全部 載っているか (★公開される 文書)
+    #   ★CREDITS は「出典は 一件ずつ 書いています」と 言い切っている。
+    #   ★2026-09-24 に 38 本中 21 本が 抜けていた。手で 書き写す 作りだったため。
+    #   → ★いまは tools/build_credits.py が facts.json から 作る。ここは その 見張り。
+    with open(os.path.join(ROOT, "CREDITS.md"), encoding="utf-8") as _f:
+        credits = _f.read()
+    fact_urls = sorted(set(f.get("url", "") for f in b["facts"] if f.get("url")))
+    missing_url = [u for u in fact_urls if u.split("?")[0] not in credits]
+    for u in missing_url:
+        errors.append("CREDITS.md に 事実の出典が 無い → %s "
+                      "(python tools/build_credits.py で 直る)" % u[:70])
+
+    # 10. ★画面に出る文字のうち、台本では なく ★app.js に 直接 書いてある もの
+    with open(os.path.join(ROOT, "app", "app.js"), encoding="utf-8") as _f:
+        appsrc = _f.read()
+    app_errors, n_app = check_app_text(appsrc, rejected)
+    errors += app_errors
+
     print("検査した語り: %d 件 / 検査した数字: %d 個 / 事実: %d 件 / 画面に出る文字 %d 本"
           % (len(all_items), checked_numbers, len(facts), n_str))
+    print("app.js に 直接 書いてある 文言: %d 本 も 同じ作法で 見た" % n_app)
+    print("CREDITS.md と 突き合わせた 出典の URL: %d 本 (足りないもの %d 本)"
+          % (len(fact_urls), len(missing_url)))
     for w in warns:
         print("  注意:", w)
     if errors:

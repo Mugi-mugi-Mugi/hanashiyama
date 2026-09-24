@@ -21,6 +21,8 @@ import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import validate                      # ★app.js の文言の検査を 直に 呼ぶ
 BUNDLE = os.path.join(ROOT, "app", "data", "bundle.js")
 fail = []
 
@@ -160,6 +162,22 @@ run(m_yen_n, "改行のつもりの 円記号 n を 文字として 書いた")
 run(m_dir, "外れの返しの 向きが 選んだ札と 逆")
 run(m_dir_ok, "通り越した札に 別の返しを 書けば 通る", want_ng=False)
 run(m_ok, "壊していない状態 (ここは通るのが正しい)", want_ng=False)
+
+
+# ---- app.js に 直接 書いてある 文言 (台本では ない = 台帳を 壊しても 試せない) ----
+#   ★実際に「……」が 1 本 紛れていた。★台本の検査だけでは 届かない ことの 試験。
+for _bad, _why in [("えー、ぜひ お越しください。", "誘い文句"),
+                   ("さようで。……それはそれは。", "「……」"),
+                   ("docs/参考 を ご覧ください。", "手元のパス")]:
+    _e, _n = validate.check_app_text('const a = "' + _bad + '";', ["日本で最も古い公園"])
+    _ok = bool(_e)
+    print(("  OK   " if _ok else "  NG   ") + "app.js の文言の " + _why + " を 捕まえる")
+    if not _ok:
+        fail.append("app.js " + _why)
+_e, _n = validate.check_app_text('const a = "ふつうの 文言でございます。";', [])
+print(("  OK   " if not _e else "  NG   ") + "app.js の まともな文言は 通る")
+if _e:
+    fail.append("app.js 正常系")
 
 print("FAIL %d 件" % len(fail) if fail else "ALL OK")
 sys.exit(1 if fail else 0)
