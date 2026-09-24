@@ -732,7 +732,9 @@
         if (m.pref && !state.input.pref) state.input.pref = m.pref;
         if (m.belief) {
           if (!state.input.beliefs.includes(m.belief)) state.input.beliefs.push(m.belief);
-          return say("ほう、" + m.hits[0].word + "。よろしゅうございます。", "shi", () => begin(m.belief));
+          // ★語と 噺の あいだに ★一言 挟む。★無いと「静か」→ 石像の噺 が 唐突に なる
+          return say("ほう、" + m.hits[0].word + "。それでしたら、こんな話がございます。", "shi",
+                     () => begin(m.belief));
         }
         say("ほう、" + m.hits[0].word + "。", "shi", () => begin(null));
       };
@@ -759,10 +761,12 @@
         (yes) => {
           if (yes) {
             state.input.beliefs.push(b.id);
-            say("でしょうな。では、その話を一席。", "shi", () => begin(b.id));
+            // ★噺の 入り (bridge) が「では、…」で 始まるので、ここでは 言わない
+            say("でしょうな。みなさん、そうおっしゃいます。", "shi", () => begin(b.id));
           } else if (state.asked.length >= 3) {
             (state.denied = state.denied || []).push(b.id);
-            say("手強いお客さんだ。では、今日という日で一席。", "shi", begin);
+            // ★ここで 出るのは TOP_FIRST (観光地の噺)。★「今日という日」と 言うと 嘘に なる
+            say("手強いお客さんだ。では、こちらで見繕いまして、一席。", "shi", begin);
           } else {
             (state.denied = state.denied || []).push(b.id);
             say("さようで。", "shi", askBelief);
@@ -1039,7 +1043,7 @@
         say("ここからは、その子らが 生まれた 山の話を ひとつ。", "shi", () => begin(last))
       );
     }
-    say("では、次のお客さんの話を、もう一席。", "shi", () => begin(last));
+    say("さて、次のお客さんの話を、もう一席。", "shi", () => begin(last));
   }
 
   // ---- 全国の園からの入口 (?kin=<slug>) ----------------------------------
