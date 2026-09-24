@@ -5,7 +5,7 @@
 
 ## どんなアプリか
 
-西山公園に住む語り手「はなし山」が、あなたに効く**オチ**を探して一席語ります。
+道の駅西山公園のレジに立つ語り手「はなし山」が、あなたに効く**オチ**を探して一席語ります。
 
 はなし山には、3 つの決まりがあります。
 
@@ -35,7 +35,7 @@
 | 声色の使い分け | 噺家は左、客の答えは右の吹き出し |
 | 客席の反応 | 4 択の問いと、前後で訊く「行ってみたい気持ち」 |
 
-噺の途中の写真と札の写真は埋め込み済みの data URI (計 33 枚)、絵図はその場で組む SVG です。
+噺の途中の写真と札の写真は埋め込み済みの data URI (計 63 枚 = 場面 49 / 札 14)、絵図はその場で組む SVG です。
 **外部への通信はどれもありません。**
 `app/scenes_preview.html` を開くと、写真を一覧で確かめられます (開発用)。
 
@@ -79,7 +79,7 @@ python tools/check_graph.py  # つじつまの検査
 node  tools/test_pick.js      # 噺の選び方・絵図の描画のテスト
 node  tools/test_flow.js      # 幕から札まで通しで動くかの煙試験 (最小の DOM で)
 python tools/test_figs.py    # 絵図が問いの答えを先に見せていないかのテスト
-python tools/test_validate.py # 検査がわざと壊したものを捕まえるか (陰性テスト 13 本)
+python tools/test_validate.py # 検査がわざと壊したものを捕まえるか (陰性テスト 20 本)
 python tools/make_release.py --check  # 公開に入れるもの / 入れないものを一覧する
 python tools/measure_gap.py  # オチのズレの大きさを共起ネットワークの上で測る
 python tools/test_log_summary.py  # 記録の集計が落ちないかのテスト
