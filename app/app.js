@@ -728,7 +728,7 @@
         state.gaveHandle = m.hits.length > 0;
         // ★記録に 生の入力を 長く残さない (辞書を育てるのに要る ぶんだけ)
         log("free", null, { text: (text || "").slice(0, 30), hit: m.hits.map((h) => h.word).slice(0, 5) });
-        if (!m.hits.length) return say(text ? "ほう、" + text + "。……それにちなんだ噺は、まだ持っておりません。こちらから伺います。" : "さようで。では、こちらから伺います。", "shi", askBelief);
+        if (!m.hits.length) return say(text ? "ほう、" + text + "。それにちなんだ噺は、まだ持っておりませんで。こちらから伺います。" : "さようで。では、こちらから伺います。", "shi", askBelief);
         if (m.pref && !state.input.pref) state.input.pref = m.pref;
         if (m.belief) {
           if (!state.input.beliefs.includes(m.belief)) state.input.beliefs.push(m.belief);
