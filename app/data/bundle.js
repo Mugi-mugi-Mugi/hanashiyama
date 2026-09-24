@@ -1,6 +1,6 @@
 /* 自動生成: python tools/build.py  (手で編集しない) */
 window.HANASHI = {
- "builtAt": "2026-09-24 22:04",
+ "builtAt": "2026-09-24 22:34",
  "prefectures": [
   "北海道",
   "青森県",
@@ -260,6 +260,24 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "ゴールデンウィーク",
+   "kana": "ごーるでんうぃーく",
+   "belief": null,
+   "pref": null,
+   "season": "early-summer",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "ジャイアントパンダ",
+   "kana": "じゃいあんとぱんだ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
    "word": "ネオパークオキナワ",
    "kana": "ねおぱーくおきなわ",
    "belief": "b_zoo_big",
@@ -348,6 +366,33 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "むかしのいきもの",
+   "kana": "むかしのいきもの",
+   "belief": "b_dino_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "イルミネーション",
+   "kana": "いるみねーしょん",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "バルーンフェスタ",
+   "kana": "ばるーんふぇすた",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "九十九島動植物園",
@@ -476,6 +521,15 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "ひたち海浜公園",
+   "kana": "ひたちかいひんこうえん",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "ひらかたパーク",
    "kana": "ひらかたぱーく",
    "belief": "b_zoo_big",
@@ -494,6 +548,24 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "アルペンルート",
+   "kana": "あるぺんるーと",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "サファリパーク",
+   "kana": "さふぁりぱーく",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "シャボテン公園",
    "kana": "しゃぼてんこうえん",
    "belief": "b_zoo_big",
@@ -501,6 +573,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "レッサーパンダ",
+   "kana": "れっさーぱんだ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
   },
   {
    "word": "八木山動物公園",
@@ -593,6 +674,60 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "かやぶきの里",
+   "kana": "かやぶきのさと",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "しまなみ海道",
+   "kana": "しまなみかいどう",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "オフシーズン",
+   "kana": "おふしーずん",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "スカイツリー",
+   "kana": "すかいつりー",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "スノーボード",
+   "kana": "すのーぼーど",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "チャンプルー",
+   "kana": "ちゃんぷるー",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "バナナワニ園",
    "kana": "ばななわにえん",
    "belief": "b_zoo_big",
@@ -602,6 +737,24 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "ライトアップ",
+   "kana": "らいとあっぷ",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ライブカメラ",
+   "kana": "らいぶかめら",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "京都市動物園",
    "kana": "きょうとしどうぶつえん",
    "belief": "b_zoo_big",
@@ -609,6 +762,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "倉敷美観地区",
+   "kana": "くらしきびかんちく",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "到津の森公園",
@@ -674,6 +836,15 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "日本アルプス",
+   "kana": "にほんあるぷす",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "日本平動物園",
    "kana": "にほんだいらどうぶつえん",
    "belief": "b_zoo_big",
@@ -710,6 +881,15 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "熊本ラーメン",
+   "kana": "くまもとらーめん",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "福岡市動物園",
    "kana": "ふくおかしどうぶつえん",
    "belief": "b_zoo_big",
@@ -726,6 +906,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "西都原古墳群",
+   "kana": "さいとばるこふんぐん",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "野毛山動物園",
@@ -746,6 +935,33 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "おんせん県",
+   "kana": "おんせんけん",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "お好み焼き",
+   "kana": "おこのみやき",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "きりたんぽ",
+   "kana": "きりたんぽ",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "さいたま市",
    "kana": "さいたまし",
    "belief": null,
@@ -753,6 +969,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "さくらんぼ",
+   "kana": "さくらんぼ",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "とべ動物園",
@@ -764,6 +989,69 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "どうぶつ園",
+   "kana": "どうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "ひまつぶし",
+   "kana": "ひまつぶし",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ものづくり",
+   "kana": "ものづくり",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "クリスマス",
+   "kana": "くりすます",
+   "belief": null,
+   "pref": null,
+   "season": "winter",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "グラウンド",
+   "kana": "ぐらうんど",
+   "belief": "b_gov_atonce",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "コンサート",
+   "kana": "こんさーと",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "サングラス",
+   "kana": "さんぐらす",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "ズーラシア",
    "kana": "ずーらしあ",
    "belief": "b_zoo_big",
@@ -771,6 +1059,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "ピクニック",
+   "kana": "ぴくにっく",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "ラフランス",
+   "kana": "らふらんす",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "上野動物園",
@@ -782,6 +1088,51 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "二十世紀梨",
+   "kana": "にじっせいきなし",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "仁淀ブルー",
+   "kana": "によどぶるー",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "今治タオル",
+   "kana": "いまばりたおる",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊根の舟屋",
+   "kana": "いねのふなや",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊香保温泉",
+   "kana": "いかほおんせん",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "円山動物園",
    "kana": "まるやまどうぶつえん",
    "belief": "b_zoo_big",
@@ -789,6 +1140,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "古い町並み",
+   "kana": "ふるいまちなみ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "唐津くんち",
+   "kana": "からつくんち",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "多摩動物園",
@@ -809,6 +1178,24 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "安政の大獄",
+   "kana": "あんせいのたいごく",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "富岡製糸場",
+   "kana": "とみおかせいしじょう",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "徳山動物園",
    "kana": "とくやまどうぶつえん",
    "belief": "b_zoo_big",
@@ -818,6 +1205,15 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "恐竜博物館",
+   "kana": "きょうりゅうはくぶつかん",
+   "belief": "b_dino_only",
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "旭山動物園",
    "kana": "あさひやまどうぶつえん",
    "belief": "b_zoo_big",
@@ -825,6 +1221,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "東京タワー",
+   "kana": "とうきょうたわー",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "東山動物園",
@@ -854,6 +1259,24 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "琉球ガラス",
+   "kana": "りゅうきゅうがらす",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "白米千枚田",
+   "kana": "しろよねせんまいだ",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "西山動物園",
    "kana": "にしやまどうぶつえん",
    "belief": "b_zoo_big",
@@ -861,6 +1284,33 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "讃岐うどん",
+   "kana": "さぬきうどん",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "郡上おどり",
+   "kana": "ぐじょうおどり",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "金刀比羅宮",
+   "kana": "ことひらぐう",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "釧路動物園",
@@ -872,6 +1322,78 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "阿波おどり",
+   "kana": "あわおどり",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "鳴門の渦潮",
+   "kana": "なるとのうずしお",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "あじさい",
+   "kana": "あじさい",
+   "belief": "b_one_flower",
+   "pref": null,
+   "season": "夏",
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "いつもの",
+   "kana": "いつもの",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "いつ行く",
+   "kana": "いつゆく",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "かわいい",
+   "kana": "かわいい",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "こんぴら",
+   "kana": "こんぴら",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "すべり台",
+   "kana": "すべりだい",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "ぞうの国",
    "kana": "ぞうのくに",
    "belief": "b_zoo_big",
@@ -879,6 +1401,42 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "たくさん",
+   "kana": "たくさん",
+   "belief": "b_flower_many",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ちいさな",
+   "kana": "ちいさな",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "なまはげ",
+   "kana": "なまはげ",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "のんびり",
+   "kana": "のんびり",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "ひらパー",
@@ -890,6 +1448,141 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "ふれあい",
+   "kana": "ふれあい",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ぶらぶら",
+   "kana": "ぶらぶら",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ます寿司",
+   "kana": "ますずし",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "まちなみ",
+   "kana": "まちなみ",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "もふもふ",
+   "kana": "もふもふ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "やちむん",
+   "kana": "やちむん",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "アクセス",
+   "kana": "あくせす",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "サンゴ礁",
+   "kana": "さんごしょう",
+   "belief": null,
+   "pref": "沖縄県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ドライブ",
+   "kana": "どらいぶ",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "マンゴー",
+   "kana": "まんごー",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "下呂温泉",
+   "kana": "げろおんせん",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "九十九島",
+   "kana": "くじゅうくしま",
+   "belief": null,
+   "pref": "長崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊万里焼",
+   "kana": "いまりやき",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊勢神宮",
+   "kana": "いせじんぐう",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊達政宗",
+   "kana": "だてまさむね",
+   "belief": null,
+   "pref": "宮城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "会津若松",
    "kana": "あいづわかまつ",
    "belief": null,
@@ -899,6 +1592,42 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "信州そば",
+   "kana": "しんしゅうそば",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "八丁味噌",
+   "kana": "はっちょうみそ",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "出羽三山",
+   "kana": "でわさんざん",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "出雲大社",
+   "kana": "いずもたいしゃ",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "到津の森",
    "kana": "いとうづのもり",
    "belief": "b_zoo_big",
@@ -906,6 +1635,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "十和田湖",
+   "kana": "とわだこ",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "厳島神社",
+   "kana": "いつくしまじんじゃ",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "吉田松陰",
@@ -926,12 +1673,30 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "四万十川",
+   "kana": "しまんとがわ",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "坂本龍馬",
    "kana": "さかもとりょうま",
    "belief": "b_bakumatsu",
    "pref": "高知県",
    "season": null,
    "weight": 3,
+   "src": "general"
+  },
+  {
+   "word": "城めぐり",
+   "kana": "しろめぐり",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
    "src": "general"
   },
   {
@@ -942,6 +1707,96 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "奈良公園",
+   "kana": "ならこうえん",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "宮崎地鶏",
+   "kana": "みやざきじどり",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "小田原城",
+   "kana": "おだわらじょう",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "岐阜提灯",
+   "kana": "ぎふぢょうちん",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "日本庭園",
+   "kana": "にほんていえん",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "明治維新",
+   "kana": "めいじいしん",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "昔ながら",
+   "kana": "むかしながら",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "有馬温泉",
+   "kana": "ありまおんせん",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "松葉がに",
+   "kana": "まつばがに",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "栗林公園",
+   "kana": "りつりんこうえん",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "桐生が岡",
@@ -962,6 +1817,60 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "武田信玄",
+   "kana": "たけだしんげん",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "混んでる",
+   "kana": "こんでる",
+   "belief": "b_holiday_open",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "濃溝の滝",
+   "kana": "のうみぞのたき",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "熊野古道",
+   "kana": "くまのこどう",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "生きもの",
+   "kana": "いきもの",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "石見銀山",
+   "kana": "いわみぎんざん",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "神奈川県",
    "kana": "かながわけん",
    "belief": null,
@@ -969,6 +1878,33 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "草津温泉",
+   "kana": "くさつおんせん",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "袋田の滝",
+   "kana": "ふくろだのたき",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "越前がに",
+   "kana": "えちぜんがに",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "遊亀公園",
@@ -980,6 +1916,33 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "道後温泉",
+   "kana": "どうごおんせん",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "雪の大谷",
+   "kana": "ゆきのおおたに",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "鳥取砂丘",
+   "kana": "とっとりさきゅう",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "鹿児島県",
    "kana": "かごしまけん",
    "belief": null,
@@ -987,6 +1950,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "黒川温泉",
+   "kana": "くろかわおんせん",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "いわき",
@@ -998,6 +1970,51 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "うどん",
+   "kana": "うどん",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "こけし",
+   "kana": "こけし",
+   "belief": null,
+   "pref": "群馬県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "こども",
+   "kana": "こども",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "こわい",
+   "kana": "こわい",
+   "belief": "b_dino_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ご近所",
+   "kana": "ごきんじょ",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "つくば",
    "kana": "つくば",
    "belief": null,
@@ -1005,6 +2022,195 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "つつじ",
+   "kana": "つつじ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "early-summer",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ねぶた",
+   "kana": "ねぶた",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ふつう",
+   "kana": "ふつう",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "まぐろ",
+   "kana": "まぐろ",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "みかん",
+   "kana": "みかん",
+   "belief": null,
+   "pref": "愛媛県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "めがね",
+   "kana": "めがね",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "もみじ",
+   "kana": "もみじ",
+   "belief": null,
+   "pref": null,
+   "season": "autumn",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "りんご",
+   "kana": "りんご",
+   "belief": null,
+   "pref": "青森県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "イルミ",
+   "kana": "いるみ",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "カツオ",
+   "kana": "かつお",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "カメラ",
+   "kana": "かめら",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "コキア",
+   "kana": "こきあ",
+   "belief": null,
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "スキー",
+   "kana": "すきー",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "スノボ",
+   "kana": "すのぼ",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ツツジ",
+   "kana": "つつじ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "early-summer",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "ネット",
+   "kana": "ねっと",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "パンダ",
+   "kana": "ぱんだ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "フェス",
+   "kana": "ふぇす",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "ベンチ",
+   "kana": "べんち",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ライブ",
+   "kana": "らいぶ",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "ワイン",
+   "kana": "わいん",
+   "belief": null,
+   "pref": "山梨県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "三重県",
@@ -1016,6 +2222,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "上高地",
+   "kana": "かみこうち",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "中尊寺",
+   "kana": "ちゅうそんじ",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "久留米",
    "kana": "くるめ",
    "belief": null,
@@ -1023,6 +2247,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "五箇山",
+   "kana": "ごかやま",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "京都府",
@@ -1052,6 +2285,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "佐渡島",
+   "kana": "さどがしま",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "佐賀県",
    "kana": "さがけん",
    "belief": null,
@@ -1059,6 +2301,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "信楽焼",
+   "kana": "しがらきやき",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "偕楽園",
+   "kana": "かいらくえん",
+   "belief": "b_old_famous",
+   "pref": "茨城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "八景島",
@@ -1088,6 +2348,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "兼六園",
+   "kana": "けんろくえん",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "動物園",
+   "kana": "どうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "北九州",
    "kana": "きたきゅうしゅう",
    "belief": null,
@@ -1115,6 +2393,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "千里浜",
+   "kana": "ちりはま",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "博多織",
+   "kana": "はかたおり",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "名古屋",
    "kana": "なごや",
    "belief": null,
@@ -1133,6 +2429,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "善光寺",
+   "kana": "ぜんこうじ",
+   "belief": null,
+   "pref": "長野県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "四万十",
+   "kana": "しまんと",
+   "belief": null,
+   "pref": "高知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "四日市",
    "kana": "よっかいち",
    "belief": null,
@@ -1140,6 +2454,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "城下町",
+   "kana": "じょうかまち",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "城巡り",
+   "kana": "しろめぐり",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
   },
   {
    "word": "埼玉県",
@@ -1169,6 +2501,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "天守閣",
+   "kana": "てんしゅかく",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "天橋立",
+   "kana": "あまのはしだて",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "天王寺",
    "kana": "てんのうじ",
    "belief": "b_zoo_big",
@@ -1176,6 +2526,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "太宰府",
+   "kana": "だざいふ",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "奈良県",
@@ -1196,6 +2555,24 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "子ども",
+   "kana": "こども",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "子連れ",
+   "kana": "こづれ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "宇和島",
    "kana": "うわじま",
    "belief": null,
@@ -1205,6 +2582,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "宇治茶",
+   "kana": "うじちゃ",
+   "belief": null,
+   "pref": "京都府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "宇都宮",
    "kana": "うつのみや",
    "belief": null,
@@ -1212,6 +2598,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "宍道湖",
+   "kana": "しんじこ",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "宮古島",
@@ -1248,6 +2643,33 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "小さい",
+   "kana": "ちいさい",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "小豆島",
+   "kana": "しょうどしま",
+   "belief": null,
+   "pref": "香川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "展望台",
+   "kana": "てんぼうだい",
+   "belief": "b_monument_lasts",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "山口県",
@@ -1313,6 +2735,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "帰り道",
+   "kana": "かえりみち",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "広島県",
    "kana": "ひろしまけん",
    "belief": null,
@@ -1349,6 +2780,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "放生会",
+   "kana": "ほうじょうや",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "新幹線",
+   "kana": "しんかんせん",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
    "word": "新潟県",
    "kana": "にいがたけん",
    "belief": null,
@@ -1367,6 +2816,24 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "明治村",
+   "kana": "めいじむら",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "有田焼",
+   "kana": "ありたやき",
+   "belief": null,
+   "pref": "佐賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "東京都",
    "kana": "とうきょうと",
    "belief": null,
@@ -1376,6 +2843,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "東大寺",
+   "kana": "とうだいじ",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "東尋坊",
+   "kana": "とうじんぼう",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "松阪牛",
+   "kana": "まつさかうし",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "栃木県",
    "kana": "とちぎけん",
    "belief": null,
@@ -1383,6 +2877,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "桃太郎",
+   "kana": "ももたろう",
+   "belief": null,
+   "pref": "岡山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "楽寿園",
@@ -1403,6 +2906,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "水族館",
+   "kana": "すいぞくかん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "永平寺",
+   "kana": "えいへいじ",
+   "belief": null,
+   "pref": "福井県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "江の島",
+   "kana": "えのしま",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "沖縄県",
    "kana": "おきなわけん",
    "belief": null,
@@ -1410,6 +2940,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "浜名湖",
+   "kana": "はまなこ",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "淡路島",
+   "kana": "あわじしま",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "湯布院",
@@ -1430,6 +2978,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "瀬戸内",
+   "kana": "せとうち",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "熊本県",
    "kana": "くまもとけん",
    "belief": null,
@@ -1439,6 +2996,42 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "犬山城",
+   "kana": "いぬやまじょう",
+   "belief": null,
+   "pref": "愛知県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "狭山茶",
+   "kana": "さやまちゃ",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "玄武洞",
+   "kana": "げんぶどう",
+   "belief": null,
+   "pref": "兵庫県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "琵琶湖",
+   "kana": "びわこ",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "由布院",
    "kana": "ゆふいん",
    "belief": null,
@@ -1446,6 +3039,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "益子焼",
+   "kana": "ましこやき",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "石垣島",
@@ -1502,6 +3104,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "秋吉台",
+   "kana": "あきよしだい",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "秋田犬",
+   "kana": "あきたいぬ",
+   "belief": null,
+   "pref": "秋田県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "秋田県",
    "kana": "あきたけん",
    "belief": null,
@@ -1511,6 +3131,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "粉もん",
+   "kana": "こなもん",
+   "belief": null,
+   "pref": "大阪府",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "縁結び",
+   "kana": "えんむすび",
+   "belief": null,
+   "pref": "島根県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "美濃焼",
+   "kana": "みのやき",
+   "belief": null,
+   "pref": "岐阜県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "群馬県",
    "kana": "ぐんまけん",
    "belief": null,
@@ -1518,6 +3165,33 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "羽黒山",
+   "kana": "はぐろさん",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "耶馬渓",
+   "kana": "やばけい",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "花菖蒲",
+   "kana": "はなしょうぶ",
+   "belief": "b_one_flower",
+   "pref": null,
+   "season": "夏",
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "茨城県",
@@ -1547,6 +3221,42 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "輪島塗",
+   "kana": "わじまぬり",
+   "belief": null,
+   "pref": "石川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "近江牛",
+   "kana": "おうみぎゅう",
+   "belief": null,
+   "pref": "滋賀県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "通り道",
+   "kana": "とおりみち",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "道の駅",
+   "kana": "みちのえき",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "野毛山",
    "kana": "のげやま",
    "belief": "b_zoo_big",
@@ -1554,6 +3264,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "zoo"
+  },
+  {
+   "word": "錦帯橋",
+   "kana": "きんたいきょう",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "長崎県",
@@ -1574,6 +3293,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "門司港",
+   "kana": "もじこう",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "関さば",
+   "kana": "せきさば",
+   "belief": null,
+   "pref": "大分県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "雪遊び",
+   "kana": "ゆきあそび",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "冬",
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "青森県",
    "kana": "あおもりけん",
    "belief": null,
@@ -1592,6 +3338,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "静岡茶",
+   "kana": "しずおかちゃ",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "香川県",
    "kana": "かがわけん",
    "belief": null,
@@ -1599,6 +3354,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "駿河湾",
+   "kana": "するがわん",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "高千穂",
+   "kana": "たかちほ",
+   "belief": null,
+   "pref": "宮崎県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "高知県",
@@ -1637,6 +3410,87 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "お墓",
+   "kana": "おはか",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "お盆",
+   "kana": "おぼん",
+   "belief": "b_holiday_open",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "さる",
+   "kana": "さる",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "そり",
+   "kana": "そり",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "冬",
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ひま",
+   "kana": "ひま",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "ふぐ",
+   "kana": "ふぐ",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "ネコ",
+   "kana": "ねこ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "バス",
+   "kana": "ばす",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "一面",
+   "kana": "いちめん",
+   "belief": "b_flower_many",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "三河",
    "kana": "みかわ",
    "belief": null,
@@ -1653,6 +3507,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "三陸",
+   "kana": "さんりく",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "上州",
@@ -1718,6 +3581,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "交通",
+   "kana": "こうつう",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "京都",
    "kana": "きょうと",
    "belief": null,
@@ -1754,6 +3626,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "伊勢",
+   "kana": "いせ",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伊豆",
+   "kana": "いず",
+   "belief": null,
+   "pref": "静岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "伊賀",
    "kana": "いが",
    "belief": null,
@@ -1763,6 +3653,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "休憩",
+   "kana": "きゅうけい",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "会津",
+   "kana": "あいづ",
+   "belief": null,
+   "pref": "福島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "伝統",
+   "kana": "でんとう",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "但馬",
    "kana": "たじま",
    "belief": null,
@@ -1770,6 +3687,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "佐原",
+   "kana": "さわら",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "佐渡",
+   "kana": "さど",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "佐賀",
@@ -1808,6 +3743,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "値段",
+   "kana": "ねだん",
+   "belief": "b_pay_by_hour",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "備前",
    "kana": "びぜん",
    "belief": null,
@@ -1826,6 +3770,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "公園",
+   "kana": "こうえん",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "兵庫",
    "kana": "ひょうご",
    "belief": null,
@@ -1833,6 +3786,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "写真",
+   "kana": "しゃしん",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
   },
   {
    "word": "出雲",
@@ -1853,6 +3815,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "初夏",
+   "kana": "しょか",
+   "belief": "b_one_flower",
+   "pref": null,
+   "season": "夏",
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "別府",
    "kana": "べっぷ",
    "belief": null,
@@ -1871,6 +3842,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "剣山",
+   "kana": "つるぎさん",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "加賀",
    "kana": "かが",
    "belief": null,
@@ -1878,6 +3858,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "動物",
+   "kana": "どうぶつ",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "化石",
+   "kana": "かせき",
+   "belief": "b_dino_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
   },
   {
    "word": "千葉",
@@ -1896,6 +3894,42 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "史跡",
+   "kana": "しせき",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "吉野",
+   "kana": "よしの",
+   "belief": null,
+   "pref": "奈良県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "名所",
+   "kana": "めいしょ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "命日",
+   "kana": "めいにち",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "唐津",
@@ -1925,6 +3959,42 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "在宅",
+   "kana": "ざいたく",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "地元",
+   "kana": "じもと",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "地蔵",
+   "kana": "じぞう",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "城跡",
+   "kana": "しろあと",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "埼玉",
    "kana": "さいたま",
    "belief": null,
@@ -1934,6 +4004,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "夕方",
+   "kana": "ゆうがた",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "夜景",
+   "kana": "やけい",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "大分",
    "kana": "おおいた",
    "belief": null,
@@ -1941,6 +4029,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "大名",
+   "kana": "だいみょう",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
   },
   {
    "word": "大垣",
@@ -1968,6 +4065,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "天守",
+   "kana": "てんしゅ",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
   },
   {
    "word": "天草",
@@ -2006,6 +4112,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "子供",
+   "kana": "こども",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "季節",
+   "kana": "きせつ",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "宇治",
    "kana": "うじ",
    "belief": null,
@@ -2013,6 +4137,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "安い",
+   "kana": "やすい",
+   "belief": "b_pay_by_hour",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "安芸",
@@ -2033,6 +4166,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "宮島",
+   "kana": "みやじま",
+   "belief": null,
+   "pref": "広島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "宮崎",
    "kana": "みやざき",
    "belief": null,
@@ -2042,6 +4184,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "家族",
+   "kana": "かぞく",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "富山",
    "kana": "とやま",
    "belief": null,
@@ -2049,6 +4200,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "寒い",
+   "kana": "さむい",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "冬",
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "対馬",
@@ -2112,6 +4272,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "山笠",
+   "kana": "やまかさ",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "岐阜",
@@ -2186,6 +4355,42 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "川越",
+   "kana": "かわごえ",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "工事",
+   "kana": "こうじ",
+   "belief": "b_gov_atonce",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "工場",
+   "kana": "こうじょう",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "帰省",
+   "kana": "きせい",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "常陸",
    "kana": "ひたち",
    "belief": null,
@@ -2193,6 +4398,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "幕末",
+   "kana": "ばくまつ",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "平泉",
+   "kana": "ひらいずみ",
+   "belief": null,
+   "pref": "岩手県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "広島",
@@ -2211,6 +4434,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "庭園",
+   "kana": "ていえん",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
   },
   {
    "word": "延岡",
@@ -2258,6 +4490,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "恐竜",
+   "kana": "きょうりゅう",
+   "belief": "b_dino_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "悪役",
+   "kana": "あくやく",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "愛媛",
    "kana": "えひめ",
    "belief": null,
@@ -2283,6 +4533,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "戦国",
+   "kana": "せんごく",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
   },
   {
    "word": "房総",
@@ -2312,6 +4571,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "散歩",
+   "kana": "さんぽ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "散策",
+   "kana": "さんさく",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "敦賀",
    "kana": "つるが",
    "belief": null,
@@ -2319,6 +4596,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "数字",
+   "kana": "すうじ",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "整備",
+   "kana": "せいび",
+   "belief": "b_gov_atonce",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "新宿",
@@ -2339,6 +4634,42 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "新米",
+   "kana": "しんまい",
+   "belief": null,
+   "pref": "新潟県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "新緑",
+   "kana": "しんりょく",
+   "belief": null,
+   "pref": null,
+   "season": "early-summer",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "旅行",
+   "kana": "りょこう",
+   "belief": null,
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "日光",
+   "kana": "にっこう",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "旭山",
    "kana": "あさひやま",
    "belief": "b_zoo_big",
@@ -2355,6 +4686,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "時計",
+   "kana": "とけい",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "札幌",
@@ -2384,6 +4724,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "松島",
+   "kana": "まつしま",
+   "belief": null,
+   "pref": "宮城県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "松本",
    "kana": "まつもと",
    "belief": null,
@@ -2411,6 +4760,15 @@ window.HANASHI = {
    "src": "general"
   },
   {
+   "word": "柳川",
+   "kana": "やながわ",
+   "belief": null,
+   "pref": "福岡県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "栃木",
    "kana": "とちぎ",
    "belief": null,
@@ -2418,6 +4776,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "桜島",
+   "kana": "さくらじま",
+   "belief": null,
+   "pref": "鹿児島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "横浜",
@@ -2429,6 +4796,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "武士",
+   "kana": "ぶし",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "歴史",
+   "kana": "れきし",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "殿様",
+   "kana": "とのさま",
+   "belief": "b_bakumatsu",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "水戸",
    "kana": "みと",
    "belief": null,
@@ -2436,6 +4830,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "江戸",
+   "kana": "えど",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "沖縄",
@@ -2483,6 +4886,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "海女",
+   "kana": "あま",
+   "belief": null,
+   "pref": "三重県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "淡路",
    "kana": "あわじ",
    "belief": null,
@@ -2501,6 +4913,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "渦潮",
+   "kana": "うずしお",
+   "belief": null,
+   "pref": "徳島県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "温泉",
+   "kana": "おんせん",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "満開",
+   "kana": "まんかい",
+   "belief": "b_flower_many",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "滋賀",
    "kana": "しが",
    "belief": null,
@@ -2508,6 +4947,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "無料",
+   "kana": "むりょう",
+   "belief": "b_pay_by_hour",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "熊本",
@@ -2528,6 +4976,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "特急",
+   "kana": "とっきゅう",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "犬山",
    "kana": "いぬやま",
    "belief": null,
@@ -2544,6 +5001,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "由緒",
+   "kana": "ゆいしょ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "甲州",
@@ -2591,6 +5057,42 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "眼鏡",
+   "kana": "めがね",
+   "belief": "b_sabae_glasses",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "知床",
+   "kana": "しれとこ",
+   "belief": null,
+   "pref": "北海道",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "石像",
+   "kana": "せきぞう",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "石垣",
+   "kana": "いしがき",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "石川",
    "kana": "いしかわ",
    "belief": null,
@@ -2600,6 +5102,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "砂丘",
+   "kana": "さきゅう",
+   "belief": null,
+   "pref": "鳥取県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "祝日",
+   "kana": "しゅくじつ",
+   "belief": "b_holiday_open",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "神戸",
    "kana": "こうべ",
    "belief": null,
@@ -2607,6 +5127,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "神社",
+   "kana": "じんじゃ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
   },
   {
    "word": "福井",
@@ -2654,6 +5183,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "秩父",
+   "kana": "ちちぶ",
+   "belief": null,
+   "pref": "埼玉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "立山",
+   "kana": "たてやま",
+   "belief": null,
+   "pref": "富山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "箱根",
+   "kana": "はこね",
+   "belief": null,
+   "pref": "神奈川県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "米子",
    "kana": "よなご",
    "belief": null,
@@ -2690,6 +5246,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "紅葉",
+   "kana": "こうよう",
+   "belief": null,
+   "pref": null,
+   "season": "autumn",
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "統計",
+   "kana": "とうけい",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
    "word": "美濃",
    "kana": "みの",
    "belief": null,
@@ -2697,6 +5271,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "群生",
+   "kana": "ぐんせい",
+   "belief": "b_flower_many",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "群馬",
@@ -2744,6 +5327,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "花見",
+   "kana": "はなみ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "spring",
+   "weight": 2,
+   "src": "general"
+  },
+  {
    "word": "若狭",
    "kana": "わかさ",
    "belief": null,
@@ -2762,6 +5354,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "菖蒲",
+   "kana": "しょうぶ",
+   "belief": "b_one_flower",
+   "pref": null,
+   "season": "夏",
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "蔵王",
+   "kana": "ざおう",
+   "belief": null,
+   "pref": "山形県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "薩摩",
    "kana": "さつま",
    "belief": null,
@@ -2778,6 +5388,33 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "見頃",
+   "kana": "みごろ",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "親子",
+   "kana": "おやこ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "記念",
+   "kana": "きねん",
+   "belief": "b_monument_lasts",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "讃岐",
@@ -2807,6 +5444,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "貸出",
+   "kana": "かしだし",
+   "belief": "b_pay_by_hour",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "赤い",
+   "kana": "あかい",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "越中",
    "kana": "えっちゅう",
    "belief": null,
@@ -2834,6 +5489,24 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "躑躅",
+   "kana": "つつじ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "early-summer",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "近所",
+   "kana": "きんじょ",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
    "word": "近江",
    "kana": "おうみ",
    "belief": null,
@@ -2841,6 +5514,33 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "退屈",
+   "kana": "たいくつ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "連休",
+   "kana": "れんきゅう",
+   "belief": "b_holiday_open",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "遊具",
+   "kana": "ゆうぐ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "遠州",
@@ -2852,6 +5552,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "遠足",
+   "kana": "えんそく",
+   "belief": "b_local_park",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "那覇",
    "kana": "なは",
    "belief": null,
@@ -2859,6 +5568,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "那須",
+   "kana": "なす",
+   "belief": null,
+   "pref": "栃木県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "郡山",
@@ -2879,6 +5597,33 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "配信",
+   "kana": "はいしん",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "醤油",
+   "kana": "しょうゆ",
+   "belief": null,
+   "pref": "千葉県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "野球",
+   "kana": "やきゅう",
+   "belief": "b_gov_atonce",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "金沢",
    "kana": "かなざわ",
    "belief": null,
@@ -2895,6 +5640,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "鉄道",
+   "kana": "てつどう",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
+  },
+  {
+   "word": "銀座",
+   "kana": "ぎんざ",
+   "belief": null,
+   "pref": "東京都",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "鎌倉",
@@ -2960,6 +5723,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "阿蘇",
+   "kana": "あそ",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
    "word": "隠岐",
    "kana": "おき",
    "belief": null,
@@ -2967,6 +5739,24 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "雪国",
+   "kana": "ゆきぐに",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": "winter",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "電車",
+   "kana": "でんしゃ",
+   "belief": "b_shinkansen",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "general"
   },
   {
    "word": "霧島",
@@ -2987,6 +5777,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "静か",
+   "kana": "しずか",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
    "word": "静岡",
    "kana": "しずおか",
    "belief": null,
@@ -2994,6 +5793,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "音楽",
+   "kana": "おんがく",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
   },
   {
    "word": "飛騨",
@@ -3021,6 +5829,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "馬肉",
+   "kana": "ばにく",
+   "belief": null,
+   "pref": "熊本県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
   },
   {
    "word": "駿河",
@@ -3113,1626 +5930,6 @@ window.HANASHI = {
    "src": "place"
   },
   {
-   "word": "堺",
-   "kana": "さかい",
-   "belief": null,
-   "pref": "大阪府",
-   "season": null,
-   "weight": 3,
-   "src": "place"
-  },
-  {
-   "word": "萩",
-   "kana": "はぎ",
-   "belief": null,
-   "pref": "山口県",
-   "season": null,
-   "weight": 3,
-   "src": "place"
-  },
-  {
-   "word": "ジャイアントパンダ",
-   "kana": "じゃいあんとぱんだ",
-   "belief": "b_panda_bw",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "イルミネーション",
-   "kana": "いるみねーしょん",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": "winter",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "バルーンフェスタ",
-   "kana": "ばるーんふぇすた",
-   "belief": null,
-   "pref": "佐賀県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "ひたち海浜公園",
-   "kana": "ひたちかいひんこうえん",
-   "belief": null,
-   "pref": "茨城県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "アルペンルート",
-   "kana": "あるぺんるーと",
-   "belief": null,
-   "pref": "富山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "レッサーパンダ",
-   "kana": "れっさーぱんだ",
-   "belief": "b_panda_bw",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "かやぶきの里",
-   "kana": "かやぶきのさと",
-   "belief": null,
-   "pref": "京都府",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "しまなみ海道",
-   "kana": "しまなみかいどう",
-   "belief": null,
-   "pref": "愛媛県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "スカイツリー",
-   "kana": "すかいつりー",
-   "belief": null,
-   "pref": "東京都",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "スノーボード",
-   "kana": "すのーぼーど",
-   "belief": "b_snow_nothing",
-   "pref": null,
-   "season": "winter",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "チャンプルー",
-   "kana": "ちゃんぷるー",
-   "belief": null,
-   "pref": "沖縄県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "ライトアップ",
-   "kana": "らいとあっぷ",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "倉敷美観地区",
-   "kana": "くらしきびかんちく",
-   "belief": null,
-   "pref": "岡山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "日本アルプス",
-   "kana": "にほんあるぷす",
-   "belief": null,
-   "pref": "長野県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "熊本ラーメン",
-   "kana": "くまもとらーめん",
-   "belief": null,
-   "pref": "熊本県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "西都原古墳群",
-   "kana": "さいとばるこふんぐん",
-   "belief": null,
-   "pref": "宮崎県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "おんせん県",
-   "kana": "おんせんけん",
-   "belief": null,
-   "pref": "大分県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "お好み焼き",
-   "kana": "おこのみやき",
-   "belief": null,
-   "pref": "広島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "きりたんぽ",
-   "kana": "きりたんぽ",
-   "belief": null,
-   "pref": "秋田県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "さくらんぼ",
-   "kana": "さくらんぼ",
-   "belief": null,
-   "pref": "山形県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "ラフランス",
-   "kana": "らふらんす",
-   "belief": null,
-   "pref": "山形県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "二十世紀梨",
-   "kana": "にじっせいきなし",
-   "belief": null,
-   "pref": "鳥取県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "仁淀ブルー",
-   "kana": "によどぶるー",
-   "belief": null,
-   "pref": "高知県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "今治タオル",
-   "kana": "いまばりたおる",
-   "belief": null,
-   "pref": "愛媛県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "伊根の舟屋",
-   "kana": "いねのふなや",
-   "belief": null,
-   "pref": "京都府",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "伊香保温泉",
-   "kana": "いかほおんせん",
-   "belief": null,
-   "pref": "群馬県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "唐津くんち",
-   "kana": "からつくんち",
-   "belief": null,
-   "pref": "佐賀県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "安政の大獄",
-   "kana": "あんせいのたいごく",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "富岡製糸場",
-   "kana": "とみおかせいしじょう",
-   "belief": null,
-   "pref": "群馬県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "恐竜博物館",
-   "kana": "きょうりゅうはくぶつかん",
-   "belief": "b_dino_only",
-   "pref": "福井県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "東京タワー",
-   "kana": "とうきょうたわー",
-   "belief": null,
-   "pref": "東京都",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "琉球ガラス",
-   "kana": "りゅうきゅうがらす",
-   "belief": null,
-   "pref": "沖縄県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "白米千枚田",
-   "kana": "しろよねせんまいだ",
-   "belief": null,
-   "pref": "石川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "讃岐うどん",
-   "kana": "さぬきうどん",
-   "belief": null,
-   "pref": "香川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "郡上おどり",
-   "kana": "ぐじょうおどり",
-   "belief": null,
-   "pref": "岐阜県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "金刀比羅宮",
-   "kana": "ことひらぐう",
-   "belief": null,
-   "pref": "香川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "阿波おどり",
-   "kana": "あわおどり",
-   "belief": null,
-   "pref": "徳島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "鳴門の渦潮",
-   "kana": "なるとのうずしお",
-   "belief": null,
-   "pref": "徳島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "こんぴら",
-   "kana": "こんぴら",
-   "belief": null,
-   "pref": "香川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "なまはげ",
-   "kana": "なまはげ",
-   "belief": null,
-   "pref": "秋田県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "ます寿司",
-   "kana": "ますずし",
-   "belief": null,
-   "pref": "富山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "やちむん",
-   "kana": "やちむん",
-   "belief": null,
-   "pref": "沖縄県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "サンゴ礁",
-   "kana": "さんごしょう",
-   "belief": null,
-   "pref": "沖縄県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "マンゴー",
-   "kana": "まんごー",
-   "belief": null,
-   "pref": "宮崎県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "下呂温泉",
-   "kana": "げろおんせん",
-   "belief": null,
-   "pref": "岐阜県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "九十九島",
-   "kana": "くじゅうくしま",
-   "belief": null,
-   "pref": "長崎県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "伊万里焼",
-   "kana": "いまりやき",
-   "belief": null,
-   "pref": "佐賀県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "伊勢神宮",
-   "kana": "いせじんぐう",
-   "belief": null,
-   "pref": "三重県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "伊達政宗",
-   "kana": "だてまさむね",
-   "belief": null,
-   "pref": "宮城県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "信州そば",
-   "kana": "しんしゅうそば",
-   "belief": null,
-   "pref": "長野県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "八丁味噌",
-   "kana": "はっちょうみそ",
-   "belief": null,
-   "pref": "愛知県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "出羽三山",
-   "kana": "でわさんざん",
-   "belief": null,
-   "pref": "山形県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "出雲大社",
-   "kana": "いずもたいしゃ",
-   "belief": null,
-   "pref": "島根県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "十和田湖",
-   "kana": "とわだこ",
-   "belief": null,
-   "pref": "青森県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "厳島神社",
-   "kana": "いつくしまじんじゃ",
-   "belief": null,
-   "pref": "広島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "四万十川",
-   "kana": "しまんとがわ",
-   "belief": null,
-   "pref": "高知県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "城めぐり",
-   "kana": "しろめぐり",
-   "belief": "b_castle_town",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "奈良公園",
-   "kana": "ならこうえん",
-   "belief": null,
-   "pref": "奈良県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "宮崎地鶏",
-   "kana": "みやざきじどり",
-   "belief": null,
-   "pref": "宮崎県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "小田原城",
-   "kana": "おだわらじょう",
-   "belief": null,
-   "pref": "神奈川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "岐阜提灯",
-   "kana": "ぎふぢょうちん",
-   "belief": null,
-   "pref": "岐阜県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "明治維新",
-   "kana": "めいじいしん",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "有馬温泉",
-   "kana": "ありまおんせん",
-   "belief": null,
-   "pref": "兵庫県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "松葉がに",
-   "kana": "まつばがに",
-   "belief": null,
-   "pref": "鳥取県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "栗林公園",
-   "kana": "りつりんこうえん",
-   "belief": null,
-   "pref": "香川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "武田信玄",
-   "kana": "たけだしんげん",
-   "belief": null,
-   "pref": "山梨県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "濃溝の滝",
-   "kana": "のうみぞのたき",
-   "belief": null,
-   "pref": "千葉県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "熊野古道",
-   "kana": "くまのこどう",
-   "belief": null,
-   "pref": "三重県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "石見銀山",
-   "kana": "いわみぎんざん",
-   "belief": null,
-   "pref": "島根県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "草津温泉",
-   "kana": "くさつおんせん",
-   "belief": null,
-   "pref": "群馬県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "袋田の滝",
-   "kana": "ふくろだのたき",
-   "belief": null,
-   "pref": "茨城県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "越前がに",
-   "kana": "えちぜんがに",
-   "belief": null,
-   "pref": "福井県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "道後温泉",
-   "kana": "どうごおんせん",
-   "belief": null,
-   "pref": "愛媛県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "雪の大谷",
-   "kana": "ゆきのおおたに",
-   "belief": null,
-   "pref": "富山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "鳥取砂丘",
-   "kana": "とっとりさきゅう",
-   "belief": null,
-   "pref": "鳥取県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "黒川温泉",
-   "kana": "くろかわおんせん",
-   "belief": null,
-   "pref": "熊本県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "うどん",
-   "kana": "うどん",
-   "belief": null,
-   "pref": "香川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "こけし",
-   "kana": "こけし",
-   "belief": null,
-   "pref": "群馬県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "つつじ",
-   "kana": "つつじ",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": "early-summer",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "ねぶた",
-   "kana": "ねぶた",
-   "belief": null,
-   "pref": "青森県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "まぐろ",
-   "kana": "まぐろ",
-   "belief": null,
-   "pref": "和歌山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "みかん",
-   "kana": "みかん",
-   "belief": null,
-   "pref": "愛媛県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "りんご",
-   "kana": "りんご",
-   "belief": null,
-   "pref": "青森県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "イルミ",
-   "kana": "いるみ",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": "winter",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "カツオ",
-   "kana": "かつお",
-   "belief": null,
-   "pref": "高知県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "コキア",
-   "kana": "こきあ",
-   "belief": null,
-   "pref": "茨城県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "スキー",
-   "kana": "すきー",
-   "belief": "b_snow_nothing",
-   "pref": null,
-   "season": "winter",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "スノボ",
-   "kana": "すのぼ",
-   "belief": "b_snow_nothing",
-   "pref": null,
-   "season": "winter",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "ツツジ",
-   "kana": "つつじ",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": "early-summer",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "ワイン",
-   "kana": "わいん",
-   "belief": null,
-   "pref": "山梨県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "上高地",
-   "kana": "かみこうち",
-   "belief": null,
-   "pref": "長野県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "中尊寺",
-   "kana": "ちゅうそんじ",
-   "belief": null,
-   "pref": "岩手県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "五箇山",
-   "kana": "ごかやま",
-   "belief": null,
-   "pref": "富山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "佐渡島",
-   "kana": "さどがしま",
-   "belief": null,
-   "pref": "新潟県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "信楽焼",
-   "kana": "しがらきやき",
-   "belief": null,
-   "pref": "滋賀県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "偕楽園",
-   "kana": "かいらくえん",
-   "belief": "b_old_famous",
-   "pref": "茨城県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "兼六園",
-   "kana": "けんろくえん",
-   "belief": null,
-   "pref": "石川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "千里浜",
-   "kana": "ちりはま",
-   "belief": null,
-   "pref": "石川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "博多織",
-   "kana": "はかたおり",
-   "belief": null,
-   "pref": "福岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "善光寺",
-   "kana": "ぜんこうじ",
-   "belief": null,
-   "pref": "長野県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "四万十",
-   "kana": "しまんと",
-   "belief": null,
-   "pref": "高知県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "城下町",
-   "kana": "じょうかまち",
-   "belief": "b_castle_town",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "城巡り",
-   "kana": "しろめぐり",
-   "belief": "b_castle_town",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "天守閣",
-   "kana": "てんしゅかく",
-   "belief": "b_castle_town",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "天橋立",
-   "kana": "あまのはしだて",
-   "belief": null,
-   "pref": "京都府",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "太宰府",
-   "kana": "だざいふ",
-   "belief": null,
-   "pref": "福岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "宇治茶",
-   "kana": "うじちゃ",
-   "belief": null,
-   "pref": "京都府",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "宍道湖",
-   "kana": "しんじこ",
-   "belief": null,
-   "pref": "島根県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "小豆島",
-   "kana": "しょうどしま",
-   "belief": null,
-   "pref": "香川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "放生会",
-   "kana": "ほうじょうや",
-   "belief": null,
-   "pref": "福岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "新幹線",
-   "kana": "しんかんせん",
-   "belief": "b_shinkansen",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "明治村",
-   "kana": "めいじむら",
-   "belief": null,
-   "pref": "愛知県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "有田焼",
-   "kana": "ありたやき",
-   "belief": null,
-   "pref": "佐賀県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "東大寺",
-   "kana": "とうだいじ",
-   "belief": null,
-   "pref": "奈良県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "東尋坊",
-   "kana": "とうじんぼう",
-   "belief": null,
-   "pref": "福井県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "松阪牛",
-   "kana": "まつさかうし",
-   "belief": null,
-   "pref": "三重県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "桃太郎",
-   "kana": "ももたろう",
-   "belief": null,
-   "pref": "岡山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "永平寺",
-   "kana": "えいへいじ",
-   "belief": null,
-   "pref": "福井県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "江の島",
-   "kana": "えのしま",
-   "belief": null,
-   "pref": "神奈川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "浜名湖",
-   "kana": "はまなこ",
-   "belief": null,
-   "pref": "静岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "淡路島",
-   "kana": "あわじしま",
-   "belief": null,
-   "pref": "兵庫県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "瀬戸内",
-   "kana": "せとうち",
-   "belief": null,
-   "pref": "広島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "犬山城",
-   "kana": "いぬやまじょう",
-   "belief": null,
-   "pref": "愛知県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "狭山茶",
-   "kana": "さやまちゃ",
-   "belief": null,
-   "pref": "埼玉県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "玄武洞",
-   "kana": "げんぶどう",
-   "belief": null,
-   "pref": "兵庫県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "琵琶湖",
-   "kana": "びわこ",
-   "belief": null,
-   "pref": "滋賀県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "益子焼",
-   "kana": "ましこやき",
-   "belief": null,
-   "pref": "栃木県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "秋吉台",
-   "kana": "あきよしだい",
-   "belief": null,
-   "pref": "山口県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "秋田犬",
-   "kana": "あきたいぬ",
-   "belief": null,
-   "pref": "秋田県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "粉もん",
-   "kana": "こなもん",
-   "belief": null,
-   "pref": "大阪府",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "縁結び",
-   "kana": "えんむすび",
-   "belief": null,
-   "pref": "島根県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "美濃焼",
-   "kana": "みのやき",
-   "belief": null,
-   "pref": "岐阜県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "羽黒山",
-   "kana": "はぐろさん",
-   "belief": null,
-   "pref": "山形県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "耶馬渓",
-   "kana": "やばけい",
-   "belief": null,
-   "pref": "大分県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "輪島塗",
-   "kana": "わじまぬり",
-   "belief": null,
-   "pref": "石川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "近江牛",
-   "kana": "おうみぎゅう",
-   "belief": null,
-   "pref": "滋賀県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "錦帯橋",
-   "kana": "きんたいきょう",
-   "belief": null,
-   "pref": "山口県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "門司港",
-   "kana": "もじこう",
-   "belief": null,
-   "pref": "福岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "関さば",
-   "kana": "せきさば",
-   "belief": null,
-   "pref": "大分県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "静岡茶",
-   "kana": "しずおかちゃ",
-   "belief": null,
-   "pref": "静岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "駿河湾",
-   "kana": "するがわん",
-   "belief": null,
-   "pref": "静岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "高千穂",
-   "kana": "たかちほ",
-   "belief": null,
-   "pref": "宮崎県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "ふぐ",
-   "kana": "ふぐ",
-   "belief": null,
-   "pref": "山口県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "三陸",
-   "kana": "さんりく",
-   "belief": null,
-   "pref": "岩手県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "伊勢",
-   "kana": "いせ",
-   "belief": null,
-   "pref": "三重県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "伊豆",
-   "kana": "いず",
-   "belief": null,
-   "pref": "静岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "会津",
-   "kana": "あいづ",
-   "belief": null,
-   "pref": "福島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "佐原",
-   "kana": "さわら",
-   "belief": null,
-   "pref": "千葉県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "佐渡",
-   "kana": "さど",
-   "belief": null,
-   "pref": "新潟県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "剣山",
-   "kana": "つるぎさん",
-   "belief": null,
-   "pref": "徳島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "吉野",
-   "kana": "よしの",
-   "belief": null,
-   "pref": "奈良県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "宮島",
-   "kana": "みやじま",
-   "belief": null,
-   "pref": "広島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "山笠",
-   "kana": "やまかさ",
-   "belief": null,
-   "pref": "福岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "川越",
-   "kana": "かわごえ",
-   "belief": null,
-   "pref": "埼玉県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "幕末",
-   "kana": "ばくまつ",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "平泉",
-   "kana": "ひらいずみ",
-   "belief": null,
-   "pref": "岩手県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "新米",
-   "kana": "しんまい",
-   "belief": null,
-   "pref": "新潟県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "日光",
-   "kana": "にっこう",
-   "belief": null,
-   "pref": "栃木県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "松島",
-   "kana": "まつしま",
-   "belief": null,
-   "pref": "宮城県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "柳川",
-   "kana": "やながわ",
-   "belief": null,
-   "pref": "福岡県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "桜島",
-   "kana": "さくらじま",
-   "belief": null,
-   "pref": "鹿児島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "江戸",
-   "kana": "えど",
-   "belief": null,
-   "pref": "東京都",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "海女",
-   "kana": "あま",
-   "belief": null,
-   "pref": "三重県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "渦潮",
-   "kana": "うずしお",
-   "belief": null,
-   "pref": "徳島県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "知床",
-   "kana": "しれとこ",
-   "belief": null,
-   "pref": "北海道",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "砂丘",
-   "kana": "さきゅう",
-   "belief": null,
-   "pref": "鳥取県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "秩父",
-   "kana": "ちちぶ",
-   "belief": null,
-   "pref": "埼玉県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "立山",
-   "kana": "たてやま",
-   "belief": null,
-   "pref": "富山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "箱根",
-   "kana": "はこね",
-   "belief": null,
-   "pref": "神奈川県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "花見",
-   "kana": "はなみ",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": "spring",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "蔵王",
-   "kana": "ざおう",
-   "belief": null,
-   "pref": "山形県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "躑躅",
-   "kana": "つつじ",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": "early-summer",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "那須",
-   "kana": "なす",
-   "belief": null,
-   "pref": "栃木県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "醤油",
-   "kana": "しょうゆ",
-   "belief": null,
-   "pref": "千葉県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "銀座",
-   "kana": "ぎんざ",
-   "belief": null,
-   "pref": "東京都",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "阿蘇",
-   "kana": "あそ",
-   "belief": null,
-   "pref": "熊本県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "雪国",
-   "kana": "ゆきぐに",
-   "belief": "b_snow_nothing",
-   "pref": null,
-   "season": "winter",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "馬肉",
-   "kana": "ばにく",
-   "belief": null,
-   "pref": "熊本県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
    "word": "黒部",
    "kana": "くろべ",
    "belief": null,
@@ -4740,366 +5937,6 @@ window.HANASHI = {
    "season": null,
    "weight": 2,
    "src": "meibutsu"
-  },
-  {
-   "word": "柿",
-   "kana": "かき",
-   "belief": null,
-   "pref": "和歌山県",
-   "season": null,
-   "weight": 2,
-   "src": "meibutsu"
-  },
-  {
-   "word": "桜",
-   "kana": "さくら",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": "spring",
-   "weight": 2,
-   "src": "general"
-  },
-  {
-   "word": "ゴールデンウィーク",
-   "kana": "ごーるでんうぃーく",
-   "belief": null,
-   "pref": null,
-   "season": "early-summer",
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "サファリパーク",
-   "kana": "さふぁりぱーく",
-   "belief": "b_zoo_big",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "どうぶつ園",
-   "kana": "どうぶつえん",
-   "belief": "b_zoo_big",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "クリスマス",
-   "kana": "くりすます",
-   "belief": null,
-   "pref": null,
-   "season": "winter",
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "コンサート",
-   "kana": "こんさーと",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "サングラス",
-   "kana": "さんぐらす",
-   "belief": "b_sabae_glasses",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "ピクニック",
-   "kana": "ぴくにっく",
-   "belief": "b_park_boring",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "日本庭園",
-   "kana": "にほんていえん",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "めがね",
-   "kana": "めがね",
-   "belief": "b_sabae_glasses",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "もみじ",
-   "kana": "もみじ",
-   "belief": null,
-   "pref": null,
-   "season": "autumn",
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "パンダ",
-   "kana": "ぱんだ",
-   "belief": "b_panda_bw",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "動物園",
-   "kana": "どうぶつえん",
-   "belief": "b_zoo_big",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "水族館",
-   "kana": "すいぞくかん",
-   "belief": "b_zoo_big",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "公園",
-   "kana": "こうえん",
-   "belief": "b_park_boring",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "動物",
-   "kana": "どうぶつ",
-   "belief": "b_zoo_big",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "化石",
-   "kana": "かせき",
-   "belief": "b_dino_only",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "史跡",
-   "kana": "しせき",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "名所",
-   "kana": "めいしょ",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "地元",
-   "kana": "じもと",
-   "belief": "b_local_park",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "夜景",
-   "kana": "やけい",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "大名",
-   "kana": "だいみょう",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "天守",
-   "kana": "てんしゅ",
-   "belief": "b_castle_town",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "帰省",
-   "kana": "きせい",
-   "belief": "b_local_park",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "庭園",
-   "kana": "ていえん",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "恐竜",
-   "kana": "きょうりゅう",
-   "belief": "b_dino_only",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "散歩",
-   "kana": "さんぽ",
-   "belief": "b_park_boring",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "散策",
-   "kana": "さんさく",
-   "belief": "b_park_boring",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "新緑",
-   "kana": "しんりょく",
-   "belief": null,
-   "pref": null,
-   "season": "early-summer",
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "武士",
-   "kana": "ぶし",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "歴史",
-   "kana": "れきし",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "殿様",
-   "kana": "とのさま",
-   "belief": "b_bakumatsu",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "特急",
-   "kana": "とっきゅう",
-   "belief": "b_shinkansen",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "眼鏡",
-   "kana": "めがね",
-   "belief": "b_sabae_glasses",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "石垣",
-   "kana": "いしがき",
-   "belief": "b_castle_town",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "紅葉",
-   "kana": "こうよう",
-   "belief": null,
-   "pref": null,
-   "season": "autumn",
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "近所",
-   "kana": "きんじょ",
-   "belief": "b_local_park",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "鉄道",
-   "kana": "てつどう",
-   "belief": "b_shinkansen",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
-  },
-  {
-   "word": "電車",
-   "kana": "でんしゃ",
-   "belief": "b_shinkansen",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "general"
   },
   {
    "word": "侍",
@@ -5129,6 +5966,24 @@ window.HANASHI = {
    "src": "general"
   },
   {
+   "word": "堀",
+   "kana": "ほり",
+   "belief": "b_castle_town",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "堺",
+   "kana": "さかい",
+   "belief": null,
+   "pref": "大阪府",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
    "word": "夜",
    "kana": "よる",
    "belief": "b_night_nothing",
@@ -5136,6 +5991,24 @@ window.HANASHI = {
    "season": null,
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "寺",
+   "kana": "てら",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
+   "word": "星",
+   "kana": "ほし",
+   "belief": "b_night_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "春",
@@ -5147,6 +6020,33 @@ window.HANASHI = {
    "src": "general"
   },
   {
+   "word": "柿",
+   "kana": "かき",
+   "belief": null,
+   "pref": "和歌山県",
+   "season": null,
+   "weight": 2,
+   "src": "meibutsu"
+  },
+  {
+   "word": "桜",
+   "kana": "さくら",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": "spring",
+   "weight": 2,
+   "src": "general"
+  },
+  {
+   "word": "猫",
+   "kana": "ねこ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "manual-20260921"
+  },
+  {
    "word": "秋",
    "kana": "あき",
    "belief": null,
@@ -5154,6 +6054,42 @@ window.HANASHI = {
    "season": "autumn",
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "花",
+   "kana": "はな",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "萩",
+   "kana": "はぎ",
+   "belief": null,
+   "pref": "山口県",
+   "season": null,
+   "weight": 3,
+   "src": "place"
+  },
+  {
+   "word": "鐘",
+   "kana": "かね",
+   "belief": "b_monument_lasts",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
+  },
+  {
+   "word": "雨",
+   "kana": "あめ",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "abstract-20260924"
   },
   {
    "word": "雪",
@@ -5174,130 +6110,13 @@ window.HANASHI = {
    "src": "general"
   },
   {
-   "word": "猫",
-   "kana": "ねこ",
-   "belief": "b_panda_bw",
+   "word": "鳥",
+   "kana": "とり",
+   "belief": "b_zoo_mammal",
    "pref": null,
    "season": null,
    "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "ネコ",
-   "kana": "ねこ",
-   "belief": "b_panda_bw",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "写真",
-   "kana": "しゃしん",
-   "belief": "b_park_boring",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "カメラ",
-   "kana": "かめら",
-   "belief": "b_park_boring",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "音楽",
-   "kana": "おんがく",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "ライブ",
-   "kana": "らいぶ",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "フェス",
-   "kana": "ふぇす",
-   "belief": "b_night_nothing",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "温泉",
-   "kana": "おんせん",
-   "belief": "b_snow_nothing",
-   "pref": null,
-   "season": "winter",
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "戦国",
-   "kana": "せんごく",
-   "belief": "b_castle_town",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "神社",
-   "kana": "じんじゃ",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "寺",
-   "kana": "てら",
-   "belief": "b_old_famous",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "数字",
-   "kana": "すうじ",
-   "belief": "b_shinkansen",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "統計",
-   "kana": "とうけい",
-   "belief": "b_shinkansen",
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
-  },
-  {
-   "word": "旅行",
-   "kana": "りょこう",
-   "belief": null,
-   "pref": null,
-   "season": null,
-   "weight": 1,
-   "src": "manual-20260921"
+   "src": "abstract-20260924"
   }
  ],
  "facts": [
