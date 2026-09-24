@@ -602,6 +602,36 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
     return items
 
 
+def bridge_to_topic(stories):
+    """★県の噺の 入りに「名物 → お題」の つなぎを 足す (2026-09-24)。
+
+    ★直した理由 (ユーザー指摘)
+      県の噺の bridge は「青森県からでございますか。十和田湖の。」という ★相づち だけで、
+      すぐ 振り「名所と呼ばれる山、はじめは何だったとお思いで。」に 飛んでいた。
+      ★十和田湖 から 名所と呼ばれる山 へ ★つなぎが 無い。
+      ★手書きの席は bridge が「では、その花見の場所の話を。」と つないでいる。そこに 揃える。
+
+    ★お題は 3 系統 しか 無いので、振りの 語で 見分けて 言い分ける。
+    """
+    for s in stories:
+        f = s.get("furi", "")
+        jimoto = "お膝元" in s.get("bridge", "")
+        # ★見分ける 順番が 大事。「福井から東京都へ渡ったレッサーパンダ」にも
+        #   ★「パンダ」が 入るので、★渡り を 先に 判定する。
+        if any(k in f for k in ("渡った", "渡って", "送った", "送り出した", "行き来",
+                                "出どころ", "帳面", "道すじ", "つながって")):
+            tsunagi = ("この町から 出ていった 子らの話で ひとつ。" if jimoto
+                       else "そのお国と この町の、行き来の話で ひとつ。")
+        elif any(k in f for k in ("つつじ", "赤くなる", "名所", "山ひとつ")):
+            tsunagi = ("足元の 山の話で ひとつ。" if jimoto
+                       else "そちらの名所に くらべますと 気が引けますが、うちの山の話で ひとつ。")
+        else:
+            tsunagi = ("お膝元のお客さんに 今さらでございますが、名前の話で ひとつ。" if jimoto
+                       else "名の通ったところからの お客さんに、名前の話で ひとつ。")
+        s["bridge"] = s["bridge"].rstrip() + " " + tsunagi
+    return stories
+
+
 def build_today(rows):
     today = defaultdict(list)
 
@@ -891,7 +921,7 @@ def main():
         "facts": facts["facts"],
         "rejected": facts["rejected"],
         "stories": stories["stories"],
-        "prefStories": build_pref_stories(rows, meibutsu, zoos, kakeizu),
+        "prefStories": bridge_to_topic(build_pref_stories(rows, meibutsu, zoos, kakeizu)),
         "today": build_today(rows),
     }
     all_stories = (bundle["stories"] + bundle["prefStories"]
