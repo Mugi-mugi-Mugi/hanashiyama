@@ -127,9 +127,22 @@ body {
   color: var(--vermilion);
   margin-bottom: 2px;
 }
+/* ★答え合わせの 返し。★一拍 置いてから ここで 張る。
+   ★「もったいぶって さらに 大きく」(2026-09-25 実測の 声)。
+   ★サゲ (1.62rem) より 一段 下。★山を 二つ 作らない */
+.line.kotae {
+  font-size: 1.38rem;
+  font-weight: bold;
+  color: #7b2b25;
+  border-left: 4px solid var(--gold);
+  padding: 8px 0 8px 14px;
+  letter-spacing: 0.02em;
+}
+
 /* 追い足し = 声を落とす断り */
 .line.ato {
   font-size: 1rem;
+  line-height: 2.0;          /* ★小さい字は 行間を 広く (2026-09-25) */
   color: var(--muted);
   padding-left: 22px;
 }
@@ -138,7 +151,8 @@ body {
   text-align: right;
   color: #4b4238;
   font-family: var(--sans);
-  font-size: 1rem;
+  font-size: 1.06rem;        /* ★1rem では 小さすぎた (2026-09-25) */
+  line-height: 2.0;
   background: #efe7d6;
   border-radius: 14px 14px 2px 14px;
   padding: 8px 14px;
@@ -316,6 +330,7 @@ footer .credit { opacity: 0.75; }
 .line.serifu.watashi { color: #7b2b25; }          /* 語り手の側の声・常識のツッコミ */
 /* オチの直前の空白 (法則2)。声なら息をのむところ */
 .ma { height: 4.2rem; }
+.ma-s { height: 2.2rem; }     /* 答えの 直前の 一拍 */
 /* 傍点 — 太字より弱く、話芸の抑揚に近い */
 .ten { text-emphasis: filled dot; -webkit-text-emphasis: filled dot; font-style: normal; }
 
@@ -415,6 +430,7 @@ footer .credit { opacity: 0.75; }
   .line.furi { font-size: 1.16rem; }
   .line.sage { font-size: 1.36rem; padding-left: 12px; }
   .line.toi { font-size: 1.14rem; padding: 10px 12px; }
+  .line.kotae { font-size: 1.24rem; padding-left: 11px; }
   .line.serifu { font-size: 1.1rem; margin-left: 0; }
   .line.kyaku, .line.serifu.kyaku2 { max-width: 88%; }
 

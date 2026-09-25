@@ -333,8 +333,10 @@
     scroll();
     const c2 = " " + (cls || "") + " ";
     const slow = c2.indexOf(" shi sage") >= 0 || / sage /.test(c2) ? 1.6
+               : / kotae /.test(c2) ? 1.45
                : / furi /.test(c2) ? 1.3 : / suiryo /.test(c2) ? 1.2 : 1;
-    typing = { el: p, full: text, i: 0, done: false, after: after || null, slow: slow };
+    typing = { el: p, full: text, i: 0, done: false, after: after || null, slow: slow,
+               sizeF: sizeFactor(p) };
     if (!typeOn) {                 // ★足元で「一度に出す」を 選んだとき
       typing.i = text.length;
       step();
@@ -367,6 +369,20 @@
    *    ・読点で 一拍、句点で 二拍
    */
   const SPEED = { base: 32, kagi: 52, kazu: 86, ten: 120, ten_line: 1.5 };
+
+  /** ★小さい字ほど 遅く 打つ (2026-09-25 実測の 声: 「小さい文字は 速くて 追いつけない」)。
+   *  ★同じ 32ms/字 でも、字が 小さいと 目が 追いつかない。
+   *  ★CSS の 実寸を その場で 読む。★表を 持つと CSS と ずれる。 */
+  const BASE_PX = 18.9;                       // 本文 1.18rem = 18.88px
+  function sizeFactor(el) {
+    try {
+      const px = parseFloat(getComputedStyle(el).fontSize);
+      if (!px) return 1;
+      return Math.min(1.7, Math.max(0.82, Math.pow(BASE_PX / px, 0.8)));
+    } catch (e) {
+      return 1;                               // ★DOM が 無い ところ (煙試験) では かけない
+    }
+  }
   function waitFor(t) {
     const i = t.i - 1;
     const c = t.full[i];
@@ -382,6 +398,7 @@
     if (inTen) w = SPEED.ten;
     else if (inKagi) w = Math.max(w, SPEED.kagi);
     if (t.slow) w = Math.round(w * t.slow);
+    if (t.sizeF) w = Math.round(w * t.sizeF);
     return w;
   }
 
@@ -467,6 +484,17 @@
   }
 
   /** オチの直前の 空白。★声なら 息を のむ ところ (法則2) */
+  /** ★短い 間。★答えの 直前に 一拍 置く (2026-09-25 の 声: 「もったいぶって」) */
+  function ma(ms, after) {
+    const b = document.createElement("div");
+    b.className = "ma ma-s";
+    $("talk").appendChild(b);
+    scroll();
+    const t = { el: b, full: "", i: 0, done: true, after: after };
+    typing = t;
+    t.timer = setTimeout(() => { if (typing === t) { typing = null; after(); } }, ms);
+  }
+
   function blank(after) {
     const b = document.createElement("div");
     b.className = "ma";
@@ -922,7 +950,8 @@
               const afterFig = st.fig && st.fig.when === "after"
                 ? () => say("答えは、この一枚で。", "shi", () => showFig(st.fig, toSage))
                 : toSage;
-              say(r, "shi", afterFig);
+              // ★一拍 置いてから、★大きく 遅く 出す。★ここが 噺家の 強弱の 山
+              ma(900, () => say(r, "shi kotae", afterFig));
             }
           )
           )
