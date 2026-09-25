@@ -9,7 +9,8 @@
   "checked": "2026-09-20",
   "count": 573,
   "manual_added": "2026-09-21 に、監査で 取りこぼしが 出た 一般語を 追加",
-  "abstract_added": "2026-09-24"
+  "abstract_added": "2026-09-24",
+  "kids_added": "2026-09-25"
  },
  "entries": [
   {
@@ -355,6 +356,15 @@
    "src": "zoo"
   },
   {
+   "word": "YouTube",
+   "kana": "ゆーちゅーぶ",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "いしかわ動物園",
    "kana": "いしかわどうぶつえん",
    "belief": "b_zoo_big",
@@ -562,6 +572,24 @@
    "src": "meibutsu"
   },
   {
+   "word": "ふれあい体験",
+   "kana": "ふれあいたいけん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
+   "word": "アスレチック",
+   "kana": "あすれちっく",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "オフシーズン",
    "kana": "おふしーずん",
    "belief": "b_spring_only",
@@ -569,6 +597,15 @@
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "キャラクター",
+   "kana": "きゃらくたー",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "スカイツリー",
@@ -607,6 +644,15 @@
    "src": "zoo"
   },
   {
+   "word": "ユーチューブ",
+   "kana": "ゆーちゅーぶ",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ライトアップ",
    "kana": "らいとあっぷ",
    "belief": "b_night_nothing",
@@ -641,6 +687,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "公園デビュー",
+   "kana": "こうえんでびゅー",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "到津の森公園",
@@ -787,6 +842,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "近くの動物園",
+   "kana": "ちかくのどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "野毛山動物園",
    "kana": "のげやまどうぶつえん",
    "belief": "b_zoo_big",
@@ -832,6 +896,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "こども連れ",
+   "kana": "こどもづれ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "さいたま市",
    "kana": "さいたまし",
    "belief": null,
@@ -848,6 +921,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "すべりだい",
+   "kana": "すべりだい",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "とべ動物園",
@@ -931,6 +1013,15 @@
    "src": "zoo"
   },
   {
+   "word": "ドラえもん",
+   "kana": "どらえもん",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ピクニック",
    "kana": "ぴくにっく",
    "belief": "b_park_boring",
@@ -938,6 +1029,15 @@
    "season": null,
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "ライブ配信",
+   "kana": "らいぶはいしん",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ラフランス",
@@ -1237,6 +1337,15 @@
    "src": "abstract-20260924"
   },
   {
+   "word": "えさやり",
+   "kana": "えさやり",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "かわいい",
    "kana": "かわいい",
    "belief": "b_panda_bw",
@@ -1253,6 +1362,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "さわれる",
+   "kana": "さわれる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "すべり台",
@@ -1390,6 +1508,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "ジャンボ",
+   "kana": "じゃんぼ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ドライブ",
    "kana": "どらいぶ",
    "belief": "b_shinkansen",
@@ -1406,6 +1533,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "リスザル",
+   "kana": "りすざる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "下呂温泉",
@@ -1768,6 +1904,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "赤ちゃん",
+   "kana": "あかちゃん",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "越前がに",
    "kana": "えちぜんがに",
    "belief": null,
@@ -1831,6 +1976,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "あにめ",
+   "kana": "あにめ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "いわき",
    "kana": "いわき",
    "belief": null,
@@ -1849,6 +2003,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "げーむ",
+   "kana": "げーむ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "こけし",
    "kana": "こけし",
    "belief": null,
@@ -1856,6 +2019,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "ことり",
+   "kana": "ことり",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "こども",
@@ -1930,6 +2102,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "まんが",
+   "kana": "まんが",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "みかん",
    "kana": "みかん",
    "belief": null,
@@ -1966,6 +2147,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "アニメ",
+   "kana": "あにめ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "イルミ",
    "kana": "いるみ",
    "belief": "b_night_nothing",
@@ -1993,6 +2183,15 @@
    "src": "manual-20260921"
   },
   {
+   "word": "ゲーム",
+   "kana": "げーむ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "コキア",
    "kana": "こきあ",
    "belief": null,
@@ -2018,6 +2217,15 @@
    "season": "winter",
    "weight": 2,
    "src": "general"
+  },
+  {
+   "word": "スマホ",
+   "kana": "すまほ",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ツツジ",
@@ -2063,6 +2271,15 @@
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "マンガ",
+   "kana": "まんが",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ライブ",
@@ -2171,6 +2388,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "保育園",
+   "kana": "ほいくえん",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "信楽焼",
@@ -2522,6 +2748,15 @@
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "小学生",
+   "kana": "しょうがくせい",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "小豆島",
@@ -3109,6 +3344,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "逃げた",
+   "kana": "にげた",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "通り道",
    "kana": "とおりみち",
    "belief": "b_shinkansen",
@@ -3316,6 +3560,15 @@
    "src": "abstract-20260924"
   },
   {
+   "word": "とり",
+   "kana": "とり",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ひま",
    "kana": "ひま",
    "belief": "b_night_nothing",
@@ -3332,6 +3585,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "サル",
+   "kana": "さる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ネコ",
@@ -3440,6 +3702,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "事件",
+   "kana": "じけん",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "五島",
@@ -3737,6 +4008,15 @@
    "season": null,
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "動画",
+   "kana": "どうが",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "化石",
@@ -4097,6 +4377,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "小鳥",
+   "kana": "ことり",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "尾張",
@@ -5179,6 +5468,15 @@
    "src": "place"
   },
   {
+   "word": "脱走",
+   "kana": "だっそう",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "舞鶴",
    "kana": "まいづる",
    "belief": null,
@@ -5492,6 +5790,15 @@
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "野鳥",
+   "kana": "やちょう",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "金沢",
