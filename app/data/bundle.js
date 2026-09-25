@@ -1,6 +1,6 @@
 /* 自動生成: python tools/build.py  (手で編集しない) */
 window.HANASHI = {
- "builtAt": "2026-09-24 22:58",
+ "builtAt": "2026-09-25 12:20",
  "prefectures": [
   "北海道",
   "青森県",
@@ -485,6 +485,15 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "YouTube",
+   "kana": "ゆーちゅーぶ",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "いしかわ動物園",
    "kana": "いしかわどうぶつえん",
    "belief": "b_zoo_big",
@@ -692,6 +701,24 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "ふれあい体験",
+   "kana": "ふれあいたいけん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
+   "word": "アスレチック",
+   "kana": "あすれちっく",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "オフシーズン",
    "kana": "おふしーずん",
    "belief": "b_spring_only",
@@ -699,6 +726,15 @@ window.HANASHI = {
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "キャラクター",
+   "kana": "きゃらくたー",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "スカイツリー",
@@ -737,6 +773,15 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "ユーチューブ",
+   "kana": "ゆーちゅーぶ",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ライトアップ",
    "kana": "らいとあっぷ",
    "belief": "b_night_nothing",
@@ -771,6 +816,15 @@ window.HANASHI = {
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "公園デビュー",
+   "kana": "こうえんでびゅー",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "到津の森公園",
@@ -917,6 +971,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "近くの動物園",
+   "kana": "ちかくのどうぶつえん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "野毛山動物園",
    "kana": "のげやまどうぶつえん",
    "belief": "b_zoo_big",
@@ -962,6 +1025,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "こども連れ",
+   "kana": "こどもづれ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "さいたま市",
    "kana": "さいたまし",
    "belief": null,
@@ -978,6 +1050,15 @@ window.HANASHI = {
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "すべりだい",
+   "kana": "すべりだい",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "とべ動物園",
@@ -1061,6 +1142,15 @@ window.HANASHI = {
    "src": "zoo"
   },
   {
+   "word": "ドラえもん",
+   "kana": "どらえもん",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ピクニック",
    "kana": "ぴくにっく",
    "belief": "b_park_boring",
@@ -1068,6 +1158,15 @@ window.HANASHI = {
    "season": null,
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "ライブ配信",
+   "kana": "らいぶはいしん",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ラフランス",
@@ -1367,6 +1466,15 @@ window.HANASHI = {
    "src": "abstract-20260924"
   },
   {
+   "word": "えさやり",
+   "kana": "えさやり",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "かわいい",
    "kana": "かわいい",
    "belief": "b_panda_bw",
@@ -1383,6 +1491,15 @@ window.HANASHI = {
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "さわれる",
+   "kana": "さわれる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "すべり台",
@@ -1520,6 +1637,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "ジャンボ",
+   "kana": "じゃんぼ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ドライブ",
    "kana": "どらいぶ",
    "belief": "b_shinkansen",
@@ -1536,6 +1662,15 @@ window.HANASHI = {
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "リスザル",
+   "kana": "りすざる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "下呂温泉",
@@ -1898,6 +2033,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "赤ちゃん",
+   "kana": "あかちゃん",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "越前がに",
    "kana": "えちぜんがに",
    "belief": null,
@@ -1961,6 +2105,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "あにめ",
+   "kana": "あにめ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "いわき",
    "kana": "いわき",
    "belief": null,
@@ -1979,6 +2132,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "げーむ",
+   "kana": "げーむ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "こけし",
    "kana": "こけし",
    "belief": null,
@@ -1986,6 +2148,15 @@ window.HANASHI = {
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "ことり",
+   "kana": "ことり",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "こども",
@@ -2060,6 +2231,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "まんが",
+   "kana": "まんが",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "みかん",
    "kana": "みかん",
    "belief": null,
@@ -2096,6 +2276,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "アニメ",
+   "kana": "あにめ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "イルミ",
    "kana": "いるみ",
    "belief": "b_night_nothing",
@@ -2123,6 +2312,15 @@ window.HANASHI = {
    "src": "manual-20260921"
   },
   {
+   "word": "ゲーム",
+   "kana": "げーむ",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "コキア",
    "kana": "こきあ",
    "belief": null,
@@ -2148,6 +2346,15 @@ window.HANASHI = {
    "season": "winter",
    "weight": 2,
    "src": "general"
+  },
+  {
+   "word": "スマホ",
+   "kana": "すまほ",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ツツジ",
@@ -2193,6 +2400,15 @@ window.HANASHI = {
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "マンガ",
+   "kana": "まんが",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ライブ",
@@ -2301,6 +2517,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "保育園",
+   "kana": "ほいくえん",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "信楽焼",
@@ -2652,6 +2877,15 @@ window.HANASHI = {
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "小学生",
+   "kana": "しょうがくせい",
+   "belief": "b_park_kids",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "小豆島",
@@ -3239,6 +3473,15 @@ window.HANASHI = {
    "src": "meibutsu"
   },
   {
+   "word": "逃げた",
+   "kana": "にげた",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "通り道",
    "kana": "とおりみち",
    "belief": "b_shinkansen",
@@ -3446,6 +3689,15 @@ window.HANASHI = {
    "src": "abstract-20260924"
   },
   {
+   "word": "とり",
+   "kana": "とり",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "ひま",
    "kana": "ひま",
    "belief": "b_night_nothing",
@@ -3462,6 +3714,15 @@ window.HANASHI = {
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "サル",
+   "kana": "さる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "ネコ",
@@ -3570,6 +3831,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "事件",
+   "kana": "じけん",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "五島",
@@ -3867,6 +4137,15 @@ window.HANASHI = {
    "season": null,
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "動画",
+   "kana": "どうが",
+   "belief": "b_net_anyone",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "化石",
@@ -4227,6 +4506,15 @@ window.HANASHI = {
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "小鳥",
+   "kana": "ことり",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "尾張",
@@ -5309,6 +5597,15 @@ window.HANASHI = {
    "src": "place"
   },
   {
+   "word": "脱走",
+   "kana": "だっそう",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
+  },
+  {
    "word": "舞鶴",
    "kana": "まいづる",
    "belief": null,
@@ -5622,6 +5919,15 @@ window.HANASHI = {
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "野鳥",
+   "kana": "やちょう",
+   "belief": "b_zoo_mammal",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "kids-20260925"
   },
   {
    "word": "金沢",
@@ -9057,6 +9363,161 @@ window.HANASHI = {
      "402",
      "600"
     ]
+   }
+  },
+  {
+   "id": "S41",
+   "title": "さわれる日",
+   "strength": 4,
+   "ochiType": "律儀",
+   "zekai": "へん",
+   "tone": "滑稽",
+   "hooks": {
+    "prefectures": [],
+    "beliefs": [
+     "b_zoo_big"
+    ]
+   },
+   "facts": [
+    "F59",
+    "F08"
+   ],
+   "bridge": "では、さわれる話を ひとつ。",
+   "furi": "動物園でさわれるのは、たいてい何だとお思いで?",
+   "makura": "レジに立っておりますと、小さいお客さんが、さわれるのはどれかと訊いてまいります。",
+   "hondai": [
+    {
+     "who": "客",
+     "text": "ヤギとかウサギでしょ。どこの動物園もそう。"
+    },
+    {
+     "who": "私",
+     "text": "さようで。わたくしも、そう思っておりました。"
+    },
+    "この山の動物園で、手を出してよいことになっておりますのは、南の国から来た小さなサルでございます。",
+    {
+     "who": "私",
+     "text": "ボリビアリスザルと申しまして、たとえるなら、肩に乗るくらいの大きさで。"
+    },
+    "ただし、いつでもよいわけではございません。春から秋の、土日と祝日だけ。しかも一日に二度きり。",
+    {
+     "who": "客",
+     "text": "えっ、いつでも さわれるんじゃないの?"
+    },
+    {
+     "who": "私",
+     "text": "さようで。しかも、一度に 10名さまで 締め切りでございます。"
+    }
+   ],
+   "guess": "書いてはおりませんが、サルのほうにも、付き合いきれる回数というものがあるのではないでしょうか。",
+   "question": {
+    "text": "一日二度のうち、一度目は何時からでしょう。",
+    "choices": [
+     "9時",
+     "11時",
+     "13時",
+     "15時"
+    ],
+    "answer": 1
+   },
+   "reply": {
+    "correct": "ご名答。",
+    "wrong": "それが、もう少し 遅うございます。",
+    "wrongEach": [
+     "それが、もう少し 遅うございます。",
+     null,
+     "それが、その手前で。",
+     "それは 二度目のほうで。"
+    ]
+   },
+   "sage": "日本一小さい動物園で、いちばん先に締め切るのが、いちばん小さいお客の列。",
+   "atogaki": "西山動物園のリスザルとのふれあい体験。連休はお休みでございます。",
+   "card": {
+    "top": "西山動物園",
+    "big": "さわれる日は\n決まっている",
+    "bottom": "ボリビアリスザルとのふれあい体験"
+   },
+   "uwasa": {
+    "text": "聞くところでは、市の案内には、閉まる時刻が午後16時30分と書いてあるそうでございます。",
+    "nums": [
+     "16",
+     "30",
+     "4",
+     "9"
+    ]
+   }
+  },
+  {
+   "id": "S42",
+   "title": "十五の空白",
+   "strength": 4,
+   "ochiType": "落差",
+   "zekai": "ドンデン",
+   "tone": "滑稽",
+   "hooks": {
+    "prefectures": [],
+    "beliefs": [
+     "b_zoo_big"
+    ]
+   },
+   "facts": [
+    "F33",
+    "F08"
+   ],
+   "bridge": "では、どこにでもいる話を ひとつ。",
+   "furi": "あの赤い獣、日本のどこの動物園にもいるとお思いで?",
+   "makura": "小さいお客さんに、うちの近くにもいるのと訊かれまして、返事に困りました。",
+   "hondai": [
+    {
+     "who": "客",
+     "text": "レッサーパンダなんて、どこの動物園にもいるでしょ。"
+    },
+    {
+     "who": "私",
+     "text": "わたくしも、長いことそう申しておりました。"
+    },
+    "ところが、飼っている園を数えた表がございまして、これが日本じゅうで 59園。",
+    {
+     "who": "私",
+     "text": "たとえるなら、クラスにひとりかふたり。全員では ございません。"
+    },
+    "その園が どの都道府県に あるかを 並べますと、これが 抜けだらけで。",
+    {
+     "who": "客",
+     "text": "全部の県に いるんじゃないの?"
+    },
+    {
+     "who": "私",
+     "text": "それが、おらん県が ございます。"
+    }
+   ],
+   "guess": "書いてはおりませんが、いないところの子ほど、はじめて見たときの顔が よいのではないでしょうか。",
+   "question": {
+    "text": "レッサーパンダのいる都道府県は、いくつでしょう。",
+    "choices": [
+     "12",
+     "22",
+     "32",
+     "47"
+    ],
+    "answer": 2
+   },
+   "reply": {
+    "correct": "お見事。",
+    "wrong": "それが、もっと多いんで。",
+    "wrongEach": [
+     null,
+     null,
+     null,
+     "さすがに、全部とは まいりません。"
+    ]
+   },
+   "sage": "日本一小さい動物園から出ていった子らが、まだ埋めきれていない県がございます。",
+   "atogaki": "日本動物園水族館協会の飼育動物検索と、各園の公式サイトから。",
+   "card": {
+    "top": "西山動物園",
+    "big": "まだ いない県が\nございます",
+    "bottom": "レッサーパンダを飼育する園の分布"
    }
   }
  ],
