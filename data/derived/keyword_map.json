@@ -10,7 +10,9 @@
   "count": 573,
   "manual_added": "2026-09-21 に、監査で 取りこぼしが 出た 一般語を 追加",
   "abstract_added": "2026-09-24",
-  "kids_added": "2026-09-25"
+  "kids_added": "2026-09-25",
+  "matsuri_added": "2026-09-25",
+  "data_added": "2026-09-25"
  },
  "entries": [
   {
@@ -455,6 +457,15 @@
    "src": "zoo"
   },
   {
+   "word": "ベストシーズン",
+   "kana": "べすとしーずん",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
    "word": "レッサーパンダ",
    "kana": "れっさーぱんだ",
    "belief": "b_panda_bw",
@@ -545,6 +556,15 @@
    "src": "zoo"
   },
   {
+   "word": "おいしいもの",
+   "kana": "おいしいもの",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "かみね動物園",
    "kana": "かみねどうぶつえん",
    "belief": "b_zoo_big",
@@ -563,6 +583,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "ごはんの時間",
+   "kana": "ごはんのじかん",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
+  },
+  {
    "word": "しまなみ海道",
    "kana": "しまなみかいどう",
    "belief": null,
@@ -570,6 +599,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "つつじまつり",
+   "kana": "つつじまつり",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
   },
   {
    "word": "ふれあい体験",
@@ -1310,6 +1348,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "food",
+   "kana": "ふーど",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "あじさい",
    "kana": "あじさい",
    "belief": "b_one_flower",
@@ -1371,6 +1418,15 @@
    "season": null,
    "weight": 1,
    "src": "kids-20260925"
+  },
+  {
+   "word": "すいてる",
+   "kana": "すいてる",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "すべり台",
@@ -1499,6 +1555,15 @@
    "src": "abstract-20260924"
   },
   {
+   "word": "イベント",
+   "kana": "いべんと",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "サンゴ礁",
    "kana": "さんごしょう",
    "belief": null,
@@ -1524,6 +1589,15 @@
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "マイカー",
+   "kana": "まいかー",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
   },
   {
    "word": "マンゴー",
@@ -1643,6 +1717,15 @@
    "src": "zoo"
   },
   {
+   "word": "動いてる",
+   "kana": "うごいてる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
+  },
+  {
    "word": "十和田湖",
    "kana": "とわだこ",
    "belief": null,
@@ -1668,6 +1751,15 @@
    "season": null,
    "weight": 3,
    "src": "general"
+  },
+  {
+   "word": "名物料理",
+   "kana": "めいぶつりょうり",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
   },
   {
    "word": "和歌山県",
@@ -2003,6 +2095,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "お祭り",
+   "kana": "おまつり",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "げーむ",
    "kana": "げーむ",
    "belief": "b_park_kids",
@@ -2046,6 +2147,15 @@
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "ごはん",
+   "kana": "ごはん",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
   },
   {
    "word": "ご近所",
@@ -2100,6 +2210,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "まつり",
+   "kana": "まつり",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
   },
   {
    "word": "まんが",
@@ -2181,6 +2300,15 @@
    "season": null,
    "weight": 1,
    "src": "manual-20260921"
+  },
+  {
+   "word": "グルメ",
+   "kana": "ぐるめ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
   },
   {
    "word": "ゲーム",
@@ -2291,6 +2419,15 @@
    "src": "manual-20260921"
   },
   {
+   "word": "ランチ",
+   "kana": "らんち",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "ワイン",
    "kana": "わいん",
    "belief": null,
@@ -2298,6 +2435,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "一年中",
+   "kana": "いちねんじゅう",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
   },
   {
    "word": "三重県",
@@ -2408,6 +2554,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "個体名",
+   "kana": "こたいめい",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
    "word": "偕楽園",
    "kana": "かいらくえん",
    "belief": "b_old_famous",
@@ -2505,6 +2660,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "名づけ",
+   "kana": "なづけ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "名古屋",
@@ -2732,6 +2896,15 @@
    "src": "place"
   },
   {
+   "word": "家系図",
+   "kana": "かけいず",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
    "word": "富山県",
    "kana": "とやまけん",
    "belief": null,
@@ -2739,6 +2912,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "寝てる",
+   "kana": "ねてる",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
   },
   {
    "word": "小さい",
@@ -3054,6 +3236,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "涼しい",
+   "kana": "すずしい",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "淡路島",
@@ -3425,6 +3616,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "雨の日",
+   "kana": "あめのひ",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
    "word": "雪遊び",
    "kana": "ゆきあそび",
    "belief": "b_snow_nothing",
@@ -3461,6 +3661,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "食べ物",
+   "kana": "たべもの",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "香川県",
    "kana": "かがわけん",
    "belief": null,
@@ -3468,6 +3677,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "駐車場",
+   "kana": "ちゅうしゃじょう",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
   },
   {
    "word": "駿河湾",
@@ -3522,6 +3740,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "えさ",
+   "kana": "えさ",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
   },
   {
    "word": "お墓",
@@ -3675,6 +3902,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "世代",
+   "kana": "せだい",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "中津",
@@ -3855,6 +4091,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "何月",
+   "kana": "なんがつ",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "信州",
@@ -4064,6 +4309,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "名前",
+   "kana": "なまえ",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
    "word": "名所",
    "kana": "めいしょ",
    "belief": "b_old_famous",
@@ -4224,6 +4478,15 @@
    "season": null,
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "天気",
+   "kana": "てんき",
+   "belief": "b_snow_nothing",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "天草",
@@ -4406,6 +4669,15 @@
    "src": "place"
   },
   {
+   "word": "屋台",
+   "kana": "やたい",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "山口",
    "kana": "やまぐち",
    "belief": null,
@@ -4566,6 +4838,15 @@
    "season": null,
    "weight": 2,
    "src": "general"
+  },
+  {
+   "word": "平日",
+   "kana": "へいじつ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "平泉",
@@ -4856,6 +5137,24 @@
    "src": "abstract-20260924"
   },
   {
+   "word": "暑い",
+   "kana": "あつい",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
+   "word": "曜日",
+   "kana": "ようび",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
    "word": "札幌",
    "kana": "さっぽろ",
    "belief": null,
@@ -4980,6 +5279,15 @@
    "season": null,
    "weight": 1,
    "src": "general"
+  },
+  {
+   "word": "気温",
+   "kana": "きおん",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "水戸",
@@ -5297,6 +5605,15 @@
    "src": "manual-20260921"
   },
   {
+   "word": "祭り",
+   "kana": "まつり",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "福井",
    "kana": "ふくい",
    "belief": null,
@@ -5414,6 +5731,15 @@
    "src": "general"
   },
   {
+   "word": "給餌",
+   "kana": "きゅうじ",
+   "belief": "b_zoo_big",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
+  },
+  {
    "word": "統計",
    "kana": "とうけい",
    "belief": "b_shinkansen",
@@ -5421,6 +5747,15 @@
    "season": null,
    "weight": 1,
    "src": "manual-20260921"
+  },
+  {
+   "word": "縁日",
+   "kana": "えんにち",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
   },
   {
    "word": "美濃",
@@ -5547,6 +5882,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "血統",
+   "kana": "けっとう",
+   "belief": "b_panda_bw",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "西宮",
@@ -5693,6 +6037,15 @@
    "src": "abstract-20260924"
   },
   {
+   "word": "通年",
+   "kana": "つうねん",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
+  },
+  {
    "word": "連休",
    "kana": "れんきゅう",
    "belief": "b_holiday_open",
@@ -5700,6 +6053,15 @@
    "season": null,
    "weight": 1,
    "src": "abstract-20260924"
+  },
+  {
+   "word": "週末",
+   "kana": "しゅうまつ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
   },
   {
    "word": "遊具",
@@ -5909,6 +6271,15 @@
    "src": "meibutsu"
   },
   {
+   "word": "陽気",
+   "kana": "ようき",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "data-20260925"
+  },
+  {
    "word": "隠岐",
    "kana": "おき",
    "belief": null,
@@ -5943,6 +6314,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "露店",
+   "kana": "ろてん",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
   },
   {
    "word": "青森",
@@ -5999,6 +6379,15 @@
    "src": "place"
   },
   {
+   "word": "食事",
+   "kana": "しょくじ",
+   "belief": "b_old_famous",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "matsuri-20260925"
+  },
+  {
    "word": "香川",
    "kana": "かがわ",
    "belief": null,
@@ -6015,6 +6404,15 @@
    "season": null,
    "weight": 2,
    "src": "meibutsu"
+  },
+  {
+   "word": "駐車",
+   "kana": "ちゅうしゃ",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
   },
   {
    "word": "駿河",
@@ -6161,6 +6559,15 @@
    "src": "place"
   },
   {
+   "word": "夏",
+   "kana": "なつ",
+   "belief": "b_spring_only",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
+  },
+  {
    "word": "夜",
    "kana": "よる",
    "belief": "b_night_nothing",
@@ -6249,6 +6656,15 @@
    "season": null,
    "weight": 3,
    "src": "place"
+  },
+  {
+   "word": "車",
+   "kana": "くるま",
+   "belief": "b_park_boring",
+   "pref": null,
+   "season": null,
+   "weight": 1,
+   "src": "stat-20260925"
   },
   {
    "word": "鐘",
