@@ -23,7 +23,7 @@
       const year = date ? Number(date.slice(0, 4)) : null;
       const md = Core.monthDay(date);
       const out = [];
-      const consider = (st, source) => {
+      const consider = (st, source, days) => {
         const hooks = st.hooks || {};
         const reasons = [];
         let score = st.strength || 1;
@@ -40,6 +40,13 @@
           score += 4;
           reasons.push("today");
         }
+        // ★「もうすぐ」は ★添えるもの。★主役に しない (2026-09-25)。
+        //   ★当日 (+4) はもちろん、★県 (+3) や 思い込み (+2) も 押しのけない。
+        //   ★前日だけ +2、あとは +1。★「もうすぐ○○」の 一言が 出れば 足りる。
+        if (source === "soon") {
+          score += (days || 7) <= 1 ? 2 : 1;
+          reasons.push("soon");
+        }
         if (reasons.length) out.push({ story: st, score, reasons, source });
       };
       data.stories.forEach((st) => consider(st, "story"));
@@ -49,7 +56,61 @@
       (data.today[md] || [])
         .filter((st) => !st.onlyYear || st.onlyYear === year)
         .forEach((st) => consider(st, "today"));
+      // ★暦の噺を、その日 以外でも 出せるように する (2026-09-25 ユーザー指示)
+      //   ① 手前 7 日 … 「もうすぐ」として 出す
+      //   ② 好きなもので 当たった とき … 「こういう 情報も ございます」として 出す
+      //   ★その日 ちょうど (today) より 点は 低くする。★当日を 押しのけない。
+      Core.nearDays(data, date, 7).forEach(function (h) {
+        if (h.story.onlyYear && h.story.onlyYear !== year) return;
+        consider(h.story, h.days === 0 ? "today" : "soon", h.days);
+      });
+      // ★日付が 合わなくても、好きなもの (思い込み) が 合えば 候補に 入れる。
+      //   ★「こういう情報も ございます」として 出す (2026-09-25 ユーザー指示)。
+      //   ★点は 足さない (consider の 思い込み +2 だけ)。★当日・もうすぐを 押しのけない。
+      if (beliefs.length) {
+        const already = new Set(out.map((c) => c.story.id));
+        Object.keys(data.today || {}).forEach(function (m2) {
+          data.today[m2].forEach(function (st) {
+            if (already.has(st.id)) return;
+            if (st.onlyYear && st.onlyYear !== year) return;
+            if (!(st.hooks.beliefs || []).some((b2) => beliefs.includes(b2))) return;
+            already.add(st.id);
+            consider(st, "story");
+          });
+        });
+      }
       out.sort((a, b) => b.score - a.score || a.story.id.localeCompare(b.story.id));
+      return out;
+    },
+
+    /** ★その暦の噺が 何日後か。★当日 0 / 分からなければ -1 */
+    daysUntil(st, date) {
+      if (!st.md || !date) return -1;
+      const base = new Date(date + "T00:00:00");
+      if (isNaN(base)) return -1;
+      for (let k = 0; k <= 14; k += 1) {
+        const dt = new Date(base.getTime() + k * 86400000);
+        const md = String(dt.getMonth() + 1).padStart(2, "0") + "-" +
+                   String(dt.getDate()).padStart(2, "0");
+        if (md === st.md) return k;
+      }
+      return -1;
+    },
+
+    /** ★指定の日から 前 n 日 以内に ある 暦の噺を 拾う。
+     *  ★返り = [{ story, days }]  days = 何日後か (0 = 当日)
+     *  ★年をまたぐ 12月→1月 も 拾う。 */
+    nearDays(data, date, n) {
+      if (!date) return [];
+      const base = new Date(date + "T00:00:00");
+      if (isNaN(base)) return [];
+      const out = [];
+      for (let k = 1; k <= n; k += 1) {
+        const dt = new Date(base.getTime() + k * 86400000);
+        const md = String(dt.getMonth() + 1).padStart(2, "0") + "-" +
+                   String(dt.getDate()).padStart(2, "0");
+        (data.today[md] || []).forEach((st) => out.push({ story: st, days: k, md: md }));
+      }
       return out;
     },
 
@@ -159,17 +220,23 @@
         ? "その筋の噺は もう一席ございますが、続けますと 似てまいります。趣を変えて。"
         : "いただいた手がかりの噺は、あいにく持ち合わせがございません。かわりに、今日という日で一席。";
       const byPref = input.pref ? all.filter((c) => has(c, "prefectures", input.pref)) : [];
-      if (byBelief.length) return { story: byBelief[0].story, chosenBy: "belief", switchNote: null };
+      const why = (c) => (c.reasons.indexOf("soon") >= 0 ? "soon" : null);
+      if (byBelief.length) {
+        return { story: byBelief[0].story, chosenBy: "belief",
+                 switchNote: null, when: why(byBelief[0]) };
+      }
       if (byPref.length) {
         return {
           story: byPref[0].story,
           chosenBy: "pref",
+          when: why(byPref[0]),
           switchNote: preferBelief ? "その話は、またの機会に。お客さんの土地の噺を、ひとつ。" : null,
         };
       }
       return {
         story: all[0].story,
         chosenBy: "today",
+        when: why(all[0]),
         switchNote: preferBelief || input.pref ? note : null,
       };
     },
@@ -870,6 +937,8 @@
     }
     state.chosenBy = got.chosenBy;
     state.switchNote = got.switchNote;
+    state.when = got.when || null;
+    state.whenStory = got.story;
     tell(got.story);
   }
 
@@ -890,6 +959,17 @@
     if (state.switchNote) {
       head.push(state.switchNote);
       state.switchNote = null;
+    }
+    // ★暦の噺を その日 以外で 出すときは、そう 断る (2026-09-25)
+    //   ★「今日という日の話を」と 言いながら 今日で ない、が 起きないように する
+    if (st.isToday) {
+      const d = Core.daysUntil(st, state.input.date);
+      if (state.when === "soon" && d > 0) {
+        head.push(d === 1 ? "そうそう、明日でございますが、こういう話も ございまして。"
+                          : "そうそう、もうすぐでございますが、こういう話も ございまして。");
+      } else if (state.chosenBy !== "today" && d !== 0) {
+        head.push("お手がかりから すこし 外れますが、こういう話も ございまして。");
+      }
     }
     if (state.chosenBy === "pref" && state.input.pref && !(st.bridge || "").includes(state.input.pref)) {
       head.push(state.input.pref + "のお客さんに、ひとつ。");
@@ -989,6 +1069,7 @@
       drawCard(st);
       renderSources(st);
       $("sageBox").hidden = false;
+      showKoe(st);
       scroll();
       const first = state.q0label ? "はじめに伺ったときは、「" + state.q0label + "」でございました。" : "はじめに、お気持ちを伺いました。";
       say(first, "shi", () =>
@@ -1369,6 +1450,39 @@
   // ★「はじめから」は ★園の入口も 含めて まっさらに 戻す
   //   単に reload すると ?kin= が 残り、同じ園から 始まってしまう
   showBuilt();
+
+  // ★鳴き声 (2026-09-25)。★手元の mp3 を data URI で 埋め込み = ★外部通信 0。
+  //   ★自動では 鳴らさない。★押したときだけ。★決定㉛ で 見送った 読み上げとは 別もの
+  //   (見送りの 理由は「ネットワーク音声を 使う 場合が ある」こと。手元の 音は それに 当たらない)
+  let koeEl = null;
+  function showKoe(st) {
+    const btn = $("koe");
+    if (!btn) return;
+    const bank = (root.HANASHI_KOE || {}).redpanda;
+    const about = (st.title + " " + Core.hondaiText(st) + " " + st.sage);
+    const animal = /レッサーパンダ|赤い子|赤い獣|あの子|動物園/.test(about);
+    btn.hidden = !(bank && animal);
+  }
+  $("koe").addEventListener("click", () => {
+    const bank = (root.HANASHI_KOE || {}).redpanda;
+    if (!bank) return;
+    if (!koeEl) {
+      koeEl = document.createElement("audio");
+      koeEl.src = bank.dataUri;
+      koeEl.preload = "none";
+    }
+    koeEl.currentTime = 0;
+    const pr = koeEl.play();
+    if (pr && pr.catch) pr.catch(() => {});
+    log("koe", state.current);
+    const c = document.createElement("p");
+    c.className = "line ato";
+    c.textContent = bank.credit;
+    $("talk").appendChild(c);
+    scroll();
+    $("koe").disabled = true;
+    setTimeout(() => { $("koe").disabled = false; }, 1200);
+  });
 
   $("restart").addEventListener("click", () => {
     // ★読み直しでも 入口へ 戻す。★そのままだと ブラウザが
