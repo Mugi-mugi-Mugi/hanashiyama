@@ -4,6 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>はなし山 — 西山公園がオチを探す</title>
+  <meta name="description" content="福井県鯖江市 西山公園のオープンデータを、落語の一席に仕立てて語ります。あなたの県・好きなもの・今日の日付から、あなたに効くオチを探します。">
+  <!-- ★共有したとき 何か 出るように (2026-09-25)。★og:image は 置いていないので 文字だけ。
+       ★外部への 通信は 増えない (meta は 読まれるだけ) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="はなし山">
+  <meta property="og:title" content="はなし山 — 西山公園がオチを探す">
+  <meta property="og:description" content="福井県鯖江市 西山公園のオープンデータを、落語の一席に。来て、とは言いません。オチを聞いたあなたが、自分でそう思うところまで。">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="はなし山 — 西山公園がオチを探す">
+  <meta name="twitter:description" content="鯖江市のオープンデータを、落語の一席に。外部通信ゼロで動きます。">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -98,10 +109,12 @@
     <p class="credit">プログラム: MIT License / &copy; 2026 Mugi-mugi-Mugi。データと引用はMITの対象外で、各出典のライセンスに従います。</p>
   </footer>
 
+  <!-- ★幕を 開ける まで 読むのは 台本と 園の一覧だけ (2026-09-25)。
+       ★写真 2.3MB と 音 279KB を 先に 読むと、幕が 出るまで 待たされる。
+       ★img.js は 幕を 開けたとき、koe.js は「鳴き声を聞く」を 押したときに 読む。
+       ★どちらも 同じ フォルダの ファイル = ★外部通信は 増えない。 -->
   <script src="data/bundle.js"></script>
   <script src="data/kin.js"></script>
-  <script src="data/img.js"></script>
-  <script src="data/koe.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

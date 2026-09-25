@@ -333,6 +333,25 @@
   root.HanashiCore = Core;
   if (typeof document === "undefined" || !root.HANASHI) return;
 
+  /** ★あとから 読む (同じフォルダの ファイルだけ。★外部は 読まない) */
+  function lazy(src, after) {
+    if (lazy._done[src]) return after();
+    // ★読み込む 場所が 無い ところ (煙試験の 最小 DOM など) では 何もしない。
+    //   ★写真も 音も 無くて 噺は 成り立つ ように 作ってある。
+    const host = (document.head || document.body);
+    if (!host || !host.appendChild || !document.createElement) {
+      lazy._done[src] = true;
+      return after();
+    }
+    lazy._done[src] = true;                 // ★二重に 読まない
+    const s = document.createElement("script");
+    s.src = src;
+    s.onload = after;
+    s.onerror = after;                      // ★読めなくても 噺は 続ける
+    host.appendChild(s);
+  }
+  lazy._done = {};
+
   // ★読み直し (F5) でも 一番上から 見せる。
   //   ブラウザは 既定で「前に 見ていた 高さ」に 戻すので、幕の 途中から 始まる
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
@@ -683,6 +702,7 @@
     window.scrollTo(0, 0);
     const e = entry();
     state.input.date = e.date || Core.todayString();
+    lazy("data/img.js", () => {});          // ★写真は ここから (幕が 出るのを 待たせない)
     state.kin = zoo || e.zoo;
     if (state.kin && state.kin.pref) state.input.pref = state.kin.pref;  // 県は 聞かずに 済む
     // ★一覧から 選んだときに URL は 書き換えない。
@@ -1427,7 +1447,20 @@
     if (e.target.closest("button") || e.target.closest("a")) return;
     hurry();
   });
-  $("skip").addEventListener("click", hurry);
+  // ★足元の「早送り」は ★次の 問い (または サゲ) まで 飛ぶ (2026-09-25)。
+  //   ★画面の タップは これまで通り 1 行ずつ。★飛ばしたい人と 読みたい人を 分ける。
+  //   ★上限を 置くのは ★万一 止まらない ときに 固まらせないため。
+  $("skip").addEventListener("click", (e) => {
+    e.stopPropagation();
+    for (let i = 0; i < 40 && typing; i += 1) {
+      const before = typing;
+      hurry();
+      if (typing === before) break;                    // ★進まなくなったら やめる
+      const cls = " " + ((typing && typing.el && typing.el.className) || "") + " ";
+      if (/ toi | sage | kotae /.test(cls)) break;     // ★問い・答え・サゲで 止める
+    }
+    if (!typing) scroll();
+  });
   $("other").addEventListener("click", nextStory);
   $("again").addEventListener("click", nextStory);
   $("save").addEventListener("click", saveCard);
@@ -1458,12 +1491,14 @@
   function showKoe(st) {
     const btn = $("koe");
     if (!btn) return;
-    const bank = (root.HANASHI_KOE || {}).redpanda;
     const about = (st.title + " " + Core.hondaiText(st) + " " + st.sage);
-    const animal = /レッサーパンダ|赤い子|赤い獣|あの子|動物園/.test(about);
-    btn.hidden = !(bank && animal);
+    btn.hidden = !/レッサーパンダ|赤い子|赤い獣|あの子|動物園/.test(about);
   }
   $("koe").addEventListener("click", () => {
+    if (!root.HANASHI_KOE) {                 // ★押されて はじめて 読む (279KB)
+      $("koe").disabled = true;
+      return lazy("data/koe.js", () => { $("koe").disabled = false; $("koe").click(); });
+    }
     const bank = (root.HANASHI_KOE || {}).redpanda;
     if (!bank) return;
     if (!koeEl) {
