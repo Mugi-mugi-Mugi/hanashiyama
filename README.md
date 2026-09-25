@@ -29,13 +29,16 @@
 
 | 高座の芸 | 画面での埋め合わせ |
 |---|---|
-| 間 | 1 字ずつの打ち出し、読点と句点で止める、サゲの前にタメ |
-| 抑揚・声の大小 | まくらは大きく、問いは囲み、**サゲはいちばん大きく朱で**、断りは小さく |
+| 間 | 1 字ずつの打ち出し、読点と句点で止める、**答え合わせの前に一拍**、サゲの前にタメ |
+| 抑揚・声の大小 | まくらは大きく、問いは囲み、**答えは一段大きく**、**サゲはいちばん大きく朱で**、断りは小さく |
+| 読む速さ | **小さい字ほど遅く打つ**(字の大きさから速度を決める)。サゲは 1.6 倍ゆっくり |
 | しぐさ・目線 | まくらのあとに**小さな写真**、本題に**数字の絵図**、最後に**札の写真** |
-| 声色の使い分け | 噺家は左、客の答えは右の吹き出し |
+| 声色の使い分け | 噺家は左、客の答えは右の吹き出し。**動物の噺では本物の鳴き声**(押したときだけ) |
 | 客席の反応 | 4 択の問いと、前後で訊く「行ってみたい気持ち」 |
 
 噺の途中の写真と札の写真は埋め込み済みの data URI (計 63 枚 = 場面 49 / 札 14)、絵図はその場で組む SVG です。
+動物の噺では、札のところに「鳴き声を聞く」が出ます。**自動では鳴りません。**
+音も埋め込み済みなので、再生しても外部への通信は起きません。
 **外部への通信はどれもありません。**
 `app/scenes_preview.html` を開くと、写真を一覧で確かめられます (開発用)。
 
@@ -72,8 +75,9 @@ python -m http.server 8000 --bind 127.0.0.1 --directory app
 ## データを更新する
 
 ```sh
-python tools/build.py        # 台帳・台本・飼育記録から app/data/bundle.js を作る
-python tools/validate.py     # 語りと絵図の検査 (NG があれば終了コード 1)
+python tools/build.py          # 台帳・台本・飼育記録から app/data/bundle.js を作る
+python tools/build_credits.py  # CREDITS.md の出典一覧を事実台帳から作り直す
+python tools/validate.py       # 語り・絵図・app.js の文言・出典一覧の検査 (NG なら終了コード 1)
 python tools/build_graph.py  # つながり (共起ネットワーク) を作り直す
 python tools/check_graph.py  # つじつまの検査
 node  tools/test_pick.js      # 噺の選び方・絵図の描画のテスト
@@ -96,6 +100,9 @@ app/
   data/facts.json                   事実台帳 (出典つき)
   data/stories.json                 台本
   data/bundle.js                    自動生成 (手で編集しない)
+  data/img.js                       写真 (data URI で埋め込み。自動生成)
+  data/kin.js                       全国の動物園からの入口 (自動生成)
+  data/koe.js                       レッサーパンダの鳴き声 (data URI。押したときだけ鳴る)
 tools/
   build.py                          bundle.js を作る
   figs.py                           本題に出す絵図を、参照している事実から決める
@@ -106,7 +113,9 @@ tools/
   report.py                         噂の一言をつける / 吟味レポートを書き出す
   measure_gap.py                    オチのズレの大きさを測る
   read_csv.py                       CSV を文字コードを間違えずに読む (人が知っている値で検算)
-  make_release.py                   公開用フォルダを作る (許可制。作業メモは入らない)
+  make_release.py                   公開用フォルダを作る (許可制。前回との差分も出す)
+  build_credits.py                  CREDITS.md の出典一覧を事実台帳から作り直す
+  build_images.py                   写真を data URI にして img.js を作る
   test_figs.py                      絵図が答えを先に見せないかのテスト
   test_validate.py                  検査の陰性テスト
   test_log_summary.py               記録の集計のテスト
