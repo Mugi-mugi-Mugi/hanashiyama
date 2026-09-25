@@ -24,7 +24,10 @@ for (const [name, input] of cases) {
   console.log("■", name, "→", r.length, "件:", r.slice(0, 4).map(x => x.story.id + "(" + x.score + ":" + x.reasons.join("+") + ")").join(", "));
 }
 const expect = (cond, msg) => { if (!cond) { fail++; console.log("  ✕", msg); } else console.log("  ✓", msg); };
-expect(C.pick(H, { date: "2026-09-17" }).length === 0, "手がかりが無い日は語らない(第二条)");
+expect(C.pick(H, { date: "2026-03-15" }).length === 0,
+       "手がかりが無い日は語らない(第二条)  ★暦から 遠い 日で 見る");
+expect(C.pick(H, { date: "2026-09-17" }).length > 0,
+       "  対照: 暦の 2 日前なら 候補が 出る (数え方は 壊れていない)");
 expect(C.pick(H, { pref: "山口県", date: "2026-09-17" })[0].story.id === "S01", "山口県は松陰の話が先頭");
 expect(C.pick(H, { date: "2026-11-28" })[0].story.id === "T-1128", "11/28 は命日の話が先頭");
 expect(C.sageExtra(H.today["11-28"][0], "2026-11-28") === "(没後142年)", "没後142年を計算");
@@ -143,6 +146,34 @@ expect(z1 && ["S11", "S12", "S08"].indexOf(z1.story.id) < 0, "手がかりが �
 expect(C.allStories(H).length === H.stories.length + H.prefStories.length +
        Object.keys(H.today).reduce((n, k) => n + H.today[k].length, 0),
        "allStories が 手書き + 県 + 今日 を すべて 返す (" + C.allStories(H).length + " 席)");
+
+
+// ---- 暦の噺を、その日 以外でも 出す (2026-09-25 ユーザー指示) ----------------
+//   ① 手前 7 日 …「もうすぐ」  ② 好きなものが 合えば いつでも「こういう情報も」
+//   ★当日 (+4) を 押しのけない ことが 大事
+const tsu = (d) => C.pick(H, { pref: "", beliefs: [], date: d })
+  .filter((x) => x.story.id.indexOf("T-tsutsuji") === 0);
+expect(tsu("2026-04-25").length === 0, "8 日以上 前は 出ない");
+expect(tsu("2026-05-01").length > 0, "2 日前は 出る (もうすぐ)");
+expect(tsu("2026-05-06").length === 0, "過ぎたら 出ない");
+const onDay = tsu("2026-05-03");
+const same = onDay.find((x) => x.story.id === "T-tsutsuji-03");
+const other = onDay.find((x) => x.story.id !== "T-tsutsuji-03");
+expect(same && other && same.score > other.score,
+       "当日の席が 手前の席より 点が 高い (" + (same && same.score) + " > " + (other && other.score) + ")");
+expect(same && same.reasons.indexOf("today") >= 0, "当日は today、手前は soon");
+
+const byLike = (w) => {
+  const m = C.match(H, w);
+  return C.pick(H, { pref: "", beliefs: [m.belief], date: "2026-09-25" })
+    .filter((x) => x.story.isToday);
+};
+expect(byLike("歴史").some((x) => x.story.id === "T-1128"),
+       "「歴史」から 命日の噺が 候補に 入る (日付は 9/25)");
+expect(byLike("雪").some((x) => x.story.id === "T-0124"),
+       "「雪」から 0 人の日が 候補に 入る");
+expect(C.daysUntil({ md: "05-03" }, "2026-05-01") === 2, "daysUntil が 日数を 返す");
+expect(C.daysUntil({ md: "05-03" }, "2026-05-03") === 0, "当日は 0");
 
 console.log(fail ? "FAIL " + fail : "ALL OK");
 process.exit(fail ? 1 : 0);
