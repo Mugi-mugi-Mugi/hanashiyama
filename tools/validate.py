@@ -425,6 +425,17 @@ def main():
 
     walk(b, "bundle")
 
+    # 12. ★新しい事実が entities.json に 紐づいているか
+    #   ★2026-09-25 に F65〜F73 の 9 件が 漏れていた。
+    #   ★漏れると ★時制・矛盾・取り合わせ の 検査が その事実に 効かない。
+    #   ★しかも 何も 言わずに 通るので 気づけない。
+    with open(os.path.join(ROOT, "data", "derived", "entities.json"), encoding="utf-8") as _f:
+        ent_src = _f.read()
+    orphan = [f["id"] for f in b["facts"] if ('"' + f["id"] + '"') not in ent_src]
+    for fid in orphan:
+        errors.append("entities.json に %s が 紐づいていない "
+                      "(どの 登場するもの の facts にも 無い = つじつまの検査が 効かない)" % fid)
+
     # 11. ★CREDITS.md に 事実の 出典が 全部 載っているか (★公開される 文書)
     #   ★CREDITS は「出典は 一件ずつ 書いています」と 言い切っている。
     #   ★2026-09-24 に 38 本中 21 本が 抜けていた。手で 書き写す 作りだったため。
@@ -448,6 +459,8 @@ def main():
     print("app.js に 直接 書いてある 文言: %d 本 も 同じ作法で 見た" % n_app)
     print("CREDITS.md と 突き合わせた 出典の URL: %d 本 (足りないもの %d 本)"
           % (len(fact_urls), len(missing_url)))
+    print("entities.json に 紐づいた 事実: %d / %d 件"
+          % (len(b["facts"]) - len(orphan), len(b["facts"])))
     for w in warns:
         print("  注意:", w)
     if errors:

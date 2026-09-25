@@ -87,8 +87,11 @@ function runPass(seed, date, word, kin, viaList, plan) {
                 reload: function () { this._reloaded = true; } },
     URL: { createObjectURL: () => "blob:", revokeObjectURL() {} },
   };
+  // ★head を 持たせる。★app.js の lazy() が ここへ <script> を 足す。
+  //   ★src は 読まない (最小 DOM なので) が、★落ちずに 進むことを 確かめる。
+  const head = el("head");
   const doc = { createElement: el, getElementById: (i) => byId[i] || null, body: el("body"),
-                execCommand: () => true };
+                head: head, execCommand: () => true };
   win.history = { replaceState: () => {} };
   const st = (f) => { timers.push(f); return timers.length; };
   const Img = function () { this.complete = false; this.naturalWidth = 0; };
