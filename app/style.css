@@ -278,7 +278,11 @@ footer .credit { opacity: 0.75; }
 .figv { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
 .fign { font-family: var(--sans); font-size: 17px; fill: #9a9088; }
 .figb { fill: var(--vermilion); }
-/* ★棒に かぶる 位置に 出る 数字。★白ふちで 朱の上でも 読めるように (2026-09-26) */
+/* ★棒 (朱) の 中に 置く 数字は 白。★2026-09-26 まで 黒のまま 埋もれていた。
+   ★原因 = SVG の fill="#fff" 属性が ★.figv のクラス指定に 負けていた。
+   ★属性では なく クラスで 当てる。 */
+.figv-in { fill: #fff; }
+/* ★棒に かぶる 位置に 出る 数字。★白ふちで 朱の上でも 読めるように */
 .figv-out { paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
 
 /* ---------- タネ明かし ---------- */

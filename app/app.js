@@ -331,8 +331,9 @@
           svg += '<text x="' + (W - 4) + '" y="' + (y + 36) + '" class="figv figv-out" ' +
                  'text-anchor="end">' + esc(txt) + "</text>";
         } else {
-          svg += '<text x="' + (inside ? w - 8 : w + 8).toFixed(1) + '" y="' + (y + 36) + '" class="figv"' +
-                 (inside ? ' text-anchor="end" fill="#fff"' : "") + ">" + esc(txt) + "</text>";
+          svg += '<text x="' + (inside ? w - 8 : w + 8).toFixed(1) + '" y="' + (y + 36) +
+                 '" class="figv' + (inside ? " figv-in" : "") + '"' +
+                 (inside ? ' text-anchor="end"' : "") + ">" + esc(txt) + "</text>";
         }
       });
       // ★「864千人」が読めない、という声があった → 単位の読み方を添える (出典の数字は変えない)
