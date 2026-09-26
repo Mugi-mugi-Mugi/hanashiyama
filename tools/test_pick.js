@@ -175,5 +175,28 @@ expect(byLike("雪").some((x) => x.story.id === "T-0124"),
 expect(C.daysUntil({ md: "05-03" }, "2026-05-01") === 2, "daysUntil が 日数を 返す");
 expect(C.daysUntil({ md: "05-03" }, "2026-05-03") === 0, "当日は 0");
 
+
+// ---- 絵図: 棒の中に 置く 数字は ★白で 出ること (2026-09-26) ----
+//   ★SVG の fill="#fff" 属性は ★CSS の .figv { fill: var(--ink) } に 負ける。
+//   ★2026-09-26 まで 棒の朱に 黒い数字が 埋もれていた (ユーザー指摘・画面で 発覚)。
+//   ★クラス (figv-in) で 当てること。★属性で 書くと また 埋もれる。
+const svgLong = C.figSvg({ title: "長い棒", unit: "株",
+  items: [{ label: "多い", value: 31400 }, { label: "少ない", value: 25 }] });
+expect(svgLong.indexOf('fill="#fff"') < 0,
+       "棒の中の 数字に ★属性の fill を 使っていない (CSS に 負けるため)");
+expect(svgLong.indexOf("figv-in") >= 0,
+       "棒の中の 数字に ★クラス figv-in が 付いている");
+expect((svgLong.match(/figv-in/g) || []).length === 1,
+       "短い棒の 数字には 付かない (外に 黒で 出す)");
+// ★数字が 枠から はみ出さない
+const W = Number(svgLong.match(/viewBox="0 0 (\d+)/)[1]);
+let over = 0;
+for (const m of svgLong.matchAll(/<text x="([\d.]+)" y="[\d.]+" class="figv"(?![^>]*text-anchor)[^>]*>([^<]+)</g)) {
+  let w = 0;
+  for (const ch of m[2]) w += /[0-9,.-]/.test(ch) ? 11 : 20;
+  if (Number(m[1]) + w > W) over += 1;
+}
+expect(over === 0, "棒の外に 置いた 数字が 枠を はみ出さない");
+
 console.log(fail ? "FAIL " + fail : "ALL OK");
 process.exit(fail ? 1 : 0);
