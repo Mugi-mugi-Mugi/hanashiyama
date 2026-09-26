@@ -315,12 +315,25 @@
       items.forEach((it, i) => {
         const y = top + shift + i * rowH;
         const w = Math.max(3, (Math.abs(it.value) / max) * barW);
-        const inside = w > W - 110;      // 棒が長いときは 値を 棒の中に 白で置く
+        // ★数字が 棒 (朱) に かぶると 黒が 読めない (2026-09-26 指摘)。
+        //   ★前は「棒が W-110 より 長ければ 中」という 決め打ちで、
+        //   ★桁数を 見ていなかったので ★外に 置いた 黒が 棒に 乗ることが あった。
+        //   → ★実際の 文字幅で 判る。半角 11px / 全角 20px で 見積もる。
+        const txt = fmt(it.value);
+        let vw = 0;
+        for (let k = 0; k < txt.length; k += 1) vw += /[0-9,.\-]/.test(txt[k]) ? 11 : 20;
+        const inside = w + 10 + vw > W;        // ★外に 置くと はみ出す = 中に 入れる
         svg += '<text x="0" y="' + (y + 12) + '" class="figl">' + esc(it.label) + "</text>";
         if (fig.max) svg += '<rect x="0" y="' + (y + 20) + '" width="' + W + '" height="20" class="figt2"/>';
         svg += '<rect x="0" y="' + (y + 20) + '" width="' + w.toFixed(1) + '" height="20" class="figb"/>';
-        svg += '<text x="' + (inside ? w - 8 : w + 8).toFixed(1) + '" y="' + (y + 36) + '" class="figv"' +
-               (inside ? ' text-anchor="end" fill="#fff"' : "") + ">" + esc(fmt(it.value)) + "</text>";
+        if (inside && w < vw + 20) {
+          // ★棒が 短くて 中にも 入らない ときは ★棒の上に 白縁つきで 置く
+          svg += '<text x="' + (W - 4) + '" y="' + (y + 36) + '" class="figv figv-out" ' +
+                 'text-anchor="end">' + esc(txt) + "</text>";
+        } else {
+          svg += '<text x="' + (inside ? w - 8 : w + 8).toFixed(1) + '" y="' + (y + 36) + '" class="figv"' +
+                 (inside ? ' text-anchor="end" fill="#fff"' : "") + ">" + esc(txt) + "</text>";
+        }
       });
       // ★「864千人」が読めない、という声があった → 単位の読み方を添える (出典の数字は変えない)
       const unitNote = { "千人": "千人 = 1,000人", "万人": "万人 = 10,000人" }[fig.unit];
@@ -1491,13 +1504,24 @@
   function showKoe(st) {
     const btn = $("koe");
     if (!btn) return;
-    const about = (st.title + " " + Core.hondaiText(st) + " " + st.sage);
-    btn.hidden = !/レッサーパンダ|赤い子|赤い獣|あの子|動物園/.test(about);
+    // ★手元に あるのは ★レッサーパンダの 声だけ。
+    //   ★鳥・サルの 噺で 出すと「その生きものの 声」だと 思わせる (2026-09-26 指摘)。
+    //   ★文面の 言い回しで 判ると 取り違える (「鳥のほうが多い」で 出てしまった) ので
+    //   ★★参照している 事実で 判る。★レッサーパンダに 触れている 事実を 引いた席だけ。
+    const RP = ["F09", "F15", "F17", "F18", "F24", "F33", "F39", "F52", "F58", "F63", "F73"];
+    btn.hidden = !(st.facts || []).some((f) => RP.indexOf(f) >= 0);
+    // ★何の 鳴き声か 名前に 出す
+    if (!btn.hidden) btn.textContent = "レッサーパンダの鳴き声を聞く";
   }
   $("koe").addEventListener("click", () => {
     if (!root.HANASHI_KOE) {                 // ★押されて はじめて 読む (279KB)
       $("koe").disabled = true;
-      return lazy("data/koe.js", () => { $("koe").disabled = false; $("koe").click(); });
+      $("koe").textContent = "読み込んでいます…";
+      return lazy("data/koe.js", () => {
+        $("koe").textContent = "レッサーパンダの鳴き声を聞く";
+        $("koe").disabled = false;
+        $("koe").click();
+      });
     }
     const bank = (root.HANASHI_KOE || {}).redpanda;
     if (!bank) return;

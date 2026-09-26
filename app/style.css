@@ -278,6 +278,8 @@ footer .credit { opacity: 0.75; }
 .figv { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
 .fign { font-family: var(--sans); font-size: 17px; fill: #9a9088; }
 .figb { fill: var(--vermilion); }
+/* ★棒に かぶる 位置に 出る 数字。★白ふちで 朱の上でも 読めるように (2026-09-26) */
+.figv-out { paint-order: stroke; stroke: #fff; stroke-width: 4px; stroke-linejoin: round; }
 
 /* ---------- タネ明かし ---------- */
 .tane { margin-top: 14px; border-top: 1px solid #d8cdb9; padding-top: 10px; }
