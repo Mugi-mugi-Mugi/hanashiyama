@@ -849,7 +849,8 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
   const fit = declOf(".haikei img", "object-fit"), h = declOf(".haikei img", "height"), pos = declOf(".haikei img", "object-position") || "";
   // ★2026-11-15 (ユーザー指摘「背景が おかしい」): 層は 高座の 中だけ (absolute・紙色に 塗らない = 幕を 覆わない)。
   //   ★中の 枠を sticky で 画面の 高さに 置き、写真は 枠の 中で 全体を 見せる (contain)
-  ok(fit === "contain" && h === "100%" && declOf(".haikei img", "width") === "100%",
+  // ★2026-11-16: 写真は 下に 寄せる (隅書きの 1 行の すぐ 上)。高さは 枠から 足元と 隅書きを 引いた 分
+  ok(fit === "contain" && /^calc\(100% - var\(--footh/.test(h || "") && /bottom/.test(pos) && declOf(".haikei img", "width") === "100%",
      "背景の 写真は 切らずに 全体を 見せる (object-fit " + fit + " / height " + h + " / " + pos + ")");
   ok(declOf(".haikei", "position") === "absolute" && !declOf(".haikei", "background") && declOf(".haikei-in", "position") === "sticky",
      "背景の 層は 高座の 中だけ (absolute・塗らない) / 写真の 枠は sticky (" + declOf(".haikei", "position") + " / " + declOf(".haikei-in", "position") + ")");

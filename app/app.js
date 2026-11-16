@@ -187,6 +187,24 @@
      * どの噺を語るか。客が最後に答えたものを立てる: 信念 > 県 > 今日。
      * 返り値 { story, chosenBy, switchNote } / 候補が無ければ null
      */
+    /** ★写真の 出典を 1 行に 縮める (2026-11-16)。出どころ (Wikimedia は 作者も) + 条件 */
+    shortCredit(c) {
+      c = String(c || "");
+      const lic = /BY-SA|表示-継承/.test(c) ? "CC BY-SA 4.0"
+        : /表示4\.0|CC BY 4\.0/.test(c) ? "CC BY 4.0"
+        : /CC BY 2\.1/.test(c) ? "CC BY 2.1 JP"
+        : /CC BY 3\.0/.test(c) ? "CC BY 3.0"
+        : /CC BY/.test(c) ? "CC BY" : "";
+      let src = c;
+      if (/^イラスト/.test(c)) src = "イラスト: Mugi-mugi-Mugi";
+      else if (/^福井ふるさと百景/.test(c)) src = "福井ふるさと百景";
+      else if (/^鯖江市/.test(c)) src = "鯖江市オープンデータ";
+      else if (/^Wikimedia Commons/.test(c)) {
+        const m = c.match(/」\s*(.+?)\s*\(CC/);
+        src = "Wikimedia Commons" + (m ? "・" + m[1] : "");
+      }
+      return lic ? src + " (" + lic + ")" : src;
+    },
     /** ★その県の 客に 話しかける 作りの 席 (onlyPref) は、その県の 客にだけ 出す (2026-11-15) */
     fitsPref(st, pref) {
       return !st.onlyPref || (((st.hooks || {}).prefectures) || []).includes(pref || "");
@@ -1250,7 +1268,9 @@
     const was = !box.hidden && !hasCls(box, "kieru") && img.getAttribute ? img.getAttribute("src") : null;
     rmCls(box, "kieru"); rmCls(cap, "kieru");
     $("haikeiLabel").textContent = pick.label || "";
-    $("haikeiCredit").textContent = pick.credit || "";      // ★1 枚ずつ 出典 (CC BY ほか)
+    // ★隅書きは 1 行 (2026-11-16 ユーザー指摘)。★出どころ (と 作者)・条件を 短く。★正式な 表示は CREDITS.md / 読み上げと title には 全文
+    $("haikeiCredit").textContent = Core.shortCredit(pick.credit || "");
+    if ($("haikeiCap").setAttribute) $("haikeiCap").setAttribute("title", (pick.label || "") + " ／ " + (pick.credit || ""));
     box.hidden = false;
     cap.hidden = false;
     addCls($("koza"), "haikei-on");

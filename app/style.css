@@ -528,11 +528,14 @@ footer .credit { opacity: 0.75; }
 /* ★中の 枠を 画面の 高さで sticky に 置く = スクロールしても 写真は 画面の 同じ 所 (★高座の 外へは 出ない)。
    ★写真は 横長の まま 全体を 見せる (contain・中央)。★主題 (㊹「何の写真か」) を 切らない */
 .haikei-in {
-  position: sticky; top: 0; height: 100vh; overflow: hidden;
+  position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden;   /* ★dvh = スマホの 操作バーを 除いた 高さ */
 }
+/* ★2026-11-16 ユーザー指摘 (スマホ):「写真が 上に あって 下が 空白に 見える」→ ★写真は 下に 寄せる (隅書きの 1 行の すぐ 上)。
+   ★上の 余白は 語りの 文字の 地に なる */
 .haikei img {
-  position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%;
-  object-fit: contain; object-position: center 45%;
+  position: absolute; top: 0; left: 0; display: block; width: 100%;
+  height: calc(100% - var(--footh, 52px) - 44px);
+  object-fit: contain; object-position: center bottom;
 }
 /* ★切り替えの 間だけ 古い 写真を 下に 残す (クロスフェード)。★無い ときは 隠す */
 .haikei img.furui:not([src]), .haikei img.furui[src=""] { display: none; }
@@ -587,8 +590,12 @@ footer .credit { opacity: 0.75; }
   background: rgba(0, 0, 0, 0.62); color: #fff;
   font-family: var(--sans); line-height: 1.45; text-align: right;
 }
-.haikei-cap b { display: block; font-size: 0.8rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
-.haikei-cap span { display: block; font-size: 0.66rem; opacity: 0.92; overflow-wrap: anywhere; }
+/* ★2026-11-16 ユーザー指摘:「情報が 多すぎる。1 行に」→ ★写真の 名前 | 出どころ・条件 を 1 行。★はみ出す 分は … で 切る。
+   ★正式な 表示 (作品名・提供者・ライセンスの 全文) は CREDITS.md (CC BY は 媒体に 合った 妥当な 方法での 表示で よい) */
+.haikei-cap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.haikei-cap b { display: inline; font-size: 0.8rem; letter-spacing: 0.02em; }
+.haikei-cap span { display: inline; font-size: 0.7rem; opacity: 0.92; }
+.haikei-cap span::before { content: " ｜ "; opacity: 0.7; }
 
 
 /* ★場面の 頭の 見出し行 (読み上げ用)。★画面には 出さない。★畳んだ 語りを 開いても 出さない */
