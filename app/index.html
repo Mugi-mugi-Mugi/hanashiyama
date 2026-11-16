@@ -24,21 +24,26 @@
       <p class="koban">福井県鯖江市・西山公園</p>
       <h1>はなし山</h1>
       <p class="sub">道の駅のレジから、この公園の知られていない話を一席。</p>
-      <p class="nerai">
-        福井県鯖江市の<b>西山公園</b>。<br>
-        名前も知らない、行く用もない。たぶん、そういう場所だと思います。<br>
-        一席聞いたあとで、<b>ちょっと気になった</b>——そこまで持っていけたら、この噺家の勝ちでございます。
-      </p>
-      <ol class="nagare">
-        <li>はじめに「行ってみたい気持ち」を伺います (ここが出発点)</li>
-        <li>あなたの県・好きなもの・今日の日付に合わせて、噺をひとつ語ります</li>
-        <li>もう一度「行ってみたい気持ち」を伺います (どれだけ動いたか)</li>
-        <li>最後に、オチを書いた札を1枚さしあげます</li>
-      </ol>
       <div class="makubtn">
         <button id="open" class="btn primary big">幕を開ける</button>
+        <button id="genchiBtn" class="btn big ghost2" hidden>現地の謎かけに答える</button>
         <button id="kinList" class="btn big ghost2">全国の動物園から</button>
       </div>
+      <!-- ★表紙は 一行。説明は 畳む (2026-11-14 「初見で 分かりにくい / 文字が 多い」への 手当て) -->
+      <details class="hajimete">
+        <summary>はじめての方へ</summary>
+        <p class="nerai">
+          福井県鯖江市の<b>西山公園</b>。<br>
+          名前も知らない、行く用もない。たぶん、そういう場所だと思います。<br>
+          一席聞いたあとで、<b>ちょっと気になった</b>——そこまで持っていけたら、この噺家の勝ちでございます。
+        </p>
+        <ol class="nagare">
+          <li>はじめに「行ってみたい気持ち」を伺います (ここが出発点)</li>
+          <li>あなたの県と今日の日付に合わせて、噺をひとつ語ります (伺うのは三つだけ)</li>
+          <li>もう一度「行ってみたい気持ち」を伺います (どれだけ動いたか)</li>
+          <li>オチを書いた札を1枚さしあげます。続きのオチは、西山公園の現地に</li>
+        </ol>
+      </details>
       <ul class="chui">
         <li>語りはすべて、鯖江市のオープンデータと、出典を確かめた事実だけでできています。</li>
         <li>レジ係「はなし山」は実在の人物ではありません。噺は人が書いています。</li>
@@ -54,27 +59,43 @@
   </section>
 
   <!-- 高座 -->
-  <main id="koza" class="koza" hidden>
+  <main id="koza" class="koza" hidden aria-label="高座">
+    <!-- ★背景の 写真 (場面の あいだ 1 枚)。★隅に「何の 写真か」と 出典を 常に 出す -->
+    <div id="haikei" class="haikei" hidden aria-hidden="true"><div class="haikei-in"><img id="haikeiOld" class="furui" alt=""><img id="haikeiImg" alt=""></div></div>
+    <p id="haikeiCap" class="haikei-cap" hidden><b id="haikeiLabel"></b><span id="haikeiCredit"></span></p>
     <div class="kozatop">
       <div class="mekuri" id="mekuri">はなし山</div>
+      <!-- ★いま どこか / あと どれくらいか (まくら → 本題 → サゲ) -->
+      <ol id="shinko" class="shinko" hidden aria-label="噺の進みぐあい">
+        <li id="stg0">まくら</li><li id="stg1">本題</li><li id="stg2">サゲ</li>
+      </ol>
     </div>
 
+    <!-- ★場面の 見出し (いま 何の 話か) と 図を 上に 残す。
+         ★見出しは 読み上げ側では 語りの 中に 1 回だけ 入れるので、ここは aria-hidden -->
+    <div id="kozahead" class="kozahead">
+      <p id="midashi" class="midashi" aria-hidden="true" hidden></p>
+      <div id="zu" class="zu" hidden></div>
+    </div>
+
+    <!-- ★前の語りは 畳む。★畳んだ 行も 読み上げには 残る -->
+    <button id="tatami" class="tatami-btn" type="button" hidden aria-controls="talk"></button>
     <div id="talk" class="talk" aria-live="polite"></div>
-    <div id="choices" class="choices"></div>
+    <div id="choices" class="choices" role="group" aria-label="選択肢"></div>
 
     <div id="sageBox" class="sagebox" hidden>
-      <canvas id="card" width="1080" height="1350" aria-label="オチ札"></canvas>
+      <canvas id="card" width="1080" height="1350" role="img" aria-label="オチ札"></canvas>
       <div class="actions">
         <button id="save" class="btn primary">この札をもらう</button>
         <button id="copyCard" class="btn">オチの文を写す</button>
         <button id="koe" class="btn" hidden>レッサーパンダの鳴き声を聞く</button>
         <button id="again" class="btn">もう一席</button>
-        <button id="sourcesBtn" class="btn ghost">タネ明かし (出典)</button>
+        <button id="sourcesBtn" class="btn ghost" aria-expanded="false" aria-controls="sources">タネ明かし (出典)</button>
       </div>
       <div id="sources" class="sources" hidden></div>
     </div>
 
-    <div class="footbar">
+    <div id="footbar" class="footbar">
       <button id="skip" class="link">早送り</button>
       <button id="typeBtn" class="link">文字の出し方</button>
       <button id="other" class="link">別の噺</button>
@@ -84,16 +105,17 @@
   </main>
 
   <!-- 全国の園からの入口 -->
-  <section id="kin" class="panel" hidden>
-    <h2 class="bah">全国の動物園から — 鯖江うまれの子が渡った先</h2>
+  <!-- ★重ねて 出す パネルは dialog。★開くと 中へ フォーカス / Esc で 閉じる / 閉じたら 呼んだ ボタンへ 戻す (2026-11-15) -->
+  <section id="kin" class="panel" hidden role="dialog" aria-modal="true" aria-labelledby="kinH" tabindex="-1">
+    <h2 id="kinH" class="bah">全国の動物園から — 鯖江うまれの子が渡った先</h2>
     <p class="note" id="kinNote"></p>
     <div id="kinBody"></div>
     <div class="actions"><button id="closeKin" class="btn ghost">閉じる</button></div>
   </section>
 
   <!-- 場 -->
-  <section id="ba" class="panel" hidden>
-    <h2 class="bah">場 — この端末で、どの噺が気持ちを動かしたか</h2>
+  <section id="ba" class="panel" hidden role="dialog" aria-modal="true" aria-labelledby="baH" tabindex="-1">
+    <h2 id="baH" class="bah">場 — この端末で、どの噺が気持ちを動かしたか</h2>
     <div id="baBody"></div>
     <div class="actions">
       <button id="exportLog" class="btn ghost">記録を書き出す</button>
@@ -109,11 +131,12 @@
     <p class="credit">プログラム: MIT License / &copy; 2026 Mugi-mugi-Mugi。データと引用はMITの対象外で、各出典のライセンスに従います。</p>
   </footer>
 
-  <!-- ★幕を 開ける まで 読むのは 台本と 園の一覧だけ (2026-09-25)。
-       ★写真 2.3MB と 音 279KB を 先に 読むと、幕が 出るまで 待たされる。
-       ★img.js は 幕を 開けたとき、koe.js は「鳴き声を聞く」を 押したときに 読む。
-       ★どちらも 同じ フォルダの ファイル = ★外部通信は 増えない。 -->
+  <!-- ★幕を 開ける まで 読むのは 台本と 園の一覧と 写真の目録 (1KB) だけ。
+       ★写真は 群ごとの ファイル (data/img/)。★その席に 要る 群だけを 席の 頭で 読む (2026-11-14)。
+       ★koe.js は「鳴き声を聞く」を 押したときに 読む。
+       ★どれも 同じ フォルダの ファイル = ★外部通信は 増えない。 -->
   <script src="data/bundle.js"></script>
+  <script src="data/img/_keys.js"></script>
   <script src="data/kin.js"></script>
   <script src="app.js"></script>
 </body>

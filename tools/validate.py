@@ -18,6 +18,16 @@
       (出典に動機が無いとき、噺家が引き受けて推し量る。★事実として語らないための決まり)
  10. ★画面に出る文字に、手元のファイルパスや、文字になった「\\n」が混ざっていない
      (公開時に docs/ や data/ は含めない = 見た人が開けない。出典は「名前」で書く)
+ 16. ★場面の見出し (scenes[].head): 1 行・16 字まで / 数字なし / 段の名だけにしない /
+     問いの答え・サゲの最後の語を含めない / 場面 3〜4 (本題 3 行以下は 2 も可)。写真の無い席は注意
+     ★見出しの無い席 (scenes が無い / head が 1 本も無い) を残さない (2026-11-15)
+ 17. ★題 (演目名): 問いの答え・サゲの最後の語・答えの数 (漢数字も) を含めない / サゲの最後の句に題をそのまま置かない
+ 19. ★県から一席目へのつなぎ (prefBridge): 47 県そろう / 2〜3 行・60 字まで / 数字は参照事実の中だけ・2 粒まで /
+     推計の数字を言う行に断り / 言い切り・不採用・誘い文句なし / 県の名を言い「…ひとつ。」で結ぶ
+ 18. ★答えの言い直し: 答えのあとの図がサゲの数字を見せない / 自動の席のサゲが問いの答えを含まない /
+     外れの返しが答えを言うのは注意 / yokoku は true・false だけ
+ 20. ★オチの註 (ochiWhat。サゲの下に「↳ ○○のこと」): 全席にある / 40 字まで / 末尾に「のこと」を書かない /
+     数字は参照事実の中だけ / 推計の数字なら註の中に断り / 不採用・誘い文句・パスなし
 
 限界 (docs/手順 に記載)
   - 漢数字 (三、五千) は数字として検査しない
@@ -153,6 +163,42 @@ _JP_LITERAL = re.compile(r'"([^"\
 ]*[぀-ヿ一-鿿][^"\
 ]*)"')
 _APP_PATHS = re.compile(r"docs/|data/derived|data/raw|app/data|tools/|\.csv|\.md|\.py|\.xlsx")
+
+
+# ★場面の 見出し (# 16) の 作法 (2026-11-15)
+HEAD_MAX = 16
+HEAD_NUM = re.compile(r"\d|[〇零一二三四五六七八九十百千万億兆壱弐参]")   # ★漢数字は 熟語の 中でも 止める (「一緒」も)
+# ★段の 名。★これと つなぎ (の・と・、 など) だけで できた 見出しは 中身を 言っていない
+STAGE_WORDS = sorted(["まくら", "マクラ", "枕", "本題", "ほんだい", "サゲ", "さげ", "オチ", "おち",
+                      "続き", "つづき", "その後", "そのあと", "その先", "前半", "後半", "中盤",
+                      "はじめ", "始まり", "はじまり", "終わり", "おわり", "結び", "締め", "導入", "場面", "前段"],
+                     key=len, reverse=True)
+_HEAD_GLUE = re.compile(r"[\sの・、。と「」『』()（）!?！？ー…\-]")
+# ★サゲの 最後の 語から 外す 語尾 (「マリンバでございます」→「マリンバ」)。長いものから
+_SAGE_TAIL = ("そうでございます", "でございました", "でございます", "ございます", "だそうで", "そうで", "でした", "です")
+
+
+def _nospace(s):
+    return re.sub(r"\s", "", s or "")
+
+
+def is_stage_only(head):
+    s = head
+    for w in STAGE_WORDS:
+        s = s.replace(w, "")
+    return not _HEAD_GLUE.sub("", s)
+
+
+def sage_last_word(sage):
+    """サゲの 最後の 読点「、」の 後ろから 句点の 前まで (語尾の「でございます」等は 外す)"""
+    s = (sage or "").strip().rstrip("。．.!?！？ ")
+    s = s.rsplit("、", 1)[-1]
+    s = _nospace(s).strip("「」『』")
+    for t in _SAGE_TAIL:
+        if s.endswith(t) and len(s) > len(t):
+            s = s[:-len(t)]
+            break
+    return s
 
 
 def check_app_text(src, rejected):
@@ -448,6 +494,380 @@ def main():
         errors.append("CREDITS.md に 事実の出典が 無い → %s "
                       "(python tools/build_credits.py で 直る)" % u[:70])
 
+    # 13. ★推し量った数 (推計) を ★実数として 語っていないか (2026-11-14 監査で 発覚)
+    #   ★人流データの「0人」は 10 人単位に 丸めた 推計で、「誰も来なかった」では ない。
+    #     それを「数えた表」「ひとりも来なかった」「訪れた人は0人」と 語っていた (4 席)。
+    #   ★9 月に 公園の入場者数 (F69) では 手当てしたのに、同じ型の 人流・入込数には 及ばなかった。
+    #   (a) 出典名が 推計なら 印 (estimate) が 要る … ★印の 付け忘れで (b) が 効かなく なるのを 止める
+    #   (b) 推計の事実の ★数字を 語る席には、推し量った数だという 断りが 要る
+    #   (c) 推計の事実を 引く席で「数えた」「ひとりも来なかった」「訪れた人は」と 言い切らない
+    EST_SRC = ("人流データ", "(推計)")
+    EST_HEDGE = ("推し量", "推計", "推定")
+    #   ★2026-11-15 監査⑦: 「表の上で ひとりも数えられなかった」「表の上で誰もいなかった」が 通っていた
+    #     → 「ひとりも」「誰もいな」を 足した。★客の 台詞 (思い込み) は 見ない。地の文と 噺家の 台詞だけ
+    EST_BAN = ("人の数を数えた", "ひとりも来なかった", "訪れた人は", "ひとりも", "誰もいな")
+    est_ids = set()
+    for f in b["facts"]:
+        if any(k in f.get("source", "") for k in EST_SRC) and f.get("estimate") is not True:
+            errors.append("事実 %s: 出典が 推計 (%s) なのに estimate=true が 無い"
+                          % (f["id"], f.get("source", "")[:40]))
+        if f.get("estimate") is True:
+            est_ids.add(f["id"])
+    est_seats = 0
+    for kind, st in all_items:
+        mine = [fid for fid in st.get("facts", []) if fid in est_ids]
+        if not mine:
+            continue
+        said = " ".join(story_texts(st))
+        nums_said = set(num_values(said))
+        nums_est = set()
+        for fid in mine:
+            nums_est |= set(num_values(facts[fid]["claim"]))
+        spoke = sorted(x for x in nums_said & nums_est if x not in ("1", "2", "3"))
+        if spoke:
+            est_seats += 1
+            if not any(h in said for h in EST_HEDGE):
+                errors.append("%s %s: 推計の事実 %s の 数字 %s を 語るのに、推し量った数だという 断り (%s) が 無い"
+                              % (kind, st["id"], ",".join(mine), spoke[:3], " / ".join(EST_HEDGE)))
+        said_ban = " ".join(story_texts(dict(st, hondai=[
+            h for h in st.get("hondai", []) if isinstance(h, str) or h.get("who") != "客"])))
+        for w in EST_BAN:
+            if w in said_ban:
+                errors.append("%s %s: 推計の事実を 引く席で「%s」と 言い切っている" % (kind, st["id"], w))
+
+    # 19. ★県から 一席目への つなぎ (prefBridge。2026-11-15)
+    #   ★一席目の 前に 噺家が 言う 2〜3 行。★席では ないので ここまでの 検査 (all_items) が 素通り する → ここで 同じ 作法を かける
+    #   (a) 47 都道府県 そろっている / 行は 2〜3 本・1 行 60 字まで / 最後の 行は「…ひとつ。」で 結ぶ (どの 席にも 合う 結び)
+    #   (b) 事実 ID が 台帳に ある / ★数字は 参照事実の claim・quote の 中の ものだけ (# 3 と 同じ 照合) / 数字は 2 粒まで
+    #   (c) ★推計の 事実を 引いて 数字を 言う 行には、その 行の 中に「推し量った」の 断り (# 13 と 同じ 語)
+    #   (d) 推計で「ひとりも」「誰もいな」などと 言い切らない / 不採用の 言い回し・誘い文句・「……」を 入れない
+    #   (e) その 県の 名を 言う (県を 受けた つなぎで ある こと。福井は「福井」)
+    pb = b.get("prefBridge")
+    pb_nums = 0
+    if not isinstance(pb, dict):
+        errors.append("つなぎ (prefBridge) が 無い か 形が 違う ({県: {lines, facts}})")
+        pb = {}
+    elif sorted(pb) != sorted(b.get("prefectures", [])) or len(pb) != 47:
+        errors.append("つなぎ (prefBridge) が 47 都道府県 そろっていない (%d 件。足りない %s)"
+                      % (len(pb), " ".join(p for p in b.get("prefectures", []) if p not in pb)[:60]))
+    for pref, v in pb.items():
+        label = "つなぎ " + pref
+        lines = (v or {}).get("lines")
+        refs = (v or {}).get("facts")
+        if not isinstance(lines, list) or not 2 <= len(lines) <= 3 or not all(isinstance(x, str) and x.strip() for x in lines):
+            errors.append("%s: lines は 2〜3 本の 文字列 (%r)" % (label, lines))
+            continue
+        if not isinstance(refs, list) or not refs:
+            errors.append(label + ": 参照する事実IDが無い")
+            refs = []
+        allowed = set()
+        for fid in refs:
+            if fid not in facts:
+                errors.append(label + ": 台帳に無い事実ID " + fid)
+            else:
+                allowed |= numbers(facts[fid]["claim"] + " " + facts[fid]["quote"])
+        est = any(fid in est_ids for fid in refs)
+        joined = " ".join(lines)
+        for ln in lines:
+            if len(ln) > 60:
+                errors.append("%s: 1 行が %d 字 (60 字まで) → 「%s」" % (label, len(ln), ln[:30]))
+            for n in numbers(ln):
+                pb_nums += 1
+                if n not in allowed:
+                    errors.append("%s: 数字「%s」が参照事実に無い → 「%s」" % (label, n, ln[:60]))
+            if est and numbers(ln) and not any(h in ln for h in EST_HEDGE):
+                errors.append("%s: 推計の 数字を 言う 行に、推し量った数だという 断り (%s) が 無い → 「%s」"
+                              % (label, " / ".join(EST_HEDGE), ln[:40]))
+        if len(num_values(joined)) > 2:
+            errors.append("%s: 数字が %d 粒 (2 粒まで) → %s" % (label, len(num_values(joined)), num_values(joined)[:6]))
+        if not re.search(r"ひとつ。$", lines[-1]):
+            errors.append("%s: 最後の 行が「…ひとつ。」で 結んでいない (どの 席にも 合う 結びに する) → 「%s」"
+                          % (label, lines[-1][-20:]))
+        short = pref if pref == "北海道" else pref[:-1]
+        if short not in joined:
+            errors.append("%s: 県の 名「%s」を 言っていない (県を 受けた つなぎに する)" % (label, short))
+        if est:
+            for w in EST_BAN:
+                if w in joined:
+                    errors.append("%s: 推計の事実を 引く つなぎで「%s」と 言い切っている" % (label, w))
+        for r in rejected:
+            if r in joined:
+                errors.append("%s: 不採用の言い回し「%s」が入っている" % (label, r))
+        for w in INVITE_WORDS:
+            if w in joined:
+                errors.append("%s: 誘い文句「%s」が入っている" % (label, w))
+        if "……" in joined:
+            errors.append(label + ": 「……」を使っている (間は語尾で作る)")
+
+    # 14. ★現地の 謎かけ (genchi) の 台帳 (2026-11-14)
+    #   ★出すのは verified_onsite に 日付が 入った ものだけ (app.js)。ここでは 台帳の 形を 見る。
+    #   ★開く 席が 現地の 席で ある / 根拠の 事実が 台帳に ある / 答えが 空で ない
+    stories_by_id = {s["id"]: s for s in b["stories"]}
+    live = 0
+    for g in b.get("genchi", []):
+        gid = g.get("id", "?")
+        v = g.get("verified_onsite")
+        if v is not None and not re.match(r"^\d{4}-\d{2}-\d{2}$", str(v)):
+            errors.append("現地の謎かけ %s: verified_onsite は null か YYYY-MM-DD (%r)" % (gid, v))
+        for fid in g.get("facts", []):
+            if fid not in facts or facts[fid].get("verified") is not True:
+                errors.append("現地の謎かけ %s: 根拠の事実 %s が 台帳に 無い / 確かめていない" % (gid, fid))
+        if not g.get("riddle"):
+            continue                       # ★G4 (未定) のように 謎かけの 無い 場所は 形だけ
+        st = stories_by_id.get(g.get("story"))
+        # ★alt_of が 無いときに None を 並べると、genchi の 無い ふだんの 席 (None) が 通ってしまう
+        allowed = [x for x in (gid, g.get("alt_of")) if x]
+        if not st or st.get("genchi") not in allowed:
+            errors.append("現地の謎かけ %s: 開く席 %s が 無いか、現地の席 (genchi) で ない" % (gid, g.get("story")))
+        if not g.get("answers"):
+            errors.append("現地の謎かけ %s: 答えが 空" % gid)
+        if v:
+            live += 1
+    for s in b["stories"]:
+        if s.get("genchi") and not any(g.get("story") == s["id"] for g in b.get("genchi", [])):
+            errors.append("台本 %s: 現地の席 (genchi=%s) なのに 開く 謎かけが 無い (誰にも 届かない)"
+                          % (s["id"], s["genchi"]))
+
+    # 15. ★場面 (scenes) の 形と、写真の 指定が 目録 (_keys.js) に ある ものか (2026-11-14 / 2026-11-15 に 場面の 配列へ)
+    #   ★scenes = [{head, from, to, img?, img2?, fig?, label?}, ...]。from / to = 本題の 行 (0 始まり・両端を 含む)
+    #   ★img / img2 は「群」「群@名前」「群#番号」。★fig は "main" (その席の 図) だけ
+    #   ★app.js は 合わない 指定を 黙って 出さない (null 扱い) ので、★書き損じは 画面では 気づけない
+    #   → ここで 群・名前・番号を 目録と 突き合わせる
+    with open(os.path.join(ROOT, "app", "data", "img", "_keys.js"), encoding="utf-8") as _f:
+        _km = re.search(r"window\.HANASHI_IMG_KEYS = (\{.*\});?\s*$", _f.read(), re.S)
+    img_small = json.loads(_km.group(1))["small"] if _km else {}
+    if not _km:
+        errors.append("_keys.js の 形式が 想定と 違う (window.HANASHI_IMG_KEYS = {...} が 無い)")
+    scene_seats, scene_spots = 0, 0
+    for kind, st in all_items:
+        if "scenes" not in st:
+            continue
+        sc = st["scenes"]
+        hon_n = len(st.get("hondai") or [])
+        if not isinstance(sc, list) or not sc or not all(isinstance(x, dict) for x in sc):
+            errors.append("%s %s: scenes は 場面 {head, from, to, …} の 配列 (%r)" % (kind, st["id"], sc))
+            continue
+        scene_seats += 1
+        # ★本題を すき間・重なり 無く 覆う (0 から 本題の 最後の 行まで)
+        want = 0
+        for x in sc:
+            if not isinstance(x.get("from"), int) or not isinstance(x.get("to"), int) or x["from"] != want or x["to"] < x["from"]:
+                errors.append("%s %s: 場面の from / to が 本題を すき間 無く 覆っていない (%r)"
+                              % (kind, st["id"], [(y.get("from"), y.get("to")) for y in sc]))
+                break
+            want = x["to"] + 1
+        else:
+            if hon_n and want != hon_n:
+                errors.append("%s %s: 場面の 最後 (to=%d) が 本題の 最後の 行 (%d) と 合わない" % (kind, st["id"], want - 1, hon_n - 1))
+        for x in sc:
+            if not isinstance(x.get("head", ""), str):
+                errors.append("%s %s: 場面の head は 文字列 (%r)" % (kind, st["id"], x.get("head")))
+            if x.get("fig") is not None and (x["fig"] != "main" or not st.get("fig")):
+                errors.append("%s %s: 場面の fig は \"main\" (その席に 図が ある とき) だけ (%r)" % (kind, st["id"], x["fig"]))
+            if x.get("fig") and x.get("img"):
+                errors.append("%s %s: 場面に img と fig を 両方 置かない" % (kind, st["id"]))
+        for sp in [x.get(k) for x in sc for k in ("img", "img2")]:
+            if sp is None:
+                continue
+            if not isinstance(sp, str):
+                errors.append("%s %s: 写真の指定 は null か 文字列 (%r)" % (kind, st["id"], sp))
+                continue
+            scene_spots += 1
+            m = re.match(r"^([^@#]+)(?:@(.+)|#(.+))?$", sp)
+            grp = img_small.get(m.group(1)) if m else None
+            if not m or grp is None:
+                errors.append("%s %s: 写真の指定 %r の 群が 目録 (_keys.js) に 無い" % (kind, st["id"], sp))
+                continue
+            if m.group(2) is not None and m.group(2) not in (grp.get("names") or []):
+                errors.append("%s %s: 写真の指定 %r の 名前が 群の names に 無い" % (kind, st["id"], sp))
+            if m.group(3) is not None:
+                n = grp.get("n", 0)
+                if not re.match(r"^\d+$", m.group(3)) or not int(m.group(3)) < n:
+                    errors.append("%s %s: 写真の指定 %r の 番号が 範囲外 (0〜%d)" % (kind, st["id"], sp, n - 1))
+
+    # 16. ★場面の 見出し (head) の 作法 (2026-11-15。計画 docs/企画/20261114_追加改修計画_P0-3_P1-3_P1-4.md §2-4・§2-5)
+    #   ★見出しが オチの 先回りに なるのが いちばん 恐い。★空の head は 見ない (書き起こし前 = 画面は 演目名を 出す)
+    #   (a) 1 行・16 字まで (スマホの 1 行)  (b) 数字 (算用・漢数字) を 入れない (本文の 数字 2 粒と ぶつかる)
+    #   (c) 段の 名 (本題・まくら・サゲ・続き…) だけに しない = 中身を 言う
+    #   (d) 問いの 正解の 札 / サゲの 最後の 語 (2 字以上) を 含めない
+    #   (e) 見出しの ある 席は 場面 3〜4 (本題 3 行以下は 2 も可)。5 以上は 注意
+    #   (f) 1 席に 最低 1 枚 写真 (ユーザー決定 2026-11-15)。★撮影が 済むまでは 注意 (warns) に とどめる
+    #       ★scenes の 無い 席 (自動の 席) は 写真を 画面 (app.js sceneList) が 選ぶ ので ここでは 見ない
+    head_seats, head_n = 0, 0
+    nophoto, nophoto_seen, auto_seats = [], set(), set()
+    for kind, st in all_items:
+        sc = st.get("scenes")
+        if not isinstance(sc, list) or not sc or not all(isinstance(x, dict) for x in sc):
+            if "scenes" not in st:
+                auto_seats.add(st["id"])
+            continue                       # ★形の 誤りは # 15 が 出す
+        label = "%s %s" % (kind, st["id"])
+        if not any(x.get("img") or x.get("img2") for x in sc) and st["id"] not in nophoto_seen:
+            nophoto_seen.add(st["id"])
+            nophoto.append(st["id"])
+        heads = [x["head"] for x in sc if isinstance(x.get("head"), str) and x["head"].strip()]
+        if not heads:
+            continue
+        head_seats += 1
+        head_n += len(heads)
+        q = st.get("question") or {}
+        chs, ai = q.get("choices") or [], q.get("answer", -1)
+        ans = _nospace(chs[ai]) if isinstance(ai, int) and 0 <= ai < len(chs) else ""
+        sw = sage_last_word(st.get("sage", ""))
+        for h in heads:
+            hk = _nospace(h)
+            if "\n" in h or "\r" in h:
+                errors.append("%s: 見出しが 2 行 以上 (1 行に する) → %r" % (label, h))
+            if len(h.strip()) > HEAD_MAX:
+                errors.append("%s: 見出しが %d 字 (%d 字まで) → 「%s」" % (label, len(h.strip()), HEAD_MAX, h))
+            if HEAD_NUM.search(h):
+                errors.append("%s: 見出しに 数字 (算用・漢数字) が 入っている → 「%s」" % (label, h))
+            if is_stage_only(h):
+                errors.append("%s: 見出しが 段の 名だけ (中身を 言う) → 「%s」" % (label, h))
+            if len(ans) >= 2 and ans in hk:
+                errors.append("%s: 見出しが 問いの 答え「%s」を 含む (オチの 先回り) → 「%s」" % (label, ans, h))
+            if len(sw) >= 2 and sw in hk:
+                errors.append("%s: 見出しが サゲの 最後の 語「%s」を 含む (オチの 先回り) → 「%s」" % (label, sw, h))
+        hon_n = len(st.get("hondai") or [])
+        lo = 2 if hon_n <= 3 else 3
+        if len(sc) < lo:
+            errors.append("%s: 見出しの ある 席の 場面が %d (%d〜4 に する。本題 %d 行)" % (label, len(sc), lo, hon_n))
+        elif len(sc) > 4:
+            warns.append("%s: 場面が %d (4 まで が 目安)" % (label, len(sc)))
+        if len(heads) < len(sc):
+            warns.append("%s: 見出しの 空の 場面が 混ざる (%d / %d 場面に 見出し)" % (label, len(heads), len(sc)))
+    if nophoto:
+        warns.append("写真の 無い 席 (1 席に 最低 1 枚。撮影が 済むまで 注意): %d 席 → %s"
+                     % (len(nophoto), " ".join(nophoto)))
+    # 16g. ★見出しの 無い 席を 残さない (2026-11-15 反論監査③ 重1)
+    #   ★自動の 82 席に 見出しが 1 本も 無く、22 席は scenes そのものが 無かった (= ここまでの 検査が 素通り)。
+    #   ★11/28 の「もう一席」(P-茨城県・P-福井県) が ちょうど そこに 当たっていた
+    for kind, st in all_items:
+        sc = st.get("scenes")
+        if not isinstance(sc, list) or not sc or not all(isinstance(x, dict) for x in sc):
+            errors.append("%s %s: 場面 (scenes) が 無い (見出しの 無い 席を 残さない)" % (kind, st["id"]))
+        elif not any(isinstance(x.get("head"), str) and x["head"].strip() for x in sc):
+            errors.append("%s %s: 場面の 見出しが 1 本も 無い" % (kind, st["id"]))
+
+    # 17. ★題 (演目名) の 先回り (2026-11-15 反論監査② F2)
+    #   ★題は めくりに 席の 間 ずっと 出ている (見出しと 同じ 場所・同じ 大きさ)。★#16 は 見出しだけ 見ていた
+    #   (a) 問いの 正解の 札を 含まない (1 字でも。「桜が先だった」← 答え「桜」)
+    #   (b) サゲの 最後の 語 (2 字以上) を 含まない (「寝耳ベンチ」「達成」)
+    #   (c) 正解の 中の 数を 含まない (漢数字も 数に 直して 見る。「二十五株」← 答え「25株」)
+    #   (d) 題 (3 字以上) が サゲの 最後の 句 (最後の「、」の 後ろ) に そのまま 入っていない (「鳥のほうが多い」)
+    #       ★サゲの 前半 (振りの 側。「アンコールのあとも、」) を 題に するのは 許す
+    for kind, st in all_items:
+        title = st.get("title") or ""
+        tk = _nospace(title)
+        if not tk:
+            continue
+        label = "%s %s" % (kind, st["id"])
+        q = st.get("question") or {}
+        chs, ai = q.get("choices") or [], q.get("answer", -1)
+        ans = _nospace(chs[ai]) if isinstance(ai, int) and 0 <= ai < len(chs) else ""
+        sw = sage_last_word(st.get("sage", ""))
+        tail = (st.get("sage", "") or "").strip().rstrip("。．.!?！？ ").rsplit("、", 1)[-1]
+        sage_k = _nospace(norm(tail))
+        if ans and ans in tk:
+            errors.append("%s: 題「%s」が 問いの 答え「%s」を 含む (めくりで 先に 出る)" % (label, title, ans))
+        if len(sw) >= 2 and sw in tk:
+            errors.append("%s: 題「%s」が サゲの 最後の 語「%s」を 含む (めくりで 先に 出る)" % (label, title, sw))
+        if ans:
+            tnums = set(re.findall(r"\d+", title.translate(str.maketrans("０１２３４５６７８９", "0123456789"))))
+            for m in _KANJI.finditer(title):
+                v = kanji_to_num(m.group(0))
+                if v is not None and m.group(0) != "一":
+                    tnums.add(str(v))
+            hit = tnums & numbers(chs[ai])
+            if hit:
+                errors.append("%s: 題「%s」が 問いの 答えの 数 %s を 含む" % (label, title, "/".join(sorted(hit))))
+        if len(tk) >= 3 and (tk in _nospace(tail) or _nospace(norm(title)) in sage_k):
+            errors.append("%s: 題「%s」が サゲの 中に そのまま ある (めくりが オチを 言う)" % (label, title))
+
+    # 18. ★答えの 言い直し (2026-11-15 反論監査② F4。決定㊻「問いの 答えを サゲで 言い直さない」)
+    #   (a) 答え合わせの あとに 出す 図 (when=after) が サゲの 数字を 先に 見せない
+    #   (b) ★自動の 席 (県の噺・暦の噺) の サゲは 問いの 答えを そのまま 含まない
+    #       (★手書きの 席は 並びの 型 (三つ目が 答え) が あるので 人が 読む)
+    #   (c) 外れの 返しが 答えの 語を 言う (注意。外れた 客には そこで 答えが 出る)
+    #   (d) yokoku (サゲ前の 予告を 言うか) は true / false だけ
+    for kind, st in all_items:
+        label = "%s %s" % (kind, st["id"])
+        q = st.get("question") or {}
+        chs, ai = q.get("choices") or [], q.get("answer", -1)
+        ans = chs[ai] if isinstance(ai, int) and 0 <= ai < len(chs) else ""
+        f = st.get("fig")
+        if f and f.get("when") == "after":
+            shown = {str(it.get("value")) for it in f.get("items", [])}
+            hit = shown & numbers(st.get("sage", ""))
+            if hit:
+                errors.append("%s: 答えの あとの 図が サゲの 数字 %s を 先に 見せる" % (label, "/".join(sorted(hit))))
+        if kind != "台本" and ans and len(_nospace(ans)) >= 2 and _nospace(ans) in _nospace(st.get("sage", "")):
+            errors.append("%s: サゲが 問いの 答え「%s」を 言い直している (答えの 一つ先を 言う)" % (label, ans))
+        r = st.get("reply") or {}
+        for w in [r.get("wrong")] + list(r.get("wrongEach") or []):
+            if w and len(_nospace(ans)) >= 2 and _nospace(ans) in _nospace(w):
+                warns.append("%s: 外れの 返し「%s」が 答え「%s」を 言う" % (label, w, ans))
+        if "yokoku" in st and not isinstance(st["yokoku"], bool):
+            errors.append("%s: yokoku は true / false (%r)" % (label, st["yokoku"]))
+
+    # 20. ★オチが 西山公園の 何の ことか (ochiWhat。2026-11-15 ユーザー依頼)
+    #   ★画面は サゲの すぐ 下に「↳ <ochiWhat>のこと」と 小さく 出す。★story_texts には 入れない
+    #     (入れると # 13 の 断りの 判定が「註に 推し量った と ある」で 席 全体を 通して しまう) → ここで 同じ 作法を かける
+    #   (a) 全 130 席に ある / 文字列 / 40 字まで / 末尾が「のこと」で ない (画面が 付けるので 二重に なる)
+    #   (b) 数字は その席の 参照事実の claim・quote (と evidence) の 中の ものだけ (# 3 と 同じ 照合)
+    #   (c) 推計の 事実の 数字を 言うなら ★註の 中に 断り (# 13 と 同じ 語)。推計で「ひとりも」等と 言い切らない
+    #   (d) 不採用の 言い回し・誘い文句・「……」・手元の パス・改行を 入れない
+    OW_MAX = 40
+    ow_n, ow_nums = 0, 0
+    for kind, st in all_items:
+        label = "%s %s" % (kind, st["id"])
+        ow = st.get("ochiWhat")
+        if ow is None:
+            errors.append("%s: オチの 註 (ochiWhat) が 無い (サゲが 西山公園の 何の ことかを 書く)" % label)
+            continue
+        if not isinstance(ow, str) or not ow.strip():
+            errors.append("%s: オチの 註 (ochiWhat) は 空で ない 文字列 (%r)" % (label, ow))
+            continue
+        ow_n += 1
+        if len(ow) > OW_MAX:
+            errors.append("%s: オチの 註が %d 字 (%d 字まで) → 「%s」" % (label, len(ow), OW_MAX, ow[:30]))
+        if re.search(r"のこと[。.]?$", ow.strip()):
+            errors.append("%s: オチの 註の 末尾が「のこと」(画面が 付ける) → 「%s」" % (label, ow))
+        if "\n" in ow or "\r" in ow:
+            errors.append("%s: オチの 註に 改行が ある → %r" % (label, ow))
+        refs = st.get("facts", [])
+        allowed = set()
+        for fid in refs:
+            if fid in facts:
+                allowed |= numbers(facts[fid]["claim"] + " " + facts[fid]["quote"])
+        allowed |= numbers(json.dumps(st.get("evidence", []), ensure_ascii=False))
+        for n in numbers(ow):
+            ow_nums += 1
+            if n not in allowed:
+                errors.append("%s: オチの 註の 数字「%s」が参照事実に無い → 「%s」" % (label, n, ow))
+        mine = [fid for fid in refs if fid in est_ids]
+        if mine:
+            nums_est = set()
+            for fid in mine:
+                nums_est |= set(num_values(facts[fid]["claim"]))
+            spoke = sorted(x for x in set(num_values(ow)) & nums_est if x not in ("1", "2", "3"))
+            if spoke and not any(h in ow for h in EST_HEDGE):
+                errors.append("%s: オチの 註が 推計の事実 %s の 数字 %s を 言うのに、推し量った数だという 断り (%s) が 無い → 「%s」"
+                              % (label, ",".join(mine), spoke[:3], " / ".join(EST_HEDGE), ow))
+            for w in EST_BAN:
+                if w in ow:
+                    errors.append("%s: オチの 註で 推計を「%s」と 言い切っている" % (label, w))
+        for r in rejected:
+            if r in ow:
+                errors.append("%s: オチの 註に 不採用の言い回し「%s」が入っている" % (label, r))
+        for w in INVITE_WORDS:
+            if w in ow:
+                errors.append("%s: オチの 註に 誘い文句「%s」が入っている" % (label, w))
+        if "……" in ow:
+            errors.append(label + ": オチの 註に「……」を使っている")
+        if PATHS.search(ow):
+            errors.append("%s: オチの 註に 手元のパス → 「%s」" % (label, ow))
+
     # 10. ★画面に出る文字のうち、台本では なく ★app.js に 直接 書いてある もの
     with open(os.path.join(ROOT, "app", "app.js"), encoding="utf-8") as _f:
         appsrc = _f.read()
@@ -461,6 +881,15 @@ def main():
           % (len(fact_urls), len(missing_url)))
     print("entities.json に 紐づいた 事実: %d / %d 件"
           % (len(b["facts"]) - len(orphan), len(b["facts"])))
+    print("推計の事実: %d 件 / その数字を 語る席: %d 席 (断りを 見た)" % (len(est_ids), est_seats))
+    print("つなぎ (県から 一席目へ): %d 県 / 照合した 数字 %d 個" % (len(pb), pb_nums))
+    print("現地の謎かけ: %d か所 / うち 現地で 確かめて 画面に 出るもの %d か所"
+          % (len(b.get("genchi", [])), live))
+    print("写真の指定: %d 席 / %d か所" % (scene_seats, scene_spots))
+    print("見出し: %d 席 / %d 本" % (head_seats, head_n))
+    print("オチの 註 (ochiWhat): %d / %d 席 / 照合した 数字 %d 個" % (ow_n, len(all_items), ow_nums))
+    print("写真の無い席: %d 席 (scenes を 持つ %d 席の 中で。scenes の 無い 自動の 席 %d 席は 画面が 選ぶので 見ていない)"
+          % (len(nophoto), scene_seats, len(auto_seats)))
     for w in warns:
         print("  注意:", w)
     if errors:

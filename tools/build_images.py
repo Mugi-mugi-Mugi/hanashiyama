@@ -2,7 +2,7 @@
 """はなし山: 札 (オチの画像) に使う写真を用意する。
 
 鯖江市オープンデータの公式写真 (CC BY 2.1 JP) を、札の大きさに縮めて
-app/data/img.js に data URI として書き出す。
+app/data/img/ に 群ごとの data URI として書き出す (★2026-11-14 から 分割)。
 
 なぜ data URI か:
   file:// で開いたとき、外部ファイルの画像を canvas に描くと
@@ -70,21 +70,191 @@ PLACES = [
      "https://www.city.sabae.fukui.jp/kanko_sangyo/kankoshisetsu_meisho/sabaehyakkei/"),
 ]
 
+# ★2026-11-14: 噺の途中の 写真が「これは何?」に なっていた (ユーザー指摘)。
+#   ①写真 1 枚ずつに「何の写真か」(label) を 持たせ、画面の 写真の 下に 出す
+#   ②噺の 場面に 合う 素材を 足す (古い写真 / 市の資料の 写真 / 名前の 分かる レッサーパンダ)
+# ★古い写真 = 鯖江市オープンデータ「古い写真」(furui_shashin.csv。CC BY)。★2026-11-14 に 生きていた 7 件
+FURUI = [
+    # (群, ファイル, 何の写真か)
+    ("furui_tsutsuji1958", "furui/084.jpg", "西山公園の つつじ植樹 (1958年)"),
+    ("furui_koen1959", "furui/085.jpg", "開園まもない 西山公園 (1959年)"),
+    ("furui_bashi1964", "furui/091.jpg", "西山橋からの 風景・南 (1964年)"),
+    ("furui_bashi1964", "furui/092.jpg", "西山橋からの 風景・北 (1964年)"),
+    ("furui_kiriwari", "furui/094.jpg", "西山の 切割りの ようす (年は 記録なし)"),
+    ("furui_eki", "furui/003.jpg", "鯖江駅の ホーム (1958年)"),
+    ("furui_eki", "furui/016.jpg", "鯖江駅前の 通り (1968年)"),
+]
+FURUI_CREDIT = "鯖江市オープンデータ「古い写真」(CC BY)"
+FURUI_URL = "https://ckan.odp.jig.jp/"
+# ★市の 資料に 載っている 写真 (★オープンデータでは ない。出典を 明記して 使う = 公式ページの 写真と 同じ 扱い)
+DOCS = [
+    ("meganetokei", "../web_20261114/img/20220406-05_p1_2.png", "西山公園 入口の めがね時計",
+     "鯖江市「眼鏡型時計モニュメントに掲載する鯖江市のＰＲデザイン募集要項」(令和4年) 掲載の写真",
+     "https://www.city.sabae.fukui.jp/about_city/koho_kocho/kishahappyo/reiwa4/20220406.files/20220406-05.pdf"),
+    ("meganetokei", "../web_20261114/img/20220406-05_p1_0.png", "めがね時計の 近景 (片方の レンズが 時計)",
+     "鯖江市「眼鏡型時計モニュメントに掲載する鯖江市のＰＲデザイン募集要項」(令和4年) 掲載の写真",
+     "https://www.city.sabae.fukui.jp/about_city/koho_kocho/kishahappyo/reiwa4/20220406.files/20220406-05.pdf"),
+    ("pandabench", "../web_20261114/img/20260820-4_p1_0.png", "結びの広場の レッサーパンダベンチ (背もたれの 顔)",
+     "鯖江市 報道機関連絡票「レッサーパンダベンチ完成」(2026年8月20日) 掲載の写真",
+     "https://www.city.sabae.fukui.jp/about_city/koho_kocho/kishahappyo/reiwa8/20260820.files/20260820-4.pdf"),
+]
+USE_CITY_PHOTOS = False   # ★市の 許可が 取れるまで False
+
+# ★外部の 自由に 使える 写真 (2026-11-14 ユーザー指示「自由に使える写真か確認して全て足して」)
+#   条件・中身の 確認は data/raw/ext_20261114/_manifest.tsv (1 枚ずつ 原文の ライセンスと 目視)。
+#   ★福井県オープンデータ「福井ふるさと百景」= CC BY 4.0 / ★Wikimedia Commons = 1 枚ずつ CC BY 2.1 JP・4.0・BY-SA 4.0
+#   ★鯖江市 360photo = CC BY-SA 4.0 (切り出した 改変物) / ★鯖江市「古い写真」083 = CC BY 3.0
+#   ★群の 名に _sa が 付くものは CC BY-SA (★その 群の ファイルは CC BY-SA で 出す。CREDITS に 明記)
+#   ★順番が「群#番号」の 番号に なる。並べ替えない
+EXT = [
+    ("pref_hyakkei_471.jpg", "nishiyama_sakura"),
+    ("pref_hyakkei_472.jpg", "nishiyama_tsutsuji"),
+    ("pref_hyakkei_473.jpg", "nishiyama_momiji"),
+    ("pref_hyakkei_474.jpg", "kyoyo_teien"),
+    ("pref_hyakkei_475.jpg", "zoo_sakura"),
+    ("commons_dinosaur_museum_2025.jpg", "dino"),
+    ("pref_hyakkei_164.jpg", "dino"),
+    ("pref_hyakkei_161.jpg", "dino"),
+    ("pref_hyakkei_162.jpg", "dino_inside"),
+    ("pref_hyakkei_163.jpg", "dino_inside"),
+    ("pref_hyakkei_22.jpg", "hanashobu_awara"),
+    ("commons_w7_w3_2015.jpg", "shinkansen"),
+    ("commons_fukui_st_shinkansen_platform_2024.jpg", "shinkansen"),
+    ("commons_echizen_takefu_st_2025.jpg", "shinkansen"),
+    ("commons_murakami_wakabayashi_tei.jpg", "murakami"),
+    ("commons_sundome_fukui_2014.jpg", "sundome_sa"),
+    ("commons_nishiyama_fountain_2016.jpg", "nishiyama_fountain_sa"),
+    ("sabae_360_R0010038_front_crop.jpg", "illumination_sa"),
+    ("sabae_furui_083.jpg", "furui_ski"),
+]
+
+
+# ★自分たちで 描いた イラスト (2026-11-15)。★元の 写真と 構図を 変えた ものだけ (翻案に しない)
+#   ★めがね時計は 文字盤の 社名を 消した 版。★レンズの 中の 絵は 想像 (実物と 違う ことが ある)
+OWN = [
+    ("city_photos_for_illust_20261115/manga_illustrations/manga_14_nologo.png", "illust_meganetokei",
+     "めがね時計 (イラスト。レンズの 絵は 想像)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/manga_18.png", "illust_pandabench",
+     "結びの広場の レッサーパンダベンチ (イラスト)"),
+    # ★2026-11-15: 写真の 無い 席を 埋める 13 枚 (イラスト依頼表。描かない もの = オチの 先回り を 外して 描いた)
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_bust.png", "illust_bust",
+     "間部詮勝の 胸像 (イラスト。姿は 想像)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_zoo_gate.png", "illust_zoo_gate",
+     "西山動物園の 入口 (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_east_gate.png", "illust_east_gate",
+     "西山公園の 東側の 入口 (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_14-16/illust_pandarando3.png", "illust_pandarando3",   # ★2 は 動物の 顔の 飾りが あり 描き直し (16)
+     "パンダらんどの 遊具 (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_kopanda.png", "illust_kopanda",
+     "こぱんだらんど (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_inori2.png", "illust_inori2",
+     "祈りの道の お地蔵さん (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_parking.png", "illust_parking",
+     "嚮陽会館前の 駐車場 (イラスト。工事中)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_baseball.png", "illust_baseball",
+     "西山公園の 野球場 (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_fountain_am.png", "illust_fountain_am",
+     "朝の 大噴水 (イラスト。形は 想像)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_entrance.png", "illust_entrance",
+     "西山公園の 正面入口の 広場 (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_koryu.png", "illust_koryu",
+     "道の駅の 交流室の 入口 (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_michinoeki.png", "illust_michinoeki",
+     "道の駅西山公園 (イラスト。形は 想像)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_shinryoku.png", "illust_shinryoku",
+     "西山公園の 夏の 木立 (イラスト)"),
+    # ★2026-11-15: 季節の 食い違いを 直す 版 (14・15)
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_14-16/illust_east_gate_winter.png", "illust_east_gate_winter",
+     "西山公園の 東側の 入口・冬 (イラスト)"),
+    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_14-16/illust_zoo_gate_summer.png", "illust_zoo_gate_summer",
+     "西山動物園の 入口・夏 (イラスト)"),
+]
+OWN_CREDIT = "イラスト: Mugi-mugi-Mugi (CC BY 4.0)"
+
+
+def ext_manifest():
+    """_manifest.tsv → {ファイル名: {label, credit, license, url, sa}}"""
+    m = P("data", "raw", "ext_20261114", "_manifest.tsv")
+    out = {}
+    if not os.path.exists(m):
+        return out
+    rows = io.open(m, encoding="utf-8").read().splitlines()
+    head = rows[0].split("\t")
+    for line in rows[1:]:
+        c = line.split("\t")
+        if len(c) < len(head):
+            continue
+        r = dict(zip(head, c))
+        out[r["ファイル名"]] = {"label": r["何の写真か"], "credit": r["出典表示の文言"],
+                               "license": r["ライセンス"], "url": r["元のページのURL"].split(" / ")[0],
+                               "sa": r["継承(SA)の有無"].startswith("あり")}
+    return out
+
+# ★写真の 中身に 合わせた「何の写真か」(★ページの 見出しの ままだと 語りと 食い違う。2026-11-14 審査)
+#   愛の鐘 = 写っているのは ★いまの 姿 (柱の 上の スピーカー)。木の鐘・鉄筋コンクリートの 鐘 では ない
+#   大噴水 = 写っているのは ★夜の ライトアップ
+LABEL_OVERRIDE = {"ainokane": "いまの 愛の鐘 (頂上)", "funsui": "大噴水 (夜の ライトアップ)"}
+# ★群の「何の写真か」(1 枚ずつの label が 無いとき)
+GROUP_LABEL = {"tsutsuji": "西山公園の つつじ", "koyo": "西山公園の 紅葉",
+               "panda": "西山動物園の レッサーパンダ", "zoo": "西山動物園の 動物"}
+
+
+def zip_name(ds):
+    """個体写真の zip の 中の フォルダ名 = その子の 名前。
+    ★名前は UTF-8 で 入っている (旗が 立っていなくても)。★cp932 で 読むと
+      「タカシ」が「繧ｿ繧ｫ繧ｷ」に 化ける = もっともらしい 別物 (決定㉜)。★UTF-8 を 先に 試す"""
+    import zipfile
+    p = P("data", "raw", "media", ds + ".zip")
+    if not os.path.exists(p):
+        return None
+    for info in zipfile.ZipFile(p).infolist():
+        try:
+            raw = info.filename.encode("utf-8") if (info.flag_bits & 0x800) else info.filename.encode("cp437")
+            n = raw.decode("utf-8")
+        except UnicodeEncodeError:
+            n = info.filename                           # ★Unicode の 名前の 欄を zipfile が もう 読んでいる
+        except UnicodeDecodeError:
+            continue                                    # ★読めない 名前は 使わない (化けたまま 出さない)
+        if n.lower().endswith((".jpg", ".jpeg", ".png")) and "/" in n:
+            return n.split("/")[0]
+    return None
+
+
+def clean_name(raw):
+    """zip の フォルダ名を 表示用に 整える。→ (表示名, 照合に 使う 名の 一覧)
+    ★市の ファイル名には 飾りが 付いている: 「レッサーパンダ画像(アケビ)サイズ変更」「梅花（めいしゃん）」
+      「ボリビアリスザル個体画像」。★かっこの 中が 読みなら それも 照合に 使う"""
+    import re
+    if not raw:
+        return "", []
+    s = raw.strip()
+    m = re.search(r"画像[(（]([^)）]+)[)）]", s)            # 「…画像(アケビ)…」→ アケビ
+    if m:
+        s = m.group(1)
+    s = re.sub(r"(個体)?画像$|サイズ変更$", "", s).strip()
+    names = [s]
+    m = re.match(r"^(.+?)[(（]([^)）]+)[)）]$", s)           # 「楠（クス）」→ 楠 / クス
+    if m:
+        names = [m.group(1), m.group(2), s]
+    return s, names
+
 
 def extracted():
     """zip から取り出した個体写真。★1 枚ずつ出どころ (CKAN の dataset) が違うので、
     まとめて 1 つの出典にせず、写真ごとに dataset 名を持たせる。"""
-    idx = P("data", "raw", "media", "_extract", "_index.txt")
-    if not os.path.exists(idx):
-        return {}
     LABEL = {"panda": "西山動物園のレッサーパンダ写真", "zoo": "西山動物園の動物写真"}
     got = {}
-    for line in io.open(idx, encoding="utf-8").read().splitlines():
-        if not line.strip():
+    # ★_extract2 = 2026-11-14 に 足した 名前の 分かる 個体 (噺に 名前が 出る 子)
+    for sub in ("_extract", "_extract2"):
+        idx = P("data", "raw", "media", sub, "_index.txt")
+        if not os.path.exists(idx):
             continue
-        key, fn, ds = line.split("	")
-        got.setdefault(key, {"label": LABEL.get(key, key), "files": []})
-        got[key]["files"].append(("_extract/" + fn, ds))
+        for line in io.open(idx, encoding="utf-8").read().splitlines():
+            if not line.strip():
+                continue
+            key, fn, ds = line.split("	")[:3]
+            got.setdefault(key, {"label": LABEL.get(key, key), "files": []})
+            got[key]["files"].append((sub + "/" + fn, ds))
     return got
 # 札は 1080 幅だが、写真は 810 幅で持って canvas 側で 伸ばす。
 # 14 枚を 1080/品質62 で持つと 2.2MB を超え、file:// の 読み込みが 重くなるため。
@@ -150,7 +320,8 @@ def main():
         for name in g["files"]:
             src = P("data", "raw", "media", name)
             if os.path.exists(src):
-                ss.append(dict(shrink_small(src), credit=g["credit"], url=g["url"]))
+                ss.append(dict(shrink_small(src), credit=g["credit"], url=g["url"],
+                               label=GROUP_LABEL.get(g["key"], "")))
         if ss:
             small[g["key"]] = {"credit": g["credit"], "url": g["url"], "shots": ss}
     for key, info in extracted().items():  # 個体写真 (1 枚ずつ 出どころが 違う)
@@ -158,21 +329,70 @@ def main():
         for name, ds in info["files"]:
             src = P("data", "raw", "media", name)
             if os.path.exists(src):
+                nm, alias = clean_name(zip_name(ds))   # ★その子の 名前 (zip の 中の フォルダ名を 整えたもの)
+                lab = GROUP_LABEL.get(key, "")
+                if nm:
+                    lab = (lab + "「" + nm + "」") if key == "panda" else ("西山動物園の " + nm)
                 ss.append(dict(shrink_small(src),
                                credit="鯖江市オープンデータ「" + info["label"] + "」(CC BY 2.1 JP)",
-                               url="https://ckan.odp.jig.jp/dataset/" + ds))
+                               url="https://ckan.odp.jig.jp/dataset/" + ds,
+                               name=nm or "", names=alias, label=lab))
         if ss:
             small[key] = {"credit": "鯖江市オープンデータ「" + info["label"] + "」(CC BY 2.1 JP)",
                           "url": "https://ckan.odp.jig.jp/", "shots": ss}
-    for key, name, label, url in PLACES:      # 場所ごとの 写真 (1 枚 = 1 か所)
+    # ★★2026-11-14: 鯖江市の 公式ページ・資料の 写真は ★使わない (PLACES / DOCS を 読まない)。
+    #   市の「公式ホームページの考え方」に「画像…の 著作権は 鯖江市に 帰属」
+    #   「許可なく 使用・複製・転載…二次利用 することを 禁止」(例外は 個人的・非営利 だけ) と ある。
+    #   ★公開する 作品への 埋め込みは 例外に 当たらない。→ 外して、自由に 使える 写真で 差し替える。
+    #   ★一覧は 経緯として 残す (使うなら 市の 許可を 取ってから USE_CITY_PHOTOS = True)
+    for key, name, label, url in (PLACES if USE_CITY_PHOTOS else []):      # 場所ごとの 写真 (1 枚 = 1 か所)
         src = P("data", "raw", "media", name)
         if not os.path.exists(src):
             print("  見つからない:", src)
             continue
         credit = "鯖江市「" + label + "」(市公式ページ)"
         small[key] = {"credit": credit, "url": url,
-                      "shots": [dict(shrink_small(src), credit=credit, url=url)],
+                      "shots": [dict(shrink_small(src), credit=credit, url=url,
+                                     label=LABEL_OVERRIDE.get(key, label))],
                       "label": label}
+    for key, name, label in FURUI:            # ★古い写真 (CC BY)。1 枚ずつ 何の写真か
+        src = P("data", "raw", "media", name)
+        if not os.path.exists(src):
+            print("  見つからない:", src)
+            continue
+        g = small.setdefault(key, {"credit": FURUI_CREDIT, "url": FURUI_URL, "shots": []})
+        g["shots"].append(dict(shrink_small(src), credit=FURUI_CREDIT, url=FURUI_URL, label=label))
+    for name, key, label in OWN:              # ★自分たちで 描いた イラスト
+        src = P("data", "raw", *name.split("/"))
+        if not os.path.exists(src):
+            print("  見つからない:", src)
+            continue
+        g = small.setdefault(key, {"credit": OWN_CREDIT, "url": "", "shots": []})
+        g["shots"].append(dict(shrink_small(src), credit=OWN_CREDIT, url="", label=label))
+    man = ext_manifest()
+    for fn, key in EXT:                       # ★外部の 自由に 使える 写真 (1 枚ずつ 条件を 確かめた もの)
+        src = P("data", "raw", "ext_20261114", fn)
+        info = man.get(fn)
+        if not os.path.exists(src) or not info:
+            print("  見つからない / 目録に 無い:", fn)
+            continue
+        g = small.setdefault(key, {"credit": info["credit"], "url": info["url"], "shots": []})
+        if info["sa"]:
+            g["sa"] = True
+        # ★画面の 出典にも 縮小 (改変) した ことを 書く (CC BY は 変更の 明示が 要る。
+        #   福井県の 利用規約も 改変した 場合の 書き方を 求めている)。★切り出しは 目録の 文言に 書いてある
+        cr = info["credit"]
+        if "切り出して" not in cr:
+            cr += " / 縮小して使用"
+        g["shots"].append(dict(shrink_small(src), credit=cr, url=info["url"],
+                               label=info["label"], license=info["license"], sa=info["sa"]))
+    for key, name, label, credit, url in (DOCS if USE_CITY_PHOTOS else []):  # ★市の 資料の 写真 (★使わない)
+        src = P("data", "raw", "media", name)
+        if not os.path.exists(src):
+            print("  見つからない:", src)
+            continue
+        g = small.setdefault(key, {"credit": credit, "url": url, "shots": []})
+        g["shots"].append(dict(shrink_small(src), credit=credit, url=url, label=label))
 
     for k, v in small.items():
         n = sum(x["bytes"] for x in v["shots"])
@@ -181,14 +401,60 @@ def main():
     print("  小 合計 %d 枚 / %.0f KB" % (sum(len(v["shots"]) for v in small.values()), total / 1024))
     out["_small"] = small
 
-    dst = P("app", "data", "img.js")
-    with io.open(dst, "w", encoding="utf-8", newline="\n") as f:
-        f.write("/* 自動生成: python tools/build_images.py  (手で編集しない) */\n")
-        f.write("/* 鯖江市オープンデータの公式写真 (CC BY 2.1 JP)。EXIF は除去済み */\n")
-        f.write("window.HANASHI_IMG = ")
-        json.dump(out, f, ensure_ascii=False)
+    write_split(out)
+
+
+def write_split(out):
+    """★群ごとに ファイルを 分けて 書く (2026-11-14)。
+    ★前は 1 本の img.js (2.3MB) を 幕を 開けたときに 丸ごと 読んでいた。
+    ★いまは 席に 要る 群だけを その席の 頭で 読む (app.js の loadImg)。
+      data/img/<key>.js       … 噺の途中の 小さい写真 (群 1 つ)
+      data/img/card_<key>.js  … 札に 敷く 写真 (つつじ / 紅葉)
+      data/img/_keys.js       … どの群が あるか (★これだけ 最初に 読む。1KB 未満)
+    ★どれも 同じ フォルダの ファイル = 外部通信は 増えない。"""
+    d = P("app", "data", "img")
+    os.makedirs(d, exist_ok=True)
+    for name in os.listdir(d):                 # ★消えた 群の ファイルを 残さない
+        if name.endswith(".js"):
+            os.remove(os.path.join(d, name))
+    head = ("/* 自動生成: python tools/build_images.py  (手で編集しない) */\n"
+            "/* 写真と イラスト。出どころと 利用条件は 各群の credit と CREDITS.md。EXIF は除去済み */\n"   # ★2026-11-15: イラストの 群にも「公式写真」と 出ていた
+            "window.HANASHI_IMG = window.HANASHI_IMG || {_small: {}};\n")
+    keys = {"small": {}, "card": {}}
+    def put(fn, lhs, obj):
+        h = head
+        if isinstance(obj, dict) and obj.get("sa"):
+            # ★CC BY-SA の 群は ★先頭の 注記も SA に する (「CC BY 2.1 JP ほか」と 書かない)
+            h = ("/* 自動生成: python tools/build_images.py  (手で編集しない) */\n"
+                 "/* ★このファイルの 写真は CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/deed.ja)。"
+                 "このファイルは CC BY-SA 4.0 で 提供する。出典は 各写真の credit と CREDITS.md */\n"
+                 "window.HANASHI_IMG = window.HANASHI_IMG || {_small: {}};\n")
+        with io.open(os.path.join(d, fn), "w", encoding="utf-8", newline="\n") as f:
+            f.write(h + lhs + " = ")
+            json.dump(obj, f, ensure_ascii=False)
+            f.write(";\n")
+    for k, v in out["_small"].items():
+        put(k + ".js", 'window.HANASHI_IMG._small["%s"]' % k, v)
+        # ★名前の 一覧も 目録に 持つ (噺に 名前が 出たら その子の 写真を 選べるように。群を 読む 前に 分かる)
+        nms = sorted(set(x for s in v["shots"] for x in (s.get("names") or ([s["name"]] if s.get("name") else []))))
+        keys["small"][k] = {"n": len(v["shots"]), "label": v.get("label")}
+        if nms:
+            keys["small"][k]["names"] = nms
+    for k, v in out.items():
+        if k == "_small":
+            continue
+        put("card_" + k + ".js", 'window.HANASHI_IMG["%s"]' % k, v)
+        keys["card"][k] = {"n": len(v["shots"])}
+    with io.open(os.path.join(d, "_keys.js"), "w", encoding="utf-8", newline="\n") as f:
+        f.write("/* 自動生成: python tools/build_images.py */\nwindow.HANASHI_IMG_KEYS = ")
+        json.dump(keys, f, ensure_ascii=False)
         f.write(";\n")
-    print("written:", dst, "(%.0f KB)" % (os.path.getsize(dst) / 1024))
+    total = sum(os.path.getsize(os.path.join(d, n)) for n in os.listdir(d))
+    print("written: %s (%d 本 / %.0f KB)" % (d, len(os.listdir(d)), total / 1024))
+    old = P("app", "data", "img.js")
+    if os.path.exists(old):
+        os.remove(old)
+        print("  ★古い 1 本ものの img.js を 消しました (GitHub 上でも 消してください)")
 
 
 if __name__ == "__main__":

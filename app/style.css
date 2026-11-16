@@ -80,16 +80,19 @@ body {
   letter-spacing: 0.08em;
   box-shadow: 2px 2px 0 #d8cdb9;
 }
-.mekuri.flip { animation: flip 0.5s ease; }
+/* ★動きの 決めごと (P1-4): 動かすのは transform と opacity だけ / 一度きりで 0.15〜0.3 秒 /
+   無限の 繰り返しは しない / ぼかし・影は 動かさない / 動きを 減らす 設定では 全部 止める */
+.mekuri.flip { animation: flip 0.25s ease; }
 @keyframes flip { from { transform: rotateX(-90deg); opacity: 0; } to { transform: none; opacity: 1; } }
 
 .talk { min-height: 40vh; }
 /* ★声の 大小・抑揚の 代わり。文字の 大きさ・太さ・色で 強弱を つける
    (docs/参考/20260920_はなし山のサゲ作法.md §5) */
 .line {
+  white-space: pre-line;      /* ★問いの 文の 前の 改行 (app.js の qBreak) */
   margin: 0 0 16px;
   font-size: 1.18rem;
-  animation: rise 0.35s ease;
+  animation: rise 0.25s ease;
 }
 /* まくら = 声を張る立ち上がり */
 .line.makura {
@@ -174,7 +177,7 @@ body {
   letter-spacing: 0.02em;
 }
 .line.sage .kazu { color: inherit; font-size: 1.12em; }
-.kagi { font-style: normal; color: #3d6b52; font-weight: bold; font-size: 1.1em; }
+.kagi { font-style: normal; color: #2c5240; font-weight: bold; font-size: 1.1em; }
 
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
@@ -211,15 +214,19 @@ body {
   left: 0; right: 0; bottom: 0;
   background: rgba(46, 33, 25, 0.95);
   display: flex;
+  /* ★幅が 足りなければ ボタンごと 次の 段へ (★語の 途中で 折らない。2026-11-15 監査⑧ F12・㊲ と 同じ 形) */
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
-  padding: 10px;
+  gap: 0 20px;
+  padding: 4px 10px;
 }
 .link {
   background: none; border: none; cursor: pointer;
   color: #e9dcc6; font-family: var(--sans); font-size: 0.9rem;
   text-decoration: underline;
 }
+/* ★押せる 大きさ = 高さ 44px (タブレット幅でも。監査⑧ F13) */
+.footbar .link { min-height: 44px; padding: 10px 8px; white-space: nowrap; }
 
 /* ---------- 場 ---------- */
 .panel {
@@ -243,8 +250,15 @@ footer {
 }
 footer .credit { opacity: 0.75; }
 
+/* ★動きを 減らす 設定では ★すべての 動きを 止める (一つずつ 足すと 漏れる)。
+   ★写真を 一拍 見せる 間 (0.8 秒) は 動きでは なく 間なので 残る (app.js の タイマー) */
 @media (prefers-reduced-motion: reduce) {
-  .line, .mekuri.flip { animation: none; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  /* ★例外 (2026-11-15 ユーザー判断): ★写真の 出入りの フェードだけは 残す。★位置も 大きさも 動かない 濃淡 (opacity) だけ。
+     ★扇子・行の 浮き上がり・羽織の 切り替えなど ほかの 動きは 止めた まま */
+  .haikei, .haikei-cap { transition: opacity 0.8s ease !important; }
+  .haikei-in::after { transition: opacity 0.8s ease !important; }
+  .haikei.kawari #haikeiImg { animation: usu 0.8s ease !important; }
 }
 
 /* 自由入力 */
@@ -270,13 +284,13 @@ footer .credit { opacity: 0.75; }
   background: #fff;
   border: 1px solid #d8cdb9;
   box-shadow: 2px 2px 0 #d8cdb9;
-  animation: rise 0.35s ease;
+  animation: rise 0.25s ease;
 }
 .figure svg { width: 100%; height: auto; display: block; }
 .figt { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
 .figl { font-family: var(--sans); font-size: 19px; fill: var(--muted); }
 .figv { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
-.fign { font-family: var(--sans); font-size: 17px; fill: #9a9088; }
+.fign { font-family: var(--sans); font-size: 17px; fill: var(--muted); }   /* ★3.13:1 → 5.95:1 (監査⑧ F9) */
 .figb { fill: var(--vermilion); }
 /* ★棒 (朱) の 中に 置く 数字は 白。★2026-09-26 まで 黒のまま 埋もれていた。
    ★原因 = SVG の fill="#fff" 属性が ★.figv のクラス指定に 負けていた。
@@ -314,9 +328,10 @@ footer .credit { opacity: 0.75; }
   content: "あて推量";
   display: block;
   font-family: var(--sans);
-  font-size: 0.68rem;
+  /* ★事実と 推量を 見分ける ための ラベル = 読めないと 意味が 無い (2026-11-15 監査⑧ F3: 2.65:1 → 4.95:1) */
+  font-size: 0.75rem;
   letter-spacing: 0.3em;
-  color: #9a8f7c;
+  color: var(--muted);
   margin-bottom: 4px;
 }
 
@@ -347,21 +362,6 @@ footer .credit { opacity: 0.75; }
 /* 上下 (かみしも) — 話者で 左右に 振る。客は右、レジ係は左 */
 .line.serifu.kyaku2 { margin-left: auto; text-align: right; }
 .line.serifu.watashi { margin-right: auto; }
-
-/* 噺の途中に出す小さな写真 (手描きの挿し絵から差し替え。2026-09-23) */
-.shashin {
-  margin: 2px 0 18px;
-  max-width: 260px;
-  animation: rise 0.4s ease;
-}
-.shashin img {
-  width: 100%; height: auto; display: block;
-  border: 1px solid #d8cdb9; box-shadow: 3px 3px 0 #d8cdb9;
-}
-.shashin figcaption {
-  font-family: var(--sans); font-size: 0.68rem; color: #9a8f7c;
-  margin-top: 4px; line-height: 1.5;
-}
 
 /* 幕: 何のための一席かを先に言う */
 .nerai {
@@ -425,7 +425,8 @@ footer .credit { opacity: 0.75; }
   .makubtn .btn.big { width: 100%; font-size: 1.05rem; padding: 14px 12px; }
 
   /* 指で 押せる 大きさに (足元の 小さい字が 押しにくい) */
-  .footbar .link { padding: 10px 8px; font-size: 0.92rem; }
+  .footbar { gap: 0 10px; padding: 2px 6px; }
+  .footbar .link { padding: 10px 5px; font-size: 0.86rem; }
   .btn { padding: 12px 16px; }
   .kingrid { gap: 7px; }
   .kingrid button { font-size: 0.9rem; padding: 10px 12px; }
@@ -440,7 +441,231 @@ footer .credit { opacity: 0.75; }
   .line.serifu { font-size: 1.1rem; margin-left: 0; }
   .line.kyaku, .line.serifu.kyaku2 { max-width: 88%; }
 
-  .shashin { max-width: 200px; }
   .ma { height: 3.2rem; }
   .figure { max-width: 100%; padding: 10px 10px 4px; }
 }
+/* ---- 2026-11-14 読む負担を 減らす 手当て ---------------------------------- */
+/* ★表紙は 一行。説明は「はじめての方へ」に 畳む */
+.hajimete { max-width: 30em; margin: 18px auto 10px; font-family: var(--sans); text-align: left; }
+.hajimete summary {
+  cursor: pointer; color: var(--gold); font-size: 0.95rem; text-align: center;
+  list-style: none; padding: 6px 0;
+}
+.hajimete summary::-webkit-details-marker { display: none; }
+.hajimete summary::before { content: "▸ "; }
+.hajimete[open] summary::before { content: "▾ "; }
+.hajimete .nerai { margin-top: 10px; }
+
+/* ★進みぐあい (まくら → 本題 → サゲ)。★いま いる 札だけ 朱で */
+.kozatop { align-items: center; gap: 12px; }
+/* ★2026-11-15 (監査⑧ F8): 色だけで 示さない。済んだ 段は「✓」、いまの 段は 太字 (+ aria-current)。
+   ★字は 薄墨 (白の 上 5.95:1 / 紙の 上 5.24:1。前は 3.18 / 1.95) */
+.shinko {
+  display: flex; gap: 4px; margin: 0; padding: 0; list-style: none;
+  font-family: var(--sans); font-size: 0.78rem; color: var(--muted); margin-right: auto;
+}
+.shinko li { padding: 2px 8px; border: 1px solid #d8cdb9; border-radius: 2px; background: #fff; }
+.shinko li.done { color: var(--muted); background: transparent; }
+.shinko li.done::before { content: "✓"; margin-right: 2px; }
+.shinko li.now { color: #fff; background: var(--vermilion); border-color: var(--vermilion); font-weight: bold; }
+.shinko[hidden] { display: none; }
+
+/* ★前の 語りを 畳む。★畳んだ 行は 見えないが 読み上げには 残す (sr-only) */
+.talk .tatami {
+  position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+/* ★開くのは 読み返す ため。★薄くせず (前は opacity 0.55 = 2.2〜3.8:1) 薄墨の 字 (紙の 上 5.24:1) に。
+   ★畳んだ 行で あることは 左の 罫線で 示す (2026-11-15 監査⑧ F4) */
+.talk.open .tatami {
+  position: static !important; width: auto; height: auto; margin: 0 0 8px; overflow: visible;
+  clip: auto; white-space: normal; font-size: 0.9rem; color: var(--muted); animation: none;
+  border-left: 3px solid #d8cdb9; padding-left: 10px;
+}
+.talk.open .tatami.ma { display: none; }
+.talk.open figure.tatami { max-width: 140px; }
+.tatami-btn {
+  display: block; width: 100%; margin: 0 0 14px; padding: 8px 10px;
+  background: transparent; border: 1px dashed #c9bfa9; color: var(--muted);
+  font-family: var(--sans); font-size: 0.82rem; text-align: left; cursor: pointer;
+}
+.tatami-btn[hidden] { display: none; }
+
+/* ---- 2026-11-15 場面の 見出しと 背景の 写真 (P0-3 第 1 段) ------------------------ */
+/* ★高座を 重なりの 基準に する。★背景の 層 (z-index:-1) は 高座の 地の上・語りの下に 描かれる */
+.koza { position: relative; z-index: 0; --footh: 52px; }
+.footbar { z-index: 3; }
+
+/* ★場面の 見出し (と 図) を 上に 残す 1 枠。★中身が 無ければ 高さ 0 */
+.kozahead {
+  position: sticky; top: 0; z-index: 2;
+  background: var(--paper);
+  margin: 0 -16px 10px; padding: 0 16px;
+}
+.midashi {
+  margin: 0; padding: 7px 0 7px 10px;
+  border-left: 4px solid var(--vermilion);
+  border-bottom: 1px solid #d8cdb9;
+  font-family: var(--sans); font-weight: bold; font-size: 1rem; line-height: 1.5;
+  color: var(--ink); letter-spacing: 0.04em;
+  /* ★見出しは 16 字まで (ふだんは 1 行)。★拡大した ときは 折り返す (省略で 切らない。監査⑧ F14) */
+  white-space: normal; overflow-wrap: anywhere;
+}
+.midashi[hidden], .zu[hidden], .haikei[hidden], .haikei-cap[hidden] { display: none; }
+/* ★図の 場面: 図を 上に 固定し、語りは その下を 流れる。★図に 文字を 重ねない */
+.zu { padding: 8px 0 2px; }
+.zu .figure { margin: 0 auto; animation: none; }
+.zu .figure svg { max-height: calc(42vh - 30px); width: auto; max-width: 100%; margin: 0 auto; }
+
+/* ★背景の 写真 = 高座の 後ろに 1 枚。★場面が 替わった ときだけ 差し替える。
+   ★ゆっくり ズーム などの 背景を 動かす 演出は 入れない (出る ときに 一度 薄く 現れる だけ) */
+.haikei {
+  /* ★2026-11-15 ユーザー指摘: 前は 画面 全体に fixed で 紙色に 塗り、高座の 外 (幕) まで 覆っていた。
+     ★層は ★高座の 中だけ (absolute)。紙の 地は 高座 自身の 色 (層は 塗らない) */
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1;
+  pointer-events: none;
+}
+/* ★中の 枠を 画面の 高さで sticky に 置く = スクロールしても 写真は 画面の 同じ 所 (★高座の 外へは 出ない)。
+   ★写真は 横長の まま 全体を 見せる (contain・中央)。★主題 (㊹「何の写真か」) を 切らない */
+.haikei-in {
+  position: sticky; top: 0; height: 100vh; overflow: hidden;
+}
+.haikei img {
+  position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%;
+  object-fit: contain; object-position: center 45%;
+}
+/* ★切り替えの 間だけ 古い 写真を 下に 残す (クロスフェード)。★無い ときは 隠す */
+.haikei img.furui:not([src]), .haikei img.furui[src=""] { display: none; }
+.haikei.kawari #haikeiImg { animation: usu 0.8s ease; }   /* ★新しい 写真を 古い 写真の 上に 0.8 秒で 重ねる (2026-11-15 ユーザー「もう少し 長く」) */
+@keyframes usu { from { opacity: 0; } to { opacity: 1; } }
+/* ★2026-11-15 ユーザー提案「写真は 背景 として 扱う」:
+   ★写真が 出ても 文字の 側 (色・余白・行の 幅) は 替えない (前は 替わって 改行が ずれ、読んでいた 所を 見失った)。
+   ★同日「薄くて 何か 分からない」→ 全体の 覆いは 軽く (20%)、★文字の 行の 下にだけ 紙色の 帯 (下の .talk .line)。
+   ★場面の 頭の 一拍 (.miseru) は 覆い 0 = 写真を そのまま 見せる。読んでいた 文字は 残す。
+   ★出入りは opacity 0.3 秒 (急に 出さない・急に 消さない)。★動きを 減らす 設定では 上の `*` で 止まる (瞬時に 替わる) */
+.haikei-in::after {
+  content: ""; position: absolute; inset: 0; background: var(--paper);
+  opacity: 0.2; transition: opacity 0.8s ease;
+}
+.haikei.miseru .haikei-in::after { opacity: 0; }
+.haikei, .haikei-cap { transition: opacity 0.8s ease; }
+.haikei.kieru, .haikei-cap.kieru { opacity: 0; }
+/* ★文字の 行の 下の 紙色の 帯 (95%)。★写真が 無い ときも 同じ 形で 敷く (紙の 上では 見えない) =
+   ★写真の 出入りで 行の 幅・余白・改行は 変わらない。★地を 持つ 行 (問い・あて推量・客の 吹き出し) は その 地の まま。
+   ★写真の いちばん 黒い 所の 上でも 帯は 紙 95% = 墨の 字 12 : 1・数字 7 : 1・「」6.9 : 1・薄墨 4.6 : 1 */
+/* ★:where で 詳細度を 上げない (★前は この 規則が 客の 台詞の 右寄せに 勝ち、客の 喋りが 左に 寄った。2026-11-15 ユーザー指摘) */
+.talk .line:where(:not(.toi):not(.suiryo):not(.kyaku)) {
+  background: rgba(246, 240, 227, 0.95);
+  width: fit-content; padding: 2px 8px; margin-left: -8px;
+}
+.talk .line.serifu.watashi { margin-left: 0; }
+/* ★客の 喋りは 右寄せ (本題の 客の 台詞・前段の 客の 答え とも) */
+.talk .line.serifu.kyaku2 { margin-left: auto; margin-right: -8px; text-align: right; }
+/* ★「次へ」(長く 読んだ ところで 止める)。★選択肢と 同じ 場所・右寄せ */
+.choices .btn.tsugi { margin-left: auto; display: block; min-width: 7em; }
+/* ★細い 字が 帯の 端で 埋もれない ように 紙の 色の 縁取り (★行の 幅は 変わらない) */
+.talk .line { text-shadow: 0 0 2px var(--paper); }
+/* ★「これまでの 語り を 開く」も 写真の 上で 読める 地 */
+.tatami-btn { background: rgba(246, 240, 227, 0.95); }
+/* ★打ち出しの 途中は ★残りの 字を 見えない まま 置いて 行の 幅を 最後の 形で 取る (★打ち終わりで 改行が 動かない) */
+.talk .line .mada { visibility: hidden; }
+/* ★客の 相槌 (「次へ」の 代わり。2026-11-15)。★客の 吹き出しより 小さく・控えめに */
+.talk .line.aizuchi { font-size: 0.95rem; opacity: 1; }
+/* ★オチが 西山公園の 何の ことか (サゲの すぐ 下の 小さな 註)。★薄墨 = 紙の 上 5.2 : 1 */
+.talk .ochi-what {
+  margin: -8px 0 16px 1em; padding: 2px 8px; width: fit-content;
+  font-family: var(--sans); font-size: 0.9rem; color: var(--muted);
+  background: rgba(246, 240, 227, 0.95);
+}
+/* ★写真の 隅に「何の 写真か」と 出典を ★常に 出す (CC BY ほか)。★語りより 上に 置く */
+/* ★隅書きは 読むだけ。★下の 語り・選択肢の タップを 奪わない (監査⑧ F6)。
+   ★語り・選択肢は app.js (bottomRoom) が 隅書きの 上端より 上に 置く */
+.haikei-cap {
+  position: fixed; z-index: 2; pointer-events: none;
+  right: max(8px, calc(50% - 332px)); bottom: calc(var(--footh) + 8px);
+  max-width: min(62%, 420px); margin: 0; padding: 4px 9px 5px;
+  background: rgba(0, 0, 0, 0.62); color: #fff;
+  font-family: var(--sans); line-height: 1.45; text-align: right;
+}
+.haikei-cap b { display: block; font-size: 0.8rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+.haikei-cap span { display: block; font-size: 0.66rem; opacity: 0.92; overflow-wrap: anywhere; }
+
+
+/* ★場面の 頭の 見出し行 (読み上げ用)。★画面には 出さない。★畳んだ 語りを 開いても 出さない */
+.talk .sr, .talk.open .sr.tatami {
+  position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important;
+  padding: 0 !important; overflow: hidden !important; clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important; border: 0 !important;
+}
+
+@media (max-width: 480px) {
+  .koza { --footh: 70px; }
+  .kozahead { margin: 0 -12px 8px; padding: 0 12px; }
+  .midashi { font-size: 0.95rem; }
+  /* ★スマホは 横いっぱいに 広げて 段を 減らす (長い 出典で 5 段 → 3〜4 段) */
+  .haikei-cap { left: 8px; right: 8px; max-width: none; }
+}
+
+/* ---- 2026-11-15 噺家の 道具 (P1-3) ------------------------------------------------ */
+/* ★動きは すべて P1-4 の 決めごとに 従う (transform / opacity だけ・0.15〜0.3 秒・一度きり)。
+   ★動きを 減らす 設定では 上の `*` の 一括で 止まる */
+
+/* 扇子 = 場面の 区切り。★噺家が 扇子で 床を 叩いて 場面を 切る ところ。
+   ★場面が 替わる ときに 閉じた 扇子を 1 本 (app.js の sensu)。★叩く 動き = 上から 数 px 落ちる */
+.sensu {
+  width: fit-content; margin: 4px auto 18px; padding: 0 8px;
+  line-height: 0; color: var(--wood);
+}
+.sensu svg { display: block; width: min(240px, 64vw); height: auto; overflow: visible; }
+.sensu .sen { stroke: currentColor; stroke-width: 1.2; }
+/* ★扇面: 要を 中心に 回る (transform-origin = 要)。★ふだんは 閉じた 形 (回転 0)。
+   ★場面が 替わる ときに 1 度だけ 開いて (0.3 秒) 閉じる (0.3 秒)。★動きを 減らす 設定では `*` で 止まり 閉じた まま */
+.sensu .hane {
+  fill: var(--vermilion); stroke: var(--wood); stroke-width: 0.6;
+  transform-box: fill-box; transform-origin: 50% 100%;   /* ★扇面の 下端の 中央 = 要 */
+  animation: hiraku 0.3s ease-out, tojiru 0.3s ease-in 0.3s;
+}
+.sensu .hane.ura { fill: var(--gold); }
+.sensu .kaname { fill: var(--wood); }
+@keyframes hiraku { from { transform: rotate(0deg); } to { transform: rotate(var(--a)); } }
+@keyframes tojiru { from { transform: rotate(var(--a)); } to { transform: rotate(0deg); } }
+
+/* 手拭い = 帳面 (タネ明かし)。★豆絞りの 柄は ★上下の 縁の 帯 (::before / ::after) だけ。
+   ★本文の 下には 敷かない。★本文の 文字の 色・大きさ・地の 色は 今までどおり
+   (地は 紙の 色を 明示する = 羽織を 脱いだ 地の 色に 引きずられない) */
+.sources { position: relative; background: var(--paper); padding: 14px 0 12px; }
+.sources::before, .sources::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 10px; pointer-events: none;
+  background-color: #fff;
+  background-image: radial-gradient(circle, #24426f 0 2px, transparent 2.6px);
+  background-size: 10px 10px; background-position: center;
+}
+.sources::before { top: 0; border-bottom: 1px solid #24426f; }
+.sources::after { bottom: 0; border-top: 1px solid #24426f; }
+
+/* 羽織を 脱ぐ = 本題の 合図。★本題の 入り (進行が「本題」に 替わる 瞬間) に 一度だけ 切り替える。
+   ★2026-11-15 (監査①③⑥): 前は 高座の 地を #f6f0e3 → #fdfaf3 (1.09:1) に して いて、ほぼ 見えず、
+     しかも 背景の 写真 (z-index:-1) の 下に 隠れて いた (130 席中 121 席)。
+   ★見出しの 帯 (写真より 上の 層・高座の 上の 縁) で 出す: まくらの 間は 羽織の 濃い 色 (足元と 同じ 焦げ茶)、
+     本題に 入ると 濃い 層が 0.25 秒で 消えて 紙の 色に (紙 ↔ 焦げ茶 = 13.7:1)。
+   ★動かすのは 層の opacity だけ。★次の 席の 頭で 戻す (app.js の stage)。★文字の 色は 切り替える だけ (動かさない) */
+.kozahead::before {
+  content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1;
+  background: #2e2119; opacity: 1; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.koza.haori-nugi .kozahead::before { opacity: 0; }
+/* ★羽織の 帯の 上の 見出しは 紙の 色の 字 (13.7:1)。縁の 色は 金 (6.5:1) */
+.midashi { color: #f6f0e3; border-left-color: var(--gold); }
+.koza.haori-nugi .midashi { color: var(--ink); border-left-color: var(--vermilion); }
+
+/* 仕草 = 上下 (かみしも) の 首振り。★話し手が 替わった 台詞だけ (app.js が shigusa を 付ける)。
+   ★客は 右から、私は 左から 5px 寄る。★同じ 話し手が 続く 台詞は 寄せない */
+.line.serifu.kyaku2.shigusa { animation: yoriR 0.2s ease-out; }
+.line.serifu.watashi.shigusa { animation: yoriL 0.2s ease-out; }
+@keyframes yoriR { from { opacity: 0; transform: translateX(5px); } to { opacity: 1; transform: none; } }
+@keyframes yoriL { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: none; } }
+
+/* ★フォーカスの 受け皿 (tabindex="-1" の 高座・パネル)。★入れ物 そのものは 操作できないので 枠は 出さない
+   (★ボタン・入力欄の 枠は ブラウザの 既定の まま。2026-11-15 監査⑧ F5) */
+.koza:focus, .panel:focus { outline: none; }

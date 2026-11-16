@@ -2,7 +2,8 @@
   "_meta": {
     "description": "はなし山の語りを支える事実台帳。台本(stories.json)と暦の話(today.json)は、ここに verified=true で載っている事実IDしか参照できない。",
     "checked_at": "2026-09-17",
-    "rule": "quote は出典の原文から短く引用する。語りは claim の範囲を超えないこと。"
+    "rule": "quote は出典の原文から短く引用する。語りは claim の範囲を超えないこと。",
+    "estimate_rule": "estimate=true は 実数ではなく 推し量った数 (人流データ / 県の入込数(推計))。★confidence (確かさ) とは 別の軸: 推計値だと 確かに 書いてある = high かつ estimate。★語りで その数字を 出すときは「推し量った」と 断る (validate 49)。"
   },
   "facts": [
     {
@@ -30,7 +31,7 @@
       "source": "鯖江市 観光「西山公園」特集",
       "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
       "confidence": "medium",
-      "note": "市の表現が「と言われています」。断定しない。",
+      "note": "市の表現が「と言われています」。断定しない。白河の南湖公園（1801 年ごろ、松平定信）という先例があり、『二つしかない』とは言わない（2026-11-15 確認）。",
       "verified": true
     },
     {
@@ -181,13 +182,14 @@
     },
     {
       "id": "F19",
-      "claim": "市議会の答弁によると、サンドーム福井のコンサート来場者は人流データで年間約19万人、その約9割が県外から来ている(令和6年度・約21万人のうち)。",
+      "claim": "市議会の答弁によると、サンドーム福井のコンサート来場者は年に約21万人、そのうち約19万人(約9割)が県外から来ている(携帯電話の位置情報を用いた人流データによる)。",
       "quote": "携帯電話の位置情報を用いた人流データサービスによりますと年間約19万人程度、要は21万人のうち19万人程度、約９割が県外からお越しになられている",
       "source": "鯖江市議会 会議録(令和8年3月定例会 一般質問、文書Id 1393)",
       "url": "https://www.city.sabae.fukui.dbsr.jp/100000?Template=document&Id=1393",
       "confidence": "high",
-      "note": "サンドーム福井の所在地は越前市。",
-      "verified": true
+      "note": "サンドーム福井の所在地は越前市。★19万人は県外から来た数で、来場者の総数ではない(「21万人のうち19万人程度、約9割が県外」)。★人流データにもとづく推し量った数 (estimate)。語るときは「推し量った」と断る。★年度は quote に無いので語らない。  訂正 2026-11-15 (監査⑦ B1・B8)。",
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F20",
@@ -207,7 +209,8 @@
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoentodohukenbetsuwariai",
       "confidence": "high",
       "note": "データ提供元：(株)Agoop の表記が必要。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F22",
@@ -216,8 +219,9 @@
       "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
-      "note": "人流推計にもとづく参考値。対象は公園の東側エリア。データ提供元：(株)Agoop。",
-      "verified": true
+      "note": "人流推計にもとづく参考値。対象は公園の東側エリア。データ提供元：(株)Agoop。 ★値は10人単位に丸めてある(365日すべて10の倍数。0以外の最小は40)。★0は「誰も来なかった」ではない。",
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F23",
@@ -256,7 +260,8 @@
       "url2": "https://www.pref.fukui.lg.jp/doc/kankou/fukuiken-kankoukyakusu.html",
       "confidence": "high",
       "note": "暦年・延べ人数の推計値。県外25.0%は216/864の計算。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F27",
@@ -267,7 +272,8 @@
       "url2": "https://www.pref.fukui.lg.jp/doc/kankou/fukuiken-kankoukyakusu.html",
       "confidence": "high",
       "note": "96.1%は864/899の計算。「過去最高」ではない。コロナ前に戻る途中。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F28",
@@ -277,7 +283,8 @@
       "url": "https://www.pref.fukui.lg.jp/doc/kankou/fukuiken-kankoukyakusu_d/fil/024.pdf",
       "confidence": "high",
       "note": "「主要地点で1位」等の順位は数えていないので言わない。減った理由は県の資料に書かれていない。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F29",
@@ -287,7 +294,8 @@
       "url": "https://www.pref.fukui.lg.jp/doc/kankou/fukuiken-kankoukyakusu_d/fil/024.pdf",
       "confidence": "high",
       "note": "延べ人数を実人数に直すための係数でもある。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F30",
@@ -297,7 +305,8 @@
       "url": "https://www.pref.fukui.lg.jp/doc/kankou/fukuiken-kankoukyakusu_d/fil/024.pdf",
       "confidence": "high",
       "note": "恐竜博物館だけの数字ではない(かつやま恐竜の森を含む)。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F31",
@@ -546,8 +555,9 @@
       "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
-      "note": "人流推計にもとづく参考値。対象は公園の東側。データ提供元：(株)Agoop。2026-09-21 に日別CSVから再集計。",
-      "verified": true
+      "note": "人流推計にもとづく参考値。対象は公園の東側。データ提供元：(株)Agoop。2026-09-21 に日別CSVから再集計。 ★値は10人単位に丸めてある(365日すべて10の倍数。0以外の最小は40)。★0は「誰も来なかった」ではない。",
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F63",
@@ -579,7 +589,8 @@
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
       "note": "★当方の集計。365日を天気の欄の語で晴・曇・雨・雪に分け、来訪者数の平均を四捨五入した。曇は7日しかないため語りに使わない。  確認日 2026-09-25。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F66",
@@ -589,7 +600,8 @@
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
       "note": "★当方の集計。最高気温の欄で5度ごとに分け、来訪者数の平均を四捨五入した。★人出が多い理由は表に書かれていない。連休や花の見頃と重なっている可能性があり、気温が理由だとは言わない。  確認日 2026-09-25。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F67",
@@ -599,7 +611,8 @@
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
       "note": "★当方の集計。各曜日52〜53日の平均を四捨五入した。★金が少ない理由は表に書かれていない。  確認日 2026-09-25。",
-      "verified": true
+      "verified": true,
+      "estimate": true
     },
     {
       "id": "F68",
@@ -643,12 +656,12 @@
     },
     {
       "id": "F72",
-      "claim": "同じ駐車場の月ごとの出庫台数は、2026年4月が16,136台、8月が2,507台。",
-      "quote": "日,曜日,出庫台数(台)(202604 / 202608 の各日を合計)",
+      "claim": "同じ駐車場の月ごとの出庫台数は、2025年4月が16,846台、5月が15,243台で、4〜5月の合計は32,089台。6〜8月は6月7,965台・7月6,157台・8月6,247台で、合計は20,369台。",
+      "quote": "日,曜日,出庫台数(台)(202504〜202508 の各月の日別を合計。各ファイル末尾の「合計」行: 16846 / 15243 / 7965 / 6157 / 6247)",
       "source": "鯖江市オープンデータ「嚮陽会館駐車場 出庫台数（日別）」",
-      "url": "https://ckan.odp.jig.jp/dataset/kyouyouparkingfacilityapril2026",
+      "url": "https://ckan.odp.jig.jp/dataset/kyouyouparkingfacilityapril2025",
       "confidence": "high",
-      "note": "★当方の集計。同じ2026年の4月と8月で揃えた(2025年4月と混ぜない)。★各月の日別を足し、末尾の合計行と一致することを確認した。★落差の理由は出典に書かれていない。  確認日 2026-09-25。",
+      "note": "★当方の集計。2025年の4〜8月で揃えた。★2026年の夏は 嚮陽会館の 工事で 駐車場の 台数を 制限していた (F74) ので 比べない (2026-11-15 反論監査で 2026年8月 2,507台を 使っていた 誤りを 直した)。★各月の 日別を 足し、末尾の 合計行と 一致する ことを 確認した。★4月の URL は 4 月分の データセット。5〜8 月は 同じ 名前の 月別の データセット。★落差の 理由は 出典に 書かれていない。  確認日 2026-11-15。",
       "verified": true
     },
     {
@@ -660,6 +673,107 @@
       "confidence": "high",
       "note": "★同じ表の頭数は9頭。別の資料では12行あり割れている(頭数は語りに使わない)。  確認日 2026-09-25。",
       "verified": true
+    },
+    {
+      "id": "F74",
+      "claim": "嚮陽会館の複合交流施設整備事業は工事中で、工事に伴い、駐車場の出入口や駐車可能台数を制限している(2026年8月26日の市長の説明)。",
+      "quote": "工事に伴い、駐車場の出入口や駐車可能台数を制限しているため、利用者の皆様にはご不便とご迷惑をおかけしております。",
+      "source": "鯖江市「第458回鯖江市議会定例会 提案理由説明要旨(令和8年8月26日)」",
+      "url": "https://www.city.sabae.fukui.jp/about_city/shichonoheya/shoshinhyomei/reiwa8/CmsAdmin202608263.html",
+      "confidence": "high",
+      "note": "★制限後の台数は書かれていない。★「休館」「完成時期」もこの文書には無い(語らない)。9月と10月のイベント時は台数を増やすとある。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F75",
+      "claim": "西山動物園では、2026年6月から7月にかけてレッサーパンダの赤ちゃんが4頭生まれた。4年ぶり。",
+      "quote": "西山動物園では、6月から7月にかけてレッサーパンダの赤ちゃんが4頭誕生いたしました。 / 4年ぶりとなる大変喜ばしい出来事であり",
+      "source": "鯖江市「第458回鯖江市議会定例会 提案理由説明要旨(令和8年8月26日)」",
+      "url": "https://www.city.sabae.fukui.jp/about_city/shichonoheya/shoshinhyomei/reiwa8/CmsAdmin202608263.html",
+      "confidence": "high",
+      "note": "★性別・名前は書かれていない。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F76",
+      "claim": "市のレッサーパンダのVチューバープロジェクトのYouTubeチャンネルは、登録者数1万人を達成した(2026年7月18日)。",
+      "quote": "レッサーパンダのVチューバープロジェクトでは、先月18日にYouTubeチャンネル登録者数が1万人を達成した",
+      "source": "鯖江市「第458回鯖江市議会定例会 提案理由説明要旨(令和8年8月26日)」",
+      "url": "https://www.city.sabae.fukui.jp/about_city/shichonoheya/shoshinhyomei/reiwa8/CmsAdmin202608263.html",
+      "confidence": "high",
+      "note": "★「西山動物園のチャンネル」ではなく「Vチューバープロジェクトのチャンネル」。★7月18日は説明日(8月26日)の「先月18日」から読んだ。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F77",
+      "claim": "2026年10月27日から11月3日まで、まなべの館で「嚮陽渓命名170年記念展」が開かれた。",
+      "quote": "10月27日から11月3日まで、まなべの館において「嚮陽渓命名170年記念展」を開催いたします。",
+      "source": "鯖江市「第458回鯖江市議会定例会 提案理由説明要旨(令和8年8月26日)」",
+      "url": "https://www.city.sabae.fukui.jp/about_city/shichonoheya/shoshinhyomei/reiwa8/CmsAdmin202608263.html",
+      "confidence": "high",
+      "note": "★170年は市の言い方(安政3年=1856年の命名から)。★記念展は審査会(11/28)の時点で終わっている。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F78",
+      "claim": "西山公園のエントランス広場の眼鏡型時計モニュメントは、片方のレンズが時計、もう片方は白地。メガネフレームの色は赤、大きさは直径720mmの円形、ステンレス製。",
+      "quote": "西山公園のエントランス広場に設置された眼鏡型時計モニュメント / 眼鏡の片方のレンズ部分が時計になっており、もう片方のレンズ部分は白地となっております。 / メガネフレームの色：赤 / 大きさ：直径720mm の円形",
+      "source": "鯖江市「眼鏡型時計モニュメントに掲載する鯖江市のＰＲデザイン募集要項」(令和4年)",
+      "url": "https://www.city.sabae.fukui.jp/about_city/koho_kocho/kishahappyo/reiwa4/20220406.files/20220406-05.pdf",
+      "confidence": "high",
+      "note": "★白地のレンズに入れるデザインを募集した(令和4年3〜4月)。★いまどの絵が入っているかは、この資料には無い。★現地の見た目は未確認。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F79",
+      "claim": "西山公園の結びの広場に、レッサーパンダをモチーフにした半円型のベンチが置かれた(2026年8月21日設置完了予定)。真上から見ると、中央のテーブルと3つの椅子とベンチの配置がレッサーパンダの足跡の形。背もたれに12種類の表情。",
+      "quote": "８月21 日(金) 設置完了予定 / 西山公園 結びの広場 / 真上から見ると、中央のテーブルと3つの椅子、ベンチの配置がレッサーパンダの足跡の形になっている。 / 12種類の表情を楽しむことができる。",
+      "source": "鯖江市 報道機関連絡票「レッサーパンダベンチ完成」(2026年8月20日)",
+      "url": "https://www.city.sabae.fukui.jp/about_city/koho_kocho/kishahappyo/reiwa8/20260820.files/20260820-4.pdf",
+      "confidence": "high",
+      "note": "★若手職員の「鯖江市役所シゴトプロジェクト」の提案。★市長の8月26日の説明にも「先週21日から西山公園に設置」とある。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F80",
+      "claim": "西山の頂上に愛の鐘があり、マリンバの演奏が12時と18時に響く。",
+      "quote": "西山の頂上にある愛の鐘。マリンバの演奏が12時と18時に響き渡ります。",
+      "source": "鯖江市 観光ページ「西山公園でたっぷり遊ぼ！」",
+      "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
+      "confidence": "high",
+      "note": "★「鐘」の名だが、いま鳴るのはマリンバの演奏。★名称板の有無は未確認。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F81",
+      "claim": "西山公園の結びの広場にある展望デッキの改修が終わり、眼鏡の形をした2人掛けのベンチが置かれた(2023年10月の報道)。",
+      "quote": "鯖江市の西山公園内にある結びの広場に設置された展望デッキの改修が終わり、写真撮影のスポットにぴったりな眼鏡の形をした2人掛けのベンチがお目見えした。",
+      "source": "中日新聞「眼鏡形の映えるベンチ登場 鯖江・西山公園の展望デッキ」(2023年10月11日)",
+      "url": "https://www.chunichi.co.jp/article/786256",
+      "confidence": "medium",
+      "note": "★展望デッキは「頂上」ではなく「結びの広場」(記事の原文)。★頂上にあるのは展望台と愛の鐘。  確認日 2026-11-14。",
+      "verified": true
+    },
+    {
+      "id": "F82",
+      "claim": "西山動物園の飼育記録68頭のうち、よその園から来た(来園元園館の欄に園の名がある)のは15頭。よその園へ移った記録は42件で、出したほうが多い。",
+      "quote": "来園元園館 = 長野市茶臼山動物園: 友友 / 仙台市八木山動物公園: 美美 / 周南市徳山動物園: 平平 / 広島市安佐動物公園: 好好 / 釧路市動物園: マリモ / 長崎バイオパーク: チャチャ / ひらかたパーク: 純純 / 市川市動植物園: ミンファ / 姫路セントラルパーク: キラリ / 池田動物園: たいよう / 京都市動物園: ムータン / 静岡市立日本平動物園: まつば / 東京都多摩動物公園: かのこ / 秋田市大森山動物園: かんた / 八木山動物公園フジサキの杜: アケビ (計15頭)",
+      "source": "鯖江市オープンデータ「レッサーパンダ飼育個体情報」(2026-11-15 集計)",
+      "url": "https://ckan.odp.jig.jp/dataset/https-ckan-odp-jig-jp-dataset-18207_redpandashiikukotai",
+      "confidence": "high",
+      "note": "★42は移った記録の件数、15は来た頭数。単位が違うので「三倍」などの比は出さない。★1984年の初代3頭は来園元の欄が空なので15に入れていない。★八木山は2つの名前で入っている(頭数は15、園の名寄せをすると14園)。園の数としては語らない。★「受け取った覚えがない」「送り出すばかり」とは言わない(この15頭がいる)。  確認日 2026-11-15 (監査⑦ B3)。",
+      "verified": true
+    },
+    {
+      "id": "F83",
+      "claim": "令和7年度(2025年4月1日〜2026年3月31日)の人流データで推し量った、西山公園の来訪者の都道府県別の割合。休日は 福井県84%・石川県4%・愛知県2%・大阪府2%・滋賀県1%・岐阜県1%・富山県1%・京都府1%・東京都1%・兵庫県1% (上位10)。平日は 福井県93%・石川県1%・大阪府1%・愛知県1% (上位4)。表に載っているのはこの上位の県だけ。",
+      "quote": "休日,1,福井県,84% / 休日,2,石川県,4% / 休日,3,愛知県,2% / 休日,4,大阪府,2% / 休日,5,滋賀県,1% / 休日,6,岐阜県,1% / 休日,7,富山県,1% / 休日,8,京都府,1% / 休日,9,東京都,1% / 休日,10,兵庫県,1% / 平日,1,福井県,93% / 平日,2,石川県,1% / 平日,3,大阪府,1% / 平日,4,愛知県,1%",
+      "source": "鯖江市オープンデータ「【都道府県別割合】令和７年度 西山公園入場者(人流データ)」",
+      "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoentodohukenbetsuwariai",
+      "confidence": "high",
+      "note": "データ提供元：(株)Agoop。★人流データにもとづく推し量った数 (estimate)。語るときは「推し量った」と断る。★データセットの説明に「端数処理を行っています」とある。1% の県どうしの順位の差は語らない。★表に載っていない県は「上位に名前が出ない」とだけ言う。「誰も来ない」「ひとりも」とは言わない (0 とは書いていない)。★休日・平日を合わせた表は無い。  確認日 2026-11-15 (CSV を cp932 で読み、休日 1 位 福井県 84% で検算)。",
+      "verified": true,
+      "estimate": true
     }
   ],
   "rejected": [

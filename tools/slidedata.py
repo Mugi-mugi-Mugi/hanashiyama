@@ -38,7 +38,9 @@ def measure():
     raw = json.load(io.open(P("app", "data", "facts.json"), encoding="utf-8"))
     kt = io.open(P("app", "data", "kin.js"), encoding="utf-8").read()
     kin = json.loads(re.search(r"window\.HANASHI_KIN = (\{.*\});\s*$", kt, re.S).group(1))
-    img = io.open(P("app", "data", "img.js"), encoding="utf-8").read()
+    imgdir = P("app", "data", "img")                 # ★2026-11-14 から 群ごとの ファイル
+    imgfiles = [os.path.join(imgdir, n) for n in os.listdir(imgdir) if n.endswith(".js")]
+    img = "".join(io.open(f, encoding="utf-8").read() for f in imgfiles)
     vsrc = io.open(P("tools", "validate.py"), encoding="utf-8").read()
     allst = b["stories"] + b["prefStories"] + [x for v in b["today"].values() for x in v]
     conf = collections.Counter(f.get("confidence", "") for f in b["facts"])
@@ -67,7 +69,9 @@ def measure():
         "photos": img.count("dataUri"),
         "zoos": len(kin["items"]), "zoodom": len(dom),
         "zoopref": len(set(z["pref"] for z in dom)),
-        "imgmb": os.path.getsize(P("app", "data", "img.js")) / 1048576.0,
+        "imgmb": sum(os.path.getsize(f) for f in imgfiles) / 1048576.0,
+        "imgfiles": len(imgfiles),
+        "genchi_stories": sum(1 for s in b["stories"] if s.get("genchi")),
         "applines": sum(1 for _ in io.open(P("app", "app.js"), encoding="utf-8")),
         "builtAt": b.get("builtAt", ""),
         "graphAt": g.get("builtAt", ""),
