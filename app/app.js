@@ -14,8 +14,26 @@
   // ==================================================================
   // 選び方 (純粋関数。node から検査できるよう DOM に触らない)
   // ==================================================================
-  // ★似ている 判定 (㉟) に 数えない 事実 = 多くの 噺の 前提に なる もの (F08 日本一小さな動物園)
-  const SIM_FREE = new Set(["F08"]);
+  // ★似ている 判定 (㉟) に 数えない 事実 = 多くの 噺の 前提に なる もの
+  //   (F08 日本一小さな動物園 / F84 西山動物園は 西山公園の 中腹。★F84 は 動物園の 註を 支える 事実で、ひっくり返す 中身では ない)
+  const SIM_FREE = new Set(["F08", "F84"]);
+  // ★題材 (2026-11-20 ユーザー判断): 前の 席と ★題材が 同じ 席も 後ろへ (例: 一席目 S11・三席目 S33 が どちらも 新幹線)。
+  //   ★台本の 題・振り・サゲ・見出しに この 語が あれば その 題材 (★台本に 印を 足さず、少数の 語の 辞書で 決める)。
+  //   ★動物園・レッサーパンダは 二席目の 交互の 決まりが あるので ここには 入れない。
+  //   ★語を 足すときは 誤って 当たる 席が 無いかを 見る (例:「何人」は ライブカメラの「何人まで」に 当たる → 入れない)
+  const TOPICS = {
+    "新幹線": ["新幹線"],
+    "つつじ": ["つつじ", "ツツジ", "株", "赤い山"],
+    "駐車場": ["駐車", "車"],
+    "人の数": ["人出", "人流", "推し量", "人の数", "来た人", "人が来る", "人 来る", "人の少ない", "賑わ", "入込"],
+    "恐竜": ["恐竜"],
+    "噴水": ["噴水"],
+    "鐘": ["鐘"],
+    "雪": ["雪", "スキー"],
+    "殿様の庭": ["嚮陽渓", "殿様", "老中", "鍬", "大名"],
+    "めがね": ["めがね", "眼鏡"],
+    "遊び場": ["らんど", "遊具", "遊び場"],
+  };
   const Core = {
     monthDay(dateStr) {
       return dateStr ? dateStr.slice(5, 10) : "";
@@ -118,6 +136,52 @@
     },
 
     /** 手書き・県・今日 を ひと並びに (似ているかを 見るのに 要る) */
+    /** ★台本の 題材 (TOPICS の 鍵の 並び)。題・振り・サゲ・見出しの 語で 決める */
+    topics(st) {
+      if (!st) return [];
+      const t = [st.title, st.furi, st.sage].concat((st.scenes || []).map((x) => x && x.head))
+        .filter(Boolean).join(" ");
+      return Object.keys(TOPICS).filter((k) => TOPICS[k].some((w) => t.indexOf(w) >= 0));
+    },
+    TOPICS,
+
+    /**
+     * ★前に 語った 席 (shownIds) と どれだけ 似ているか を 返す 関数 (㉟)。語った 席が 無ければ null。
+     *  事実の 重なり 1 / 思い込みの 重なり 2 / ★題材の 重なり 2 (2026-11-20)
+     */
+    simTo(data, shownIds) {
+      const shown = new Set(shownIds || []);
+      const told = Core.allStories(data).filter((s) => shown.has(s.id));
+      if (!told.length) return null;
+      const usedF = new Set(), usedB = new Set(), usedT = Core.toldTopics(data, shownIds);
+      told.forEach((s) => {
+        (s.facts || []).forEach((f) => usedF.add(f));
+        ((s.hooks || {}).beliefs || []).forEach((b) => usedB.add(b));
+      });
+      // ★F08 (日本一小さな動物園) は 多くの 噺の 前提で、客が「何を ひっくり返されたか」とは 別もの。
+      //   ★似ている 判定から 外す (2026-11-15 ユーザー判断。外さないと 園の 入口の 2 席目が 58 園中 41 園で 同じ 席だった)
+      return (s) =>
+        (s.facts || []).filter((f) => usedF.has(f) && !SIM_FREE.has(f)).length +
+        2 * (((s.hooks || {}).beliefs || []).filter((b) => usedB.has(b)).length) +
+        2 * Core.topics(s).filter((t) => usedT.has(t)).length;
+    },
+
+    /** ★前に 語った 席の 題材 (Set) */
+    toldTopics(data, shownIds) {
+      const shown = new Set(shownIds || []);
+      const out = new Set();
+      Core.allStories(data).filter((s) => shown.has(s.id)).forEach((s) => Core.topics(s).forEach((t) => out.add(t)));
+      return out;
+    },
+
+    /** ★候補 [{ story, … }] のうち、前に 語った 席と いちばん 似ていない ものだけ 残す (見繕いにも 同じ 判定を かける) */
+    leastSimilar(data, shownIds, cands) {
+      const sim = Core.simTo(data, shownIds);
+      if (!sim || !cands || !cands.length) return cands || [];
+      const lo = Math.min.apply(null, cands.map((c) => sim(c.story)));
+      return cands.filter((c) => sim(c.story) === lo);
+    },
+
     allStories(data) {
       return (data.stories || []).concat(
         data.prefStories || [],
@@ -230,21 +294,12 @@
       //   ★数字では なく「何を ひっくり返されたか」の ほうだから。
       const has0 = (c, key, v) => ((c.story.hooks && c.story.hooks[key]) || []).includes(v);
       const hadBelief = preferBelief ? all.some((c) => has0(c, "beliefs", preferBelief)) : false;
-      const told = Core.allStories(data).filter((s) => shown.has(s.id));
-      if (told.length) {
-        const usedF = new Set(), usedB = new Set();
-        told.forEach((s) => {
-          (s.facts || []).forEach((f) => usedF.add(f));
-          ((s.hooks || {}).beliefs || []).forEach((b) => usedB.add(b));
-        });
-        // ★F08 (日本一小さな動物園) は 多くの 噺の 前提で、客が「何を ひっくり返されたか」とは 別もの。
-        //   ★似ている 判定から 外す (2026-11-15 ユーザー判断。外さないと 園の 入口の 2 席目が 58 園中 41 園で 同じ 席だった)
-        const sim = (s) =>
-          (s.facts || []).filter((f) => usedF.has(f) && !SIM_FREE.has(f)).length +
-          2 * (((s.hooks || {}).beliefs || []).filter((b) => usedB.has(b)).length);
-        const lo = Math.min.apply(null, all.map((c) => sim(c.story)));
-        all = all.filter((c) => sim(c.story) === lo);
-      }
+      //   ★2026-11-20: ★題材 (新幹線・つつじ・駐車場 …) の 重なりも 数える (Core.simTo)
+      all = Core.leastSimilar(data, shownList, all);
+      //   ★残りが みな 前の 席と 題材の 重なる 席なら、手がかりの 噺は 尽きた と みなす (null = 画面が 見繕う 側へ。そこでも 似ない 席から)。
+      //   ★外すと 手がかりの 候補が 少ない ときに 重なる 席が そのまま 出る (一席目 S11 → 三席目 S33 の 新幹線)
+      const usedT = Core.toldTopics(data, shownList);
+      if (usedT.size && all.every((c) => Core.topics(c.story).some((t) => usedT.has(t)))) return null;
       const has = (c, key, v) => ((c.story.hooks && c.story.hooks[key]) || []).includes(v);
       const byBelief = preferBelief ? all.filter((c) => has(c, "beliefs", preferBelief)) : [];
       // ★同じ筋の噺は 在るが、似るので 外した ―― のか
@@ -580,8 +635,35 @@
       });
       // ★「864千人」が読めない、という声があった → 単位の読み方を添える (出典の数字は変えない)
       const unitNote = { "千人": "千人 = 1,000人", "万人": "万人 = 10,000人" }[fig.unit];
-      const foot = [unitNote, fig.note ? "出典: " + fig.note : ""].filter(Boolean).join("  /  ");
-      if (foot) svg += '<text x="0" y="' + (H - 8) + '" class="fign">' + esc(foot) + "</text>";
+      // ★足元 (単位の 読み方 / 出典) は 幅 440 に 収まる よう 折る (2026-11-20)。
+      //   ★1 行の ままだと 長い 出典 (人流データの「株式会社Agoop「マチレポ」提供データ」) が 図の 右で 切れて 見えない
+      const ew = (t) => Array.from(t).reduce((n, c) => n + (c.charCodeAt(0) < 0x2000 ? 0.55 : 1), 0);   // 全角 = 1
+      const FOOT_N = 25;                                // 17px の 字で 440 に 収まる 全角の 字数
+      const fold = (t) => {
+        const out = [];
+        while (ew(t) > FOOT_N) {
+          let cut = -1;
+          for (let k = 1; k < t.length; k += 1) {
+            if (ew(t.slice(0, k)) > FOOT_N) break;
+            if ("。、・".indexOf(t[k - 1]) >= 0 || (t[k] === " " || t[k] === "(")) cut = k;
+          }
+          if (cut < 4) { cut = 1; while (cut < t.length && ew(t.slice(0, cut + 1)) <= FOOT_N) cut += 1; }
+          out.push(t.slice(0, cut).replace(/ +$/, ""));
+          t = t.slice(cut).replace(/^ +/, "");
+        }
+        return out.concat(t ? [t] : []);
+      };
+      const fl = [];
+      [unitNote, fig.note ? "出典: " + fig.note : ""].filter(Boolean).forEach((p) => {
+        const last = fl.length ? fl[fl.length - 1] + "  /  " + p : null;
+        if (last && ew(last) <= FOOT_N) fl[fl.length - 1] = last;
+        else fold(p).forEach((x) => fl.push(x));
+      });
+      if (fl.length > 1) {
+        const add = (fl.length - 1) * 20;
+        svg = svg.replace('viewBox="0 0 ' + W + " " + H2 + '"', 'viewBox="0 0 ' + W + " " + (H2 + add) + '"');
+        fl.forEach((t, i) => { svg += '<text x="0" y="' + (H + add - 8 - (fl.length - 1 - i) * 20) + '" class="fign">' + esc(t) + "</text>"; });
+      } else if (fl.length) svg += '<text x="0" y="' + (H - 8) + '" class="fign">' + esc(fl[0]) + "</text>";
       return svg + "</svg>";
     },
   };
@@ -1798,15 +1880,16 @@
     let got = Core.choose(H, state.input, preferBelief, [...state.shown], [...state.sages], { heard: state.heard, avoid: avoidAnimal ? isAnimal : null });
     // ★手がかりの 候補が 動物の 噺 だけ だった ときも 交互を 守る: ★動物で ない 席から 見繕う (その県の 噺は 三席目 以降へ)
     if (avoidAnimal && got && isAnimal(got.story)) {
-      const c = Core.pickOne(byStrength(H.stories.filter((x) => !x.genchi && !state.shown.has(x.id) && !isAnimal(x)
-        && Core.fitsPref(x, state.input.pref))), { heard: state.heard });
+      const c = Core.pickOne(Core.leastSimilar(H, [...state.shown], byStrength(H.stories.filter((x) => !x.genchi && !state.shown.has(x.id) && !isAnimal(x)
+        && Core.fitsPref(x, state.input.pref)))), { heard: state.heard });
       if (c) got = { story: c.story, chosenBy: "any", jump: true };
     }
     if (!got) {
       log("silent", null);
       // ★見繕いも 強さの 幅の 中から ランダム。★前に 聞いた 席は 後ろへ (2026-11-15)
       const mitsukurou = () => {
-        const c = Core.pickOne(byStrength(H.stories.filter((x) => !x.genchi && !state.shown.has(x.id) && Core.fitsPref(x, state.input.pref))), { heard: state.heard });
+        // ★見繕いも 前の 席と 似ない ものから (★2026-11-20 題材の 重なり。Core.leastSimilar)
+        const c = Core.pickOne(Core.leastSimilar(H, [...state.shown], byStrength(H.stories.filter((x) => !x.genchi && !state.shown.has(x.id) && Core.fitsPref(x, state.input.pref)))), { heard: state.heard });
         if (!c) return say("種切れでございます。", "shi");
         state.chosenBy = "any";
         state.jumpNote = state.count ? jumpNote() : null;   // ★前の 席が ある ときだけ
@@ -2513,7 +2596,8 @@
       ctx.textAlign = "center";
       ctx.font = "22px " + sans;
       ctx.fillStyle = "#6d6256";
-      wrap(ctx, (img ? img.credit + " / " : "") + "語りの出典はアプリ内「タネ明かし」", W / 2, Hh - 60, W - 120, 28);
+      // ★写真の 出典は 画面と 同じ 1 行 (2026-11-20)。★正式な 表示は CREDITS
+      wrap(ctx, (img ? "写真 " + Core.shortCredit(img.credit) + " / " : "") + "語りの出典はアプリ内「タネ明かし」", W / 2, Hh - 60, W - 120, 28);
 
       ctx.fillStyle = "#b8322a";
       ctx.fillRect(W - 230, Hh - 172, 160, 84);
@@ -2527,6 +2611,11 @@
 
   /** 札に 敷く 写真の 群 (つつじ / 紅葉)。★席の 頭で 決めて 先に 読む */
   function cardKey(st) {
+    // ★2026-11-20 ユーザー判断: 札の 写真は オチの 註が 指す もの の 写真 (台本の cardImg = 群[@名])。
+    //   ★札用の 群が 無ければ 今どおり 季節の 写真 (紅葉 / つつじ)
+    const ci = String(st.cardImg || "").split("@")[0];
+    const keys = (root.HANASHI_IMG_KEYS && root.HANASHI_IMG_KEYS.card) || {};
+    if (ci && keys[ci]) return ci;
     const text = st.makura + " " + Core.hondaiText(st) + " " + st.sage;
     return /紅葉|もみじ|秋/.test(text) ? "koyo" : "tsutsuji";
   }
@@ -2540,6 +2629,20 @@
     if (!bank[key]) key = bank.tsutsuji ? "tsutsuji" : bank.koyo ? "koyo" : null;
     const g = key && bank[key];
     if (!g || !g.shots || !g.shots.length) return null;
+    // ★名を 言う 子 (cardImg = panda@名) なら その子の 1 枚
+    const nm = String(st.cardImg || "").split("@")[1];
+    if (nm) {
+      const j = g.shots.findIndex((s) => s.name === nm || (s.names || []).indexOf(nm) >= 0);
+      if (j >= 0) {
+        const id0 = key + ":" + j;
+        if (!photoCache[id0]) {
+          const el0 = new Image();
+          el0.src = g.shots[j].dataUri;
+          photoCache[id0] = { el: el0, credit: g.shots[j].credit || g.credit };
+        }
+        return photoCache[id0];
+      }
+    }
     // まだ出していない 1 枚から選ぶ。出し切ったら ひと回りさせる
     const used = photoUsed[key] || (photoUsed[key] = []);
     let pool = g.shots.map((_, i) => i).filter((i) => used.indexOf(i) < 0);
@@ -2553,7 +2656,7 @@
     if (!photoCache[id]) {
       const el = new Image();
       el.src = g.shots[idx].dataUri;
-      photoCache[id] = { el, credit: g.credit };
+      photoCache[id] = { el, credit: g.shots[idx].credit || g.credit };
     }
     return photoCache[id];
   }
