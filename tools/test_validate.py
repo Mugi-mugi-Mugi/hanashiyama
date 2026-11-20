@@ -606,6 +606,37 @@ run(m_ow_path, "オチの 註に 手元のパス", expect="S06: オチの 註に
 run(m_ow_ok, "オチの 註を 作法どおりに 書き換えた (通るのが正しい)", want_ng=False)
 
 
+# ---- 同じ サゲを 複数の 席で 使わない (# 19b。2026-11-20 ユーザー判断「重なったサゲを 調べて 書き分ける」) ----
+def _pref_story(b, pref):
+    return next(x for x in b["prefStories"] if x["id"] == "P-" + pref)
+
+
+def m_sage_dup(b):
+    """★県の噺 2 席に 同じ サゲ (11/15 の 書き直しで 実際に 起きた 形)"""
+    _pref_story(b, "青森県")["sage"] = _pref_story(b, "岩手県")["sage"]
+
+
+def m_sage_dup_punct(b):
+    """★読点を 抜いただけの 同じ サゲ (句読点の 差は 書き分けに ならない)"""
+    _today_story(b, "T-birth-06-19")["sage"] = _today_story(b, "T-birth-06-18")["sage"].replace("、", "", 1)
+
+
+def m_sage_skel(b):
+    """★名前だけ 差し替えた サゲ は 注意 (止めない)"""
+    _today_story(b, "T-birth-06-19")["sage"] = _today_story(b, "T-birth-06-18")["sage"].replace("「茜」", "「陽陽」")
+
+
+def m_sage_dup_ok(b):
+    """★前半が 同じでも オチが 違えば 通る"""
+    _pref_story(b, "青森県")["sage"] = "春のこの赤い山、もとをたどれば、市長の、出張先での一目ぼれ。"
+
+
+run(m_sage_dup, "同じ サゲを 県の噺 2 席で 使った", expect="同じ サゲを 2 席で 使っている")
+run(m_sage_dup_punct, "読点だけ 違う 同じ サゲを 誕生日 2 席で 使った", expect="同じ サゲを 2 席で 使っている")
+run(m_sage_skel, "名前だけ 差し替えた サゲ は 注意 (止めない)", want_ng=False, expect_warn="サゲの 型が 名前・県名・数字の 差し替えだけで 2 席")
+run(m_sage_dup_ok, "前半が 同じでも オチの 違う サゲ (通るのが正しい)", want_ng=False)
+
+
 # ---- app.js に 直接 書いてある 文言 (台本では ない = 台帳を 壊しても 試せない) ----
 #   ★実際に「……」が 1 本 紛れていた。★台本の検査だけでは 届かない ことの 試験。
 for _bad, _why in [("えー、ぜひ お越しください。", "誘い文句"),

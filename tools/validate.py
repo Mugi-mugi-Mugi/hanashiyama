@@ -35,6 +35,7 @@
 
 実行: python tools/validate.py   (失敗があれば終了コード 1)
 """
+from collections import defaultdict
 import figs
 import json
 import os
@@ -47,6 +48,7 @@ BUNDLE = os.environ.get("HANASHI_BUNDLE") or os.path.join(ROOT, "app", "data", "
 OCHI_TYPES = {"反転", "落差", "並び", "律儀", "自虐", "回収", "こじつけ"}
 SAGE_MAX_CHARS = 48
 SAGE_MAX_NUMS = 2
+SAGE_DUP_SEATS = 2          # ★同じ サゲを この 席数 以上で 使わない (2026-11-20。# 19b)
 ATO_MAX_NUMS = 3
 
 INVITE_WORDS = ["来てください", "お越しください", "おすすめ", "行こう", "ぜひ", "行ってみて", "来てね"]
@@ -810,6 +812,33 @@ def main():
         if "yokoku" in st and not isinstance(st["yokoku"], bool):
             errors.append("%s: yokoku は true / false (%r)" % (label, st["yokoku"]))
 
+    # 19b. ★同じ サゲを 複数の 席で 使わない (2026-11-20 ユーザー判断「重なったサゲを 調べて 書き分ける」)
+    #   ★11/15 に 自動の 席の サゲを 書き直したとき、似た形が まとまり ★異なりが 107 → 88 に 減っていた
+    #   (誕生日 23 席が 6 本・県の噺 47 席の 中で 2〜4 席ずつ 同じ 文)。★同じ 文 = 同じ 札 に なる
+    #   (a) 句読点・空白を 除いて 同じ 文が 2 席 以上 → 誤り
+    #   (b) 県名・「」の 中の 名・数字を 伏せて 同じ 型が 2 席 以上 → 注意 (名前だけ 差し替えた 書き分けは 書き分けに ならない)
+    sage_seen, sage_skel = defaultdict(list), defaultdict(list)
+    _prefs = sorted(b.get("prefectures", []), key=len, reverse=True)
+    for kind, st in all_items:
+        sg = st.get("sage") or ""
+        if not sg.strip():
+            continue
+        k0 = re.sub(r"[、。，．,.！？!?\s]", "", sg)
+        sage_seen[k0].append(st["id"])
+        sk = re.sub(r"「[^」]*」", "「名」", k0)
+        for p_ in _prefs:
+            sk = sk.replace(p_, "〇県")
+        sk = re.sub(r"\d+", "9", sk)
+        sage_skel[sk].append((st["id"], k0))
+    for k, ids in sage_seen.items():
+        if len(ids) >= SAGE_DUP_SEATS:
+            errors.append("同じ サゲを %d 席で 使っている (書き分ける) → %s「%s」"
+                          % (len(ids), " ".join(ids[:6]), k[:30]))
+    for k, pairs in sage_skel.items():
+        if len(pairs) >= SAGE_DUP_SEATS and len({t for _, t in pairs}) > 1:   # ★文 そのものが 同じ ものは (a) が 出す
+            warns.append("サゲの 型が 名前・県名・数字の 差し替えだけで %d 席 → %s「%s」"
+                         % (len(pairs), " ".join(i for i, _ in pairs[:6]), k[:30]))
+
     # 20. ★オチが 西山公園の 何の ことか (ochiWhat。2026-11-15 ユーザー依頼)
     #   ★画面は サゲの すぐ 下に「↳ <ochiWhat>のこと」と 小さく 出す。★story_texts には 入れない
     #     (入れると # 13 の 断りの 判定が「註に 推し量った と ある」で 席 全体を 通して しまう) → ここで 同じ 作法を かける
@@ -888,6 +917,7 @@ def main():
     print("写真の指定: %d 席 / %d か所" % (scene_seats, scene_spots))
     print("見出し: %d 席 / %d 本" % (head_seats, head_n))
     print("オチの 註 (ochiWhat): %d / %d 席 / 照合した 数字 %d 個" % (ow_n, len(all_items), ow_nums))
+    print("サゲの 異なり: %d / %d 席 (型の 異なり %d。# 19b)" % (len(sage_seen), sum(len(v) for v in sage_seen.values()), len(sage_skel)))
     print("写真の無い席: %d 席 (scenes を 持つ %d 席の 中で。scenes の 無い 自動の 席 %d 席は 画面が 選ぶので 見ていない)"
           % (len(nophoto), scene_seats, len(auto_seats)))
     for w in warns:
