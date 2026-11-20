@@ -24,7 +24,7 @@ data URI で埋め込んでいます (鯖江市オープンデータ「レッサ
 **自動では鳴りません。**「鳴き声を聞く」を押したときだけ再生します。
 埋め込みなので、再生時も外部への通信は発生しません。
 
-**人流データの提供元：(株)Agoop** (マチレポ)。数値は個人情報保護等の観点から端数処理されています。
+**人流データの出典：株式会社Agoop「マチレポ」提供データ**。数値は個人情報保護等の観点から端数処理されています。
 
 取得日: 2026-09-16 (写真は 2026-09-21 に取得・加工。古い写真・個体写真の一部は 2026-11-14 に追加。外部の写真は下の「外部の自由に使える写真」を参照)
 
@@ -33,7 +33,7 @@ data URI で埋め込んでいます (鯖江市オープンデータ「レッサ
 | 使い所 | 枚数 | 元データ |
 |---|---|---|
 | 噺の途中 (小・480×320 の枠に収まる大きさ。場面の背景に敷く) | **82 枚** (40 ファイル) = 写真 65 枚 (23 ファイル) + イラスト 17 枚 (17 ファイル) | 下の表のとおり |
-| 札の背景 (帯・幅810px) | 14 枚 (2 ファイル) | 鯖江市オープンデータ つつじ 7 / 紅葉 7 |
+| 札の背景 (帯・幅810px。レッサーパンダは 640px) | 51 枚 (18 ファイル) | **オチが指すものの写真** (2026-11-20 から)。つつじ 7 / 紅葉 7 (鯖江市オープンデータ) / レッサーパンダ 22 (鯖江市オープンデータ) / 嚮陽庭園・夜桜 (福井ふるさと百景) / 莇生田スキー場 (古い写真) / 村上市 若林邸・イルミネーション (下の表のとおり) / イラスト 10。合うものが無い噺は つつじ か 紅葉 |
 
 噺の途中の 82 枚の出どころ:
 
@@ -105,7 +105,7 @@ data URI で埋め込んでいます (鯖江市オープンデータ「レッサ
 
 <!-- ここから 自動生成: python tools/build_credits.py -->
 
-### 語りに使った事実の出典 (76 件 / 出典 55 種 / URL 46 本)
+### 語りに使った事実の出典 (77 件 / 出典 56 種 / URL 47 本)
 
 ★この節は `python tools/build_credits.py` が `app/data/facts.json` から作り直します。
 手で書き足さないでください (足しても次の実行で消えます)。
@@ -148,9 +148,10 @@ data URI で埋め込んでいます (鯖江市オープンデータ「レッサ
 | F74 F75 F76 F77 | 鯖江市「第458回鯖江市議会定例会 提案理由説明要旨(令和8年8月26日)」 | <https://www.city.sabae.fukui.jp/about_city/shichonoheya/shoshinhyomei/reiwa8/CmsAdmin202608263.html> |
 | F14 | 鯖江市「西山公園に眼鏡型の時計モニュメントが設置されました」 | <https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/Keikaku0120215.html> |
 | F01 F10 F13 F40 | 鯖江市「西山公園の歴史」 | <https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html> |
+| F84 | 鯖江市「西山公園・西山動物園」パンフレット | <https://www.city.sabae.fukui.jp/nishiyama_zoo/guide/images/pamphlet.pdf.pdf> |
 | F52 | 鯖江市「西山動物園レッサーパンダライブカメラ」 | <https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/nishiyamadobutsuen/panda-raibu.html> |
-| F22 F62 F65 F66 F67 | 鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」 | <https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu> |
-| F21 F83 | 鯖江市オープンデータ「【都道府県別割合】令和７年度 西山公園入場者(人流データ)」 | <https://ckan.odp.jig.jp/dataset/18207_nishiyamakoentodohukenbetsuwariai> |
+| F22 F62 F65 F66 F67 | 鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」(株式会社Agoop「マチレポ」提供データ) | <https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu> |
+| F21 F83 | 鯖江市オープンデータ「【都道府県別割合】令和７年度 西山公園入場者(人流データ)」(株式会社Agoop「マチレポ」提供データ) | <https://ckan.odp.jig.jp/dataset/18207_nishiyamakoentodohukenbetsuwariai> |
 | F63 F64 | 鯖江市オープンデータ「レッサーパンダ家系図」と「レッサーパンダ飼育個体情報」 | <https://ckan.odp.jig.jp/dataset/0bc03d58-8121-4ec3-8325-80212b662a38/resource/b39b92d9-8312-4755-b492-35aeb025f019/download/20260228.xlsx> |
 | F68 | 鯖江市オープンデータ「レッサーパンダ家系図」と「レッサーパンダ飼育個体情報」 | <https://ckan.odp.jig.jp/dataset/0bc03d58-8121-4ec3-8325-80212b662a38/resource/b39b92d9-8312-4755-b49d-9a3a6f9c3a5f> |
 | F15 F24 | 鯖江市オープンデータ「レッサーパンダ飼育個体情報」 | <https://ckan.odp.jig.jp/dataset/https-ckan-odp-jig-jp-dataset-18207_redpandashiikukotai> |
