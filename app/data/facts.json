@@ -13,7 +13,8 @@
       "source": "鯖江市「西山公園の歴史」",
       "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F02",
@@ -22,7 +23,8 @@
       "source": "鯖江市 観光「鯖江の歴史」",
       "url": "https://www.city.sabae.fukui.jp/kanko/about/history.html",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F03",
@@ -52,7 +54,8 @@
       "source": "コトバンク「吉田松陰」(日本大百科全書ニッポニカ / 改訂新版 世界大百科事典)",
       "url": "https://kotobank.jp/word/%E5%90%89%E7%94%B0%E6%9D%BE%E9%99%B0",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F06",
@@ -91,7 +94,8 @@
       "source": "鯖江市西山動物園「レッサーパンダ よくある質問」",
       "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/panda/redpanda_faq.html",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F10",
@@ -110,7 +114,8 @@
       "source": "鯖江市オープンデータ「西山公園のツツジ種類・株数」",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamatsutsuji",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F12",
@@ -159,7 +164,8 @@
       "source": "鯖江市オープンデータ「レッサーパンダ飼育個体情報」(2026-09-17 集計)",
       "url": "https://ckan.odp.jig.jp/dataset/https-ckan-odp-jig-jp-dataset-18207_redpandashiikukotai",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F17",
@@ -178,7 +184,8 @@
       "source": "鯖江市西山動物園 お知らせ",
       "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/news/index.html",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F19",
@@ -205,10 +212,10 @@
       "id": "F21",
       "claim": "令和7年度、休日に西山公園を訪れた人の84%が福井県内から。",
       "quote": "20250401,20260331,休日,1,福井県,西山公園,84%",
-      "source": "鯖江市オープンデータ「【都道府県別割合】令和７年度 西山公園入場者(人流データ)」",
+      "source": "鯖江市オープンデータ「【都道府県別割合】令和７年度 西山公園入場者(人流データ)」(株式会社Agoop「マチレポ」提供データ)",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoentodohukenbetsuwariai",
       "confidence": "high",
-      "note": "データ提供元：(株)Agoop の表記が必要。",
+      "note": "出典の表記「株式会社Agoop「マチレポ」提供データ」が必要 (データセットの説明の【出典】)。",
       "verified": true,
       "estimate": true
     },
@@ -216,10 +223,10 @@
       "id": "F22",
       "claim": "令和7年度、西山公園東側の来訪者がいちばん多かった日は2025年5月5日の4,550人、いちばん少なかった日は2026年1月24日(雪)の0人。",
       "quote": "20250505,月,西山公園東側,4550 / 20260124,土,西山公園東側,0,雪",
-      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」",
+      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」(株式会社Agoop「マチレポ」提供データ)",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
-      "note": "人流推計にもとづく参考値。対象は公園の東側エリア。データ提供元：(株)Agoop。 ★値は10人単位に丸めてある(365日すべて10の倍数。0以外の最小は40)。★0は「誰も来なかった」ではない。",
+      "note": "人流推計にもとづく参考値。対象は公園の東側エリア。【出典】株式会社Agoop「マチレポ」提供データ。 ★値は10人単位に丸めてある(365日すべて10の倍数。0以外の最小は40)。★0は「誰も来なかった」ではない。",
       "verified": true,
       "estimate": true
     },
@@ -230,7 +237,8 @@
       "source": "鯖江市公式サイト",
       "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/inorinomichi.html",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F24",
@@ -249,7 +257,8 @@
       "source": "Wikipedia「日本の動物園一覧」ほか 各園の公式サイト (2026-09-16 調査)",
       "url": "https://ja.wikipedia.org/wiki/%E6%97%A5%E6%9C%AC%E3%81%AE%E5%8B%95%E7%89%A9%E5%9C%92%E4%B8%80%E8%A6%A7",
       "confidence": "medium",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F26",
@@ -406,7 +415,8 @@
       "source": "鯖江市「西山公園の歴史」",
       "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/koenrekishi.html",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F41",
@@ -415,7 +425,8 @@
       "source": "鯖江市西山動物園 公式「動物紹介」",
       "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/animals/animal.html",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F42",
@@ -424,7 +435,8 @@
       "source": "鯖江市 公式「西山公園」",
       "url": "https://www.city.sabae.fukui.jp/kurashi_tetsuduki/doro_kasen_koen/koen/nishiyama/",
       "confidence": "high",
-      "verified": true
+      "verified": true,
+      "note": ""
     },
     {
       "id": "F50",
@@ -552,10 +564,10 @@
       "id": "F62",
       "claim": "令和7年度の人流データでは、西山公園東側の来訪者は4月12日に2,050人、5月5日に4,550人、11月16日に1,310人と、年に三度の山ができている。",
       "quote": "20250412,土,西山公園東側,2050 / 20250505,月,西山公園東側,4550 / 20251116,日,西山公園東側,1310",
-      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」",
+      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」(株式会社Agoop「マチレポ」提供データ)",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
-      "note": "人流推計にもとづく参考値。対象は公園の東側。データ提供元：(株)Agoop。2026-09-21 に日別CSVから再集計。 ★値は10人単位に丸めてある(365日すべて10の倍数。0以外の最小は40)。★0は「誰も来なかった」ではない。",
+      "note": "人流推計にもとづく参考値。対象は公園の東側。【出典】株式会社Agoop「マチレポ」提供データ。2026-09-21 に日別CSVから再集計。 ★値は10人単位に丸めてある(365日すべて10の倍数。0以外の最小は40)。★0は「誰も来なかった」ではない。",
       "verified": true,
       "estimate": true
     },
@@ -585,7 +597,7 @@
       "id": "F65",
       "claim": "令和7年度の日別来訪者数を天気で分けると、晴の日は195日で平均483人、雨の日は141日で平均297人、雪の日は22日で平均174人。",
       "quote": "令和７年度　西山公園東側　日別来訪者数 / 日・曜日・エリア名・来訪者数・天気・最高気温・最低気温",
-      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」",
+      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」(株式会社Agoop「マチレポ」提供データ)",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
       "note": "★当方の集計。365日を天気の欄の語で晴・曇・雨・雪に分け、来訪者数の平均を四捨五入した。曇は7日しかないため語りに使わない。  確認日 2026-09-25。",
@@ -596,7 +608,7 @@
       "id": "F66",
       "claim": "同じ表を最高気温で5度ごとに分けると、20〜24度の47日が平均654人でいちばん多く、25〜29度は53日で平均412人、30度以上は平均339人に下がる。",
       "quote": "令和７年度　西山公園東側　日別来訪者数 / 日・曜日・エリア名・来訪者数・天気・最高気温・最低気温",
-      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」",
+      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」(株式会社Agoop「マチレポ」提供データ)",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
       "note": "★当方の集計。最高気温の欄で5度ごとに分け、来訪者数の平均を四捨五入した。★人出が多い理由は表に書かれていない。連休や花の見頃と重なっている可能性があり、気温が理由だとは言わない。  確認日 2026-09-25。",
@@ -607,7 +619,7 @@
       "id": "F67",
       "claim": "同じ表を曜日で分けると、土は平均539人、日は469人、月は436人。平日でいちばん少ないのは金の289人で、月より少ない。",
       "quote": "令和７年度　西山公園東側　日別来訪者数 / 日・曜日・エリア名・来訪者数・天気・最高気温・最低気温",
-      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」",
+      "source": "鯖江市オープンデータ「【日別】令和７年度 西山公園東側来訪者数(人流データ)」(株式会社Agoop「マチレポ」提供データ)",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoenhigashigawanraihosyasu",
       "confidence": "high",
       "note": "★当方の集計。各曜日52〜53日の平均を四捨五入した。★金が少ない理由は表に書かれていない。  確認日 2026-09-25。",
@@ -768,12 +780,22 @@
       "id": "F83",
       "claim": "令和7年度(2025年4月1日〜2026年3月31日)の人流データで推し量った、西山公園の来訪者の都道府県別の割合。休日は 福井県84%・石川県4%・愛知県2%・大阪府2%・滋賀県1%・岐阜県1%・富山県1%・京都府1%・東京都1%・兵庫県1% (上位10)。平日は 福井県93%・石川県1%・大阪府1%・愛知県1% (上位4)。表に載っているのはこの上位の県だけ。",
       "quote": "休日,1,福井県,84% / 休日,2,石川県,4% / 休日,3,愛知県,2% / 休日,4,大阪府,2% / 休日,5,滋賀県,1% / 休日,6,岐阜県,1% / 休日,7,富山県,1% / 休日,8,京都府,1% / 休日,9,東京都,1% / 休日,10,兵庫県,1% / 平日,1,福井県,93% / 平日,2,石川県,1% / 平日,3,大阪府,1% / 平日,4,愛知県,1%",
-      "source": "鯖江市オープンデータ「【都道府県別割合】令和７年度 西山公園入場者(人流データ)」",
+      "source": "鯖江市オープンデータ「【都道府県別割合】令和７年度 西山公園入場者(人流データ)」(株式会社Agoop「マチレポ」提供データ)",
       "url": "https://ckan.odp.jig.jp/dataset/18207_nishiyamakoentodohukenbetsuwariai",
       "confidence": "high",
-      "note": "データ提供元：(株)Agoop。★人流データにもとづく推し量った数 (estimate)。語るときは「推し量った」と断る。★データセットの説明に「端数処理を行っています」とある。1% の県どうしの順位の差は語らない。★表に載っていない県は「上位に名前が出ない」とだけ言う。「誰も来ない」「ひとりも」とは言わない (0 とは書いていない)。★休日・平日を合わせた表は無い。  確認日 2026-11-15 (CSV を cp932 で読み、休日 1 位 福井県 84% で検算)。",
+      "note": "【出典】株式会社Agoop「マチレポ」提供データ。★人流データにもとづく推し量った数 (estimate)。語るときは「推し量った」と断る。★データセットの説明に「端数処理を行っています」とある。1% の県どうしの順位の差は語らない。★表に載っていない県は「上位に名前が出ない」とだけ言う。「誰も来ない」「ひとりも」とは言わない (0 とは書いていない)。★休日・平日を合わせた表は無い。  確認日 2026-11-15 (CSV を cp932 で読み、休日 1 位 福井県 84% で検算)。",
       "verified": true,
       "estimate": true
+    },
+    {
+      "id": "F84",
+      "claim": "西山動物園は、西山公園の中腹にある動物園。",
+      "quote": "西山公園中腹にある動物園。",
+      "source": "鯖江市「西山公園・西山動物園」パンフレット",
+      "url": "https://www.city.sabae.fukui.jp/nishiyama_zoo/guide/images/pamphlet.pdf.pdf",
+      "confidence": "high",
+      "note": "★動物園の 紹介の 欄の 一文目 (PDF の 文字を PyMuPDF で 読んだ 原文)。★オチの 註で「西山公園の中の西山動物園」と 書く 根拠。★PDF の 作成日は 2016年6月 (飼育の 種類・頭数は この資料からは 語らない)。★「中腹」は 山の 中ほど。頂上 (愛の鐘・展望台) とは 別。  確認日 2026-11-20。",
+      "verified": true
     }
   ],
   "rejected": [
