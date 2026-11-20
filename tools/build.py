@@ -425,7 +425,7 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                 ]),
                 # ★オチが 西山公園の 何の ことか (2026-11-15 ユーザー依頼)。画面が「↳ ○○のこと」と 出す。
                 #   ★数字は 入れない (年は サゲ・本題が 使う)。★「のこと」は 画面が 付ける
-                ochiWhat="西山動物園（" + pref + "へレッサーパンダを送った園）",
+                ochiWhat="西山公園の中の西山動物園（" + pref + "へレッサーパンダを送った園）",
                 # ★2026-09-23: 家系図 (層=確定) に この一頭の 縁の結び方が あれば、そちらを 追い足しに 置く。
                 #   ★追い足しは 本文の 外 = 2 粒の 勘定に 入らない (法則15 の「正確さは 噺の外」)
                 atogaki=(variant(pref + "ka", KIN_ATO[rel]) if rel in KIN_ATO else None)
@@ -437,7 +437,7 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                 ]),
                 card={"top": pref + "の動物園へ", "big": "鯖江から\nレッサーパンダが渡った",
                       "bottom": "福井県鯖江市 西山動物園 (記録に残る行き先 29園)"},
-                facts=["F24", "F25", "F08", "F15", "F32", "F33"] + (["F64"] if rel in KIN_ATO else []),
+                facts=["F24", "F25", "F08", "F15", "F32", "F33", "F84"] + (["F64"] if rel in KIN_ATO else []),
                 evidence=[{"個体名": r["個体名"], "他園移動日": r["他園移動日"], "他園移動園館": r["他園移動園館"]}
                           for r in moves] + [{"件数": len(moves)}],
             ))
@@ -497,7 +497,7 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                     "言葉は四通り、荷物はひとつ、当人には同じ引っ越し。",
                     "書き方が四つに分かれても、運ばれるほうには、ただの引っ越し。",
                 ]),
-                ochiWhat="西山動物園から" + pref + "へ渡ったレッサーパンダ",
+                ochiWhat="西山公園の中の西山動物園から" + pref + "へ渡ったレッサーパンダ",
                 atogaki=variant(pref + "a", [
                     "家系図のほうには、この縁が" + rel + "と書き添えてございます。そのあとどうなったかまでは、書いてございません。",
                     "この一頭の縁は、家系図に" + rel + "と書かれております。たどれる行き先は、少なくとも15の都道府県。",
@@ -516,7 +516,7 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                         {"head": "帳面の書き分け", "from": 5, "to": 6}],
                 card={"top": pref + "への一頭", "big": "帳面には\n" + rel + "と書いてある",
                       "bottom": "福井県鯖江市 西山動物園 (家系図でたどれる行き先は少なくとも15の都道府県)"},
-                facts=["F63", "F64", "F24", "F25", "F15", "F08", "F32"],
+                facts=["F63", "F64", "F24", "F25", "F15", "F08", "F32", "F84"],
                 evidence=[{"個体名": r["個体名"], "他園移動日": r["他園移動日"], "他園移動園館": r["他園移動園館"]}
                           for r in moves] + [{"家系図の層": "確定", "縁の結び方": rel}],
             ))
@@ -570,7 +570,7 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                     "先に名乗っていたほうの学名を訳しますと、炎色のネコ。",
                     "あとから来た白と黒に名を譲った獣、学名は、炎色のネコ。",
                 ]),
-                ochiWhat="西山動物園のレッサーパンダの学名",
+                ochiWhat="西山公園の中の西山動物園のレッサーパンダの学名",
                 atogaki=variant(pref + "a", [
                     "1869年にジャイアントパンダが出るまで、半世紀のあいだ唯一のパンダでございます。",
                     "1825年に世に出てから半世紀、パンダと申せばこちらでございました。",
@@ -579,7 +579,7 @@ def build_pref_stories(rows, meibutsu, zoos, kin=None):
                 ]),
                 card={"top": "元祖「パンダ」は", "big": "炎色のネコ\nだった",
                       "bottom": "福井県鯖江市 西山動物園 (日本一小さな動物園といわれる)"},
-                facts=["F09", "F08", "F32", "F33"],
+                facts=["F09", "F08", "F32", "F33", "F84"],
                 evidence=[{"園": z["zoo"], "県": pref}],
             ))
         else:
@@ -934,7 +934,7 @@ def build_today(rows):
                 "みな初夏かと思えば、台帳の隅には、木枯らしの吹く頃の生まれ。",
             ]),
             # ★数字は 入れない (本文の 月日 2 粒で 使い切っている。外れの 月は 追い足しが 言う)
-            "ochiWhat": "西山動物園で生まれたレッサーパンダの生まれ月",
+            "ochiWhat": "西山公園の中の西山動物園で生まれたレッサーパンダの生まれ月",
             # ★「いちばん古いのは◯◯」だけだと、亡くなった子・他園へ移った子を
             #   「いまもいる」と 読まれかねない → ★「台帳で いちばん古い 記録」と 言い切る
             "atogaki": "外れは、五月と十一月の生まれだけ。この日でいちばん古い記録は"
@@ -947,7 +947,7 @@ def build_today(rows):
             "hooks": {"prefectures": [], "beliefs": ["b_panda_bw"]},
             "reply": {"correct": "ご名答。", "wrong": "それが、もっと偏っておりまして。",
                       "wrongEach": [None, None, None, "さすがに、みな揃ってとは まいりません。"]},
-            "facts": ["F24", "F16", "F08"],
+            "facts": ["F24", "F16", "F08", "F84"],
             "evidence": [{"個体名": r["個体名"], "生年月日": r["生年月日"]} for r in rs]
                         + [{"件数": len(rs), "月": m, "日": d, "最古の年": oldest["生年月日"][:4]}],
         })
@@ -995,7 +995,7 @@ def build_today(rows):
             "answer": 0,
         },
         "sage": "松陰に狙われたその老中が、自ら鍬を持って領民に開いた庭が、いま皆さんのおいでのこの山で。",
-        "ochiWhat": "西山公園の「嚮陽渓」（いまの公園のはじまり）",
+        "ochiWhat": "西山公園のはじまりの庭",
         "atogaki": "間部詮勝、1884年の今日、11月28日に亡くなりました。名づけた庭「嚮陽渓」が、西山公園のはじまりでございます。",
         "card": {
             "top": "11月28日は",
@@ -1091,12 +1091,12 @@ def build_today(rows):
         # ★推計の 表 (F22) を 指す → ★「推し量った」と 断る (決定㊳)
         "ochiWhat": "西山公園の東側に来た人の数（携帯の位置から推し量った数）",
         "atogaki": "その雪の日は、2026年1月24日でございます。",
-        "card": {"top": "5月5日は", "big": "4,550人と\n出た日", "bottom": "福井県鯖江市 西山公園 (令和7年度 人流データ・推計)"},
+        "card": {"top": "5月5日は", "big": "4,550人と\n出た日", "bottom": "福井県鯖江市 西山公園 (令和7年度 人流データ・推計。株式会社Agoop「マチレポ」提供データ)"},
         # ★図は いちばん多い日 だけ (2026-11-15)。前の 図 (多い日と 少ない日) は 答え合わせの あとに サゲの 0 を 先に 見せていた
         "fig": {"title": "令和7年度・西山公園東側の来訪者 — いちばん多い日",
                 "unit": "人",
                 "items": [{"label": "2025年5月5日", "value": 4550}],
-                "note": "鯖江市オープンデータ (人流データ・推計。提供元 Agoop)",
+                "note": "鯖江市オープンデータ (人流データ・推計。株式会社Agoop「マチレポ」提供データ)",
                 "when": "after"},
         "facts": ["F22"],
     })
@@ -1133,9 +1133,9 @@ def build_today(rows):
             "answer": 0,
         },
         "sage": "表の上でさびしい雪の山に、昔のひと冬は、七千人。",
-        "ochiWhat": "昭和35年の冬の、西山公園のスキー場の利用",
+        "ochiWhat": "西山公園のスキー場",
         "atogaki": "市の年表に、昭和35年の1月2月、スキー場の利用とございます。",
-        "card": {"top": "表で0人と出た雪の山は", "big": "昭和35年\nスキー場だった", "bottom": "福井県鯖江市 西山公園の年表 / 東側の来訪者 (令和7年度 人流データ・推計)"},
+        "card": {"top": "表で0人と出た雪の山は", "big": "昭和35年\nスキー場だった", "bottom": "福井県鯖江市 西山公園の年表 / 東側の来訪者 (令和7年度 人流データ・推計。株式会社Agoop「マチレポ」提供データ)"},
         "facts": ["F22", "F13"],
     })
     # 3) 年が決まっている行事 (2026年だけ)
@@ -1190,10 +1190,10 @@ def build_today(rows):
                 "本家を名乗ってよいほうの学名は、訳せば、炎色のネコ。",
                 "お祝いされている元祖の、学者の呼び名が、炎色のネコ。",
             ]),
-            "ochiWhat": "西山動物園のレッサーパンダの学名",
+            "ochiWhat": "西山公園の中の西山動物園のレッサーパンダの学名",
             "atogaki": "白と黒が世に出ますのは1869年、それまでの半世紀はこちらだけ。お祝いは9月23日まででございます。",
             "card": {"top": "元祖「パンダ」は", "big": "炎色のネコ", "bottom": "福井県鯖江市 西山動物園 レッサーパンダデー(2026年9月19日〜23日)"},
-            "facts": ["F09", "F18"],
+            "facts": ["F09", "F18", "F84"],
         })
     # ★2026-11-15 書き直し (反論監査② ✕: 問いが 誕生日の 噺と 同じ (64頭) で、サゲ「夏に生まれて、秋にお披露目」は
     #   何も 動かない「合わせ」だった)。
@@ -1232,12 +1232,59 @@ def build_today(rows):
             "answer": 1,
         },
         "sage": "ひと夏かけて育った双子の晴れ舞台が、昼過ぎの、たった二十分。",
-        "ochiWhat": "西山動物園の双子のレッサーパンダのお披露目",
+        "ochiWhat": "西山公園の中の西山動物園の双子のレッサーパンダのお披露目",
         "atogaki": "公開は今日の14時から14時20分まででございます。",
         "card": {"top": "10月7日", "big": "双子の晴れ舞台は\nたった二十分", "bottom": "福井県鯖江市 西山動物園 (2026年6月26日生まれ)"},
-        "facts": ["F17", "F24"],
+        "facts": ["F17", "F24", "F84"],
     })
     return today
+
+
+# ★札の 写真の 決め方 (オチの 註 → 群)。★上から 先に 当たった もの。★docs/手順/20261120_札の写真の割り当て.md
+CARD_RULES = [
+    (r"スキー場", "furui_ski"),
+    (r"村上|姉妹都市|もとの領地", "murakami"),
+    (r"はじまりの庭|嚮陽|殿様の家|間部", "kyoyo_teien"),
+    (r"こぱんだらんど", "illust_kopanda"),
+    (r"パンダらんど|遊具", "illust_pandarando3"),
+    (r"ベンチ", "illust_pandabench"),
+    (r"時計", "illust_meganetokei"),
+    (r"噴水", "illust_fountain_am"),
+    (r"駐車場", "illust_parking"),
+    (r"野球場", "illust_baseball"),
+    (r"貸し部屋|交流室", "illust_koryu"),
+    (r"道の駅", "illust_michinoeki"),
+    (r"祈りの道|お地蔵|ドラえもん", "illust_inori2"),
+    (r"新幹線", "shinkansen"),
+    (r"恐竜", "dino"),
+    (r"サンドーム|イルミネーション|冬の", "illumination_sa"),
+    (r"もみじ|紅葉", "koyo"),
+    (r"さくら|桜", "nishiyama_sakura"),
+    (r"つつじ", "tsutsuji"),
+    (r"人出|人の数|来訪|推し量", "illust_east_gate"),
+    (r"レッサーパンダ|西山動物園", "panda"),
+]
+
+
+def attach_card_img(all_stories):
+    """★席ごとの 札の 写真 (cardImg)。★パンダは オチ・追い足しで 名を 言う 子の 写真が あれば panda@名"""
+    import re as _re
+    pn = photo_names() - PHOTO_NAME_UNSURE
+    n = 0
+    for st in all_stories:
+        w = st.get("ochiWhat") or ""
+        g = next((grp for pat, grp in CARD_RULES if _re.search(pat, w)), None)
+        if not g:
+            st.pop("cardImg", None)
+            continue
+        if g == "panda":
+            text = (st.get("sage") or "") + (st.get("atogaki") or "") + w
+            hit = [x for x in pn if "「" + x + "」" in text or x in _re.findall(r"「([^」]+)」", text)]
+            if hit:
+                g = "panda@" + sorted(hit, key=len)[-1]
+        st["cardImg"] = g
+        n += 1
+    return n
 
 
 def main():
@@ -1277,6 +1324,8 @@ def main():
     n_fig = figs.attach(all_stories)
     # 「数字が割れているところ」は画面に一覧で出さず、噺のなかの「噂ですが」の一言として使う
     n_uwasa = report.attach_uwasa(all_stories, conflicts)
+    # ★札の 写真 (2026-11-20 ユーザー判断): オチの 註が 指す もの の 写真。★合う ものが 無ければ 付けない (= 季節の 写真)
+    n_card = attach_card_img(all_stories)
 
     out = P("app", "data", "bundle.js")
     with open(out, "w", encoding="utf-8", newline="\n") as f:

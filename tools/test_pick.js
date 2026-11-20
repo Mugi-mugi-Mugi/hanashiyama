@@ -393,5 +393,48 @@ expect(JL.every((t) => !/[0-9０-９]/.test(t)), "つなぎの 一言に 数字�
   expect(r5.length === 1 && r5[0].indexOf("宮城県のお客さんに") < 0, "入りに「お客さんに」が あれば「○○のお客さんに」を 足さない");
 }
 
+// ==== 題材の 重なりを 避ける (2026-11-20 ユーザー判断) ====
+//   ★一席目 S11・三席目 S33 が どちらも 新幹線 だった。★題材は 題・振り・サゲ・見出しの 語で 決める (Core.topics / TOPICS)
+//   ★題材の 読み取りは ★今の app/app.js で 行う (HANASHI_APP に 直す 前の 版を 渡しても 同じ 物差しで 数える)
+{
+  const ref = { console }; ref.globalThis = ref; vm.createContext(ref);
+  vm.runInContext(fs.readFileSync(require("path").join(__dirname, "..", "app", "data", "bundle.js"), "utf8").replace("window.HANASHI", "globalThis.HANASHI"), ref);
+  vm.runInContext(fs.readFileSync(require("path").join(__dirname, "..", "app", "app.js"), "utf8"), ref);
+  const RC = ref.HanashiCore;
+  const st = (id) => C.allStories(H).find((x) => x.id === id);
+  const tp = (id) => RC.topics(st(id));
+  expect(tp("S11").includes("新幹線") && tp("S33").includes("新幹線"), "S11・S33 の 題材は どちらも 新幹線");
+  expect(tp("S52").includes("駐車場") && tp("S53").includes("駐車場") && tp("S43").includes("駐車場"), "S43・S52・S53 の 題材は 駐車場");
+  expect(!tp("S32").includes("人の数"), "ライブカメラ S32 (一度に 何人まで) を 人の数に 数えない");
+  expect(tp("S02").length === 0 && tp("P-茨城県").length === 0, "動物園・レッサーパンダは 題材に しない (二席目の 交互で 見る)");
+  // 重なりの 数え方 (★対照: 並べて 置けば 1 と 数える)
+  const overlap = (seats) => {
+    const seen = new Set(); let n = 0;
+    seats.forEach((id) => { const t = RC.topics(st(id)); if (t.some((x) => seen.has(x))) n += 1; t.forEach((x) => seen.add(x)); });
+    return n;
+  };
+  expect(overlap(["S11", "S05", "S33"]) === 1, "  対照: S11 → S05 → S33 を 重なり 1 と 数える (数え方は 壊れていない)");
+  // ① Core: 新幹線の 手がかりで 一席目 S11 の あと、残る 新幹線の 席 S33 を 出さない
+  const S11 = st("S11");
+  const c1 = [1, 2, 3, 4, 5].map((sd) => C.choose(H, { pref: "", beliefs: ["b_shinkansen"], date: "2026-11-15" }, "b_shinkansen", ["S11"], [S11.sage], { rng: seeded(sd) }));
+  expect(c1.every((c) => !c || c.story.id !== "S33"), "S11 の あと 新幹線の S33 を 出さない (" + c1.map((c) => (c ? c.story.id : "見繕いへ")).join(",") + ")");
+  // ② Core: 事実も 思い込みも 重ならず 題材 (駐車場) だけ 重なる 席も 後ろへ (S43 の あと S52 を 出さない)
+  const c2 = [1, 2, 3, 4, 5, 6, 7, 8].map((sd) => C.choose(H, { pref: "", beliefs: ["b_park_boring"], date: "2026-03-15" }, "b_park_boring", ["S43"], [], { rng: seeded(sd) }));
+  expect(c2.every((c) => c && c.story.id !== "S52"), "S43 (駐車場の つつじ) の あと 駐車場の S52 を 出さない (" + c2.map((c) => c && c.story.id).join(",") + ")");
+  // ③ 画面を 通しで: 県 4 × 答え 2 × 種 4 で 4 席まで、題材の 重なり 0
+  const BLK = { "茨城県": "関東", "山口県": "中国・四国", "新潟県": "中部", "青森県": "北海道・東北" };
+  let runsN = 0, ov = 0, short4 = 0; const exs = [];
+  Object.keys(BLK).forEach((p) => ["思う", "いや、どうだか"].forEach((ans) => [1, 2, 3, 4].forEach((sd) => {
+    const r = drive({ date: DATE, seed: sd }, ["いや、べつに", "県外から", BLK[p], p, ans], 4);
+    runsN += 1;
+    if (r.seats.length < 4) short4 += 1;
+    const o = overlap(r.seats);
+    if (o) { ov += 1; if (exs.length < 3) exs.push(p + ans + ":" + r.seats.join(">")); }
+  })));
+  console.log("■ 題材の 重なり (画面の 通し " + runsN + " 回):", ov, exs.join(" / "));
+  expect(!short4, "題材で 避けても 4 席まで 通る (" + (runsN - short4) + " / " + runsN + ")");
+  expect(!ov, "4 席の 中で 題材が 重ならない (重なった 回 " + ov + " / " + runsN + ") " + exs.join(" / "));
+}
+
 console.log(fail ? "FAIL " + fail : "ALL OK");
 process.exit(fail ? 1 : 0);

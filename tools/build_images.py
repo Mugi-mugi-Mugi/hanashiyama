@@ -268,6 +268,12 @@ SMALL_H = 320
 SMALL_Q = 48
 
 
+# ★札に 使う 群 (2026-11-20。docs/手順/20261120_札の写真の割り当て.md)。★つつじ・紅葉は 前から ある (GROUPS)
+CARD_FROM_SMALL = ["panda", "kyoyo_teien", "furui_ski", "murakami", "illumination_sa", "nishiyama_sakura",
+                   "illust_east_gate", "illust_kopanda", "illust_parking", "illust_meganetokei", "illust_inori2",
+                   "illust_koryu", "illust_michinoeki", "illust_fountain_am", "illust_baseball", "illust_pandabench"]
+
+
 def shrink(path, width, band=BAND):
     """写真の中央を 幅width × 高さband の帯に切り出し、JPEG のバイト列で返す。
 
@@ -312,7 +318,7 @@ def main():
         pix = page.get_pixmap(matrix=fitz.Matrix(sc, sc), alpha=False)
         data = pix.tobytes("jpeg", jpg_quality=SMALL_Q)
         return {"dataUri": "data:image/jpeg;base64," + base64.b64encode(data).decode("ascii"),
-                "w": pix.width, "h": pix.height, "bytes": len(data)}
+                "w": pix.width, "h": pix.height, "bytes": len(data), "_src": src}   # ★_src = 札用の 帯を 作る ため (書き出す 前に 消す)
 
     small, total = {}, 0
     for g in GROUPS:                      # つつじ / 紅葉 (群で 1 つの 出典)
@@ -399,6 +405,33 @@ def main():
         total += n
         print("  小 %-9s %2d 枚 / %.0f KB" % (k, len(v["shots"]), n / 1024))
     print("  小 合計 %d 枚 / %.0f KB" % (sum(len(v["shots"]) for v in small.values()), total / 1024))
+    # ★2026-11-20 ユーザー判断: 札の 写真を オチの 註が 指す もの の 写真に。★札に 使う 群だけ 札用の 帯を 元の 写真から 作る
+    #   (★場面の 小さい 版を 伸ばすと 粗い)。★パンダは 22 枚 あるので 幅 640 で 軽く
+    for k in CARD_FROM_SMALL:
+        g = small.get(k)
+        if not g or k in out:
+            continue
+        w = 640 if k == "panda" else WIDTH
+        cs = []
+        for s in g["shots"]:
+            if not s.get("_src") or not os.path.exists(s["_src"]):
+                continue
+            data, cw, ch = shrink(s["_src"], w, int(BAND * w / WIDTH))
+            c = {"dataUri": "data:image/jpeg;base64," + base64.b64encode(data).decode("ascii"),
+                 "w": cw, "h": ch, "bytes": len(data), "credit": s.get("credit", g["credit"])}
+            if s.get("name"):
+                c["name"] = s["name"]
+            if s.get("names"):
+                c["names"] = s["names"]
+            cs.append(c)
+        if cs:
+            out[k] = {"credit": g["credit"], "url": g.get("url", ""), "shots": cs}
+            if g.get("sa"):
+                out[k]["sa"] = True
+            print("  札 %-20s %2d 枚 / %.0f KB" % (k, len(cs), sum(x["bytes"] for x in cs) / 1024))
+    for v in small.values():                   # ★元の 場所は 書き出さない (手元の パス = 決定⑳)
+        for s in v["shots"]:
+            s.pop("_src", None)
     out["_small"] = small
 
     write_split(out)

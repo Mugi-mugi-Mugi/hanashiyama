@@ -306,6 +306,7 @@ for (const d of [300, 1500]) {
 }
 
 // ⑪ オチの 註 (↳ 西山公園の ○○の こと): サゲの すぐ 下 / 札まで 畳まない (2026-11-15 ユーザー依頼)
+//   ★2026-11-20: T-1128 の 註は「西山公園のはじまりの庭」(追い足しの「嚮陽渓」と 重ねない)
 {
   const a = mk({ date: "2026-11-28" });
   toFirstSeat(a); a.settle();
@@ -313,7 +314,7 @@ for (const d of [300, 1500]) {
   const ks = a.talkEls();
   const si = ks.findIndex((c) => /(^| )sage( |$)/.test(c.className || ""));
   const note = ks[si + 1];
-  ok(!!note && /(^| )ochi-what( |$)/.test(note.className || "") && /^↳ .*嚮陽渓.*のこと$/.test(String(note.textContent)),
+  ok(!!note && /(^| )ochi-what( |$)/.test(note.className || "") && /^↳ 西山公園の.*はじまり.*のこと$/.test(String(note.textContent)),
      "サゲの すぐ 下に オチの 註 (" + (note ? String(note.textContent) : "-") + ")");
   ok(!a.byId.sageBox.hidden && note && !/(^| )tatami( |$)/.test(note.className || ""), "札が 出た とき、オチの 註は 畳まれていない");
 }
@@ -334,6 +335,16 @@ for (const d of [300, 1500]) {
   const old = a.talkEls().slice(0, nBefore).filter((c) => /(^| )line( |$)/.test(c.className || ""));
   const open = old.filter((c) => !/(^| )tatami( |$)/.test(c.className || ""));
   ok(old.length > 5 && open.length === 0, "もう一席で 前の 席の 語りは 全部 畳む (残り " + open.length + " / " + old.length + ")");
+}
+
+// ⑬ 札の 写真は オチの 註が 指す もの (2026-11-20 ユーザー判断): 命日 → 嚮陽庭園 の 札用の 写真を 読む
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰"); a.settle();
+  const srcs = (a.scriptLog || []).map((s) => String(s.src));
+  ok(srcs.some((s) => /card_kyoyo_teien\.js$/.test(s)) && !srcs.some((s) => /card_tsutsuji\.js$/.test(s)),
+     "命日の 札は 嚮陽庭園の 写真 (読んだ 札の 群: " + srcs.filter((s) => /card_/.test(s)).map((s) => s.replace(/^.*\//, "")).join(",") + ")");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");
