@@ -63,7 +63,8 @@ const ctx = new Proxy({ measureText: (t) => ({ width: String(t).length * 30 }),
 
 const html = fs.readFileSync(path.join(ROOT, "app", "index.html"), "utf8");
 const ids = [...html.matchAll(/id="([^"]+)"/g)].map((m) => m[1]);
-const appSrc = fs.readFileSync(path.join(ROOT, "app", "app.js"), "utf8");
+// ★HANASHI_APP_ALL = 直す 前の app.js で 全部を 通す (★試験の 効きを 見る。2026-11-20)
+const appSrc = fs.readFileSync(process.env.HANASHI_APP_ALL || path.join(ROOT, "app", "app.js"), "utf8");
 const bundleSrc = fs.readFileSync(path.join(ROOT, "app", "data", "bundle.js"), "utf8");
 const keysSrc = fs.readFileSync(path.join(ROOT, "app", "data", "img", "_keys.js"), "utf8");
 const kinSrc = fs.readFileSync(path.join(ROOT, "app", "data", "kin.js"), "utf8");
@@ -147,6 +148,14 @@ function runPass(seed, date, word, kin, viaList, plan, opt) {
       n.children.forEach((c) => {
         if (c.handlers.click && c.handlers.click.length) btns.push({ t: c.textContent, f: () => c.click() });
         else if (c.handlers.submit && c.handlers.submit.length) {
+          // ★opt.later = 謎かけで「いまは よしておく」を 押す (2026-11-20)
+          if (opt.later) {
+            const lb = (function find(n) {
+              for (const k of n.children) { if (/いまは よしておく/.test(k.textContent || "") && k.handlers.click) return k; const r = find(k); if (r) return r; }
+              return null;
+            })(c);
+            if (lb) { btns.push({ t: lb.textContent, f: () => { opt.later = false; lb.click(); } }); return; }
+          }
           const inp = c.children.find((x) => x.tagName === "INPUT");
           // ★opt.words = 打ち込む 語の 列。★使い切ったら 打たない (外れの 謎かけが 続いて 止まらないのを 防ぐ)
           if (opt.words) { if (!opt.words.length) return; if (inp) inp.value = opt.words.shift(); }
@@ -224,6 +233,11 @@ function runPass(seed, date, word, kin, viaList, plan, opt) {
       }
     };
     drain();
+    // ★opt.thenClick = 流れが 止まった あとに 押す ボタンの id (★札の 下の「現地の謎かけに答える」など)
+    if (opt.thenClick) {
+      opt.shownBefore = !byId[opt.thenClick].hidden;
+      if (opt.shownBefore) { if (opt.thenWords) opt.words = opt.thenWords; byId[opt.thenClick].click(); drain(); }
+    }
     // ★opt.until = 席の id。★札の あと「もう一席」を 押し続けて、その席が 出るまで 通す
     //   (★手がかりでは 狙えない 席 (例 S17) の 写真を 確かめるのに 要る)
     const toldNow = () => JSON.parse(win.localStorage.getItem("hanashiyama.log.v1") || "[]")
@@ -509,6 +523,28 @@ ok(!gm.err && /ヒントを ひとつ/.test(gm.talkText) && gm.log.some((e) => e
    "外れたら「惜しい」では なく ヒントを 一つ / 外れを 数える");
 ok(JSON.parse(gm.store["hanashiyama.genchi.v1"] || "{}").pending === "G1", "答えられなかった 謎かけは お預けとして 覚える (幕から 答えられる)");
 const gw = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], { verify: ["G1"], words: ["あお", "ＡＫＡ", "アカ"] });
+// ★2026-11-20 ユーザー判断: もう 公園に いる 人に「行ってみたい気持ち」を 聞かない
+const IKITAI = /いま、いかがです。西山公園、行ってみたい気持ちは/g;
+// ★talkText には 読み上げ用の 写し (sr) も 入る → 台詞の 回数では なく ★記録 (q1) で 数える
+ok(!gj.err && gj.log.filter((e) => e.event === "q1").length === 1 && gj.log.filter((e) => e.event === "delta").length === 1,
+   "謎かけで 開いた 現地の 席 (S55) では 行きたい度を 聞かない・Δq に 混ぜない (聞いた 回数 " + gj.log.filter((e) => e.event === "q1").length + ")");
+const gs = runPass(0, "2026-09-23", "", "", false, ["いま、公園におります", "県外から", "関東", "茨城県", "思う"], { verify: ["G1"], words: ["赤"] });
+ok(!gs.err && !IKITAI.test(gs.talkText) && gs.log.some((e) => e.event === "onsite") && !gs.log.some((e) => e.event === "q1" || e.event === "delta" || e.event === "q0"),
+   "最初に「いま、公園におります」→ 終わりの 問いを 出さない・Δq に 混ぜない" + (gs.err ? " → " + gs.err.message : ""));
+IKITAI.lastIndex = 0;
+ok(!gs.err && /西山公園に置いてまいりました/.test(gs.talkText) && gs.told.indexOf("S55") >= 0, "公園に いる 人にも 謎かけは 出る (札 → 謎かけ → S55)");
+const glOpt = { verify: ["G1"], later: true, thenClick: "genchiAgain", thenWords: ["赤"] };
+const gl2 = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], glOpt);
+ok(!gl2.err && glOpt.shownBefore === true && /札の 下か、次に 開いた ときの 最初の 画面/.test(gl2.talkText),
+   "「いまは よしておく」の あと 札の 下に「現地の謎かけに答える」が 出る・どこに 出るかを 言う" + (gl2.err ? " → " + gl2.err.message : ""));
+ok(!gl2.err && gl2.byId.genchiBtn.hidden === true && gl2.byId.genchiAgain.hidden === true && /お預けの 謎かけ/.test(gl2.talkText) && gl2.told.indexOf("S55") >= 0,
+   "札の 下から 答えて S55 が 開く・開いたら ボタンは 消える (表紙の ボタンも)");
+const glOpt3 = { verify: ["G1"], later: true };
+const gl3 = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], glOpt3);
+ok(!gl3.err && gl3.byId.genchiBtn.hidden === false && gl3.byId.genchiAgain.hidden === false && JSON.parse(gl3.store["hanashiyama.genchi.v1"] || "{}").pending === "G1",
+   "よしておいた あと 表紙の ボタンも 出る 状態 (開き直さなくても)");
+// ★確かめていない 謎かけでは どちらの ボタンも 出ない
+ok(!std.err && std.byId.genchiAgain.hidden === true && std.byId.genchiBtn.hidden === true, "確かめていない 謎かけでは 札の 下の ボタンも 出ない");
 ok(!gw.err && gw.told.indexOf("S55") >= 0 && gw.log.filter((e) => e.event === "genchi_miss").length === 2,
    "外れ 2 回の あと「アカ」(カタカナ) で 開く (全角ローマ字の ＡＫＡ は 外れ)");
 
