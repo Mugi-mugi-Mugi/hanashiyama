@@ -1612,8 +1612,19 @@
           { label: "いや、べつに", value: 1 },
           { label: "ふつう", value: 3 },
           { label: "行きたい", value: 5 },
+          // ★2026-11-20 ユーザー判断: 公園で 開いた 人に「行ってみたい」は 噛み合わない。★位置情報は 使わない (本人が 言う)
+          { label: "いま、公園におります", value: 0 },
         ],
         (v, label) => {
+          if (v === 0) {
+            // ★終わりの 問いも 出さない。★気持ちの 動き (Δq) にも 混ぜない
+            state.onsite = true;
+            state.q0 = null;
+            state.q0label = null;
+            log("onsite", null, {});
+            return say("おや、もう お越しで。ありがたいことで。では、終わりに 伺うのは よしておきます。", "shi",
+              state.kin ? askBeliefFor : state.lastPref ? askAgain : askPref);
+          }
           state.q0 = v;
           state.q0label = label;
           log("q0", null, { value: v });
@@ -2167,6 +2178,12 @@
       stage(3);
       showKoe(st);
       scroll();
+      if ($("genchiAgain")) $("genchiAgain").hidden = true;   // ★札の 流れの 終わりで 出し直す (refreshGenchi)
+      // ★2026-11-20 ユーザー判断: ★もう 公園に いる 人 (謎かけで 開いた 現地の 席 / 最初に「いま、公園におります」) には
+      //   「行ってみたい気持ち」を 聞かない。★札 → 次の 謎かけへ。★来訪は 謎かけに 当たった 記録で 測る
+      if (st.genchi || state.onsite) {
+        return say("よろしければ、この札を お持ち帰りを。「この札をもらう」で、お手元に 残ります。", "shi", () => offerGenchi(st));
+      }
       const first = state.q0label ? "はじめに伺ったときは、「" + state.q0label + "」でございました。" : "はじめに、お気持ちを伺いました。";
       say(first, "shi", () =>
         say("いま、いかがです。西山公園、行ってみたい気持ちは。", "shi", () =>
@@ -2295,8 +2312,8 @@
     const n = nextSpot(st);
     if (!n.spot) {
       // ★道の 終わり (または 先が まだ 確かめて いない) は 場所だけ 言って 送る
-      if (st.genchi && n.line) say(n.line, "shi");
-      return;
+      if (st.genchi && n.line) return say(n.line, "shi", refreshGenchi);
+      return refreshGenchi();
     }
     state.genchiOffered = true;
     const g = genchiState();
@@ -2349,7 +2366,8 @@
       });
       later.addEventListener("click", () => {
         clearChoices();
-        say("結構でございます。続きは、いつか 現地で。幕の 上の「現地の謎かけに答える」から、いつでも どうぞ。", "shi");
+        // ★2026-11-20: 「幕の 上の」は 画面の 上の ほうと 読めた → ★どこに 出るかを 言う
+        say("結構でございます。続きは、いつか 現地で。札の 下か、次に 開いた ときの 最初の 画面の「現地の謎かけに答える」から、いつでも どうぞ。", "shi", refreshGenchi);
       });
       scroll();
     });
@@ -2362,6 +2380,7 @@
     g.opened = (g.opened || []).concat([spot.id]);
     if (g.pending === spot.id) delete g.pending;
     saveGenchi(g);
+    refreshGenchi();
     const first = store.get(FIRST_KEY);
     const hours = first ? Math.round((Date.now() - new Date(first).getTime()) / 36e5 * 10) / 10 : null;
     log("genchi_unlock", st, { spot: spot.id, firstSeenAt: first || null, hoursSinceFirst: hours, pref: state.input.pref || "" });
@@ -2381,11 +2400,26 @@
     state.genchiOffered = true;
     say("おや、お預けの 続きで ございますね。", "shi", () => askRiddle(spot));
   }
-  (function showGenchiBtn() {
+  /** ★「現地の謎かけに答える」(表紙 + 札の 下) = ★答えて いない 謎かけが ある ときだけ。
+   *  ★前は 開いた ときに 1 回だけ 決めていて、同じ 画面の ままでは どこにも 出なかった (2026-11-20 ユーザー指摘) */
+  function refreshGenchi() {
     const g = genchiState();
-    const b = $("genchiBtn");
-    b.hidden = !Core.liveSpots(H).some((x) => x.id === g.pending);
-  })();
+    const on = Core.liveSpots(H).some((x) => x.id === g.pending);
+    $("genchiBtn").hidden = !on;
+    if ($("genchiAgain")) $("genchiAgain").hidden = !on;
+  }
+  refreshGenchi();
+
+  /** ★札の 下から お預けの 謎かけへ (★高座の 中で そのまま) */
+  function genchiAgain() {
+    const g = genchiState();
+    const spot = Core.liveSpots(H).find((x) => x.id === g.pending);
+    if (!spot) return refreshGenchi();
+    $("genchiAgain").hidden = true;
+    clearChoices();
+    state.genchiOffered = true;
+    say("では、お預けの 謎かけを。", "shi", () => askRiddle(spot));
+  }
 
   // ---- 全国の園からの入口 (?kin=<slug>) ----------------------------------
   /** ★入口を 増やすための 一覧。ここから 入ると 県を 聞かずに 済み、
@@ -2729,6 +2763,7 @@
   // ---- 入り口 -----------------------------------------------------------
   $("open").addEventListener("click", () => open());
   $("genchiBtn").addEventListener("click", (e) => { e.stopPropagation(); openGenchi(); });
+  $("genchiAgain").addEventListener("click", genchiAgain);
   $("tatami").addEventListener("click", (e) => {
     e.stopPropagation();
     const tk = $("talk");
