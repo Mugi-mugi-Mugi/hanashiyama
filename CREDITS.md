@@ -222,15 +222,17 @@ data URI で埋め込んでいます (鯖江市オープンデータ「レッサ
 
 次の 3 枚は **CC BY-SA 4.0** です。ライセンス: https://creativecommons.org/licenses/by-sa/4.0/deed.ja
 
-**この 3 枚を収めた次の 3 ファイル (とその中の画像) は、CC BY-SA 4.0 で提供します。**
+**この 3 枚を収めた次の 4 ファイル (とその中の画像) は、CC BY-SA 4.0 で提供します** (イルミネーションの写真は、場面用と札用の 2 ファイルにあります)。
 MIT License の対象外です。これらを改変して配布する場合も、CC BY-SA 4.0 (または互換のライセンス) で提供してください。
-SA の写真は群ごとに別のファイルに分けてあり、ほかのファイルには入っていません。
+SA の写真は群ごとに別のファイル (名前が `_sa.js` で終わるもの) に分けてあり、ほかのファイルには入っていません。
+札 (保存される画像) にイルミネーションの写真が敷かれた場合、その札の画像も CC BY-SA 4.0 の写真を含みます。
 
 | ファイル | 何の写真か | 出典表示 | 元のページ | 改変 |
 |---|---|---|---|---|
 | `app/data/img/sundome_sa.js` | サンドーム福井（2014年冬） | Wikimedia Commons「Sundome Fukui 2014-12-27 01.JPG」 賀正 (CC BY-SA 4.0) | https://commons.wikimedia.org/wiki/File:Sundome_Fukui_2014-12-27_01.JPG | 縮小・再エンコード (EXIF 除去) |
 | `app/data/img/nishiyama_fountain_sa.js` | 西山公園の噴水と夜桜（鯖江市・2016年） | Wikimedia Commons「Nishiyama park.JPG」 Jjp 233 (CC BY-SA 4.0) | https://commons.wikimedia.org/wiki/File:Nishiyama_park.JPG | 縮小・再エンコード (EXIF 除去) |
 | `app/data/img/illumination_sa.js` | 西山公園のイルミネーション（鯖江市・2018年） | 鯖江市「360photo（鯖江市西山公園など３６０写真）」R0010038 を切り出して使用 (CC BY-SA 4.0) | https://ckan.odp.jig.jp/dataset/20190209 | **切り出し**: 全天球の画像 (正距円筒図法・5376×2688) から前方の 2688×1512 を長方形に切り出し、縮小・再エンコード (EXIF 除去)。透視変換はしていないため、床の目地が少し曲がって見えます |
+| `app/data/img/card_illumination_sa.js` | 西山公園のイルミネーション（鯖江市・2018年）— 札用 | 鯖江市「360photo（鯖江市西山公園など３６０写真）」R0010038 を切り出して使用 (CC BY-SA 4.0) | https://ckan.odp.jig.jp/dataset/20190209 | 上の切り出しから、さらに**札の帯 (横長) に切り出し**・縮小・再エンコード (EXIF 除去) |
 
 ## レッサーパンダ家系図 (CC BY 2.1 JP)
 

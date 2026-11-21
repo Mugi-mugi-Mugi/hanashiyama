@@ -87,7 +87,7 @@ body {
 
 .talk { min-height: 40vh; }
 /* ★声の 大小・抑揚の 代わり。文字の 大きさ・太さ・色で 強弱を つける
-   (docs/参考/20260920_はなし山のサゲ作法.md §5) */
+   (作業メモ。公開に含めない) */
 .line {
   white-space: pre-line;      /* ★問いの 文の 前の 改行 (app.js の qBreak) */
   margin: 0 0 16px;
@@ -167,7 +167,7 @@ body {
 
 /* 数字と 鉤括弧だけ 立てる (打ち終わってから付く) */
 /* ★太字は 大きさでも 立てる (2026-09-23 スマホ確認で 指摘)。
-   ★声なら 音量で つく 強弱が、文字では 0 から 作らねばならない (決定㉚)。
+   ★声なら 音量で つく 強弱が、文字では 0 から 作らねばならない。
    ★上げすぎると 行の高さが 揺れて 読みにくいので、行間を 少し 広く 取ってある。 */
 .kazu {
   font-family: var(--sans);
@@ -214,7 +214,7 @@ body {
   left: 0; right: 0; bottom: 0;
   background: rgba(46, 33, 25, 0.95);
   display: flex;
-  /* ★幅が 足りなければ ボタンごと 次の 段へ (★語の 途中で 折らない。2026-11-15 監査⑧ F12・㊲ と 同じ 形) */
+  /* ★幅が 足りなければ ボタンごと 次の 段へ (★語の 途中で 折らない。2026-11-15 見直し・㊲ と 同じ 形) */
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 20px;
@@ -225,7 +225,7 @@ body {
   color: #e9dcc6; font-family: var(--sans); font-size: 0.9rem;
   text-decoration: underline;
 }
-/* ★押せる 大きさ = 高さ 44px (タブレット幅でも。監査⑧ F13) */
+/* ★押せる 大きさ = 高さ 44px (タブレット幅でも。見直し) */
 .footbar .link { min-height: 44px; padding: 10px 8px; white-space: nowrap; }
 
 /* ---------- 場 ---------- */
@@ -254,7 +254,7 @@ footer .credit { opacity: 0.75; }
    ★写真を 一拍 見せる 間 (0.8 秒) は 動きでは なく 間なので 残る (app.js の タイマー) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
-  /* ★例外 (2026-11-15 ユーザー判断): ★写真の 出入りの フェードだけは 残す。★位置も 大きさも 動かない 濃淡 (opacity) だけ。
+  /* ★例外 (2026-11-15 作者の判断): ★写真の 出入りの フェードだけは 残す。★位置も 大きさも 動かない 濃淡 (opacity) だけ。
      ★扇子・行の 浮き上がり・羽織の 切り替えなど ほかの 動きは 止めた まま */
   .haikei, .haikei-cap { transition: opacity 0.8s ease !important; }
   .haikei-in::after { transition: opacity 0.8s ease !important; }
@@ -290,7 +290,7 @@ footer .credit { opacity: 0.75; }
 .figt { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
 .figl { font-family: var(--sans); font-size: 19px; fill: var(--muted); }
 .figv { font-family: var(--sans); font-size: 20px; font-weight: bold; fill: var(--ink); }
-.fign { font-family: var(--sans); font-size: 17px; fill: var(--muted); }   /* ★3.13:1 → 5.95:1 (監査⑧ F9) */
+.fign { font-family: var(--sans); font-size: 17px; fill: var(--muted); }   /* ★3.13:1 → 5.95:1 (見直し) */
 .figb { fill: var(--vermilion); }
 /* ★棒 (朱) の 中に 置く 数字は 白。★2026-09-26 まで 黒のまま 埋もれていた。
    ★原因 = SVG の fill="#fff" 属性が ★.figv のクラス指定に 負けていた。
@@ -328,7 +328,7 @@ footer .credit { opacity: 0.75; }
   content: "あて推量";
   display: block;
   font-family: var(--sans);
-  /* ★事実と 推量を 見分ける ための ラベル = 読めないと 意味が 無い (2026-11-15 監査⑧ F3: 2.65:1 → 4.95:1) */
+  /* ★事実と 推量を 見分ける ための ラベル = 読めないと 意味が 無い (2026-11-15 見直し: 2.65:1 → 4.95:1) */
   font-size: 0.75rem;
   letter-spacing: 0.3em;
   color: var(--muted);
@@ -444,7 +444,7 @@ footer .credit { opacity: 0.75; }
   .ma { height: 3.2rem; }
   .figure { max-width: 100%; padding: 10px 10px 4px; }
 }
-/* ---- 2026-11-14 読む負担を 減らす 手当て ---------------------------------- */
+/* ---- 2026-11-14 読む負担を 減らす ---------------------------------------- */
 /* ★表紙は 一行。説明は「はじめての方へ」に 畳む */
 .hajimete { max-width: 30em; margin: 18px auto 10px; font-family: var(--sans); text-align: left; }
 .hajimete summary {
@@ -458,7 +458,7 @@ footer .credit { opacity: 0.75; }
 
 /* ★進みぐあい (まくら → 本題 → サゲ)。★いま いる 札だけ 朱で */
 .kozatop { align-items: center; gap: 12px; }
-/* ★2026-11-15 (監査⑧ F8): 色だけで 示さない。済んだ 段は「✓」、いまの 段は 太字 (+ aria-current)。
+/* ★2026-11-15 (見直し): 色だけで 示さない。済んだ 段は「✓」、いまの 段は 太字 (+ aria-current)。
    ★字は 薄墨 (白の 上 5.95:1 / 紙の 上 5.24:1。前は 3.18 / 1.95) */
 .shinko {
   display: flex; gap: 4px; margin: 0; padding: 0; list-style: none;
@@ -476,7 +476,7 @@ footer .credit { opacity: 0.75; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 /* ★開くのは 読み返す ため。★薄くせず (前は opacity 0.55 = 2.2〜3.8:1) 薄墨の 字 (紙の 上 5.24:1) に。
-   ★畳んだ 行で あることは 左の 罫線で 示す (2026-11-15 監査⑧ F4) */
+   ★畳んだ 行で あることは 左の 罫線で 示す (2026-11-15 見直し) */
 .talk.open .tatami {
   position: static !important; width: auto; height: auto; margin: 0 0 8px; overflow: visible;
   clip: auto; white-space: normal; font-size: 0.9rem; color: var(--muted); animation: none;
@@ -508,7 +508,7 @@ footer .credit { opacity: 0.75; }
   border-bottom: 1px solid #d8cdb9;
   font-family: var(--sans); font-weight: bold; font-size: 1rem; line-height: 1.5;
   color: var(--ink); letter-spacing: 0.04em;
-  /* ★見出しは 16 字まで (ふだんは 1 行)。★拡大した ときは 折り返す (省略で 切らない。監査⑧ F14) */
+  /* ★見出しは 16 字まで (ふだんは 1 行)。★拡大した ときは 折り返す (省略で 切らない。見直し) */
   white-space: normal; overflow-wrap: anywhere;
 }
 .midashi[hidden], .zu[hidden], .haikei[hidden], .haikei-cap[hidden] { display: none; }
@@ -520,7 +520,7 @@ footer .credit { opacity: 0.75; }
 /* ★背景の 写真 = 高座の 後ろに 1 枚。★場面が 替わった ときだけ 差し替える。
    ★ゆっくり ズーム などの 背景を 動かす 演出は 入れない (出る ときに 一度 薄く 現れる だけ) */
 .haikei {
-  /* ★2026-11-15 ユーザー指摘: 前は 画面 全体に fixed で 紙色に 塗り、高座の 外 (幕) まで 覆っていた。
+  /* ★2026-11-15 見直し: 前は 画面 全体に fixed で 紙色に 塗り、高座の 外 (幕) まで 覆っていた。
      ★層は ★高座の 中だけ (absolute)。紙の 地は 高座 自身の 色 (層は 塗らない) */
   position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: -1;
   pointer-events: none;
@@ -530,7 +530,7 @@ footer .credit { opacity: 0.75; }
 .haikei-in {
   position: sticky; top: 0; height: 100vh; height: 100dvh; overflow: hidden;   /* ★dvh = スマホの 操作バーを 除いた 高さ */
 }
-/* ★2026-11-16 ユーザー指摘 (スマホ):「写真が 上に あって 下が 空白に 見える」→ ★写真は 下に 寄せる (隅書きの 1 行の すぐ 上)。
+/* ★2026-11-16 見直し (スマホ):「写真が 上に あって 下が 空白に 見える」→ ★写真は 下に 寄せる (隅書きの 1 行の すぐ 上)。
    ★上の 余白は 語りの 文字の 地に なる */
 .haikei img {
   position: absolute; top: 0; left: 0; display: block; width: 100%;
@@ -539,9 +539,9 @@ footer .credit { opacity: 0.75; }
 }
 /* ★切り替えの 間だけ 古い 写真を 下に 残す (クロスフェード)。★無い ときは 隠す */
 .haikei img.furui:not([src]), .haikei img.furui[src=""] { display: none; }
-.haikei.kawari #haikeiImg { animation: usu 0.8s ease; }   /* ★新しい 写真を 古い 写真の 上に 0.8 秒で 重ねる (2026-11-15 ユーザー「もう少し 長く」) */
+.haikei.kawari #haikeiImg { animation: usu 0.8s ease; }   /* ★新しい 写真を 古い 写真の 上に 0.8 秒で 重ねる (2026-11-15 見直しの 声「もう少し 長く」) */
 @keyframes usu { from { opacity: 0; } to { opacity: 1; } }
-/* ★2026-11-15 ユーザー提案「写真は 背景 として 扱う」:
+/* ★2026-11-15 作者の案「写真は 背景 として 扱う」:
    ★写真が 出ても 文字の 側 (色・余白・行の 幅) は 替えない (前は 替わって 改行が ずれ、読んでいた 所を 見失った)。
    ★同日「薄くて 何か 分からない」→ 全体の 覆いは 軽く (20%)、★文字の 行の 下にだけ 紙色の 帯 (下の .talk .line)。
    ★場面の 頭の 一拍 (.miseru) は 覆い 0 = 写真を そのまま 見せる。読んでいた 文字は 残す。
@@ -556,7 +556,7 @@ footer .credit { opacity: 0.75; }
 /* ★文字の 行の 下の 紙色の 帯 (95%)。★写真が 無い ときも 同じ 形で 敷く (紙の 上では 見えない) =
    ★写真の 出入りで 行の 幅・余白・改行は 変わらない。★地を 持つ 行 (問い・あて推量・客の 吹き出し) は その 地の まま。
    ★写真の いちばん 黒い 所の 上でも 帯は 紙 95% = 墨の 字 12 : 1・数字 7 : 1・「」6.9 : 1・薄墨 4.6 : 1 */
-/* ★:where で 詳細度を 上げない (★前は この 規則が 客の 台詞の 右寄せに 勝ち、客の 喋りが 左に 寄った。2026-11-15 ユーザー指摘) */
+/* ★:where で 詳細度を 上げない (★前は この 規則が 客の 台詞の 右寄せに 勝ち、客の 喋りが 左に 寄った。2026-11-15 見直し) */
 .talk .line:where(:not(.toi):not(.suiryo):not(.kyaku)) {
   background: rgba(246, 240, 227, 0.95);
   width: fit-content; padding: 2px 8px; margin-left: -8px;
@@ -581,7 +581,7 @@ footer .credit { opacity: 0.75; }
   background: rgba(246, 240, 227, 0.95);
 }
 /* ★写真の 隅に「何の 写真か」と 出典を ★常に 出す (CC BY ほか)。★語りより 上に 置く */
-/* ★隅書きは 読むだけ。★下の 語り・選択肢の タップを 奪わない (監査⑧ F6)。
+/* ★隅書きは 読むだけ。★下の 語り・選択肢の タップを 奪わない (見直し)。
    ★語り・選択肢は app.js (bottomRoom) が 隅書きの 上端より 上に 置く */
 .haikei-cap {
   position: fixed; z-index: 2; pointer-events: none;
@@ -590,7 +590,7 @@ footer .credit { opacity: 0.75; }
   background: rgba(0, 0, 0, 0.62); color: #fff;
   font-family: var(--sans); line-height: 1.45; text-align: right;
 }
-/* ★2026-11-16 ユーザー指摘:「情報が 多すぎる。1 行に」→ ★写真の 名前 | 出どころ・条件 を 1 行。★はみ出す 分は … で 切る。
+/* ★2026-11-16 見直し:「情報が 多すぎる。1 行に」→ ★写真の 名前 | 出どころ・条件 を 1 行。★はみ出す 分は … で 切る。
    ★正式な 表示 (作品名・提供者・ライセンスの 全文) は CREDITS.md (CC BY は 媒体に 合った 妥当な 方法での 表示で よい) */
 .haikei-cap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .haikei-cap b { display: inline; font-size: 0.8rem; letter-spacing: 0.02em; }
@@ -651,7 +651,7 @@ footer .credit { opacity: 0.75; }
 .sources::after { bottom: 0; border-top: 1px solid #24426f; }
 
 /* 羽織を 脱ぐ = 本題の 合図。★本題の 入り (進行が「本題」に 替わる 瞬間) に 一度だけ 切り替える。
-   ★2026-11-15 (監査①③⑥): 前は 高座の 地を #f6f0e3 → #fdfaf3 (1.09:1) に して いて、ほぼ 見えず、
+   ★2026-11-15 (見直し): 前は 高座の 地を #f6f0e3 → #fdfaf3 (1.09:1) に して いて、ほぼ 見えず、
      しかも 背景の 写真 (z-index:-1) の 下に 隠れて いた (130 席中 121 席)。
    ★見出しの 帯 (写真より 上の 層・高座の 上の 縁) で 出す: まくらの 間は 羽織の 濃い 色 (足元と 同じ 焦げ茶)、
      本題に 入ると 濃い 層が 0.25 秒で 消えて 紙の 色に (紙 ↔ 焦げ茶 = 13.7:1)。
@@ -674,5 +674,105 @@ footer .credit { opacity: 0.75; }
 @keyframes yoriL { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: none; } }
 
 /* ★フォーカスの 受け皿 (tabindex="-1" の 高座・パネル)。★入れ物 そのものは 操作できないので 枠は 出さない
-   (★ボタン・入力欄の 枠は ブラウザの 既定の まま。2026-11-15 監査⑧ F5) */
+   (★ボタン・入力欄の 枠は ブラウザの 既定の まま。2026-11-15 見直し) */
 .koza:focus, .panel:focus { outline: none; }
+
+/* ---- 2026-11-21 強弱 (作者の判断。組版・間の 見直し r7 の 4・7・8・12・13) -----------------------------------------
+   ★帯の 規則 (.talk .line:where(...)) より 後ろに 置く。★「」の 飾り・数字の 大きさは 今の まま (作者の判断で 入れない) */
+/* 4. 山は サゲに ひとつ。★返し (当たり) は 墨の 太字 (金の 罫は 残す)。★朱系は サゲと 振り (と 外れの 返し) だけ */
+.line.kotae { color: var(--ink); font-size: 1.3rem; }            /* 1.38 → 1.3rem */
+.line.makura { font-size: 1.32rem; }                              /* 1.42 → 1.32rem */
+/* 7. 帯の 規則 (padding 2px 8px) に 消された 左の 空きを 戻す */
+.talk .line.sage { padding: 6px 8px 6px 16px; }
+.talk .line.kotae { padding: 8px 8px 8px 14px; }
+.talk .line.ato { padding-left: 30px; }                           /* 22px の 下げ + 帯の -8px */
+.talk .line.uwasa { padding-left: 20px; }
+/* 8. あて推量は 破線と ラベルで 分ける。★塗りは 元の #efeadc の まま (2026-11-21 見直しで 紙色を 取り消した)・1.05rem */
+.line.suiryo { background: #efeadc; font-size: 1.05rem; }
+/* ★ラベル「あて推量」は 箱の 外に 1 回だけ = 破線の 上の 縁に かかる 見出し (2026-11-21 作者の判断)。★箱の 中には 出さない。
+   ★事実と 見た目を 分ける 決まり (㉕: 破線 + ラベル) は 保つ。★動きは 付けない。
+   ★ラベルの 地は 上半分 = 箱の 外の 紙色 / 下半分 = 箱の 塗り (#efeadc)。★縁の 破線は ラベルの ところで 切れ、どちらの 側でも 地が 浮かない。
+   ★薄墨 #6d6256 の 字: 紙の 上 5.24 : 1 / #efeadc の 上 4.95 : 1 (どちらも 4.5 以上) */
+.talk .line.suiryo { position: relative; margin-top: 20px; padding-top: 16px; }
+.line.suiryo::before {
+  position: absolute; left: 10px; top: 0; transform: translateY(-50%);
+  display: block; margin: 0; padding: 0 6px; line-height: 1.4;
+  font-size: 0.8rem; background: linear-gradient(to bottom, var(--paper) 50%, #efeadc 50%); color: var(--muted);
+}
+/* ★畳んだ 語りを 開いた ときは 箱が ふつうの 行に 戻る → ラベルも 行の 頭に 戻す */
+.talk.open .line.suiryo.tatami::before { position: static; transform: none; padding: 0; background: none; }
+/* 13. めくり (題) */
+.mekuri { font-size: 1.12rem; font-weight: bold; }
+/* ★めくりと 段の 札は 折らない (2026-11-21 見直し: スマホで「埼玉県へ渡った記 / 録」「まく / ら」と 折れた)。
+   ★どちらも 1 塊で 置き、並ばない ときは 段の 札が 下の 行へ 回る (wrap)。★語の 途中では 折れない。
+   ★スマホの めくりは 題の 字数で 大きさを 変える (app.js が data-n に 字数を 入れる)。
+     8 字 = 1rem / 9 字 以上 = 0.95rem。★130 席の 題 (最長 12 字) で 360px でも 1 塊で 収まる。
+     ★段の 札と 同じ 行に 並ぶのは 390px で 129 席 / 360px で 93 席 (10 字 以上は 段の 札が 下の 行) */
+.kozatop { flex-wrap: wrap; row-gap: 6px; }
+.mekuri, .shinko, .shinko li { white-space: nowrap; }
+.mekuri { flex: 0 1 auto; min-width: 0; }
+.shinko { flex: none; }
+@media (max-width: 480px) {
+  .kozatop { gap: 6px 8px; }
+  .mekuri { padding: 8px 10px; letter-spacing: 0.02em; }
+  .mekuri[data-n="8"] { font-size: 1rem; }
+  .mekuri[data-n="9"], .mekuri[data-n="10"], .mekuri[data-n="11"], .mekuri[data-n="12"],
+  .mekuri[data-n="13"], .mekuri[data-n="14"], .mekuri[data-n="15"], .mekuri[data-n="16"] { font-size: 0.95rem; }
+  .shinko { gap: 3px; }
+  .shinko li { padding: 2px 5px; }
+}
+/* ★スマホの 大きさは 文節で 折った 形で 決めた (2026-11-21。390px 幅・130 席の サゲを 模擬で 折って 数えた)。
+   ★サゲ 1.42rem では 1 行 15 字 → 4 行の サゲが 36 席・「開いた / 庭が」の ような 切れ方が 増える。
+   ★1.32rem (16 字) なら 4 行は 8 席。★山の 高さ (サゲ ÷ まくら・返し) は まくら・返しを 下げて 保つ */
+@media (max-width: 480px) {
+  .line.sage { font-size: 1.32rem; }                              /* 1.36 → 1.32rem (21.1px。16 字/行) */
+  .line.kotae { font-size: 1.12rem; }                             /* 1.24 → 1.12rem (サゲの 0.85) */
+  .line.makura { font-size: 1.16rem; }                            /* 1.26 → 1.16rem (サゲの 0.88) */
+  .talk .line.sage { padding-left: 12px; }
+  .talk .line.kotae { padding-left: 11px; }
+  .midashi { font-size: 1rem; }                                   /* 12. 0.95 → 1rem */
+}
+
+/* ---- 2026-11-21 正解の 1 行 = 返しと「一続きの 一声」(作者の判断。見直し r7 案B) ------------------
+   ★外れた ときは 返しを 一段 下げ (hazure)、正解の 1 行と ★同じ 金の 罫で つなぐ。★間は app.js の 900ms (空きを 作らない)
+   ★返しと 正解は 同じ 大きさ (サゲより 小さい)。★外れの 返しは 赤茶の まま。★正解は 墨の 太字 (事実の 色)、数字だけ 赤茶
+   ★新しい 罫は 動かさない (行の 浮き上がりも 付けない) */
+.talk .line.kotae.hazure {
+  color: #7b2b25;
+  font-size: 1.24rem;
+  margin-bottom: 0;
+  padding: 4px 8px 0 14px;
+  border-left: 4px solid var(--gold);
+}
+.talk .line.seikai {
+  font-size: 1.24rem;
+  font-weight: bold;
+  color: var(--ink);
+  margin-top: 0;
+  padding: 2px 8px 6px 14px;
+  border-left: 4px solid var(--gold);
+  animation: none;
+}
+.talk .line.seikai .kazu { color: #7b2b25; font-size: 1.05em; }
+@media (max-width: 480px) {
+  .talk .line.kotae.hazure, .talk .line.seikai { font-size: 1.12rem; padding-left: 11px; }   /* 返し (当たり) と 同じ */
+}
+
+/* ---- 2026-11-21 文節で 改行する (作者の判断) ----------------------------------------------------------
+   ★単語・文節の 途中で 切らない。★Chrome・Edge (119〜) は auto-phrase (html の lang="ja" で 効く)。
+   ★効かない ブラウザ (iPhone の Safari など) は app.js が 文節の 切れ目に <wbr> を 入れ、keep-all と 組む。
+     ★切れ目の 無い 長い 並びが 行に 収まらない ときだけ anywhere で 折る (はみ出さない)。
+   ★pretty = 最後の 行に 1〜2 字だけ 残る (泣き別れ) を 避ける (効かない ブラウザでは ふつうの 折り返し) */
+.talk .line, .talk .ochi-what, .midashi { word-break: auto-phrase; text-wrap: pretty; }
+@supports not (word-break: auto-phrase) {
+  .talk .line, .talk .ochi-what, .midashi { word-break: keep-all; overflow-wrap: anywhere; }
+}
+
+/* ---- 2026-11-21 キーとなる 単語 (サゲが あとで 受け返す 語句) は 太字 (作者の判断) ----------------------------
+   ★色・大きさは 変えない (太さだけ)。★1 行 1 か所・1 席 3 か所まで (app.js の Core.seatKeys)。
+   ★「」の 飾り (もう 太字) の 中には 付けない。★中の 数字の 飾りは 今どおり */
+.line .key { font-weight: bold; color: inherit; font-size: 1em; }
+
+/* ---- 2026-11-21 あて推量の ポイント (「ではないか / のでは」の 直前の 句) は 太字 (作者の判断) -----------------------
+   ★色・大きさは 変えない。★「……」の 間は app.js (打ち出しで 約 0.8 秒)。★キーの 太字 (.key) とは 別 = 推量の 箱の 中だけ */
+.line.suiryo .point { font-weight: bold; color: inherit; font-size: 1em; }

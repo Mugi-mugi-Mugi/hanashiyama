@@ -17,7 +17,7 @@
   // ★似ている 判定 (㉟) に 数えない 事実 = 多くの 噺の 前提に なる もの
   //   (F08 日本一小さな動物園 / F84 西山動物園は 西山公園の 中腹。★F84 は 動物園の 註を 支える 事実で、ひっくり返す 中身では ない)
   const SIM_FREE = new Set(["F08", "F84"]);
-  // ★題材 (2026-11-20 ユーザー判断): 前の 席と ★題材が 同じ 席も 後ろへ (例: 一席目 S11・三席目 S33 が どちらも 新幹線)。
+  // ★題材 (2026-11-20 作者の判断): 前の 席と ★題材が 同じ 席も 後ろへ (例: 一席目 S11・三席目 S33 が どちらも 新幹線)。
   //   ★台本の 題・振り・サゲ・見出しに この 語が あれば その 題材 (★台本に 印を 足さず、少数の 語の 辞書で 決める)。
   //   ★動物園・レッサーパンダは 二席目の 交互の 決まりが あるので ここには 入れない。
   //   ★語を 足すときは 誤って 当たる 席が 無いかを 見る (例:「何人」は ライブカメラの「何人まで」に 当たる → 入れない)
@@ -60,13 +60,6 @@
           score += 4;
           reasons.push("today");
         }
-        // ★「もうすぐ」は ★添えるもの。★主役に しない (2026-09-25)。
-        //   ★当日 (+4) はもちろん、★県 (+3) や 思い込み (+2) も 押しのけない。
-        //   ★前日だけ +2、あとは +1。★「もうすぐ○○」の 一言が 出れば 足りる。
-        if (source === "soon") {
-          score += (days || 7) <= 1 ? 2 : 1;
-          reasons.push("soon");
-        }
         if (reasons.length) out.push({ story: st, score, reasons, source });
       };
       // ★現地の席 (genchi) は 謎かけに 答えた 人にだけ 開く。★ふだんの 候補に 入れない
@@ -74,32 +67,12 @@
       data.prefStories
         .filter((st) => pref && st.hooks.prefectures.includes(pref))
         .forEach((st) => consider(st, "pref"));
+      // ★暦の 席 (isToday) は ★その日 だけ (2026-11-20)。
+      //   ★前は 手前 7 日 (「もうすぐ」) と 好きなもので 当たった とき (「お手がかりから すこし 外れますが」) にも 出していたが、
+      //   ★台本の 入り・本題・追い足しが「今日」「本日」と 言い切るので、別の 日に 出すと 嘘に なる
       (data.today[md] || [])
         .filter((st) => !st.onlyYear || st.onlyYear === year)
         .forEach((st) => consider(st, "today"));
-      // ★暦の噺を、その日 以外でも 出せるように する (2026-09-25 ユーザー指示)
-      //   ① 手前 7 日 … 「もうすぐ」として 出す
-      //   ② 好きなもので 当たった とき … 「こういう 情報も ございます」として 出す
-      //   ★その日 ちょうど (today) より 点は 低くする。★当日を 押しのけない。
-      Core.nearDays(data, date, 7).forEach(function (h) {
-        if (h.story.onlyYear && h.story.onlyYear !== year) return;
-        consider(h.story, h.days === 0 ? "today" : "soon", h.days);
-      });
-      // ★日付が 合わなくても、好きなもの (思い込み) が 合えば 候補に 入れる。
-      //   ★「こういう情報も ございます」として 出す (2026-09-25 ユーザー指示)。
-      //   ★点は 足さない (consider の 思い込み +2 だけ)。★当日・もうすぐを 押しのけない。
-      if (beliefs.length) {
-        const already = new Set(out.map((c) => c.story.id));
-        Object.keys(data.today || {}).forEach(function (m2) {
-          data.today[m2].forEach(function (st) {
-            if (already.has(st.id)) return;
-            if (st.onlyYear && st.onlyYear !== year) return;
-            if (!(st.hooks.beliefs || []).some((b2) => beliefs.includes(b2))) return;
-            already.add(st.id);
-            consider(st, "story");
-          });
-        });
-      }
       out.sort((a, b) => b.score - a.score || a.story.id.localeCompare(b.story.id));
       return out;
     },
@@ -159,11 +132,20 @@
         ((s.hooks || {}).beliefs || []).forEach((b) => usedB.add(b));
       });
       // ★F08 (日本一小さな動物園) は 多くの 噺の 前提で、客が「何を ひっくり返されたか」とは 別もの。
-      //   ★似ている 判定から 外す (2026-11-15 ユーザー判断。外さないと 園の 入口の 2 席目が 58 園中 41 園で 同じ 席だった)
+      //   ★似ている 判定から 外す (2026-11-15 作者の判断。外さないと 園の 入口の 2 席目が 58 園中 41 園で 同じ 席だった)
+      //   ★同じ 話 (Core.sameTalk。2026-11-21 (60)) は SAME_W を 足す = ほかの 席が あれば 必ず 後ろ (県の 噺の 加点より 先に 効く)
       return (s) =>
         (s.facts || []).filter((f) => usedF.has(f) && !SIM_FREE.has(f)).length +
         2 * (((s.hooks || {}).beliefs || []).filter((b) => usedB.has(b)).length) +
-        2 * Core.topics(s).filter((t) => usedT.has(t)).length;
+        2 * Core.topics(s).filter((t) => usedT.has(t)).length +
+        (told.some((t) => Core.sameTalk(data, s, t)) ? Core.SAME_W : 0);
+    },
+    /** ★同じ 話の 重み (似ている 点の 最大より ずっと 大きく) */
+    SAME_W: 100,
+    /** ★前に 語った 席と 同じ 話か */
+    sameAsTold(data, shownIds, st) {
+      const shown = new Set(shownIds || []);
+      return Core.allStories(data).some((t) => shown.has(t.id) && Core.sameTalk(data, st, t));
     },
 
     /** ★前に 語った 席の 題材 (Set) */
@@ -269,6 +251,109 @@
       }
       return lic ? src + " (" + lic + ")" : src;
     },
+    /** ★札 (保存される 画像) に 書く 写真の 出典 (2026-11-20)。★札は 端末の 外へ 出るので 正式な 表示に 近づける:
+     *  作品名・提供元・ライセンス (と その URL)・札に 合わせて 加工した 旨。★継承 (BY-SA) の 写真なら 札も BY-SA と 書く */
+    cardCredit(c) {
+      c = String(c || "").replace(/\s*\/\s*縮小して使用\s*$/, "").trim();
+      if (!c) return "";
+      const LIC = [
+        // ★下の URL 4 本は ★札に 書く 文字 (ライセンスの 正式な 表示)。★読みに 行かない (通信は しない。fetch も リンクも 作らない)
+        [/BY-SA|表示-継承/, "CC BY-SA 4.0", "https://creativecommons.org/licenses/by-sa/4.0/deed.ja"],
+        [/表示4\.0|CC BY 4\.0/, "CC BY 4.0", "https://creativecommons.org/licenses/by/4.0/deed.ja"],
+        [/CC BY 2\.1/, "CC BY 2.1 JP", "https://creativecommons.org/licenses/by/2.1/jp/"],
+        [/CC BY 3\.0/, "CC BY 3.0", "https://creativecommons.org/licenses/by/3.0/deed.ja"],
+      ];
+      const hit = LIC.find((x) => x[0].test(c));
+      let s = c;
+      // ★福井ふるさと百景の 長い 書き方 (「クリエイティブ・コモンズ・ライセンス 表示4.0 国際（URL）」) は 略号 + URL に まとめる
+      s = s.replace(/、?\s*クリエイティブ・コモンズ・ライセンス\s*表示4\.0\s*国際（[^）]*）/, " (CC BY 4.0)");
+      if (hit && s.indexOf(hit[2]) < 0) s = s.replace(/\)\s*$/, "") + (/\)\s*$/.test(s) ? " " : " (") + hit[2] + ")";
+      const sa = hit && hit[1] === "CC BY-SA 4.0";
+      return (/^イラスト/.test(s) ? "" : "写真: ") + s + " を 札に合わせて切り抜き・加工" + (sa ? "。この札は CC BY-SA 4.0 で提供します" : "");
+    },
+    /** ★その 席が 扱う 思い込み (hooks.beliefs + 前段で 問う furiBelief)。★否定された 思い込みの 判定に 使う (2026-11-20) */
+    beliefsOf(st) {
+      const out = ((((st || {}).hooks || {}).beliefs) || []).slice();
+      if (st && st.furiBelief && out.indexOf(st.furiBelief) < 0) out.push(st.furiBelief);
+      return out;
+    },
+    /** ★その 席が ひっくり返す (前段で 問う) 思い込み = 台本の furiBelief。無い 席は hooks.beliefs の 先頭 (askBeliefFor と 同じ)。
+     *  ★客が「そうは 思わない」と 答えた 思い込みで 外すのは この 1 つが 一致する 席だけ (2026-11-21)。
+     *  ★副の 思い込み (hooks.beliefs の 2 つ目 以降) で 外すと、県の 噺が ほぼ 全部 消え、県を 答えた 客に 一席で「手がかりは ここまで」と 言っていた */
+    askedBelief(st) {
+      if (!st) return null;
+      return st.furiBelief || ((((st.hooks || {}).beliefs) || [])[0]) || null;
+    },
+    /** ★否定された 思い込みの 席か (askedBelief が 否定の 中に ある) */
+    deniedSeat(st, denied) {
+      const b = Core.askedBelief(st);
+      if (!b || !denied) return false;
+      return typeof denied.has === "function" ? denied.has(b) : denied.indexOf(b) >= 0;
+    },
+    /** ★4 択を 外した ときに 言う 正解の 1 行 (2026-11-21 作者の判断)。例「答えは、29園でございます。」
+     *  ★札の 文は 変えない。★言い切りの 形で 終わる 札 (「静止画に変わる」) は 「」で 包む (「答えは、静止画に変わるでございます」に しない)。
+     *  ★外れの 返しが もう 正解を 言って いる (T-1128「それが、あの吉田松陰なんでございます。」) ときは "" (重ねない) */
+    answerLine(q, reply) {
+      if (!q || !Array.isArray(q.choices) || typeof q.answer !== "number") return "";
+      const a = String(q.choices[q.answer] == null ? "" : q.choices[q.answer]).trim().replace(/[。、.,]+$/, "");
+      if (!a) return "";
+      if (reply && String(reply).indexOf(a) >= 0) return "";
+      const quote = /[ぁ-ゟ]$/.test(a) && !/^「.*」$/.test(a);
+      return "答えは、" + (quote ? "「" + a + "」" : a) + "でございます。";
+    },
+    /** ★動物園・動物の 噺か (★オチが 何の ことか = ochiWhat で 決める。台本に animal (真偽) が あれば そちら)。2026-11-20 */
+    isAnimal(st) {
+      if (!st) return false;
+      return typeof st.animal === "boolean" ? st.animal : /動物園|レッサーパンダ/.test(st.ochiWhat || "");
+    },
+    /** ★動物の 噺が 続けて いくつ 出たか (語った 順の 末尾から 数える)。2026-11-21 (60) */
+    animalRun(data, shownIds) {
+      const all = Core.allStories(data);
+      const ids = (shownIds || []).slice();
+      let n = 0;
+      for (let k = ids.length - 1; k >= 0; k -= 1) {
+        const s = all.find((x) => x.id === ids[k]);
+        if (!Core.isAnimal(s)) break;
+        n += 1;
+      }
+      return n;
+    },
+    /** ★動物の 噺が この 数だけ 続いたら、次は 動物で ない 噺から (ほかが あれば)。二席目の 交互 (53) とは 別に 効く */
+    ANIMAL_MAX: 3,
+    /** ★4 択の 正解の 文 (無ければ "") */
+    answerText(st) {
+      const q = st && st.question;
+      if (!q || !Array.isArray(q.choices) || typeof q.answer !== "number") return "";
+      return String(q.choices[q.answer] == null ? "" : q.choices[q.answer]).trim();
+    },
+    /**
+     * ★同じ 話か (2026-11-21 (60)「同じ 話を 二度 聞かせない」)。台本から 決める (★席の 番号を 並べて 持たない):
+     *  ① 4 択の 正解が 同じで、事実を 1 つ 以上 分け合う (SIM_FREE を 除く) = 同じ 問いに 同じ 答え
+     *     例: S03 と 渡った 記録の 型 (P-北海道 ほか。答え 29園) / S04 と つつじの 型 (約5万株)
+     *  ② 片方が「型」(正解を 同じくする 席が 3 席 以上ある 組) の 席で、もう片方が その 席と ひっくり返す 思い込みが 同じで、事実を 分け合う
+     *     例: S02 (元祖パンダ) と 名前の 型 (P-宮城県 ほか・T-pandaday。思い込み「パンダは白黒」・F09)
+     *  ★紛らわしさ: simTo (似ている = 点で 後ろへ) とは 別。同じ 話は 点に 大きく 足して、ほかが あれば 出さない
+     */
+    sameTalk(data, a, b) {
+      if (!a || !b || a.id === b.id) return false;
+      const fb = b.facts || [];
+      if (!(a.facts || []).some((f) => !SIM_FREE.has(f) && fb.indexOf(f) >= 0)) return false;
+      const xa = Core.answerText(a), xb = Core.answerText(b);
+      if (xa && xa === xb) return true;
+      const ba = Core.askedBelief(a);
+      if (!ba || ba !== Core.askedBelief(b)) return false;
+      return Core.kataSize(data, xa) >= 3 || Core.kataSize(data, xb) >= 3;
+    },
+    /** ★同じ 正解を 持つ 席の 数 (型の 大きさ)。data ごとに 一度だけ 数える */
+    kataSize(data, ans) {
+      if (!ans || !data) return 0;
+      if (!data._kata) {
+        const m = {};
+        Core.allStories(data).forEach((s) => { const t = Core.answerText(s); if (t) m[t] = (m[t] || 0) + 1; });
+        try { Object.defineProperty(data, "_kata", { value: m, enumerable: false }); } catch (e) { return m[ans] || 0; }
+      }
+      return data._kata[ans] || 0;
+    },
     /** ★その県の 客に 話しかける 作りの 席 (onlyPref) は、その県の 客にだけ 出す (2026-11-15) */
     fitsPref(st, pref) {
       return !st.onlyPref || (((st.hooks || {}).prefectures) || []).includes(pref || "");
@@ -280,7 +365,21 @@
       const shownList = shownIds || [];
       const shown = new Set(shownList);
       const sages = new Set(usedSages || []);
-      let all = Core.pick(data, input).filter((c) => !shown.has(c.story.id) && Core.fitsPref(c.story, input.pref));
+      const denied = new Set(opt.denied || []);
+      const hasB = (st, b) => ((((st || {}).hooks || {}).beliefs) || []).indexOf(b) >= 0;
+      const isHint = (c) => (preferBelief && hasB(c.story, preferBelief)) ||
+        (input.pref && ((c.story.hooks || {}).prefectures || []).includes(input.pref));
+      // ★opt.realPref = 客が 自分で 言った 県 (打ち込みの 語から 推した 県は 選び方にだけ 使い、その県の 客 向けの 席 (onlyPref) には 使わない)
+      const fitPref = opt.realPref !== undefined ? opt.realPref : input.pref;
+      const base = Core.pick(data, input).filter((c) => Core.fitsPref(c.story, fitPref));
+      // ★手がかりの 噺が そもそも あったか (語った 席も 含めて) / まだ 残っているか (外す 前) — 断りの 言い分けに 使う (2026-11-20)
+      const hintAny = base.some(isHint);
+      let all = base.filter((c) => !shown.has(c.story.id));
+      // ★客が「そうは 思わない」と 答えた 思い込みの 席は 二席目 以降も 出さない (2026-11-20)。
+      //   ★暦の 席だけは 残す (画面の 側で 振りを 飛ばす)
+      //   ★2026-11-21: 外すのは その 席が ひっくり返す 思い込み (askedBelief) が 一致する 席だけ。副の 思い込みでは 外さない
+      if (denied.size) all = all.filter((c) => c.story.isToday || !Core.deniedSeat(c.story, denied));
+      const hintLeft = all.some(isHint);
       // ★避けたい 種類 (例: 一席目が 動物なら 動物の 噺) は、ほかが あれば 外す (無ければ 外さない)
       if (opt.avoid) { const keep = all.filter((c) => !opt.avoid(c.story)); if (keep.length) all = keep; }
       // 同じ落ち所を 続けて 出さない (札まで 同じに なるため)
@@ -300,16 +399,21 @@
       //   ★外すと 手がかりの 候補が 少ない ときに 重なる 席が そのまま 出る (一席目 S11 → 三席目 S33 の 新幹線)
       const usedT = Core.toldTopics(data, shownList);
       if (usedT.size && all.every((c) => Core.topics(c.story).some((t) => usedT.has(t)))) return null;
+      //   ★残りが みな 前に 語った 席と 同じ 話 (Core.sameTalk) でも 尽きた と みなす (見繕いの 側でも 同じ 話は 後ろ)。2026-11-21 (60)
+      if (shownList.length && all.every((c) => Core.sameAsTold(data, shownList, c.story))) return null;
       const has = (c, key, v) => ((c.story.hooks && c.story.hooks[key]) || []).includes(v);
       const byBelief = preferBelief ? all.filter((c) => has(c, "beliefs", preferBelief)) : [];
       // ★同じ筋の噺は 在るが、似るので 外した ―― のか
       //   ★そもそも 持ち合わせが 無い のか。★客には 別ごとなので 言い分ける
-      const note = hadBelief && !byBelief.length
-        ? "その筋の噺は もう一席ございますが、続けますと 似てまいります。趣を変えて。"
-        : "いただいた手がかりの噺は、あいにく持ち合わせがございません。かわりに、今日という日で一席。";
+      //   ★2026-11-20: ★交互 (動物の 噺を 続けない)・似ている・同じ 落ち所 で 外しただけ (手がかりの 席が まだ 残る) も「趣を変えて」。
+      //     ★手がかりの 席を もう 語り終えた ときは「もう お出しした」。★本当に 無い ときだけ「持ち合わせが ございません」
+      const NOTE_KAERU = "その筋の噺は もう一席ございますが、続けますと 似てまいります。趣を変えて。";
+      const NOTE_NONE = "いただいた手がかりの噺は、あいにく持ち合わせがございません。";
+      const NOTE_DONE = "いただいた手がかりの噺は、もう お出しいたしました。";
+      const note = (hadBelief && !byBelief.length) || hintLeft ? NOTE_KAERU : hintAny ? NOTE_DONE : NOTE_NONE;
       const byPref = input.pref ? all.filter((c) => has(c, "prefectures", input.pref)) : [];
-      const why = (c) => (c.reasons.indexOf("soon") >= 0 ? "soon" : null);
-      // ★2026-11-15 ユーザー判断「次回、同じ人が見たときに違う話に」:
+      const why = () => null;
+      // ★2026-11-15 作者の判断「次回、同じ人が見たときに違う話に」:
       //   ★前に 聞いた 席 (heard) は 後ろへ。★手がかりの 筋 (思い込み > 県) の 順は 変えない (㉞)。
       //   ★筋の 中が 全部 聞いた 席なら、次の 筋へ 移り「前に お聞きいただいた」と 言い分ける。
       //   ★候補が 全部 聞いた 席なら null (= 画面が 見繕う 側へ。そこでも 聞いていない 席を 先に 出す)。
@@ -324,8 +428,9 @@
       const one = (arr, chosenBy, switchNote) => {
         const c = Core.pickOne(arr, { rng });
         // ★「今日という日で一席」は 暦の 席の ときだけ (★ほかの 席の 前で 言うと 嘘に なる)
-        if (switchNote === note && !c.story.isToday) {
-          switchNote = "いただいた手がかりの噺は、あいにく持ち合わせがございません。かわりに、こちらで 見立てて 一席。";
+        if (switchNote === NOTE_NONE || switchNote === NOTE_DONE) {
+          switchNote += c.story.isToday ? "かわりに、今日という日で一席。"
+            : switchNote === NOTE_NONE ? "かわりに、こちらで 見立てて 一席。" : "ここからは、こちらで 見立てて 一席。";
         }
         return { story: c.story, chosenBy, when: why(c), switchNote,
                  jump: !switchNote && chosenBy === "today" && far(c.story) };
@@ -349,11 +454,11 @@
     BAND: 2,
 
     /**
-     * ★候補から 1 つ 選ぶ (2026-11-15 ユーザー判断「多少 点数選択幅を 広げて ランダムでも 良い」)。
+     * ★候補から 1 つ 選ぶ (2026-11-15 作者の判断「多少 点数選択幅を 広げて ランダムでも 良い」)。
      *  ① heard (前に 聞いた 席) を 外す。★全部 聞いていたら 戻す
      *  ② 先頭が 当日の 暦の 席 (today) なら 当日の 席だけに 絞る (★当日を 押しのけない)
      *  ③ 最高点 − BAND 以上を 候補に し、点で 重みを 付けて 選ぶ (最高点 BAND+1 : … : 1)
-     *  ★BAND = 2 の 理由: 点は 強さ 2〜5 + 県 3 + 思い込み 2 + 当日 4 + もうすぐ 1〜2。
+     *  ★BAND = 2 の 理由: 点は 強さ 2〜5 + 県 3 + 思い込み 2 + 当日 4 (★暦の 席は 当日 だけ。2026-11-20 から「もうすぐ」は 無い)。
      *    ★2 なら 手がかり 1 つ ぶん (県 +3) の 差は 越えない = 手がかりの 筋を 崩さない。
      *    ★見繕い (強さだけ) では 強さ 3〜5 の 42 席が 候補に なり、最弱 (強さ 2) の 6 席は 入らない。
      *    ★1 だと 見繕いの 候補が 24 席に 減り、3 だと 強さ 2 の 席まで 入る (実測は 返しの 報告)。
@@ -393,9 +498,14 @@
       "筋は 替わりますが、山は 同じで ございます。",
     ],
     jumpLine(used, rng) {
-      const u = new Set(used || []);
-      let pool = Core.JUMP_LINES.filter((t) => !u.has(t));
-      if (!pool.length) pool = Core.JUMP_LINES.slice();
+      // ★使い切ったら ひと回り させる (2026-11-20。前は 使い切った あと 乱数で 同じ 一言を 引き、6〜8 席目で 3 回 続いた)。
+      //   ★いまの 回り (used の うち 最後の 端数) で 言った ものは 避け、★回りの 頭では 直前の 一言も 避ける
+      const N = Core.JUMP_LINES.length;
+      const u = (used || []).slice();
+      const cur = u.slice(Math.floor(u.length / N) * N);
+      const last = u[u.length - 1];
+      let pool = Core.JUMP_LINES.filter((t) => cur.indexOf(t) < 0 && !(cur.length === 0 && t === last));
+      if (!pool.length) pool = Core.JUMP_LINES.filter((t) => t !== last);
       return pool[Math.floor((rng || Core.rng)() * pool.length) % pool.length];
     },
 
@@ -439,6 +549,231 @@
         if (n > 0) return "(没後" + n + "年)";
       }
       return "";
+    },
+
+    /** ★」の 後で 改行 (2026-11-21 作者の判断)。★」で 文が 終わり (」。・」? など) 同じ 行に 次の 文が 続く ときは、
+     *  ★句点まで 前の 行に 残して 改行する。★行 全体が 台詞 (客「…」・私「…」) は 触らない。
+     *  ★」の すぐ 後に 助詞が 続く (「…」と・の・は・が) ときは 改行しない (「…」と で 一つの 文節。文節の 途中で 切らない)。
+     *  ★もう 改行が ある (問いの 前の 改行 qBreak) ときは 重ねない
+     *  ★(同日 追加) 文の 途中から 始まる「 の 前でも 改行 = 句点 (。? など) の あとに 同じ 行で「 が 始まる とき。
+     *    ★行の 頭が もう「 / 「 の 前が 助詞・読点 (文が 続いている) ときは 改行しない */
+    kagiBreak(text, opt) {
+      if (!text || !/[「」]/.test(String(text))) return text;
+      const s = String(text);
+      const quote = !(opt && opt.quote === false);            // ★サゲは 人の 言葉の 引用でも 改行しない (文節の 折り返しだけ)
+      const m = s.match(/^([^「」\n]{0,3})「([\s\S]*)」$/);
+      if (m) {                                                  // ★行 全体が 台詞 (客「…」・私「…」) の 外の「」は 触らない
+        return quote && m[1] === "私" ? m[1] + "「" + Core.quoteBreak(m[2]) + "」" : s;   // ★私の 台詞の 中の 引用だけ
+      }
+      const r = s.replace(/」([。．！？!?]+)(?=[^\s」』）)])/g, "」$1\n")
+        .replace(/([。．！？!?])[ 　]*(?=「)/g, "$1\n");
+      return quote ? Core.quoteBreak(r) : r;
+    },
+    /** ★人の 言葉の 引用 (「」の 中が 8 字 以上、または 読点・?・! を 含む) は「 の 前と 」の 後で 改行して ひと続きの 行に (2026-11-21 見直し)。
+     *  ★後ろの 助詞 (と・を・って) は 次の 行の 頭で よい。★」、 なら 読点まで 前の 行に。★」の 後が「の。」の ように 2 字 以下で 文が 終わる ときは 切らない (1 行に 1〜2 字を 残さない)。
+     *  ★語の 引用 (7 字 以下・読点なし。「パンダ」「この札をもらう」) は 改行しない。★行の 頭・もう 改行が ある 所には 重ねない */
+    quoteBreak(s) {
+      return String(s).replace(/「([^「」\n]*)」([、，]?)/g, (all, x, comma, off, str) => {
+        if (!(Array.from(x).length >= 8 || /[、，？?！!。]/.test(x))) return all;
+        const prev = off > 0 ? str[off - 1] : "";
+        const pre = !prev || prev === "\n" || /[「『（(]/.test(prev) ? "" : "\n";
+        const rest = str.slice(off + all.length);
+        const tail = (rest.match(/^[^。．！？!?\n]*/) || [""])[0];
+        const nx = rest[0];
+        const post = !rest || nx === "\n" || /[。．！？!?」』）)]/.test(nx) || (!comma && tail.length <= 2) ? "" : "\n";
+        return pre + all + post;
+      });
+    },
+    /** ★キーとなる 単語 = サゲが あとで 受け返す 語句 (2026-11-21 作者の判断)。★返り = 太字に する 語句 (無ければ null)。
+     *  ★サゲと 共通の 3 字 以上の 連なりで、漢字・カナ・数字を 含む もの (助詞だけ・「でございます」の ような 言い回しは 除く)。
+     *  ★端の 助詞・句読点・括弧は 落とす。★1 行に 1 か所 (いちばん 長い もの)。
+     *  ★問いの 答え (choices[answer]) と 2 字 以上 重なる 語句は 先に 答えを 見せるので 太字に しない。
+     *  ★keys (台本の 行・席に 任意で 持てる 太字の 語の 並び) が あれば そちらを 優先 */
+    keyPhrase(line, sage, answer, keys) {
+      const s = String(line || ""), g = String(sage || "");
+      if (!s) return null;
+      if (Array.isArray(keys) && keys.length) {
+        const hit = keys.filter((k) => k && s.indexOf(k) >= 0).sort((x, y) => y.length - x.length);
+        return hit.length ? hit[0] : null;
+      }
+      if (!g) return null;
+      const CONTENT = /[一-龠々〆ヵヶァ-ヺー0-9０-９A-Za-zＡ-Ｚａ-ｚ]/g;
+      const EDGE_L = /^[のがをにはでとへもやねよ、。，．！？!?「」『』（）()\s]+/;
+      const EDGE_R = /[のがをにはでとへもやねよ、。，．！？!?「」『』（）()\s]+$/;
+      // ★語の 区切り: 始まりは 文節の 切れ目 (phraseBreaks) か 行頭 / 終わりは 切れ目・行末・助詞や 句読点の 前
+      const starts = [0].concat(Core.phraseBreaks(s));
+      for (let k = 1; k < s.length; k += 1) if (/\s/.test(s[k - 1])) starts.push(k);
+      const endOk = (j) => j >= s.length || starts.indexOf(j) >= 0 || /[のがをにはでとへもやねなだか、。，．！？!?」』）)\s]/.test(s[j]);
+      const ans = String(answer == null ? "" : answer).replace(/[。、\s]/g, "");
+      const share2 = (x, y) => { for (let k = 0; k + 2 <= x.length; k += 1) if (y.indexOf(x.slice(k, k + 2)) >= 0) return true; return false; };
+      let best = "";
+      for (let i = 0; i < s.length; i += 1) {
+        for (let j = s.length; j - i >= 3 && j - i > best.length; j -= 1) {
+          const sub = s.slice(i, j);
+          if (g.indexOf(sub) < 0) continue;
+          const l = (sub.match(EDGE_L) || [""])[0].length;
+          const p = sub.slice(l).replace(EDGE_R, "");
+          const a = i + l, b = a + p.length;
+          const nC = (p.match(CONTENT) || []).length;
+          // ★漢字・カナ・数字が 2 字 以上 (1 字なら 4 字 以上の 語句)。★「お思い」「申しま」の ような 言い回しを 拾わない。★読点を またがない
+          if (p.length >= 3 && p.length > best.length && (nC >= 2 || (nC === 1 && p.length >= 4)) && !/[、。，．,!?！？\s]/.test(p)
+              && starts.indexOf(a) >= 0 && endOk(b) && !(ans && share2(p, ans))) best = p;
+        }
+      }
+      return best || null;
+    },
+    /** ★席の 行ごとの キー (keyPhrase)。★同じ 語句は 席で 1 回 (最初の 行) / 1 席 3 か所まで (付けすぎない)。
+     *  @param raws 行の 字 (台詞は 中身)。★返り = 行と 同じ 長さの 配列 (語句 か null) */
+    seatKeys(raws, st) {
+      const q = st && st.question;
+      const ansT = q && Array.isArray(q.choices) ? q.choices[q.answer] : "";
+      const used = [];
+      return raws.map((r) => {
+        if (used.length >= 3) return null;
+        const line = r && typeof r === "object" ? r.text : r;
+        const keys = r && typeof r === "object" && Array.isArray(r.keys) ? r.keys : st && st.keys;
+        const k = Core.keyPhrase(line, st && st.sage, ansT, keys);
+        if (!k || used.indexOf(k) >= 0) return null;
+        used.push(k);
+        return k;
+      });
+    },
+    /** ★html (飾りつき) の 中の 語句を <strong class="key"> で 包む。★飾りの 途中を またぐ・「」の 飾り (もう 太字) の 中 → 包まない */
+    /** ★あて推量の 形を 整える (表示だけ。台本の 文は 変えない)。★返り = { text (「……」を 足した 文), point (太字の 句) } か null。
+     *  ・「のではないでしょうか」の 形 → 「のでは」の 直後に「……」/ それ 以外で「ではないか」→ その 直後に「……」/「のでは」だけ → その 直後
+     *  ・ポイント = 最後の 読点の あとから「ではないか / のでは」の 手前まで (「の」は 含めない)
+     *  ★くすっと 笑って もらう ための 間と 強調 (2026-11-21 作者の判断) */
+    guessShape(text) {
+      const s = Array.isArray(text) ? text.join("") : String(text || "");
+      if (!s || s.indexOf("……") >= 0) return null;
+      let at = -1, cut = -1;                                  // at = ポイントの 終わり / cut = 「……」を 入れる 位置
+      let k = s.lastIndexOf("のではないでしょうか");
+      if (k >= 0) { at = k; cut = k + 3; }
+      else if ((k = s.lastIndexOf("ではないか")) >= 0) { at = s[k - 1] === "の" ? k - 1 : k; cut = k + 5; }
+      else if ((k = s.lastIndexOf("のでは")) >= 0) { at = k; cut = k + 3; }
+      if (at < 0) return null;
+      let from = s.lastIndexOf("、", at - 1) + 1;
+      let point = s.slice(from, at);
+      // ★2 字 以下 (「迷うから、なのでは」の「な」) なら 一つ 前の 読点からの 句 (「迷うから」まで)
+      if (Array.from(point).length <= 2 && from > 0) {
+        const f2 = s.lastIndexOf("、", from - 2) + 1;
+        point = s.slice(f2, from - 1);
+        from = f2;
+      }
+      // ★頭の 主題 (「国元では」「…のは」) は 外す = 笑いどころの 句だけ 太字 (残りが 3 字 以上の とき)。
+      //   ★主題の 後に 漢字・カナの 語が 続く ときだけ (「ならではの」「気では なかった」は 主題で ない)
+      const tm = point.match(/^.*?(?:では|には|のは|とは)\s*(?=[一-龠々ァ-ヺ])/);
+      if (tm && Array.from(point.slice(tm[0].length)).length >= 3) point = point.slice(tm[0].length);
+      point = point.trim();
+      // ★長い 句 (13 字 以上) は 後ろの 要だけ (2026-11-21 作者の判断)。★文節の 塊 (分かち書きの 空白、無ければ 文節の 切れ目) で
+      //   後ろから 1 つ 取り、3 字 以下なら 一つ 前の 塊も 足す (例「人の集まる用事が あった」「迷うから」)
+      if (Array.from(point).length >= 13) {
+        const parts = [];
+        if (/\s/.test(point)) point.split(/\s+/).forEach((x) => { if (x) parts.push(x); });
+        else { let k0 = 0; Core.phraseBreaks(point).concat([point.length]).forEach((q) => { parts.push(point.slice(k0, q)); k0 = q; }); }
+        const sep = /\s/.test(point) ? " " : "";
+        let suf = parts.pop() || "";
+        while (Array.from(suf).length <= 3 && parts.length) suf = parts.pop() + sep + suf;
+        if (suf && point.indexOf(suf) >= 0) point = suf;
+      }
+      if (!point || point.indexOf("書いてはおりませんが") >= 0) return null;
+      return { text: s.slice(0, cut) + "……" + s.slice(cut), point: point };
+    },
+    withKey(html, key, opt) {
+      if (!key) return html;
+      const pos = [], len = [];
+      let plain = "";
+      for (let i = 0; i < html.length;) {
+        if (html[i] === "<") { i = html.indexOf(">", i) + 1; continue; }
+        const ch = html[i] === "&" ? html.slice(i, html.indexOf(";", i) + 1) : html[i];
+        pos.push(i); len.push(ch.length);
+        plain += ch.length > 1 ? ({ "&amp;": "&", "&lt;": "<", "&gt;": ">" }[ch] || "?") : ch;
+        i += ch.length;
+      }
+      const a = opt && opt.last ? plain.lastIndexOf(key) : plain.indexOf(key);   // ★推量の ポイントは 後ろから
+      if (a < 0) return html;
+      const b = a + key.length - 1;
+      let pa = pos[a], pb = pos[b] + len[b];
+      // ★語句が 飾りの 頭から 始まる / 尻で 終わる ときは 飾りごと 包む (数字の 飾りは 中に 残る)
+      while (pa > 0 && html[pa - 1] === ">") { const t0 = html.lastIndexOf("<", pa - 1); if (html[t0 + 1] === "/") break; pa = t0; }
+      while (html.slice(pb, pb + 2) === "</") pb = html.indexOf(">", pb) + 1;
+      const mid = html.slice(pa, pb);
+      let depth = 0, okk = true;
+      (mid.match(/<[^>]+>/g) || []).forEach((t) => { if (/^<wbr/i.test(t)) return; depth += t[1] === "/" ? -1 : 1; if (depth < 0) okk = false; });
+      if (!okk || depth !== 0) return html;
+      // ★「」の 飾り (kagi) の 中・語句の 中に kagi が ある → もう 太字。★二重に しない
+      const before = html.slice(0, pa);
+      const openKagi = (before.match(/<em class="kagi">/g) || []).length - (before.match(/<\/em>/g) || []).length > 0
+        && before.lastIndexOf('<em class="kagi">') > before.lastIndexOf("</em>");
+      if (openKagi || /class="kagi"/.test(mid)) return html;
+      return html.slice(0, pa) + '<strong class="' + ((opt && opt.cls) || "key") + '">' + mid + "</strong>" + html.slice(pb);
+    },
+    /** ★文節の まとまりで 改行する ための 切れ目 (2026-11-21 作者の判断)。★返り = 改行して よい 位置 (その 字の 前) の 列。
+     *  ★CSS の word-break: auto-phrase が 効かない ブラウザ (iPhone の Safari など) で、<wbr> + keep-all の 代わりに 使う。
+     *  ★辞書は 持たない (外部の ライブラリも 使わない)。目安:
+     *    ・句読点・閉じ括弧の 後 (閉じ括弧 + 助詞 は 切らない) / 開き括弧の 前 / かな → 漢字・カナ・数字 (文節の 頭の 目安)
+     *    ・お・ご (接頭) と この・その・あの・これ・それ・あれ・ひと は 後ろの 語に 付ける / 8 字 以下の「…」(語・短い 言い回し) の 中は 切らない
+     *    ・漢字 + 送りがな 1 字 + 漢字 (送り主) は 切らない
+     *    ・漢字・カナ・数字の 並び (人名・数字 + 単位) の 中は 切らない */
+    phraseBreaks(text) {
+      const s = String(text || "");
+      const HIRA = /[ぁ-ゖ]/;
+      const CONTENT = /[一-龠々〆ヵヶァ-ヺー0-9０-９A-Za-zＡ-Ｚａ-ｚ]/;
+      const KANJI = /[一-龠々〆ヵヶ]/;
+      const OPEN = /[「『（(〈]/;
+      const CLOSE = /[、。，．！？!?」』）)〉…]/;
+      const inShort = [];
+      s.replace(/「[^「」\n]{1,8}」/g, (m, off) => { for (let k = off + 1; k < off + m.length; k += 1) inShort[k] = true; return m; });
+      const out = [];
+      const add = (p) => { if (p > 0 && p < s.length && !inShort[p] && out.indexOf(p) < 0) out.push(p); };
+      for (let p = 1; p < s.length; p += 1) {
+        const a = s[p - 1], b = s[p];
+        if (a === "\n" || b === "\n" || /\s/.test(a) || /\s/.test(b)) continue;
+        if (CLOSE.test(b)) continue;                         // ★句読点・閉じ括弧は 行の 頭に 置かない
+        if (CLOSE.test(a)) {
+          if (/[」』）)〉]/.test(a) && HIRA.test(b)) continue;    // ★「…」と・「…」が は 一つの 文節 (閉じ括弧と 助詞の 間で 切らない)
+          add(p);
+          continue;
+        }
+        if (OPEN.test(b)) { if (!OPEN.test(a) && p > 1) add(p); continue; }   // ★台詞の 話し手 (客「・私「) と「 の 間は 切らない
+        if (HIRA.test(a) && CONTENT.test(b)) {
+          // ★漢字 + かな 1 字 + 漢字 で、かなが 助詞で ない (送り主・取り締まり の「り」) ときは 一つの 語
+          if (p - 2 >= 0 && KANJI.test(s[p - 2]) && KANJI.test(b) && !/[がをにはのでとへもや]/.test(a)) continue;
+          // ★後ろの 語に 付く かな: 接頭の お・ご (お殿様・ご縁) / この・その・あの・これ・それ・あれ / ひと (ひと跳び)
+          const tail2 = s.slice(Math.max(0, p - 2), p);
+          const pre = /[おご]/.test(a) ? 1 : /^(?:[こそあ][のれ]|ひと)$/.test(tail2) && !/[こそよ]/.test(s[p - 3] || "") ? 2 : 0;
+          if (pre) {
+            const q = p - pre;
+            if (q - 1 >= 0 && HIRA.test(s[q - 1])) add(q);   // ★かなの 続きの 中なら その 前で 切る。★文の 頭・漢字の 後なら 切らない
+            continue;
+          }
+          add(p);
+        }
+      }
+      return out.sort((x, y) => x - y);
+    },
+    /** ★html (飾りつき) の 字の 位置 (タグを 除いた 字の 数え) に <wbr> を 入れる。★開きタグの 直後の 字なら タグの 前に 入れる */
+    withWbr(html, breaks) {
+      if (!breaks || !breaks.length) return html;
+      const set = {};
+      breaks.forEach((p) => { set[p] = true; });
+      let out = "", n = 0, done = -1;
+      for (let i = 0; i < html.length;) {
+        const c = html[i];
+        if (c === "<") {
+          const j = html.indexOf(">", i);
+          if (html[i + 1] !== "/" && set[n] && done !== n) { out += "<wbr>"; done = n; }
+          out += html.slice(i, j + 1);
+          i = j + 1;
+          continue;
+        }
+        const ch = c === "&" ? html.slice(i, html.indexOf(";", i) + 1) : c;
+        if (set[n] && done !== n) { out += "<wbr>"; done = n; }
+        out += ch;
+        i += ch.length;
+        n += 1;
+      }
+      return out;
     },
 
     /** @param extra ★足す 事実 (一席目の 前の 県の つなぎ prefBridge の facts)。★重ねない */
@@ -526,8 +861,10 @@
       const ends1 = (t) => /ひとつ。\s*$/.test(t || "");
       if (o.prefHead && !(b && (b.indexOf(o.prefHead) >= 0 || b.indexOf("お客さんに") >= 0))) {
         // ★「○○のお客さんに、ひとつ。」+「…ひとつ。」は 1 文に まとめる
-        if (b && ends1(b) && !/^話は /.test(b)) b = o.prefHead + "のお客さんに、" + b.replace(/^では、/, "").replace(/話で、ひとつ。$/, "話で ひとつ。");
-        else h.push(o.prefHead + "のお客さんに、ひとつ。");
+        //   ★2026-11-21:「では、新宿の話から。」の ように「では、」で 始まる 入りも 1 文に (前は「○○のお客さんに、ひとつ。」+「では、…」の 二重の 入り)。
+        //   ★まとめられない 入りが ある ときは 入りだけを 言う (★入りを 二つ 重ねない)
+        if (b && (ends1(b) || /^では、/.test(b)) && !/^話は /.test(b)) b = o.prefHead + "のお客さんに、" + b.replace(/^では、/, "").replace(/話で、ひとつ。$/, "話で ひとつ。");
+        else if (!b) h.push(o.prefHead + "のお客さんに、ひとつ。");
       }
       if (b) {
         const prev = h.length ? h[h.length - 1] : (o.prev || "");
@@ -672,7 +1009,7 @@
   if (typeof document === "undefined" || !root.HANASHI) return;
 
   /** ★あとから 読む (同じフォルダの ファイルだけ。★外部は 読まない) */
-  //   ★2026-11-15 (監査⑤⑧): 前は 読み始めた 時点で「済み」に して いたので、
+  //   ★2026-11-15 (見直し): 前は 読み始めた 時点で「済み」に して いたので、
   //     読み込み中に 2 回目を 頼むと ★待たずに 先へ 進み、写真が 黙って 出なかった。
   //     ★読み込み中は 頼んだ 人を 溜めて、★読み終わり (か 失敗) で 全員 呼ぶ。
   function lazy(src, after) {
@@ -736,9 +1073,13 @@
   let pending = null; // 次の一手
   let panelFrom = null; // ★場・全国の園の パネルを 開いた ボタン (閉じたら フォーカスを 戻す)
 
-  // ★レッサーパンダに 触れている 事実。★鳴き声の ボタンと「一席目は 動物に しない」の 両方で 使う
+  // ★レッサーパンダに 触れている 事実。★鳴き声の ボタンだけで 使う (★声は レッサーパンダの もの しか 無い)
   const RP = ["F09", "F15", "F17", "F18", "F24", "F33", "F39", "F52", "F58", "F63", "F73", "F75", "F79"];
-  const isAnimal = (st) => (st.facts || []).some((f) => RP.indexOf(f) >= 0);
+  const hasRP = (st) => (st.facts || []).some((f) => RP.indexOf(f) >= 0);
+  // ★動物園・動物の 噺か (二席目の 交互・暦の 一席目)。★2026-11-20: 事実で なく ★オチが 何の ことか (ochiWhat) で 決める。
+  //   ★前は レッサーパンダの 事実の 有無で 決めていて、S51・S50・S19・S34・S41 (西山動物園の 噺) が「動物で ない」、
+  //     S39・S44 (遊具「こぱんだらんど」) が「動物」に なり、動物園の 噺が 3 席 続いていた。★台本に animal (真偽) が あれば そちら
+  const isAnimal = Core.isAnimal;
 
   // ★前に 来たときの 県 (再訪なら「また○○から?」と 確かめるだけに する。2026-11-14)
   const PREF_KEY = "hanashiyama.pref.v1";
@@ -750,7 +1091,7 @@
     del(k) { try { localStorage.removeItem(k); } catch (e) {} },
   };
 
-  // ---- 語りを 畳む (2026-11-14 「文字量が多い」への 手当て) ---------------------
+  // ---- 語りを 畳む (2026-11-14 読む 負担を 減らす) ---------------------------
   //   ★大きく 見せるのは ★いま 語っている 一節と ★直前の 1 つ だけ。
   //   ★それより 前は 畳む (★消さない)。★畳んだ 行は 画面からは 見えないが
   //     ★読み上げには 残る (sr-only の 隠し方)。★aria-live で 一度 読まれた ものを
@@ -772,7 +1113,7 @@
     let bound = -1;
     // ★席の 頭の 印 (seat-start) も 区切り = 新しい 席に 入ったら 前の 席は 全部 畳む (2026-11-15)
     for (let i = kids.length - 1; i >= 0; i -= 1) { if (hasCls(kids[i], "midashi-sr") || hasCls(kids[i], "seat-start")) { bound = i; break; } }
-    //   ★2026-11-15 (監査①②): オチの 予告 (yokoku) も 数えない。★数えると サゲの 瞬間に
+    //   ★2026-11-15 (見直し): オチの 予告 (yokoku) も 数えない。★数えると サゲの 瞬間に
     //     直前の 答えが 畳まれ、サゲの「その」「同じ」が 指す 相手が 画面から 消えていた
     const isBlock = (k) => !hasCls(k, "ma") && !hasCls(k, "sr") && !hasCls(k, "sensu") && !hasCls(k, "yokoku")
                         && !hasCls(k, "aizuchi") && !hasCls(k, "ochi-what");   // ★相槌・オチの 註も 数えない (2026-11-15)
@@ -809,13 +1150,13 @@
   //     ★演目名の めくり (#mekuri) は 席の 頭の まま (tell の 頭)。羽織とは 別の 瞬間
   //     (寄席でも めくりは 高座に 上がった 時点、羽織は マクラから 本題に 移る とき)。
   //     ★色は CSS の 重ねた 層を opacity で 出す だけ (transform / opacity の 決めごと)
-  //   ★2026-11-15 (監査①③⑥): 高座の 地の 色替え (1.09:1) は 背景の 写真に 覆われて 見えなかった。
+  //   ★2026-11-15 (見直し): 高座の 地の 色替え (1.09:1) は 背景の 写真に 覆われて 見えなかった。
   //     ★見出しの 帯 (写真より 上の 層) を まくらの 間は 羽織の 濃い 色、本題で 紙の 色に 替える (CSS)
   function stage(n) {
     $("shinko").hidden = n < 0;
     ["stg0", "stg1", "stg2"].forEach((id, i) => {
       $(id).className = i < n ? "done" : i === n ? "now" : "";
-      // ★いまの 段を 色だけで 示さない (監査⑧ F8)。★読み上げにも「いま」を 渡す
+      // ★いまの 段を 色だけで 示さない (見直し)。★読み上げにも「いま」を 渡す
       $(id).setAttribute("aria-current", i === n ? "step" : "false");
     });
     if (n === 1) addCls($("koza"), "haori-nugi");
@@ -834,7 +1175,7 @@
     }
   }
   /** ★この 端末で 前に 聞いた 席 (記録の shown)。★幕を 開けた 時点で 読む = いまの 回の 席は 入らない。
-   *  ★選ぶときに 後ろへ 回す (2026-11-15 ユーザー判断「次回、同じ人が見たときに違う話に」)。
+   *  ★選ぶときに 後ろへ 回す (2026-11-15 作者の判断「次回、同じ人が見たときに違う話に」)。
    *  ★「場の表」の 記録を 消すと 忘れる */
   function heardBefore() {
     return new Set(readLog().filter((e) => e && e.event === "shown" && e.story).map((e) => e.story));
@@ -847,7 +1188,7 @@
     } catch (e) {}
   }
 
-  // ★打ち出し (1 文字ずつ) は ★噺の 命。既定は 入 (2026-09-23 ユーザー指示で 戻した)
+  // ★打ち出し (1 文字ずつ) は ★噺の 命。既定は 入 (2026-09-23 作者の判断で 戻した)
   //   OS の「動きを減らす」設定では ★勝手に 止めず、★足元の 切り替えで 選べるようにする。
   const TYPE_KEY = "hanashiyama.type.v1";
   let typeOn = true;
@@ -857,23 +1198,25 @@
   } catch (e) {}
 
   // ---- 語り (1 行ずつ、間を置いて) ---------------------------------------
-  //   ★2026-11-15 (監査⑧ F1): 一字ずつの 打ち出しを aria-live の 中で 書き換えると、読み上げが
+  //   ★2026-11-15 (見直し): 一字ずつの 打ち出しを aria-live の 中で 書き換えると、読み上げが
   //     1 字ごとに 騒いだり 二度 読んだり する。★打ち出す 行は 読み上げから 外し (aria-hidden)、
   //     ★全文を 持つ 読み上げ用の 行 (sr yomi) を ★先に 1 回だけ 足す (★書き換えない = 1 回だけ 読まれる)
-  /** ★問いの 文は 前の 文から 行を 改めて 出す (2026-11-15 ユーザー指摘)。
+  /** ★問いの 文は 前の 文から 行を 改めて 出す (2026-11-15 見直し)。
    *  ★「…。そう思っておいでで?」→「…。」+ 改行 +「そう思っておいでで?」。★改行は CSS の pre-line で 出す */
   function qBreak(text) {
     if (!text || !/[?？]$/.test(text)) return text;
     return text.replace(/^([\s\S]*。」?)\s*([^。\n]+[?？])$/, "$1\n$2");
   }
-  // ★聞くのと 見るのでは 情報量が 違う (2026-11-15 ユーザー指摘)。★続けて 読ませた 字の 数を 数え、
+  // ★聞くのと 見るのでは 情報量が 違う (2026-11-15 見直し)。★続けて 読ませた 字の 数を 数え、
   //   ★長く なったら「次へ」で 止める (tell の next)。★客が 何か 選んだら 数え直す
   const READ_SCENE = 100;   // ★場面の 切れ目で、これ 以上 読んでいたら 止める (字)
   const READ_MAX = 200;     // ★場面の 途中でも、これを 越えたら 次の 行の 前で 止める (字)
   function say(text, cls, after) {
-    text = qBreak(text);
+    // ★」で 文が 終わって 次の 文が 続く ときも 改行 / 人の 言葉の 引用は「」の 前後で 改行 (サゲは 除く) (2026-11-21)
+    text = Core.kagiBreak(qBreak(text), { quote: !/(^| )sage( |$)/.test(cls || "") });
     state.readChars = (state.readChars || 0) + (text ? text.length : 0);
     if (text && /^shi\b/.test(cls || "")) state.lastSaid = String(text);   // ★次の 席の 入りの 重なりを 見る (seatLines)
+    if (text) state.lastLine = { text: String(text), cls: cls || "" };      // ★相槌を 挟んで よいかを 見る (pauseNext)
     if (text) {
       const sr = document.createElement("p");
       sr.className = "sr yomi";
@@ -889,11 +1232,16 @@
     const slow = c2.indexOf(" shi sage") >= 0 || / sage /.test(c2) ? 1.6
                : / kotae /.test(c2) ? 1.45
                : / furi /.test(c2) ? 1.3 : / suiryo /.test(c2) ? 1.2 : 1;
+    // ★倍率の ある 行 (サゲ・返し・振り・推量) は 字の 大きさの 補正で 1 倍 未満に しない
+    //   (2026-11-21 見直し r7 項目 9: 大きい 字ほど 速く 打たれ、サゲ 1.6 倍が 実効 1.3 倍・返しと ほぼ 同じ 速さに なっていた)
+    const sf = sizeFactor(p);
+    const key = state.sayKey || null;                 // ★キーとなる 単語 (tell が 行の 前に 置く。この 行 限り)
+    state.sayKey = null;
     typing = { el: p, full: text, i: 0, done: false, after: after || null, slow: slow,
-               sizeF: sizeFactor(p) };
-    // ★2026-11-15 ユーザー指摘「改行位置が ずれる」: 打ち終わりに 数字・「」が 太く 大きく なって 行が 組み直されていた。
+               sizeF: slow > 1 ? Math.max(1, sf) : sf, sage: slow === 1.6, key: key };
+    // ★2026-11-15 見直しの 声「改行位置が ずれる」: 打ち終わりに 数字・「」が 太く 大きく なって 行が 組み直されていた。
     //   ★最初から 飾りつきの 全文を 置き、★まだの 字は 見えない (.mada) ように して 1 字ずつ 見せる
-    if (typeOn && text) typing.chars = reserve(p, text);
+    if (typeOn && text) typing.chars = reserve(p, text, key);
     if (!typeOn) {                 // ★足元で「一度に出す」を 選んだとき
       typing.i = text.length;
       step();
@@ -904,9 +1252,27 @@
 
   /** 打ち終わった行に 強弱を つける (声の 大小の 代わり)。
    *  数字と 鉤括弧だけを 立てる。★文言は 変えない */
-  function deco(text) {
-    const esc = (x) => x.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
-    return esc(text)
+  function deco(text, key) {
+    // ★key = 語句 (キーとなる 単語) か { text, cls, last } (推量の ポイント)
+    const h = !key ? decoBare(text) : typeof key === "object" ? Core.withKey(decoBare(text), key.text, key) : Core.withKey(decoBare(text), key);
+    return NEED_WBR ? Core.withWbr(h, Core.phraseBreaks(plainOf(h))) : h;
+  }
+  const escHtml = (x) => String(x).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  const plainOf = (h) => h.replace(/<[^>]*>/g, "").replace(/&(amp|lt|gt);/g, (m, k) => ({ amp: "&", lt: "<", gt: ">" }[k]));
+  // ★文節で 改行する (2026-11-21 作者の判断)。★CSS の word-break: auto-phrase (Chrome・Edge 119〜) が 効く ところは CSS に 任せる。
+  //   ★効かない ところ (iPhone の Safari など) は 文節の 切れ目に <wbr> を 入れ、CSS の keep-all と 組む (Core.phraseBreaks)
+  const NEED_WBR = (() => {
+    try { return !(root.CSS && typeof root.CSS.supports === "function" && root.CSS.supports("word-break", "auto-phrase")); }
+    catch (e) { return true; }
+  })();
+  /** ★飾りの 無い 行 (見出し・オチの 註) にも 文節の 切れ目を。★包めない 所 (煙試験の 最小 DOM) では 字の まま */
+  function setPhrase(el, text) {
+    el.textContent = text;
+    if (!NEED_WBR || !text || typeof document === "undefined" || !document.createTreeWalker) return;
+    el.innerHTML = Core.withWbr(escHtml(text), Core.phraseBreaks(text));
+  }
+  function decoBare(text) {
+    return escHtml(text)
       .replace(/([0-9０-９][0-9０-９,\.]*)\s*((?:千|万)?(?:人|頭|羽|株|本|体|基|園|席|か所|種|件|年|月|日|時間|分|円|%|％))?/g,
         (m, n, u) => '<b class="kazu">' + n + (u || "") + "</b>")
       .replace(/「([^」]{1,30})」/g, '<em class="kagi">「$1」</em>')
@@ -915,14 +1281,14 @@
   }
 
   function land(t) {
-    t.el.innerHTML = deco(t.full);
+    t.el.innerHTML = deco(t.full, t.key);
     t.chars = null;
   }
   /** ★飾りつきの 全文を 置き、字を 1 字ずつ 見えない span に 包む。★包めない 所 (煙試験の 最小 DOM) では null */
-  function reserve(el, text) {
+  function reserve(el, text, key) {
     if (typeof document === "undefined" || !document.createTreeWalker) return null;
     try {
-      el.innerHTML = deco(text);
+      el.innerHTML = deco(text, key);
       const nodes = [];
       const w = document.createTreeWalker(el, 4);           // 4 = NodeFilter.SHOW_TEXT
       while (w.nextNode()) nodes.push(w.currentNode);
@@ -955,6 +1321,8 @@
    *    ・読点で 一拍、句点で 二拍
    */
   const SPEED = { base: 32, kagi: 52, kazu: 86, ten: 120, ten_line: 1.5 };
+  const SAGE_TOTEN = 600;                     // ★サゲの 中の「、」(ms)
+  const GUESS_MA = 800;                       // ★あて推量の「……」の 間 (ms。2 字で)
 
   /** ★小さい字ほど 遅く 打つ (2026-09-25 実測の 声: 「小さい文字は 速くて 追いつけない」)。
    *  ★同じ 32ms/字 でも、字が 小さいと 目が 追いつかない。
@@ -972,9 +1340,10 @@
   function waitFor(t) {
     const i = t.i - 1;
     const c = t.full[i];
-    if (c === "、") return 300;
+    // ★サゲの 中の 読点は 噺家の 間の 置き場 (2026-11-21 見直し r7 項目 9)。★地の文の 倍
+    if (c === "、") return t.sage ? SAGE_TOTEN : 300;
     if (c === "。" || c === "?" || c === "？") return 420;
-    if (c === "…") return 200;
+    if (c === "…") return t.slow === 1.2 ? GUESS_MA / 2 : 200;   // ★推量の「……」は 2 字で 約 0.8 秒 (くすっと 笑う 間)
     let w = SPEED.base;
     if (/[0-9０-９]/.test(c) || /[0-9０-９][,，\.]?$/.test(t.full.slice(Math.max(0, i - 1), i))) w = SPEED.kazu;
     // 括弧の 内側か どうかは、そこまでの 開き括弧の 数で 見る
@@ -988,14 +1357,19 @@
     return w;
   }
 
+  /** 行を 打ち終えてから 次へ 渡すまでの 間 (ms)。★句点・問いで 終われば 長く */
+  function endPause(text) {
+    const ch = String(text || "").slice(-1);
+    return ch === "。" || ch === "?" || ch === "？" ? 700 : 350;
+  }
+
   function step() {
     if (!typing) return;
     const t = typing;
     if (t.i >= t.full.length) {
       t.done = true;
       if (t.full) land(t);
-      const ch = t.full.slice(-1);
-      const pause = ch === "。" || ch === "?" || ch === "？" ? 700 : 350;
+      const pause = endPause(t.full);
       t.timer = setTimeout(() => {
         typing = null;
         if (t.after) t.after();
@@ -1030,7 +1404,7 @@
   }
 
   /** 下に 空けて おく 高さ。★写真の 隅書き (出典) が 出ている ときは ★その 上端より 上に 語り・選択肢を 置く
-   *  (★2026-11-15 監査⑧ F6: 長い 出典が 5 行に なり、決め打ちの 140 / 160px では 選択肢に かぶっていた)。
+   *  (★2026-11-15 見直し: 長い 出典が 5 行に なり、決め打ちの 140 / 160px では 選択肢に かぶっていた)。
    *  ★測れない・おかしな 値の ときは 決め打ちの base の まま。★画面の 半分を 超えては 空けない */
   function bottomRoom(base) {
     try {
@@ -1072,7 +1446,7 @@
     });
   }
 
-  // ---- フォーカスの 行き先 (2026-11-15 監査⑧ F5) ------------------------------
+  // ---- フォーカスの 行き先 (2026-11-15 見直し) ------------------------------
   //   ★押した 選択肢を 消すと フォーカスが 行き場を 失う (body に 落ちる)。
   //   ★選択肢の 中に フォーカスが あった (= キーボード / フォーカスの 付く 押し方) ときだけ 覚えておき、
   //     ★次の 選択肢が 出たら その 先頭へ 移す。★指で 押す 人の 画面は 動かさない (preventScroll)
@@ -1102,13 +1476,28 @@
     box.innerHTML = "";
   }
   /** ★長く 読んだ ところで 止める。★「次へ」か 画面の タップで 続ける (★早送りは 越えて 進む) */
-  // ★2026-11-15 ユーザー判断:「次へ」は 分かりづらい → ★客の 相槌 + 自動の 間 (寄席の 客は ボタンを 押さない。うなずく)。
+  // ★2026-11-15 作者の判断:「次へ」は 分かりづらい → ★客の 相槌 + 自動の 間 (寄席の 客は ボタンを 押さない。うなずく)。
   //   ★待つ 長さは 読んだ 字数で 決める (一字ずつ 2〜5 秒 / 一度に 出す ときは 2.5〜8 秒)。★タップで 待たずに 進む・早送りも 越える
   //   ★相槌の 吹き出しは 畳みの 数に 入れない (読んでいる 行を 押し出さない。fold の aizuchi)
   const AIZUCHI = ["ほう。", "へえ。", "それで?", "なるほど。", "ふむ、ふむ。"];
-  function pauseNext(after) {
+  function pauseNext(after, nextKyaku) {
     const rc = state.readChars || 0;
     state.readChars = 0;
+    // ★2026-11-20: 直前が 客の 台詞 か「?」で 終わる 問いなら、客の 相槌は 出さず ★間だけ 置く
+    //   (★客が 自分で 言った 直後に 客が「それで?」と 続く / 噺家の 問いに 客が「ほう。」と 返す 形に なっていた)
+    //   ★2026-11-21: 直後が 客の 台詞 (nextKyaku) の ときも 間だけ (★相槌「それで?」の すぐ 後に 客の 台詞が 続いていた)
+    const ll = state.lastLine || {};
+    if (nextKyaku || /(^| )kyaku2?( |$)/.test(ll.cls || "") || /[?？]\s*$/.test(ll.text || "")) {
+      const ms0 = typeOn ? Math.min(5000, Math.max(2000, rc * 20)) : Math.min(8000, Math.max(2500, rc * 40));
+      const b = document.createElement("div");
+      b.className = "ma ma-s";
+      put(b);
+      scroll();
+      const t0 = { el: b, full: "", i: 0, done: true, after: after };
+      typing = t0;
+      t0.timer = setTimeout(() => { if (typing === t0) { typing = null; after(); } }, ms0);
+      return;
+    }
     state.aizuchiI = ((state.aizuchiI == null ? -1 : state.aizuchiI) + 1) % AIZUCHI.length;
     const p = document.createElement("p");
     p.className = "line serifu kyaku2 aizuchi";
@@ -1167,6 +1556,19 @@
     t.timer = setTimeout(() => { if (typing === t) { typing = null; after(); } }, ms);
   }
 
+  /** ★空きを 作らない 間 (時間だけ)。★サゲと 註を 離さない・返しと 正解の 罫を 切らない ときに 使う。
+   *  ★タップ・早送りで 飛ばせる (打ち終わった 行と 同じ 扱い)。★el を 持たない = 早送りの 止まり所 (isStop) に ならない */
+  function matsu(ms, after) {
+    const t = { el: null, full: "", i: 0, done: true, after: after };
+    typing = t;
+    t.timer = setTimeout(() => { if (typing === t) { typing = null; after(); } }, ms);
+  }
+  // ★サゲの あとの 余韻 (2026-11-21 作者の判断。見直し r7 項目 1)。
+  //   ★サゲを 打ち終えてから 註まで YOIN.note、註から 推量 (または 次の 行) まで YOIN.next
+  //   (★前は 行末の 0.7 秒 だけで、サゲを 読み終わる 前に 推量が 打ち始まっていた)
+  const YOIN = { note: 2400, next: 1200 };
+  const KOTAE_SEIKAI = 900;   // ★外れの 返しと 正解の 1 行の 間 (返しの 前の 一拍と 同じ)
+
   function blank(after) {
     const b = document.createElement("div");
     b.className = "ma";
@@ -1180,7 +1582,7 @@
   // ---- 場面の写真 (★前段 1 枚 + 場面ごと (背景の 層) + 札) ---------------------
   /** 噺家のしぐさの代わり。★2026-09-23: 手描きの絵は抽象的すぎたので、
    *  関係する写真を ★小さく 出す形に変えた (鯖江市オープンデータ CC BY 2.1 JP ほか)。
-   *  ★2026-11-14: 「写真が少ない」への 手当て→ 前段で 1 枚 + 本題で 2 枚 + 札。
+   *  ★2026-11-14: 目で 見えるものを 増やす → 前段で 1 枚 + 本題で 2 枚 + 札。
    *  ★2026-11-15: 行の 間に 挟まず ★背景の 層に 出す (setHaikei)。★場面ごとに 1 枚 (+ 長い 場面は img2)。
    *  ★写真は 群ごとの ファイル (data/img/<群>.js)。★その席に 要る 群だけを 席の 頭で 読む。 */
   const IMG = "data/img/";
@@ -1194,7 +1596,7 @@
     next();
   }
   // ★写真の 指定 = 「群」/「群@名前」(その子の 写真) /「群#番号」(群の 中の 何枚目)
-  //   手書きの 席は 台本の scenes に ★人が 選んで 書く (2026-11-14 ユーザー指摘「これは何?」)。
+  //   手書きの 席は 台本の scenes に ★人が 選んで 書く (2026-11-14 見直しの 声「これは何?」)。
   //   ★合う 写真が 無ければ 出さない。★季節の 写真への ランダムな 逃げは やめた
   //   (前は 2 枚目の 半分 = 63 / 130 席が 噺と 関係の ない 写真だった)。
   const specGroup = (sp) => (sp ? String(sp).split(/[@#]/)[0] : null);
@@ -1241,7 +1643,7 @@
   }
   /** 文に 出てくる レッサーパンダの 名前 (★写真の ある 子だけ)。→「panda@名前」 */
   //   ★「」に 入った 名前か、★カタカナの 名前が 前後を カタカナ以外で 区切られている ときだけ 当てる
-  //     (★「フェニックス」の「クス」に 当たり、宮崎の噺に 別の子の 写真が 出ていた。2026-11-14 審査)
+  //     (★「フェニックス」の「クス」に 当たり、宮崎の噺に 別の子の 写真が 出ていた。2026-11-14 見直し)
   function nameSpec(text) {
     const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const hit = (n) => text.indexOf("「" + n + "」") >= 0 ||
@@ -1300,7 +1702,7 @@
     }
     const sh = g.shots[idx];
     // ★名指しの 無い レッサーパンダは ★名札を 外す。「旭山へ 移った子」の 噺で
-    //   ランダムな 子の 名前が 出ると、写っている子が 移った子だと 読まれる (2026-11-14 審査)
+    //   ランダムな 子の 名前が 出ると、写っている子が 移った子だと 読まれる (2026-11-14 見直し)
     const label = key === "panda" && !want ? "西山動物園の レッサーパンダ" : (sh.label || g.label || "");
     return { shot: sh, credit: sh.credit || g.credit, label: label };
   }
@@ -1309,7 +1711,7 @@
   //   ★写真は 行の 間に 挟まない。★高座の 後ろの 層 (#haikei) に 1 枚 置き、
   //     ★場面が 替わった ときだけ 差し替える (★畳みの 回数では 決めない)。
   //   ★隅に「何の 写真か」と 出典を 常に 出す。★背景を 動かす 演出 (ズーム 等) は 入れない。
-  const FADE = 800;        // ★写真の 出入りの フェード (ms。CSS の transition と 同じ)。★2026-11-15 ユーザー「もう少し 長く」 0.3 → 0.8 秒
+  const FADE = 800;        // ★写真の 出入りの フェード (ms。CSS の transition と 同じ)。★2026-11-15 見直しの 声「もう少し 長く」 0.3 → 0.8 秒
   /** 写真を 下げる。★出ていた ときは true (= フェードが 始まった) */
   function bgOut() {
     const box = $("haikei");
@@ -1317,7 +1719,7 @@
     setHaikei(null);
     return was;
   }
-  /** ★写真の フェードの 間は 文字を 止める (2026-11-15 ユーザー指摘「文字の 動きと フェードを 同時に すると 訳が 分からない」)。
+  /** ★写真の フェードの 間は 文字を 止める (2026-11-15 見直しの 声「文字の 動きと フェードを 同時に すると 訳が 分からない」)。
    *  ★タップ・早送りで 飛ばせる (打ち終わった 行と 同じ 扱い) */
   function waitFade(after) {
     const t = { el: $("talk").lastElementChild || $("talk"), full: "", i: 0, done: true, after: after };
@@ -1334,13 +1736,13 @@
       rmCls($("koza"), "haikei-on");
       state.bg = null;
       if (box.hidden) return;
-      // ★2026-11-15 ユーザー指摘「消えるのも 急」: 薄く して から 隠す (opacity 0.3 秒)
+      // ★2026-11-15 見直しの 声「消えるのも 急」: 薄く して から 隠す (opacity 0.3 秒)
       const done = () => {
         if (!state.bg) { box.hidden = true; cap.hidden = true; }
         rmCls(box, "kieru"); rmCls(cap, "kieru"); rmCls(box, "miseru");
       };
       addCls(box, "kieru"); addCls(cap, "kieru");
-      // ★写真の フェードは「動きを 減らす」設定でも 残す (濃淡だけ。2026-11-15 ユーザー判断) → 時間も 同じに 取る
+      // ★写真の フェードは「動きを 減らす」設定でも 残す (濃淡だけ。2026-11-15 作者の判断) → 時間も 同じに 取る
       setHaikei.off = setTimeout(done, FADE);
       return;
     }
@@ -1350,7 +1752,7 @@
     const was = !box.hidden && !hasCls(box, "kieru") && img.getAttribute ? img.getAttribute("src") : null;
     rmCls(box, "kieru"); rmCls(cap, "kieru");
     $("haikeiLabel").textContent = pick.label || "";
-    // ★隅書きは 1 行 (2026-11-16 ユーザー指摘)。★出どころ (と 作者)・条件を 短く。★正式な 表示は CREDITS.md / 読み上げと title には 全文
+    // ★隅書きは 1 行 (2026-11-16 見直し)。★出どころ (と 作者)・条件を 短く。★正式な 表示は CREDITS.md / 読み上げと title には 全文
     $("haikeiCredit").textContent = Core.shortCredit(pick.credit || "");
     if ($("haikeiCap").setAttribute) $("haikeiCap").setAttribute("title", (pick.label || "") + " ／ " + (pick.credit || ""));
     box.hidden = false;
@@ -1358,7 +1760,7 @@
     addCls($("koza"), "haikei-on");
     state.bg = pick;
     // ★写真の 置き場所は CSS だけで 決める (高座の 中・画面の 高さの 枠の 中央)
-    // ★クロスフェード (2026-11-15 ユーザー指摘 2 回): ★新しい 写真を 先に 裏で 読み込み (decode) →
+    // ★クロスフェード (2026-11-15 見直し 2 回): ★新しい 写真を 先に 裏で 読み込み (decode) →
     //   ★済んでから 古い 写真を 下の 層に 残し、新しい 写真を 上に 0.3 秒で 重ねる (★紙の 地が 一瞬も 見えない)
     const tok = (setHaikei.tok = (setHaikei.tok || 0) + 1);
     const swap = () => {
@@ -1386,7 +1788,7 @@
   }
   /** 見出し (★高座の 上に 残る 1 行)。★空なら 隠す */
   function setMidashi(text) {
-    $("midashi").textContent = text || "";
+    setPhrase($("midashi"), text || "");
     $("midashi").hidden = !text;
   }
   /** 図の 場面: 図を 上に 固定する (★背景に しない。★文字を 重ねない) */
@@ -1423,7 +1825,7 @@
   //   ★出すのは 場面が 替わる とき だけ (2 場面目 以降の 頭)。★席の 頭と 終わりには 出さない
   //     → 1 席に (場面数 − 1) 本。★飾りなので 読み上げには 出さない (aria-hidden)。
   //   ★形 (左から): 要 (かなめ) の 丸 / 骨 / 扇面 (折り目 4 本)。色は CSS で 当てる
-  // ★2026-11-15 ユーザー指摘「これは何ですか？」→ ユーザー案: ★中央は 区切り線、★左右に 小さい 扇子が 開いて 閉じる。
+  // ★2026-11-15 見直しの 声「これは何ですか？」→ 作者の案: ★中央は 区切り線、★左右に 小さい 扇子が 開いて 閉じる。
   //   ★扇子 = 要 (かなめ) を 中心に 扇面 5 枚。★開く・閉じるは 扇面の 回転 (transform) だけ (CSS の hiraku / tojiru)
   const SENSU_HANE = [-50, -25, 0, 25, 50].map((a, k) =>
     '<path class="hane' + (k % 2 ? " ura" : "") + '" style="--a:' + a + 'deg" d="M0 0 L-3.4 -17 A17.3 17.3 0 0 1 3.4 -17 Z"/>').join("");
@@ -1443,7 +1845,7 @@
    *  ★写真の ある 場面だけ 一拍 置く。★2 場面目 以降は 見出し行の 直前に 扇子の 区切りを 置く */
   function enterScene(st, s, j, useFig, after) {
     const head = s.head || st.title;              // ★見出しが まだ 無い 場面は 演目名
-    // ★2026-11-15 ユーザー指摘: 写真が 出る ときに 文字も 替わり (見出し・畳み)、読んでいた 所が 分からなく なった。
+    // ★2026-11-15 見直し: 写真が 出る ときに 文字も 替わり (見出し・畳み)、読んでいた 所が 分からなく なった。
     //   ★写真は 読んでいた 文字を 残した まま 入れ (一拍)、★入って から 見出しを 替え・前の 場面を 畳み・語りを 続ける
     const finish = (pick) => {
       setMidashi(head);
@@ -1573,7 +1975,7 @@
     greet();
   }
 
-  // ★前段の 問答 (2026-11-14 「前段が 長い」への 手当て)
+  // ★前段の 問答 (2026-11-14 噺に 早く 入る)
   //   標準 3 = 行きたい度 → どちらから → 思い込み (★噺の 振りの 形で)
   //   園の入口 2 = 行きたい度 → 思い込み (★園で 県が 分かる)
   //   再訪 2 = 行きたい度 →「また○○から?」(★はい なら そのまま 噺へ)
@@ -1592,10 +1994,14 @@
 
   /** ★園の入口から 来た人への 名乗り。その園に 鯖江うまれが いることから 入る */
   function greetKin(z) {
-    const nm = z.name;
+    const nm = kinName(z);
+    // ★うちから 渡った 子が 記録に 無く、向こうから 来た 子だけの 園 (海外の 一部) は 向きを 逆に 言う (2026-11-20)
+    const fromThere = !(z.out > 0) && !(z.sabae_born > 0) && z.in > 0;
+    const en = fromThere ? "その " + nm + " から、記録をたどりますと、うちへ 渡ってきた レッサーパンダが おるのでございます。"
+                         : "その " + nm + " におります レッサーパンダ。記録をたどりますと、うちから渡った子が おるのでございます。";
     say("えー、" + nm + "から お越しでございますか。", "shi", () =>
       say("わたくし、福井県鯖江市、道の駅西山公園のレジに立っております、はなし山と申します。", "shi", () =>
-        say("その " + nm + " におります レッサーパンダ。記録をたどりますと、うちから渡った子が おるのでございます。", "shi", () =>
+        say(en, "shi", () =>
           showOpening(() =>
             say("噺を選びますので、" + howMany() + "だけ伺います。", "shi", askWant)
           )
@@ -1612,7 +2018,7 @@
           { label: "いや、べつに", value: 1 },
           { label: "ふつう", value: 3 },
           { label: "行きたい", value: 5 },
-          // ★2026-11-20 ユーザー判断: 公園で 開いた 人に「行ってみたい」は 噛み合わない。★位置情報は 使わない (本人が 言う)
+          // ★2026-11-20 作者の判断: 公園で 開いた 人に「行ってみたい」は 噛み合わない。★位置情報は 使わない (本人が 言う)
           { label: "いま、公園におります", value: 0 },
         ],
         (v, label) => {
@@ -1649,18 +2055,26 @@
         if (!v) return say("おや、失礼を。", "shi", () => askPref(true));
         setPref(state.lastPref);
         // ★二つで 終える 約束。★思い込みは 噺の 振りが 自分で 問う
-        say("毎度、ありがとうございます。", "shi", () =>
-          sayPrefBridge(() => showOpening(() => tellFirst(firstCandidate([])))));
+        say("毎度、ありがとうございます。", "shi", () => {
+          // ★一席目を 先に 決めてから 県の つなぎを 言う (★一席目と 同じ 数を つなぎで 先に 言わない。sayPrefBridge)
+          const c = firstCandidate([]);
+          sayPrefBridge(c && c.story, () => showOpening(() => tellFirst(c)));
+        });
       })
     );
   }
 
   /** 県を 伺った あと。★ふだんは 3 問目 (思い込み) へ。
    *  ★再訪の「別のところから」(言い直し) は ★冒頭で「二つだけ」と 言って いるので 思い込みは 伺わず 噺へ
-   *  (★2026-11-15 監査①③: 言い直しの あとに 思い込みを 伺い、二つと 言って 三つに なっていた。決定㊴) */
+   *  (★2026-11-15 見直し: 言い直しの あとに 思い込みを 伺い、二つと 言って 三つに なっていた。) */
   function afterPref() {
-    sayPrefBridge(() => {
-      if (state.prefRedo) return showOpening(() => tellFirst(firstCandidate(state.denied || [])));
+    // ★一席目を 先に 決める (2026-11-20)。★県の つなぎが 一席目の オチ・数を 先に 言わない ように (sayPrefBridge)。
+    //   ★決めた 席は 3 問目 (askBeliefFor) が そのまま 使う (★乱数の 引き方は 前と 同じ 1 回)
+    const c = firstCandidate(state.denied || []);
+    state.cand = c;
+    state.candReady = true;
+    sayPrefBridge(c && c.story, () => {
+      if (state.prefRedo) { state.candReady = false; return showOpening(() => tellFirst(c)); }
       showOpening(askBeliefFor);
     });
   }
@@ -1668,21 +2082,48 @@
   /** ★県の つなぎ (prefBridge) を 県が 決まった 直後に 1 回 (2026-11-15)。
    *  ★前は 一席目の 頭で 言っていて、前段の 思い込みと 噺の 入り「その○○の話から」の 間に 挟まり、受ける 相手が 遠かった。
    *  ★最後の「では、…ひとつ。」は 言わない (Core.prefBridgeLead)。★園の 入口・県を 言わない 人には 出さない */
-  function sayPrefBridge(after) {
+  function sayPrefBridge(st, after) {
     const pb = !state.kin && !state.pbSaid ? Core.prefBridgeOf(H, state.input.pref) : null;
     if (!pb) return after();
     state.pbSaid = true;
     state.pbFacts = pb.facts;                // ★一席目の タネ明かしに 足す (tell → renderSources)
-    const ls = Core.prefBridgeLead(pb.lines);
+    const ls = bridgeLines(pb, st);
     const go = (k) => (k < ls.length ? say(ls[k], "shi", () => go(k + 1)) : after());
     go(0);
+  }
+  // ★県の つなぎの 行を 一席目に 合わせて 選ぶ (2026-11-20)
+  //   ① 一席目が 県の 推し量った 入込数・人流 (F21 / F26) を 使う 席 (S10・S11・S12・S45) なら、
+  //      ★「大半が 地元」「84%」の 行を 言わない (★一席目の オチ・数を 先に 言い、同じ 数を 重ねる)
+  //   ②「どうりで、…」は 前の 行と「手強い 地元の お客さん」の 返しを 受ける 文。★どちらかが 無ければ 言わない (再訪の 福井)
+  //   ③ 公園に いない 客には「このレジの前まで」を「画面ごしに、このレジの前まで」に (★まだ 来ていない 人を レジの 前に 立たせない)
+  const LOCAL_FACTS = ["F21", "F26"];
+  const LOCAL_LINE = /大半が|84[%％]/;   // ★福井の つなぎ「休日に…大半が、福井のお客さん」も 同じ 数 (F21)
+  const isLocalSeat = (st) => !!st && (st.facts || []).some((f) => LOCAL_FACTS.indexOf(f) >= 0);
+  function awayText(t) {
+    if (state.onsite || /画面ごし/.test(t)) return t;
+    return t.replace(/(この(?:小さな山の麓のレジ|裏山の麓|レジの前)まで)/, "画面ごしに、$1");
+  }
+  function bridgeLines(pb, st) {
+    const out = [];
+    let prevDropped = false;
+    Core.prefBridgeLead(pb.lines).forEach((t) => {
+      const drop = (isLocalSeat(st) && LOCAL_LINE.test(t)) || (/^どうりで/.test(t) && (prevDropped || !state.tegowai));
+      prevDropped = drop;
+      if (!drop) out.push(awayText(t));
+    });
+    // ★「大半が 地元」を 言った あとで 一席目を 選び直す (否定) ときは、同じ 数の 席を 外す (firstCandidate)
+    state.pbLocal = out.some((t) => LOCAL_LINE.test(t));
+    return out;
   }
 
   /** @param redo 再訪の「別のところから」(★同じ 問答の 言い直しなので 数えない) */
   function askPref(redo) {
     state.prefRedo = redo === true;
     if (redo !== true) toi();
-    say("ときに、お客さん。どちらからお越しで?", "shi", () =>
+    // ★再訪の「別のところから」は「また○○からで?」の 続きの 選択肢 (県外 → 地方 → 県 と 同じ 1 問)。
+    //   ★「どちらからお越しで?」と 問い直すと、冒頭で「二つだけ」と 言ったのに 三つ 伺う ことに なる (2026-11-21)
+    const q = redo === true ? (f) => f() : (f) => say("ときに、お客さん。どちらからお越しで?", "shi", f);
+    q(() =>
       ask(
         [
           { label: "この福井から", value: "福井県" },
@@ -1692,6 +2133,7 @@
         (v) => {
           if (v === "__out") return askBlock();
           setPref(v);
+          state.tegowai = v === "福井県";            // ★県の つなぎの「どうりで」が この 返しを 受ける (sayPrefBridge)
           // ★「言わずにおく」に「遠いところを」と 返していた (2026-11-14 に 発覚)
           const r = v === "福井県" ? "お膝元でございますか。レジでいちばん手強いのが、地元のお客さんで。"
                   : v ? "遠いところを、ようこそ。" : "結構でございます。";
@@ -1710,7 +2152,16 @@
           const block = BLOCKS.find((b) => b.label === v);
           ask(block.prefs.map((p) => ({ label: p, value: p })), (p) => {
             setPref(p);
-            say("遠いところを、ありがとうございます。", "shi", afterPref);
+            // ★2026-11-20: 県の つなぎを 言う 県では お礼を 重ねない (★つなぎも「わざわざの お運び」「○○からでございますか」と 言う)。
+            //   ★つなぎが「○○からでございますか」で 始まる 県は 返しを 言わない。ほかは「さようで、○○から。」だけ
+            const pb = Core.prefBridgeOf(H, p);
+            if (!pb) return say("遠いところを、ありがとうございます。", "shi", afterPref);
+            const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            if (new RegExp("^(?:" + esc(p) + "|" + esc(Core.prefShort(p)) + ")からでございますか").test(pb.lines[0])) return afterPref();
+            // ★2026-11-21: つなぎの 1 行目が その県を 名指しして 受ける (「熊野古道の三重県からのお客さんで。」) なら 返しを 言わない
+            //   (★「さようで、三重県から。」と ほぼ 同じ ことを 二度 言っていた)
+            if (new RegExp(esc(p) + "(?:から|のお客さん)").test(pb.lines[0])) return afterPref();
+            say("さようで、" + p + "から。", "shi", afterPref);
           });
         }
       )
@@ -1722,7 +2173,7 @@
   //   構造が まるで 違っても「去年の 焼き直し」に 見える。
   //   ★血統・動物の 噺は ★園の 入口 (?kin=) から 来た人と、二席目以降に 回す。
   const TOP_FIRST = ["S11", "S12", "S08"];   // 新幹線 / 恐竜との落差 / コンサートの夜
-  // ★2026-11-15 ユーザー判断: 一席目を 動物の 噺へも 広げる (SPEC §11「既定で 動物の 噺から 始めない」を この 41 県の 分だけ 外す)。
+  // ★2026-11-15 作者の判断: 一席目を 動物の 噺へも 広げる (SPEC §11「既定で 動物の 噺から 始めない」を この 41 県の 分だけ 外す)。
   //   ★単独で 始められる (前の 話を「その」で 受けない) 強さ 4 以上の 手書きの 動物の 噺。★これに その県の 噺 (P-○○) を 足して 10 席
   const FIRST_ANIMAL = ["S17", "S32", "S39", "S42", "S44", "S54"];   // 年表 / ライブカメラ / 遊具の名 / 県ごとの勘定 / 小さい子 / えさの時刻
 
@@ -1734,12 +2185,13 @@
   function firstCandidate(denied) {
     const heard = state.heard || new Set();
     const ok = (s) => s && !s.genchi && !state.shown.has(s.id) &&
-      !(((s.hooks || {}).beliefs) || []).some((b) => denied.indexOf(b) >= 0);
+      !Core.deniedSeat(s, denied) &&               // ★その 席が ひっくり返す 思い込みを 否定された 席は 外す (副の 思い込みでは 外さない)
+      !(state.pbLocal && isLocalSeat(s));          // ★県の つなぎで「大半が 地元」と 言った あとは 同じ 数の 席を 一席目に しない
     if (!state.kin) {
       const md = Core.monthDay(state.input.date);
       const year = Number(state.input.date.slice(0, 4));
       const today = (H.today[md] || []).filter((s) => (!s.onlyYear || s.onlyYear === year) && !isAnimal(s) && ok(s));
-      // ★今日の 暦の 席は 前に 聞いていても 固定 (審査会の 実演 11/28 = T-1128)
+      // ★今日の 暦の 席は 前に 聞いていても 固定 (発表会の 実演 11/28 = T-1128)
       if (today.length) return { story: today[0], chosenBy: "today" };
       // ★県を いただいていたら ★その県の 手書きの噺から (README の 決まり 1)。
       //   ★自動生成の 県の噺 (prefStories) は レッサーパンダ題材なので ここでは 使わない
@@ -1782,9 +2234,11 @@
 
   /** ★3 問目: 決めた 噺の 思い込みを ★振りの 形で 伺う。★返しを 必ず つける */
   function askBeliefFor() {
-    const c = firstCandidate(state.denied || []);
+    const c = state.candReady ? state.cand : firstCandidate(state.denied || []);
+    state.candReady = false;
     state.cand = c;
-    const bid = c && ((c.story.hooks || {}).beliefs || [])[0];
+    // ★問うのは その 席が ひっくり返す 思い込み (台本の furiBelief)。★無い 席は これまでどおり hooks.beliefs の 先頭 (2026-11-20)
+    const bid = c && (c.story.furiBelief || ((c.story.hooks || {}).beliefs || [])[0]);
     const b = bid && H.beliefs.find((x) => x.id === bid);
     if (!b) return tellFirst(c);                  // ★伺う 思い込みが 無い 噺は そのまま
     toi();
@@ -1801,6 +2255,7 @@
           if (v === "yes") {
             state.input.beliefs.push(b.id);
             state.answered = b.id;          // ★噺の 入りの「その○○」が この 答えを 受ける (Core.bridgeText)
+            state.furiAsked = c.story.id;   // ★同じ ことを 振りで もう一度 問わない (tell)
             // ★噺の 入り (bridge) が「では、…」で 始まるので、ここでは 言わない
             return say("でしょうな。みなさん、そうおっしゃいます。", "shi", () => tellFirst(c));
           }
@@ -1849,6 +2304,7 @@
       choicesShown(narrow ? ok : input, "（お好きなものを 打ち込めます。ほかに「やっぱり いい」）");
       const done = (text) => {
         clearChoices();
+        state.readChars = 0;                       // ★客が 打った = ここまで 読んだ (★相槌が 次の 席の 頭に 出ていた)
         if (text) {
           const me = document.createElement("p");
           me.className = "line kyaku";
@@ -1865,7 +2321,9 @@
           return say(text ? "ほう、" + text + "。それにちなんだ噺は、まだ持っておりませんで。では、さきほどの噺を。"
                           : "さようで。では、さきほどの噺を。", "shi", () => tellFirst(state.cand));
         }
-        if (m.pref && !state.input.pref) setPref(m.pref);
+        // ★打ち込みの 語から 取った 県は ★選び方にだけ 使う (2026-11-20)。★県の つなぎ・「○○のお客さん」・次回の「また○○から?」には 使わない
+        //   (★「言わずにおく」と 断った 客を 好きな 動物園から その県の 人と 決めつけていた)
+        if (m.pref && !state.input.pref) state.hintPref = m.pref;
         if (m.belief) {
           if (!state.input.beliefs.includes(m.belief)) state.input.beliefs.push(m.belief);
           state.answered = m.belief;        // ★打ち込みを 受けて 選ぶ 席は「その○○」を 残す
@@ -1885,31 +2343,69 @@
   }
 
   /** 二席目から (と、好きなもので 手がかりを もらった 一席目) は Core の 点数で 選ぶ */
-  function begin(preferBelief, noJump) {
-    // ★二席目は 動物と 動物で ない 噺を 交互に (2026-11-15 ユーザー判断)。★一席目が 動物 (その県の 噺 含む) なら 動物で ない 噺から
-    const avoidAnimal = state.count === 1 && state.current && isAnimal(state.current);
-    let got = Core.choose(H, state.input, preferBelief, [...state.shown], [...state.sages], { heard: state.heard, avoid: avoidAnimal ? isAnimal : null });
+  /** @param o { noJump: つなぎの 一言を 言わない, noSwitch: 断り (switchNote) を 言わない, avoid: 避けたい 席 (ほかが あれば) } */
+  function begin(preferBelief, o) {
+    o = o || {};
+    // ★二席目は 動物と 動物で ない 噺を 交互に (2026-11-15 作者の判断)。★一席目が 動物 (その県の 噺 含む) なら 動物で ない 噺から
+    //   ★2026-11-21 (60): ★動物の 噺が 3 席 続いたら (Core.ANIMAL_MAX)、次も 動物で ない 噺から (手がかり・見繕い・在庫切れ・園の 送り の どの 経路でも)
+    const avoidAnimal = (state.count === 1 && !!state.current && isAnimal(state.current)) ||
+      Core.animalRun(H, [...state.shown]) >= Core.ANIMAL_MAX;
+    // ★避けたい 席 (ほかが あれば 外す)。★2026-11-21: 県の つなぎで「大半が 地元」と 言った あとは 同じ 数の 席 (F21・F26) も 後ろへ (二席目 以降も)。
+    //   ★園の 送り (o.home)「生まれた 山の話を」の あとは 西山公園の 席 (県の 噺・よその 県へ「飛びまして」の 席 で ない もの) から
+    const avoid = (s) => (avoidAnimal && isAnimal(s)) || (!!o.avoid && o.avoid(s)) ||
+      (!!state.pbLocal && isLocalSeat(s)) || (!!o.home && !homeSeat(s));
+    const denied = state.denied || [];
+    const okDen = (x) => !Core.deniedSeat(x, denied);
+    /** ★手書きの 席から 見繕う (must = 必ず 満たす 条件)。★否定された 思い込みの 席・避けたい 席は ほかが あれば 外す */
+    const pickFrom = (must) => {
+      let pool = H.stories.filter((x) => !x.genchi && !state.shown.has(x.id) && Core.fitsPref(x, state.input.pref) && (!must || must(x)));
+      const p2 = pool.filter((x) => okDen(x) && !avoid(x));
+      if (p2.length) pool = p2;
+      return Core.pickOne(Core.leastSimilar(H, [...state.shown], byStrength(pool)), { heard: state.heard });
+    };
+    // ★打ち込みの 語から 推した 県 (hintPref) は 選び方にだけ 使う (askFree)
+    const input = !state.input.pref && state.hintPref ? Object.assign({}, state.input, { pref: state.hintPref }) : state.input;
+    let got = Core.choose(H, input, preferBelief, [...state.shown], [...state.sages],
+      { heard: state.heard, avoid, denied, realPref: state.input.pref });
+    if (got && input !== state.input && got.switchNote) got.switchNote = got.switchNote.replace("お客さんの土地の噺", "お好きなものに ちなんだ 土地の噺");
     // ★手がかりの 候補が 動物の 噺 だけ だった ときも 交互を 守る: ★動物で ない 席から 見繕う (その県の 噺は 三席目 以降へ)
     if (avoidAnimal && got && isAnimal(got.story)) {
-      const c = Core.pickOne(Core.leastSimilar(H, [...state.shown], byStrength(H.stories.filter((x) => !x.genchi && !state.shown.has(x.id) && !isAnimal(x)
-        && Core.fitsPref(x, state.input.pref)))), { heard: state.heard });
+      const c = pickFrom((x) => !isAnimal(x));
       if (c) got = { story: c.story, chosenBy: "any", jump: true };
+    }
+    // ★園の 送りの あとは 西山公園の 席だけ (★「話は ○○へ 飛びまして」を 送りの 直後に 言わない)
+    if (o.home && got && !homeSeat(got.story)) {
+      const c = pickFrom(homeSeat);
+      if (c) got = { story: c.story, chosenBy: "any" };
     }
     if (!got) {
       log("silent", null);
       // ★見繕いも 強さの 幅の 中から ランダム。★前に 聞いた 席は 後ろへ (2026-11-15)
-      const mitsukurou = () => {
-        // ★見繕いも 前の 席と 似ない ものから (★2026-11-20 題材の 重なり。Core.leastSimilar)
-        const c = Core.pickOne(Core.leastSimilar(H, [...state.shown], byStrength(H.stories.filter((x) => !x.genchi && !state.shown.has(x.id) && Core.fitsPref(x, state.input.pref)))), { heard: state.heard });
+      //   ★前の 席と 似ない ものから (★2026-11-20 題材の 重なり)。★2026-11-21: 交互 (一席目が 動物なら 動物で ない 席) も 守る
+      const mitsukurou = (quiet) => {
+        const c = pickFrom(null);
         if (!c) return say("種切れでございます。", "shi");
         state.chosenBy = "any";
-        state.jumpNote = state.count ? jumpNote() : null;   // ★前の 席が ある ときだけ
+        state.jumpNote = state.count && !quiet ? jumpNote() : null;   // ★前の 席が ある ときだけ。★断りを 言った 直後は 重ねない
         tell(c.story);
       };
-      // ★「在庫切れ」の 問いは 1 回の 中で 最初の 1 度だけ (2026-11-15。4 席で 何度も 挟まっていた)。
-      //   ★2 度目からは 問わずに 見繕い、つなぎの 一言で 入る。★「また来る」を 選んだ 人には 次も 問う
-      if (state.mitsukuriOk) return mitsukurou();
-      say("いただいた手がかりの噺は、ここまででございます。レジの在庫切れでございます。", "shi", () =>
+      // ★「在庫切れ」の 断りは 1 回の 中で 最初の 1 度だけ (2026-11-15)。★2 度目からは 断らずに 見繕い、つなぎの 一言で 入る
+      //   ★園の 送り「生まれた 山の話を」の あとは 断らずに 西山公園の 席へ
+      if (state.mitsukuriOk || o.home) return mitsukurou(!!o.home);
+      // ★「もう一席」を 頼まれた 直後に 素っ気なく 断らない (2026-11-20)。★まず 頼まれた ことを 受ける
+      //   ★「さて、次のお客さんの話を、もう一席。」は 言わない (★頼まれた ことを「ありがたいことで」と 受けるので 重なる)
+      const lead = (state.nextLead || []).filter((t) => t !== LEAD_NEXT);
+      state.nextLead = null;
+      const sayAll = (ls, then) => (ls.length ? say(ls[0], "shi", () => sayAll(ls.slice(1), then)) : then());
+      if (state.count) {
+        // ★2026-11-21:「もう一席」を 押した = もう 頼まれている。★「お願いします / また来る」で もう一度 頼ませない
+        //   (★三席目を 頼むと 席より 先に 問いが 出ていた)。★断りを 言って そのまま 見繕う
+        state.mitsukuriOk = true;
+        return sayAll(lead.concat(["ありがたいことで。ただ、いただいた手がかりの噺は ここまでで、レジの在庫切れでございます。",
+                                   "ここからは、こちらで 見繕いまして、もう一席。"]), () => mitsukurou(true));
+      }
+      // ★一席目 (まだ 何も 頼まれて いない) だけ 問う。★「また来る」を 選んだ 人には 次も 問う
+      sayAll(lead.concat(["いただいた手がかりの噺は、ここまででございます。レジの在庫切れでございます。"]), () =>
         say("では、こちらで見繕いましょう。", "shi", () =>
           ask([{ label: "お願いします", value: 1 }, { label: "また来る", value: 0 }], (v) => {
             if (!v) return say("ごゆるりと。", "shi");
@@ -1921,11 +2417,17 @@
       return;
     }
     state.chosenBy = got.chosenBy;
-    state.switchNote = got.switchNote;
-    state.jumpNote = got.jump && !noJump ? jumpNote() : null;
+    state.switchNote = o.noSwitch ? null : got.switchNote;
+    state.jumpNote = got.jump && !o.noJump ? jumpNote() : null;
     state.when = got.when || null;
     state.whenStory = got.story;
     tell(got.story);
+  }
+  /** ★西山公園の 席か (園の 送り「その子らが 生まれた 山の話を」の あとに 出して よい 席)。
+   *  ★県の 噺 (P-○○) と、入りが「話は ○○へ 飛びまして」に なる 席 (よその 県の 客に 話しかける 席) は 違う */
+  function homeSeat(s) {
+    if (!s || /^P-/.test(s.id)) return false;
+    return !/^話は /.test(Core.bridgeText(s, { pref: state.input.pref, prefs: H.prefectures }));
   }
 
   /** ★筋が 飛ぶ ときの 強引な つなぎ (㉟)。★この 回で 言った ものは 続けない */
@@ -1939,7 +2441,10 @@
     state.current = st;
     state.shown.add(st.id);
     state.count += 1;
-    // ★2026-11-15 ユーザー指摘: 札を 見た あと「もう一席」で 画面が ずれた まま 進んだ (scroll は 下へ 追う だけ)。
+    if (state.count === 1) state.firstId = st.id;
+    const lead = state.nextLead || [];            // ★「もう一席」の 一言・園の 送り (nextStory)
+    state.nextLead = null;
+    // ★2026-11-15 見直し: 札を 見た あと「もう一席」で 画面が ずれた まま 進んだ (scroll は 下へ 追う だけ)。
     //   ★二席目 から: 前の 席を 畳み (席の 頭の 印)、★高座の 頭へ 戻す (動きを 減らす 設定に かかわらず 瞬時)
     if (state.count > 1) {
       const m = document.createElement("div");
@@ -1957,6 +2462,8 @@
     $("sources").hidden = true;
     $("sourcesBtn").setAttribute("aria-expanded", "false");
     $("mekuri").textContent = st.title;
+    // ★題の 字数 (スマホで 大きさを 変える。16 字 以上は 16)。★めくりを 折らない (2026-11-21)
+    $("mekuri").dataset.n = String(Math.min(16, Array.from(String(st.title || "")).length));
     $("mekuri").classList.remove("flip");
     void $("mekuri").offsetWidth;
     $("mekuri").classList.add("flip");
@@ -1977,7 +2484,7 @@
     state.photo = { ck: cardKey(st) };
     loadImg(scenes.map((s) => specGroup(s.img)).concat(["card_" + state.photo.ck]), () => {});
     const head = [];
-    // ★県の つなぎ (prefBridge。2026-11-15 ユーザー判断「噺に つなげる つなぎを 都道府県別で」)
+    // ★県の つなぎ (prefBridge。2026-11-15 作者の判断「噺に つなげる つなぎを 都道府県別で」)
     //   ★はじめから (園の 入口で ない) で 県を いただいた 人の ★一席目の 前に 1 回だけ。地の文で 順に 言う。
     //   ★園の 入口には 園の 挨拶が あるので 出さない。★現地の 謎かけから 入った 席にも 出さない。
     //   ★bundle に まだ 無い / その県が 無い ときは 何も 言わない
@@ -1987,44 +2494,54 @@
     const pb = !state.kin && state.count === 1 && state.chosenBy !== "genchi" && !state.pbSaid
       ? Core.prefBridgeOf(H, state.input.pref) : null;
     if (pb) {
-      Core.prefBridgeLead(pb.lines).forEach((t) => head.push(t));
+      bridgeLines(pb, st).forEach((t) => head.push(t));   // ★前段と 同じ 選び方 (一席目と 同じ 数の 行は 言わない・「大半が」を 覚える)
       state.pbSaid = true;
       state.pbFacts = pb.facts;
     }
     if (state.count === 1 && state.pbSaid && state.chosenBy !== "genchi") state.pbFor = st.id;   // ★タネ明かしに 足す (renderSources)
     const saidPb = state.pbSaid;
+    let noted = false;
     if (state.switchNote) {
-      head.push(state.switchNote);
+      // ★同じ 断りは 1 回の 中で 1 度だけ (2026-11-20。二席目・三席目で 同じ 言い訳が 聞こえていた)
+      //   ★2026-11-21: 暦の 席へ 入る ときは 断りを 言わない (★入り「では、今日という日の話を。」の 1 行で 足りる。
+      //   前は「その筋の噺は…趣を変えて」「…かわりに、今日という日で一席」と 重ね、「今日という日」を 二度 言っていた)
+      state.notesSaid = state.notesSaid || [];
+      if (!st.isToday && state.notesSaid.indexOf(state.switchNote) < 0) { head.push(state.switchNote); state.notesSaid.push(state.switchNote); noted = true; }
       state.switchNote = null;
     }
     if (state.jumpNote) {
       head.push(state.jumpNote);
       state.jumpNote = null;
     }
-    // ★暦の噺を その日 以外で 出すときは、そう 断る (2026-09-25)
-    //   ★「今日という日の話を」と 言いながら 今日で ない、が 起きないように する
-    if (st.isToday) {
-      const d = Core.daysUntil(st, state.input.date);
-      if (state.when === "soon" && d > 0) {
-        head.push(d === 1 ? "そうそう、明日でございますが、こういう話も ございまして。"
-                          : "そうそう、もうすぐでございますが、こういう話も ございまして。");
-      } else if (state.chosenBy !== "today" && d !== 0) {
-        head.push("お手がかりから すこし 外れますが、こういう話も ございまして。");
-      }
-    }
+    // ★暦の 席は 当日 だけ 出る (Core.pick。2026-11-20)。★別の 日の 断り (「もうすぐ」「外れますが」) は 要らなく なった
     // ★席の 入り (bridge) を 前後に 合わせる (2026-11-15。Core.bridgeText / seatLines)
     //   ★「その○○」は 直前の 客の 答えを 受けて 選んだ 席だけ / ★県の噺の 挨拶は 二度 言わない・よその 県の 客に 話しかけない
     //   ★「○○のお客さんに、ひとつ。」は 一席目で 県の つなぎを 言った ときは 言わない。★bridge と 1 文に まとめる
-    const answered = !!state.answered && (((st.hooks || {}).beliefs) || []).indexOf(state.answered) >= 0;
+    const answered = !!state.answered && Core.beliefsOf(st).indexOf(state.answered) >= 0;
     state.answered = null;
-    const bridge = Core.bridgeText(st, { pref: state.input.pref, answered, prefs: H.prefectures });
+    let bridge = Core.bridgeText(st, { pref: state.input.pref, answered, prefs: H.prefectures });
+    // ★暦の 席が 二つ 続く ときは 二つ目の 入りを 替える (★「今日という日の話を」を 二度 言わない。2026-11-21)
+    if (st.isToday && state.todayTold && /今日という日/.test(bridge)) bridge = "もう一つ、今日の話を。";
+    if (st.isToday) state.todayTold = (state.todayTold || 0) + 1;
+    // ★園の 送り「生まれた 山の話を ひとつ。」の あとに 入り (「では、…の話を。」) が 続く なら、送りは 入りに しない (二重の 入り)
+    const lead2 = bridge ? lead.map((t) => (t === SEND_HOME ? SEND_HOME2 : t)) : lead;
     const prefHead = !(saidPb && state.count === 1) && state.chosenBy === "pref" && state.input.pref ? state.input.pref : "";
-    const intro = Core.seatLines(head, bridge, { prev: state.lastSaid, prefHead });
+    const intro = Core.seatLines(lead2.concat(head), bridge, { prev: state.lastSaid, prefHead });
+    // ★「次のお客さんの話を」の 直後に「○○のお客さんに」と 目の前の 客へ 話しかけない (2026-11-20)
+    //   ★2026-11-21: 断り (「その筋の噺は…」「いただいた手がかりの噺は…」= この 客の 話) が 続く ときも「次のお客さん」と 言わない
+    if (lead2[0] === LEAD_NEXT && (noted || intro.slice(1).some((t) => t.indexOf("お客さんに") >= 0))) intro[0] = LEAD_SHORT;
     const nIntro = intro.length;
     // 振り = ★何の噺かを 名乗り、客の 頭に 問いを 立てる (★答えは 言わない)
+    //   ★2026-11-20: ★前段で 同じ 思い込みを 問うた 席 / 客が 否定した 思い込みの 席 (暦の 席) は 振りを 飛ばして まくらから
+    //   (★「そう思っておいでで?」→「思う」の 直後に 振りで 同じ ことを 問い直していた)
+    const deniedNow = Core.deniedSeat(st, state.denied || []);
+    const furi = st.furi && state.furiAsked !== st.id && !deniedNow ? st.furi : null;
+    if (state.furiAsked === st.id) state.furiAsked = null;
     // ★本題は 地の文 (文字列) と 台詞 ({who, text}) を 混ぜられる (圓朝の 一字+カギ括弧)
-    const lines = intro.concat(st.furi ? [st.furi] : [], [st.makura], hon);
-    const makuraAt = nIntro + (st.furi ? 1 : 0);
+    const lines = intro.concat(furi ? [furi] : [], [st.makura], hon);
+    const makuraAt = nIntro + (furi ? 1 : 0);
+    // ★キーとなる 単語 (サゲが 受け返す 語句) を 太字に (2026-11-21)。★振り・まくら・本題の 行だけ (席の 入りの 行は 除く)
+    const seatKeyList = Core.seatKeys(lines.slice(nIntro), st);
     // ★場面の 頭 (= 本題の from 行目の 前) で、見出しと 写真 (か 図) を 替える。
     //   ★img2 は その 場面の 真ん中の 行の 前で 差し替える (★本題を 2 つに 割る ときと 同じ 切り方)
     const sceneAt = {}, img2At = {};
@@ -2038,7 +2555,7 @@
     //   ★答え合わせの あとに 出す 図 (when = after) は これまでどおり あとで 出す
     const figMain = !!(st.fig && (st.fig.when || "hondai") === "hondai" && Core.figSvg(st.fig));
     let i = 0;
-    let figShown = false, stage1 = false, guessShown = false;
+    let figShown = false, stage1 = false;
     // ★仕草 = 上下 (かみしも) の 首振り (P1-3)。★台詞の 話し手が 前の 台詞と 替わった ときだけ
     //   吹き出しを 左右から わずかに 寄せて 出す (客は 右から、私は 左から。CSS の shigusa)。
     //   ★比べるのは「この 席の 前の 台詞の 話し手」。地の文を 挟んでも 同じ 話し手なら 動かさない
@@ -2049,7 +2566,10 @@
       // ★長く 読んだら「次へ」で 止める (場面の 切れ目で READ_SCENE / 途中でも READ_MAX)
       const atScene = i in sceneAt && !sceneDone[i];
       const rc = state.readChars || 0;
-      if (i > 0 && (i < lines.length || atScene) && ((atScene && rc >= READ_SCENE) || rc >= READ_MAX)) return pauseNext(next);
+      if (i > 0 && (i < lines.length || atScene) && ((atScene && rc >= READ_SCENE) || rc >= READ_MAX)) {
+        const nx = lines[i];
+        return pauseNext(next, !!nx && typeof nx === "object" && nx.who === "客");
+      }
       if (i === makuraAt + 1 && !stage1) { stage1 = true; stage(1); }
       if (i in sceneAt && !sceneDone[i]) {
         sceneDone[i] = true;
@@ -2068,8 +2588,10 @@
       }
       if (i < lines.length) {
         const furiAt = nIntro;
-        let cls = i === makuraAt ? "shi makura" : (st.furi && i === furiAt ? "shi furi" : "shi");
+        let cls = i === makuraAt ? "shi makura" : (furi && i === furiAt ? "shi furi" : "shi");
         let text = lines[i];
+        // ★キーとなる 単語 (サゲが 受け返す 語句) を 太字に (2026-11-21)。★席の 入りの 行 (intro) には 付けない
+        if (i >= nIntro) state.sayKey = seatKeyList[i - nIntro] || null;
         if (text && typeof text === "object") {          // 台詞
           cls = "serifu " + (text.who === "客" ? "kyaku2" : "watashi");
           if (text.who !== lastWho && !lessMotion()) cls += " shigusa";
@@ -2080,10 +2602,6 @@
           i += 1;
           next();
         });
-      } else if (st.guess && !guessShown) {
-        // 出典に「なぜ」が無いとき、噺家が引き受けて推し量る (事実としては語らない)
-        guessShown = true;
-        return say(st.guess, "shi suiryo", next);
       } else if (st.question) {
         say("さて、ここでひとつ、伺いましょう。", "shi", () =>
           say(st.question.text, "shi toi", () =>
@@ -2100,14 +2618,23 @@
               const rep = st.reply || {};
               const each = rep.wrongEach && rep.wrongEach[j];
               const r = (ok ? rep.correct : (each || rep.wrong)) || (ok ? "ご名答。" : "それが、違うんで。");
+              // ★外れた ときは 返しの あとに 正解を 1 行 (2026-11-21 作者の判断)。★返しが もう 正解を 言って いれば 重ねない
+              const seikai = ok ? "" : Core.answerLine(st.question, r);
               // ★オチの 直前に 空白を 置く (法則2: 笑いを 一度 切ってから 落とす)
               const toSage = toOchi;
-              // 答えが写ってしまう絵図は、答え合わせのあとで見せる
+              // 答えが写ってしまう絵図は、答え合わせのあとで見せる。★正解を 言った あとは「答えは」を 重ねない
               const afterFig = st.fig && st.fig.when === "after"
-                ? () => say("答えは、この一枚で。", "shi", () => showFig(st.fig, toSage))
+                ? () => say(seikai ? "数字で並べますと、この一枚で。" : "答えは、この一枚で。", "shi", () => showFig(st.fig, toSage))
                 : toSage;
+              // ★正解の 1 行は 返しと「一続きの 一声」(2026-11-21 作者の判断。見直し r7 案B)。
+              //   ★返しを hazure に して 一段 下げ、正解と 同じ 金の 罫で つなぐ (CSS)。
+              //   ★間は 返しを 打ち終えてから 正解まで KOTAE_SEIKAI (行末の 間を 含む。空きは 作らない)
+              //   ★返しが もう 正解を 言って いる (正解の 1 行が 無い) ときは 今までの 返しの まま
+              const afterR = seikai
+                ? () => matsu(Math.max(0, KOTAE_SEIKAI - endPause(r)), () => say(seikai, "shi seikai", afterFig))
+                : afterFig;
               // ★一拍 置いてから、★大きく 遅く 出す。★ここが 噺家の 強弱の 山
-              ma(900, () => say(r, "shi kotae", afterFig));
+              ma(900, () => say(r, seikai ? "shi kotae hazure" : "shi kotae", afterR));
             }
           )
           )
@@ -2116,10 +2643,12 @@
         toOchi();
       }
     };
+    // ★あて推量 (guess) は ★サゲの あと・追い足しの 前 (2026-11-21 作者の判断。sage())。
+    //   ★問いの 前だと 問いの 答えを、サゲの 直前だと オチを 先に 言っていた (S43・S55・T-1128 ほか)。★台本の 文は 変えない
     // ★「さて、ここからが オチで ございます」で 写真 (と 図) を 下げる。★サゲは 紙の 地で 出す
     //   (★いちばん 読ませたい 一行を 写真に 重ねない)
     //   ★2026-11-15: 台本に "yokoku": false の 席 (自動の 席) は ★予告の 一行を 言わない
-    //     (4 択の 直後の「さて、ここからがオチ」が 肩透かしに なっていた 監査②)。★写真と 図を 下げる のは 同じ
+    //     (4 択の 直後の「さて、ここからがオチ」が 肩透かしに なっていた 見直し)。★写真と 図を 下げる のは 同じ
     const toOchi = () => {
       const out = bgOut();
       hideZu();
@@ -2135,20 +2664,33 @@
   function sage() {
     const st = state.current;
     stage(2);
-    say(st.sage + Core.sageExtra(st, state.input.date), "shi sage", () => {
-      // ★オチが 西山公園の 何の ことか (2026-11-15 ユーザー依頼)。★噺家の 台詞では なく 画面の 小さな 註 (余韻を 壊さない)。
-      //   ★サゲと 同じく 札まで 畳まない (data-sid)
-      if (st.ochiWhat) {
+    const sageText = st.sage + Core.sageExtra(st, state.input.date);
+    say(sageText, "shi sage", () => {
+      const then = () => uwasa(st, () => afterSage(st));
+      const ato = () => (st.atogaki ? say(st.atogaki, "shi ato", then) : then());
+      // ★あて推量は サゲ (と 註) の あと・追い足しの 前 (2026-11-21 作者の判断)。
+      //   ★順 = サゲ → 註 → 推量 → 追い足し。★註は サゲの「何の ことか」なので サゲの すぐ 下に 置き、
+      //   ★推量は サゲで 割れた 事実の「なぜ」を 受ける (出典に「なぜ」が無いとき、噺家が 引き受けて 推し量る。事実としては 語らない)
+      // ★推量は ポイントを 太字・「ではないか / のでは」の 後に「……」(表示だけ。2026-11-21 作者の判断)
+      const rest = () => {
+        if (!st.guess) return ato();
+        const g = Core.guessShape(st.guess);
+        if (g) state.sayKey = { text: g.point, cls: "point", last: true };
+        return say(g ? g.text : st.guess, "shi suiryo", ato);
+      };
+      // ★余韻 (YOIN)。★行末の 間 (endPause) を 含めて 打ち終わりから 註まで YOIN.note
+      matsu(Math.max(0, YOIN.note - endPause(sageText)), () => {
+        // ★オチが 西山公園の 何の ことか (2026-11-15 作者の案)。★噺家の 台詞では なく 画面の 小さな 註 (余韻を 壊さない)。
+        //   ★サゲと 同じく 札まで 畳まない (data-sid)
+        if (!st.ochiWhat) return rest();
         const n = document.createElement("p");
         n.className = "ochi-what";
         n.dataset.sid = st.id;
-        n.textContent = "↳ " + st.ochiWhat + "のこと";
+        setPhrase(n, "↳ " + st.ochiWhat + "のこと");
         put(n);
         scroll();
-      }
-      const then = () => uwasa(st, () => afterSage(st));
-      if (st.atogaki) return say(st.atogaki, "shi ato", then);
-      then();
+        matsu(YOIN.next, rest);
+      });
     });
     // ★この 席の サゲの 行に 印 (★畳みで 札まで 残す。fold を 見る)
     if (typing && typing.el && typing.el.dataset) typing.el.dataset.sid = st.id;
@@ -2171,7 +2713,7 @@
   function showCard(st) {
     {
       drawCard(st);
-      // ★札は 絵 (canvas)。★読み上げには オチの 文を 渡す (監査⑧)
+      // ★札は 絵 (canvas)。★読み上げには オチの 文を 渡す (見直し)
       $("card").setAttribute("aria-label", "オチ札：" + st.sage);
       renderSources(st);
       $("sageBox").hidden = false;
@@ -2179,13 +2721,17 @@
       showKoe(st);
       scroll();
       if ($("genchiAgain")) $("genchiAgain").hidden = true;   // ★札の 流れの 終わりで 出し直す (refreshGenchi)
-      // ★2026-11-20 ユーザー判断: ★もう 公園に いる 人 (謎かけで 開いた 現地の 席 / 最初に「いま、公園におります」) には
+      // ★2026-11-20 作者の判断: ★もう 公園に いる 人 (謎かけで 開いた 現地の 席 / 最初に「いま、公園におります」) には
       //   「行ってみたい気持ち」を 聞かない。★札 → 次の 謎かけへ。★来訪は 謎かけに 当たった 記録で 測る
       if (st.genchi || state.onsite) {
         return say("よろしければ、この札を お持ち帰りを。「この札をもらう」で、お手元に 残ります。", "shi", () => offerGenchi(st));
       }
-      const first = state.q0label ? "はじめに伺ったときは、「" + state.q0label + "」でございました。" : "はじめに、お気持ちを伺いました。";
-      say(first, "shi", () =>
+      // ★二席目 からは「さきほどは、「…」で」(2026-11-20。前の 席の 終わりにも 伺って いるので「はじめに」では 合わない)
+      //   ★2026-11-21: 何も 伺って いない 回 (前の 答えが 無い) に「はじめに、お気持ちを伺いました」と 言わない
+      const first = state.q0label ? "はじめに伺ったときは、「" + state.q0label + "」でございました。"
+        : state.q1label ? "さきほどは、「" + state.q1label + "」でございました。" : "";
+      const sayFirst = (f) => (first ? say(first, "shi", f) : f());
+      sayFirst(() =>
         say("いま、いかがです。西山公園、行ってみたい気持ちは。", "shi", () =>
         ask(
           [
@@ -2193,14 +2739,19 @@
             { label: "ふつう", value: 3 },
             { label: "行ってみたい", value: 5 },
           ],
-          (v) => {
+          (v, label) => {
             const d = state.q0 == null ? null : v - state.q0;
             log("q1", st, { value: v });
             if (d != null) log("delta", st, { delta: d, before: state.q0, after: v });
             state.q0 = v; // 次の席は、いまの気持ちを基準に測る
             state.q0label = null;
-            const r = d > 0 ? "おや。ひとつ動きましたな。" : d === 0 ? "動きませんか。精進いたします。" : "しくじりました。次で挽回を。";
-            // ★「お持ちを」だけでは 何を 持つか 分からない (2026-11-15 ユーザー指摘) → 札だと 言う
+            state.q1label = label;
+            // ★前も いまも いちばん 上 (行ってみたい) なら「動かない = しくじり」では ない (2026-11-21。乗り気の 客を がっかりした 声で 受けていた)
+            const r = d == null ? (v >= 5 ? "ありがたいことで。" : "さようで。")
+              : d > 0 ? "おや。ひとつ動きましたな。"
+              : d === 0 && v >= 5 ? "変わらず、行ってみたいと。ありがたいことで。"
+              : d === 0 ? "動きませんか。精進いたします。" : "しくじりました。次で挽回を。";
+            // ★「お持ちを」だけでは 何を 持つか 分からない (2026-11-15 見直し) → 札だと 言う
             say(r, "shi", () => say("よろしければ、この札を お持ち帰りを。「この札をもらう」で、お手元に 残ります。", "shi", () => offerGenchi(st)));
           }
         )
@@ -2250,7 +2801,7 @@
   }
 
   function nextStory() {
-    // ★2026-11-15 (監査⑤): 語りの 途中で 押すと、走っている 文字送りの タイマーが 前の 席の 筋を
+    // ★2026-11-15 (見直し): 語りの 途中で 押すと、走っている 文字送りの タイマーが 前の 席の 筋を
     //   続けて ★席が 二重に 走っていた。★まず 止める。★写真待ちの 呼び戻しも 世代で 捨てる (enterScene)
     if (typing) {
       clearTimeout(typing.timer);
@@ -2261,7 +2812,7 @@
     state.readChars = 0;
     rmCls($("koza"), "hitoiki");
     state.gen = (state.gen || 0) + 1;
-    // ★「もう一席」は 札の 箱ごと 隠れる → ★フォーカスを 高座へ 移し、次の 選択肢の 先頭へ 渡す (監査⑧ F5)
+    // ★「もう一席」は 札の 箱ごと 隠れる → ★フォーカスを 高座へ 移し、次の 選択肢の 先頭へ 渡す (見直し)
     if (activeIn($("sageBox")) || activeIn($("choices"))) { state.focusChoices = true; focusKoza(); }
     $("choices").innerHTML = "";
     $("sageBox").hidden = true;
@@ -2274,16 +2825,44 @@
     const last = rest[rest.length - 1] || null;
     // ★出口固定 (SPEC §2)。園の入口は「入口」であって「出口」では ない。
     //   よその園の話で 終わらせず、★必ず 西山公園そのものの 噺へ 送る。
+    //   ★2026-11-20: 送りの 2 行は ★一席目が 本当に その園 (か その県の 園) の 噺 だった ときだけ。
+    //     ★その園の 話を して いないのに「ここまで」と 言っていた。★送った あとは 断り (switchNote) を 重ねず、その園・県の 園の 噺は 後ろへ
+    //   ★送りの 行・「もう一席」の 一言は 次の 席の 頭で 言う (tell。★次の 席が「○○のお客さんに」で 入る なら 言い方を 変える)
     if (state.kin && !state.sentHome) {
       state.sentHome = true;
-      return say("さて、" + state.kin.name + "の話は ここまでで。", "shi", () =>
-        say("ここからは、その子らが 生まれた 山の話を ひとつ。", "shi", () => begin(last, true))
-      );
+      const z = state.kin;
+      const firstSt = Core.allStories(H).find((s) => s.id === state.firstId);
+      const tie = kinTie(firstSt, z);
+      if (tie) {
+        state.nextLead = ["さて、" + (tie === "zoo" ? kinName(z) : Core.prefShort(z.pref) + "の園") + "の話は ここまでで。", SEND_HOME];
+        // ★送りの あとは 西山公園の 席だけ (home。2026-11-21: 送りの 直後に「話は 新潟へ 飛びまして」と 言っていた)
+        return begin(last, { noJump: true, noSwitch: true, avoid: (s) => !!kinTie(s, z), home: true });
+      }
     }
-    say("さて、次のお客さんの話を、もう一席。", "shi", () => begin(last));
+    state.nextLead = [LEAD_NEXT];
+    begin(last);
+  }
+  const LEAD_NEXT = "さて、次のお客さんの話を、もう一席。";
+  // ★園の 送りの 2 行目。★次の 席に 入り (bridge「では、…の話を。」) が ある ときは 入りを 二つ 重ねないよう SEND_HOME2 に 替える (tell)
+  const SEND_HOME = "ここからは、その子らが 生まれた 山の話を ひとつ。";
+  const SEND_HOME2 = "ここからは、その子らが 生まれた 山へ 戻りまして。";
+  const LEAD_SHORT = "さて、もう一席。";
+  /** ★園の 入口: 表に 出す 園の 名 (★海外は 国・都市の 名なので「…の動物園」と 言う。「中国から」が 地方の 名と 読めた) */
+  function kinName(z) {
+    return z.pref ? z.name : String(z.name || "").replace(/（[^）]*）\s*$/, "") + "の動物園";
+  }
+  /** ★その 席が 園の 入口の 園に 触れて いるか: "zoo" = その園の 名が 出る / "pref" = その県の 園の 噺 (動物の 噺で 県が 同じ) / null */
+  function kinTie(st, z) {
+    if (!st || !z) return null;
+    const txt = [st.title, st.bridge, st.furi, st.makura, Core.hondaiText(st), st.sage, st.atogaki].filter(Boolean).join(" ");
+    const nm = String(z.name || "");
+    const nm2 = nm.replace(/^[^市区町村]{1,6}[市区町村]立?/, "");
+    if ((nm && txt.indexOf(nm) >= 0) || (nm2.length >= 4 && nm2 !== nm && txt.indexOf(nm2) >= 0)) return "zoo";
+    if (z.pref && isAnimal(st) && (((st.hooks || {}).prefectures) || []).indexOf(z.pref) >= 0) return "pref";
+    return null;
   }
 
-  // ---- 現地の二席目 (2026-11-14 「実際の 来訪に つながるか」への 手当て) -----------
+  // ---- 現地の二席目 (2026-11-14 画面の 外の 公園へ 足を 運ぶ 楽しみを 置く) -------
   //   ★一席目は どこでも 聴けて 完結する。★その あとに「続きの オチは 西山公園に」と 言い、
   //     現地で しか 分からない 謎かけを 1 つ 出す。★答えると その場所の 席が 開く。
   //   ★verified_onsite が null の 謎かけは 出さない (Core.liveSpots)。
@@ -2297,11 +2876,21 @@
   function nextSpot(st) {
     const live = Core.liveSpots(H);
     const opened = genchiState().opened || [];
-    const byId = (id) => live.find((g) => g.id === id || g.alt_of === id && !live.some((x) => x.id === id));
+    // ★差し替え (alt_of) は 自分の 席を 持つ ときだけ (2026-11-20)。★元と 同じ 席 (G2b の story が G2 と 同じ S56) なら 出さない
+    //   (★展望デッキの 眼鏡の ベンチで 答えた 直後に、結びの 広場の 足あとの ベンチの 噺が 始まっていた)
+    const mainOf = (id) => (H.genchi || []).find((m) => m.id === id) || {};
+    const byId = (id) => live.find((g) => g.id === id ||
+      (g.alt_of === id && !live.some((x) => x.id === id) && g.story && g.story !== mainOf(id).story));
     if (st.genchi) {
       const me = (H.genchi || []).find((g) => g.id === st.genchi);
       const nx = me && me.next ? byId(me.next) : null;
-      return { spot: nx && opened.indexOf(nx.id) < 0 ? nx : null, line: me ? me.nextLine : "" };
+      // ★nextLine (「この続きは、坂の中ほど、結びの広場に 置いてまいりました。」) を 言って よいのは
+      //   ★次の 謎かけを 出す とき と ★道の 終わり (next が 無い。G3 の 結び) だけ (2026-11-21)。
+      //   ★次の 場所が まだ 現地で 確かめて いない (出ない) ときに 言うと、行っても 何も 無い 場所へ 客を 送る。
+      //   ★台本に その ときの 一言 (nextLineClosed) が あれば そちら。無ければ 何も 言わない
+      const end = !!me && !me.next;
+      const line = !me ? "" : nx || end ? me.nextLine : (typeof me.nextLineClosed === "string" ? me.nextLineClosed : "");
+      return { spot: nx && opened.indexOf(nx.id) < 0 ? nx : null, line: line || "" };
     }
     if (state.count !== 1 || state.genchiOffered) return { spot: null };
     const first = live.filter((g) => !g.alt_of && opened.indexOf(g.id) < 0)[0];
@@ -2320,7 +2909,8 @@
     g.pending = n.spot.id;
     saveGenchi(g);
     log("genchi_offer", st, { spot: n.spot.id });
-    const lead = st.genchi ? n.line : "この続き、二席目のオチは、西山公園に置いてまいりました。";
+    // ★「二席目」とは 呼ばない (★家で「もう一席」を 押すと 始まる 席と 呼び方が 重なる。2026-11-20)
+    const lead = st.genchi ? n.line : "この噺の続き、現地でだけ聞ける一席を、西山公園に置いてまいりました。";
     say(lead, "shi", () =>
       say("その場所へ 行けば 分かる 謎かけを、ひとつ。", "shi", () => askRiddle(n.spot)));
   }
@@ -2355,6 +2945,7 @@
         const v = input.value.trim();
         if (!v) return;
         clearChoices();
+        state.readChars = 0;                       // ★客が 答えた = ここまで 読んだ
         const me = document.createElement("p");
         me.className = "line kyaku";
         me.textContent = v;
@@ -2366,6 +2957,7 @@
       });
       later.addEventListener("click", () => {
         clearChoices();
+        state.readChars = 0;
         // ★2026-11-20: 「幕の 上の」は 画面の 上の ほうと 読めた → ★どこに 出るかを 言う
         say("結構でございます。続きは、いつか 現地で。札の 下か、次に 開いた ときの 最初の 画面の「現地の謎かけに答える」から、いつでも どうぞ。", "shi", refreshGenchi);
       });
@@ -2385,6 +2977,10 @@
     const hours = first ? Math.round((Date.now() - new Date(first).getTime()) / 36e5 * 10) / 10 : null;
     log("genchi_unlock", st, { spot: spot.id, firstSeenAt: first || null, hoursSinceFirst: hours, pref: state.input.pref || "" });
     state.chosenBy = "genchi";
+    state.readChars = 0;
+    // ★謎かけに 当たった = もう 公園に いる (2026-11-21)。★この あとの 席でも「行ってみたい気持ち」を 聞かない (2026-11-20 の 判断の 続き)。
+    //   ★表紙の「現地の謎かけに答える」から 入った 回でも 同じ (★前は 何も 伺って いないのに「はじめに 伺いました」と 言っていた)
+    state.onsite = true;
     ma(700, () => say("ご名答。現地まで、ようこそ。", "shi kotae", () => tell(st)));
   }
 
@@ -2401,7 +2997,7 @@
     say("おや、お預けの 続きで ございますね。", "shi", () => askRiddle(spot));
   }
   /** ★「現地の謎かけに答える」(表紙 + 札の 下) = ★答えて いない 謎かけが ある ときだけ。
-   *  ★前は 開いた ときに 1 回だけ 決めていて、同じ 画面の ままでは どこにも 出なかった (2026-11-20 ユーザー指摘) */
+   *  ★前は 開いた ときに 1 回だけ 決めていて、同じ 画面の ままでは どこにも 出なかった (2026-11-20 見直し) */
   function refreshGenchi() {
     const g = genchiState();
     const on = Core.liveSpots(H).some((x) => x.id === g.pending);
@@ -2465,7 +3061,7 @@
   function clearLog() {
     if (!window.confirm("この端末に貯めた記録を、すべて消します。よろしいですか。")) return;
     // ★「すべて 消します」と 言うので、★前回の 県・初回の 時刻・謎かけの お預けも 消す
-    //   (★審査会の 実演前の リセットに 使う。消さないと「また○○からで?」に なる)
+    //   (★発表会の 実演前の リセットに 使う。消さないと「また○○からで?」に なる)
     try { [LOG_KEY, PREF_KEY, FIRST_KEY, GENCHI_KEY].forEach((k) => localStorage.removeItem(k)); } catch (e) {}
     $("baBody").textContent = "記録を消しました。";
   }
@@ -2498,7 +3094,7 @@
   }
 
   // ---- 重ねて 出す パネル (場・全国の園)。★dialog の 役割 / 開いたら 中へ / Esc で 閉じる / 閉じたら 戻す
-  //   (2026-11-15 監査⑧ F5)。★Tab は パネルの 中を 回す (aria-modal)
+  //   (2026-11-15 見直し)。★Tab は パネルの 中を 回す (aria-modal)
   function openPanel(id) {
     const a = document.activeElement;
     if (!panelFrom && a && a !== document.body) panelFrom = a;
@@ -2590,7 +3186,7 @@
         ctx.shadowOffsetY = 1;
       }
       ctx.textAlign = "left";
-      ctx.fillText(state.kin ? state.kin.name + "のお客さんへ"
+      ctx.fillText(state.kin ? kinName(state.kin) + "のお客さんへ"
                              : state.input.pref ? state.input.pref + "のお客さんへ" : "お越しの方へ", 60, 72);
       ctx.textAlign = "right";
       ctx.fillText(state.input.date + "  " + state.count + "席目", W - 60, 72);
@@ -2613,31 +3209,38 @@
       const total = big.length * size * 1.25;
       big.forEach((line, i2) => ctx.fillText(line, W / 2, 900 - total / 2 + size * 0.62 + i2 * size * 1.25));
 
+      // ★写真の 出典 (2026-11-20)。★札は 端末の 外 (SNS など) へ 出るので、画面の 隅書き (1 行) より 長く
+      //   作品名・提供元・ライセンス (URL)・札に 合わせて 加工した 旨。★継承 (BY-SA) の 写真なら 札も BY-SA と 書く (Core.cardCredit)
+      //   ★行が 増えたら 判子・問いの 結果・下の 文を その ぶん 上へ
+      ctx.font = "20px " + sans;
+      const credLines = wrapLines(ctx, (img ? Core.cardCredit(img.credit) + " / " : "") + "語りの出典はアプリ内「タネ明かし」", W - 120);
+      const CLH = 26;
+      const off = Math.max(0, credLines.length - 2) * CLH;
+
       ctx.font = "34px " + serif;
       ctx.fillStyle = "#4a4036";
-      wrap(ctx, st.card.bottom, W / 2, Hh - 240, W - 160, 48);
+      wrap(ctx, st.card.bottom, W / 2, Hh - 240 - Math.max(0, off - CLH), W - 160, 48);
 
       if (state.lastCorrect !== null) {
         // ★「× 外れ」だけだと 何の × か 分からない → 何の結果かを 添える
         ctx.textAlign = "left";
         ctx.font = "26px " + sans;
         ctx.fillStyle = "#6d6256";
-        ctx.fillText("この噺の問い", 60, Hh - 148);
+        ctx.fillText("この噺の問い", 60, Hh - 148 - off);
         ctx.font = "38px " + sans;
         ctx.fillStyle = state.lastCorrect ? "#b8322a" : "#6d6256";
-        ctx.fillText(state.lastCorrect ? "○ ご名答" : "× 惜しい", 60, Hh - 110);
+        ctx.fillText(state.lastCorrect ? "○ ご名答" : "× 惜しい", 60, Hh - 110 - off);
       }
       ctx.textAlign = "center";
-      ctx.font = "22px " + sans;
+      ctx.font = "20px " + sans;
       ctx.fillStyle = "#6d6256";
-      // ★写真の 出典は 画面と 同じ 1 行 (2026-11-20)。★正式な 表示は CREDITS
-      wrap(ctx, (img ? "写真 " + Core.shortCredit(img.credit) + " / " : "") + "語りの出典はアプリ内「タネ明かし」", W / 2, Hh - 60, W - 120, 28);
+      credLines.forEach((l, i) => ctx.fillText(l, W / 2, Hh - 46 - (credLines.length - 1 - i) * CLH));
 
       ctx.fillStyle = "#b8322a";
-      ctx.fillRect(W - 230, Hh - 172, 160, 84);
+      ctx.fillRect(W - 230, Hh - 172 - off, 160, 84);
       ctx.fillStyle = "#fff";
       ctx.font = "bold 40px " + serif;
-      ctx.fillText("はなし山", W - 150, Hh - 130);
+      ctx.fillText("はなし山", W - 150, Hh - 130 - off);
     };
     if (img && !img.el.complete) img.el.onload = paint;
     paint();
@@ -2645,7 +3248,7 @@
 
   /** 札に 敷く 写真の 群 (つつじ / 紅葉)。★席の 頭で 決めて 先に 読む */
   function cardKey(st) {
-    // ★2026-11-20 ユーザー判断: 札の 写真は オチの 註が 指す もの の 写真 (台本の cardImg = 群[@名])。
+    // ★2026-11-20 作者の判断: 札の 写真は オチの 註が 指す もの の 写真 (台本の cardImg = 群[@名])。
     //   ★札用の 群が 無ければ 今どおり 季節の 写真 (紅葉 / つつじ)
     const ci = String(st.cardImg || "").split("@")[0];
     const keys = (root.HANASHI_IMG_KEYS && root.HANASHI_IMG_KEYS.card) || {};
@@ -2695,16 +3298,21 @@
     return photoCache[id];
   }
 
-  function wrap(ctx, text, x, y, maxW, lh) {
+  /** 幅 maxW に 収まるよう 字で 折った 行の 配列 */
+  function wrapLines(ctx, text, maxW) {
     const lines = [];
     let line = "";
-    for (const ch of text) {
+    for (const ch of String(text || "")) {
       if (ctx.measureText(line + ch).width > maxW && line) {
         lines.push(line);
         line = ch;
       } else line += ch;
     }
     if (line) lines.push(line);
+    return lines;
+  }
+  function wrap(ctx, text, x, y, maxW, lh) {
+    const lines = wrapLines(ctx, text, maxW);
     lines.forEach((l, i) => ctx.fillText(l, x, y + (i - (lines.length - 1) / 2) * lh));
   }
 
@@ -2785,7 +3393,7 @@
   //   ★上限を 置くのは ★万一 止まらない ときに 固まらせないため。
   $("skip").addEventListener("click", (e) => {
     e.stopPropagation();
-    //   ★2026-11-15 (監査⑤③): 前は 打ちかけの 行を 打ち終えた ところで「進まなかった」と 見て 止まり、
+    //   ★2026-11-15 (見直し): 前は 打ちかけの 行を 打ち終えた ところで「進まなかった」と 見て 止まり、
     //     既定の「一字ずつ」では 1 回 1 行しか 進まなかった。★打ち終えたら もう一度 押して 次へ。
     const isStop = (t) => / toi | sage | kotae /.test(" " + ((t && t.el && t.el.className) || "") + " ");
     for (let i = 0; i < 120 && (typing || state.pauseFn); i += 1) {
@@ -2832,7 +3440,7 @@
   showBuilt();
 
   // ★鳴き声 (2026-09-25)。★手元の mp3 を data URI で 埋め込み = ★外部通信 0。
-  //   ★自動では 鳴らさない。★押したときだけ。★決定㉛ で 見送った 読み上げとは 別もの
+  //   ★自動では 鳴らさない。★押したときだけ。★ で 見送った 読み上げとは 別もの
   //   (見送りの 理由は「ネットワーク音声を 使う 場合が ある」こと。手元の 音は それに 当たらない)
   let koeEl = null;
   function showKoe(st) {
@@ -2842,7 +3450,7 @@
     //   ★鳥・サルの 噺で 出すと「その生きものの 声」だと 思わせる (2026-09-26 指摘)。
     //   ★文面の 言い回しで 判ると 取り違える (「鳥のほうが多い」で 出てしまった) ので
     //   ★★参照している 事実で 判る。★レッサーパンダに 触れている 事実を 引いた席だけ。
-    btn.hidden = !isAnimal(st);
+    btn.hidden = !hasRP(st);
     // ★何の 鳴き声か 名前に 出す
     if (!btn.hidden) btn.textContent = "レッサーパンダの鳴き声を聞く";
   }
@@ -2881,9 +3489,9 @@
     //   ★前に 見ていた 高さを 覚えていて、少し 下がった ところに 出る (2026-09-23)
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     root.scrollTo(0, 0);
-    // ★2026-11-15 ユーザー指摘: はじめから に したのに「また○○からで?」と 聞いた
+    // ★2026-11-15 見直し: はじめから に したのに「また○○からで?」と 聞いた
     //   (再訪の ために この端末に 覚えていた 県が 残っていた)。★はじめから は 新しい お客さんとして 始める。
-    //   ★Δq の 記録 (場の 表) は 消さない。★?date= は 残す (審査会の リハーサルで 命日が 出る ように。監査⑤)
+    //   ★Δq の 記録 (場の 表) は 消さない。★?date= は 残す (発表会の リハーサルで 命日が 出る ように。見直し)
     store.del(PREF_KEY);
     const base = location.href.split("?")[0].split("#")[0];
     let q = "";
