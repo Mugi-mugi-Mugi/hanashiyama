@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """はなし山: style.css の 動きの 決めごと (P1-4) の 歯止め。
 
-決めごと (docs/企画/20261114_追加改修計画_P0-3_P1-3_P1-4.md §3)
+決めごと (作業計画 (公開に含めない) §3)
   K1  @keyframes の 中で 動かす 性質は transform と opacity だけ
   K2  animation / transition の 時間は 0.15〜0.3 秒 (遅らせる delay も 0.3 秒まで)
       ★写真の「一拍の 間」(0.8 秒) は JS の タイマーで 作る。CSS の 動きに しない
@@ -23,7 +23,8 @@
   - app.js が 直に 付ける 動き (element.animate / style.transition) は 見ない
   - 選択子の 詳しさ (specificity) は「`*` か、同じ 選択子か」の 2 通りしか 比べない
 
-実行: python tools/test_css.py   (陰性テストか style.css の どちらかが 落ちれば 終了コード 1)
+実行: python tools/test_css.py [別の style.css]   (陰性テストか style.css の どちらかが 落ちれば 終了コード 1)
+  ★2026-11-21: 組版の 決めごと (L1〜L9) も 見る (check_layout)
 """
 import io
 import os
@@ -35,7 +36,7 @@ CSS = os.path.join(ROOT, "app", "style.css")
 
 T_MIN, T_MAX = 0.15, 0.30
 T_STOP = 0.01                    # ★これ 以下の 時間は「止めた」と 見る (0.01ms 型の 止め方)
-ICHIBYO = 0.8                    # ★写真の 一拍の 間 (ユーザー決定 2026-11-15)。★JS の タイマーで 作る
+ICHIBYO = 0.8                    # ★写真の 一拍の 間 (作者の判断 2026-11-15)。★JS の タイマーで 作る
 MOVE_OK = ("transform", "opacity")
 KF_META = ("animation-timing-function",)          # keyframes の 中で 書いてよい (性質を 動かさない)
 NO_ANIM = ("filter", "-webkit-filter", "backdrop-filter", "-webkit-backdrop-filter", "box-shadow")
@@ -43,10 +44,10 @@ BACKDROP = ("backdrop-filter", "-webkit-backdrop-filter")
 TIMING = {"ease", "ease-in", "ease-out", "ease-in-out", "linear", "step-start", "step-end"}
 ANIM_KW = TIMING | {"infinite", "normal", "reverse", "alternate", "alternate-reverse", "none",
                     "forwards", "backwards", "both", "running", "paused", "initial", "inherit", "unset"}
-# ★減らす 設定でも 残してよい 動き = 写真の 出入りの フェード (opacity だけ)。2026-11-15 ユーザー判断
+# ★減らす 設定でも 残してよい 動き = 写真の 出入りの フェード (opacity だけ)。2026-11-15 作者の判断
 RED_FADE_OK = (".haikei", ".haikei-cap", ".haikei-in::after", ".haikei.kawari #haikeiImg")
 FADE_KF = ("usu",)                # ★opacity だけを 動かす keyframes
-T_FADE = 0.80                     # ★写真の フェードだけ 0.8 秒まで (2026-11-15 ユーザー「もう少し 長く」)
+T_FADE = 0.80                     # ★写真の フェードだけ 0.8 秒まで (2026-11-15 見直しの 声「もう少し 長く」)
 RE_RED = re.compile(r"prefers-reduced-motion\s*:\s*reduce", re.I)
 RE_NOPREF = re.compile(r"prefers-reduced-motion\s*:\s*no-preference", re.I)
 RE_KF = re.compile(r"^@(-webkit-)?keyframes\b", re.I)
@@ -451,8 +452,202 @@ def self_test(real_text):
     return fail
 
 
+# ---- 組版の 決めごと (2026-11-21 作者の判断。見直し r7 の 4・7・8・12・13 と 案B・文節の 改行) ----------------
+#   L1  外れの 返し (.kotae.hazure) と 正解の 1 行 (.seikai) は 同じ 大きさ・同じ 金の 罫で つなぐ (間の 余白 0)。
+#       ★外れの 返しは 赤茶・正解は 墨の 太字。★正解の 行は 動かさない (animation: none)
+#   L2  サゲが いちばん 大きい (PC・スマホ とも。返し・まくら・振り・問い・台詞・正解・地の文より 大きい)
+#   L3  本文の 行 (地・台詞・推量・追い足し・噂) は 16px (1rem) 未満に しない (PC・スマホ とも)
+#   L4  文節で 改行: .talk .line に word-break: auto-phrase / 効かない ブラウザ用に @supports not (…) の 中で keep-all。
+#       ★index.html の html に lang="ja" (auto-phrase は 言語で 効く)
+#   L5  強弱の 直し (返し (当たり) は 墨・左の 空き・推量の 塗りは 元の #efeadc・スマホの 見出し 1rem・めくり 太字)
+#   L6  あて推量の ラベルは 箱の 外に 1 回だけ / L7 めくりと 段の 札は 折らない / L8 キーとなる 単語は 太字だけ / L9 推量の ポイントは 太字だけ
+#   ★python tools/test_css.py 古い.css で 直す 前の style.css を 見る (★L1〜L4 が NG に なる ことで 効きを 見る)
+HTML = os.path.join(ROOT, "app", "index.html")
+MOBILE = "@media (max-width: 480px)"
+FS_KEYS = [  # (選択子, 名前)。★後ろの 規則ほど 効く (同じ 名前は 最後の 値)
+    (".line", "base"), (".line.sage", "sage"), (".line.kotae", "kotae"), (".talk .line.kotae.hazure", "hazure"),
+    (".talk .line.seikai", "seikai"), (".line.makura", "makura"), (".line.furi", "furi"), (".line.toi", "toi"),
+    (".line.serifu", "serifu"), (".line.suiryo", "suiryo"), (".line.ato", "ato"), (".line.uwasa", "uwasa"),
+]
+
+
+def rem(v):
+    m = re.match(r"^\s*([\d.]+)rem\s*$", v or "")
+    return float(m.group(1)) if m else None
+
+
+def font_sizes(rules):
+    """→ {"pc": {名前: rem}, "sp": {...}}。★スマホは PC の 値に メディアの 中の 値を 重ねる"""
+    pc, sp = {}, {}
+    for r in rules:
+        media = r.ctx[-1] if r.ctx else ""
+        if r.ctx and not (len(r.ctx) == 1 and media == MOBILE):
+            continue
+        for sel in r.sels:
+            for key, name in FS_KEYS:
+                if sel == key:
+                    for p, v, imp, ln in r.decls:
+                        if p == "font-size" and rem(v) is not None:
+                            (sp if media == MOBILE else pc)[name] = rem(v)
+    full_sp = dict(pc)
+    full_sp.update(sp)
+    return {"pc": pc, "sp": full_sp}
+
+
+def decl(rules, sel, prop, media=None):
+    """その 選択子の 最後の 宣言の 値 (無ければ None)。media=None は 囲みの 無い 規則だけ"""
+    got = None
+    for r in rules:
+        if (media is None and r.ctx) or (media is not None and (not r.ctx or r.ctx[-1] != media)):
+            continue
+        if sel in r.sels:
+            for p, v, imp, ln in r.decls:
+                if p == prop:
+                    got = v
+    return got
+
+
+def check_layout(text, html_text):
+    """→ [(規則, 文)]"""
+    errs = []
+    rules = parse(text)
+    H, S = ".talk .line.kotae.hazure", ".talk .line.seikai"
+    if decl(rules, H, "font-size") is None or decl(rules, S, "font-size") is None:
+        errs.append(("L1", "外れの 返し (%s) と 正解の 1 行 (%s) の 規則が 無い" % (H, S)))
+    else:
+        if decl(rules, H, "font-size") != decl(rules, S, "font-size"):
+            errs.append(("L1", "外れの 返しと 正解の 大きさが 違う (%s / %s)" % (decl(rules, H, "font-size"), decl(rules, S, "font-size"))))
+        bh, bs = decl(rules, H, "border-left"), decl(rules, S, "border-left")
+        if not bh or bh != bs or "gold" not in bh:
+            errs.append(("L1", "返しと 正解を 同じ 金の 罫で つないでいない (%s / %s)" % (bh, bs)))
+        if (decl(rules, H, "margin-bottom") or "").strip() != "0" or (decl(rules, S, "margin-top") or "").strip() != "0":
+            errs.append(("L1", "返しと 正解の 間に 余白が ある (margin-bottom / margin-top を 0 に)"))
+        if (decl(rules, H, "color") or "").lower() != "#7b2b25":
+            errs.append(("L1", "外れの 返しが 赤茶 (#7b2b25) で ない (%s)" % decl(rules, H, "color")))
+        if decl(rules, S, "color") != "var(--ink)" or decl(rules, S, "font-weight") != "bold":
+            errs.append(("L1", "正解が 墨の 太字で ない"))
+        if (decl(rules, S, "animation") or "") != "none":
+            errs.append(("L1", "正解の 行 (新しい 罫) が 動く (animation: none に)"))
+        mh = [r for r in rules if r.ctx and r.ctx[-1] == MOBILE and H in r.sels and S in r.sels
+              and any(p == "font-size" for p, v, i, l in r.decls)]
+        if not mh:
+            errs.append(("L1", "スマホで 返しと 正解を 同じ 大きさに する 規則が 無い"))
+    fs = font_sizes(rules)
+    for w in ("pc", "sp"):
+        f = fs[w]
+        if "sage" not in f:
+            errs.append(("L2", "%s: サゲの 大きさが 読めない" % w))
+            continue
+        for k in ("kotae", "hazure", "seikai", "makura", "furi", "toi", "serifu", "base"):
+            if k in f and not f[k] < f["sage"]:
+                errs.append(("L2", "%s: %s (%grem) が サゲ (%grem) より 小さく ない" % (w, k, f[k], f["sage"])))
+        for k in ("base", "serifu", "suiryo", "ato", "uwasa"):
+            if k in f and f[k] < 1.0:
+                errs.append(("L3", "%s: 本文の %s が %grem (16px 未満)" % (w, k, f[k])))
+    wb = [r for r in rules if not r.ctx and ".talk .line" in r.sels
+          and any(p == "word-break" and v == "auto-phrase" for p, v, i, l in r.decls)]
+    if not wb:
+        errs.append(("L4", ".talk .line に word-break: auto-phrase が 無い"))
+    ka = [r for r in rules if r.ctx and re.match(r"@supports\s+not\s*\(\s*word-break\s*:\s*auto-phrase\s*\)", r.ctx[-1])
+          and ".talk .line" in r.sels and any(p == "word-break" and v == "keep-all" for p, v, i, l in r.decls)]
+    if not ka:
+        errs.append(("L4", "auto-phrase が 効かない ブラウザ用の keep-all (@supports not (word-break: auto-phrase)) が 無い"))
+    if not re.search(r'<html[^>]*\slang="ja"', html_text):
+        errs.append(("L4", 'index.html の html に lang="ja" が 無い (auto-phrase が 効かない)'))
+    # L5 強弱の 直し (見直し r7 の 4・7・8・12・13): 返し (当たり) は 墨 / 左の 空きを 戻す / 推量は 紙色 / 見出し・めくり
+    want5 = [
+        (".line.kotae", "color", None, lambda v: v == "var(--ink)", "返し (当たり) が 墨で ない"),
+        (".talk .line.sage", "padding", None, lambda v: (v or "").split()[-1:] == ["16px"], "サゲの 左の 空きが 16px で ない"),
+        (".talk .line.sage", "padding-left", MOBILE, lambda v: v == "12px", "スマホの サゲの 左の 空きが 12px で ない"),
+        (".talk .line.kotae", "padding", None, lambda v: (v or "").split()[-1:] == ["14px"], "返しの 左の 空きが 14px で ない"),
+        (".talk .line.ato", "padding-left", None, lambda v: v == "30px", "追い足しの 下げ (30px) が 無い"),
+        (".talk .line.uwasa", "padding-left", None, lambda v: v == "20px", "噂の 左の 空き (20px) が 無い"),
+        (".line.suiryo", "background", None, lambda v: (v or "").lower() == "#efeadc", "あて推量の 塗りが 元の #efeadc で ない"),
+        (".midashi", "font-size", MOBILE, lambda v: (rem(v) or 0) >= 1.0, "スマホの 見出しが 1rem 未満"),
+        (".mekuri", "font-weight", None, lambda v: v == "bold", "めくり (題) が 太字で ない"),
+    ]
+    for sel, prop, media, good, msg in want5:
+        v = decl(rules, sel, prop, media)
+        if not good(v):
+            errs.append(("L5", "%s (%s %s = %s)" % (msg, sel, prop, v)))
+    # L6 あて推量の ラベルは 箱の 外に 1 回だけ (破線の 上の 縁に かかる 見出し)。★読める 大きさ (0.8rem 以上)・紙の 地
+    labels = [r for r in rules if any(p == "content" and "あて推量" in v for p, v, i, l in r.decls)]
+    if len(labels) != 1:
+        errs.append(("L6", "「あて推量」の ラベルの 規則が %d 個 (1 個だけ)" % len(labels)))
+    pos6 = decl(rules, ".line.suiryo::before", "position")
+    tr6 = decl(rules, ".line.suiryo::before", "transform") or ""
+    top6 = decl(rules, ".line.suiryo::before", "top") or ""
+    if pos6 != "absolute" or not ("translateY(-" in tr6 or top6.startswith("-")):
+        errs.append(("L6", "あて推量の ラベルが 箱の 中に ある (position: absolute で 上の 縁の 外へ。position=%s transform=%s top=%s)" % (pos6, tr6, top6)))
+    if (rem(decl(rules, ".line.suiryo::before", "font-size")) or 0) < 0.8:
+        errs.append(("L6", "あて推量の ラベルが 0.8rem 未満"))
+    bg6 = decl(rules, ".line.suiryo::before", "background") or ""
+    if not ("var(--paper)" in bg6 and "#efeadc" in bg6.lower()):
+        errs.append(("L6", "あて推量の ラベルの 地が 外 (紙) と 中 (#efeadc) の 両方に 合っていない (%s)" % bg6))
+    if decl(rules, ".talk .line.suiryo", "position") != "relative":
+        errs.append(("L6", "あて推量の 箱が ラベルの 基準 (position: relative) に なっていない"))
+    # L7 めくり (題) と 段の 札は 折らない (white-space: nowrap)。並ばない ときは 段の 札ごと 下の 行へ (flex-wrap)。
+    #     ★スマホの めくりは 題の 字数 (data-n) で 小さく するが 0.95rem 未満に しない
+    for sel in (".mekuri", ".shinko li"):
+        if not any(sel in r.sels and any(p == "white-space" and v == "nowrap" for p, v, i, l in r.decls) for r in rules if not r.ctx):
+            errs.append(("L7", "%s が white-space: nowrap で ない (語の 途中で 折れる)" % sel))
+    if decl(rules, ".kozatop", "flex-wrap") != "wrap":
+        errs.append(("L7", ".kozatop が flex-wrap: wrap で ない (並ばない ときに 札が 縮んで 折れる)"))
+    tiers = [(r, v) for r in rules if r.ctx and r.ctx[-1] == MOBILE for s_ in r.sels if s_.startswith('.mekuri[data-n=')
+             for p, v, i, l in r.decls if p == "font-size"]
+    if not tiers:
+        errs.append(("L7", "スマホの めくりを 題の 字数で 小さく する 規則 (.mekuri[data-n=…]) が 無い"))
+    elif min(rem(v) or 0 for r, v in tiers) < 0.95:
+        errs.append(("L7", "スマホの めくりが 0.95rem 未満に なる"))
+    # L8 キーとなる 単語 (サゲが 受け返す 語句) は 太字だけ (色・大きさは 変えない)
+    if decl(rules, ".line .key", "font-weight") != "bold" or decl(rules, ".line .key", "color") != "inherit":
+        errs.append(("L8", ".line .key が 太字だけ (色は 行の まま) に なっていない"))
+    # L9 あて推量の ポイント (「ではないか / のでは」の 直前の 句) は 太字だけ (推量の 箱の 中)
+    if decl(rules, ".line.suiryo .point", "font-weight") != "bold" or decl(rules, ".line.suiryo .point", "color") != "inherit":
+        errs.append(("L9", ".line.suiryo .point が 太字だけ (色は 行の まま) に なっていない"))
+    return errs
+
+
+def json_short(d):
+    return " ".join("%s %g" % (k, d[k]) for k in sorted(d))
+
+
+def layout_main(real, path):
+    html_text = io.open(HTML, encoding="utf-8").read()
+    fail = []
+    print("組版の 決めごと (L1〜L9) — 陰性テスト")
+    for name, css, want in [
+        ("正解の 1 行の 規則を 消した 写し", re.sub(r"\.talk \.line\.seikai \{[^}]*\}", "", real, count=1), "L1"),
+        ("スマホの サゲを 1rem に した 写し", real + "\n@media (max-width: 480px) { .line.sage { font-size: 1rem; } }\n", "L2"),
+        ("追い足しを 0.9rem に した 写し", real + "\n.line.ato { font-size: 0.9rem; }\n", "L3"),
+        ("keep-all を 消した 写し", real.replace("word-break: keep-all", "word-break: normal"), "L4"),
+        ("推量の 塗りを 紙色に した 写し", real + "\n.line.suiryo { background: var(--paper); }\n", "L5"),
+        ("推量の ラベルを 箱の 中に 戻した 写し", real + "\n.line.suiryo::before { position: static; transform: none; }\n", "L6"),
+        ("めくりの nowrap を 消した 写し", real.replace(".mekuri, .shinko, .shinko li { white-space: nowrap; }", ""), "L7"),
+        ("キーの 太字を 消した 写し", real.replace(".line .key { font-weight: bold;", ".line .key { font-weight: normal;"), "L8"),
+        ("推量の ポイントの 太字を 消した 写し", real.replace(".line.suiryo .point { font-weight: bold;", ".line.suiryo .point { font-weight: normal;"), "L9"),
+    ]:
+        got = check_layout(css, html_text)
+        okk = any(e[0] == want for e in got)
+        print(("  OK   " if okk else "  NG   ") + name + " を 止める (" + want + ")")
+        if not okk:
+            fail.append(name)
+    errs = check_layout(real, html_text)
+    fs = font_sizes(parse(real))
+    print("%s: 大きさ (rem) PC %s / スマホ %s" % (os.path.basename(path), json_short(fs["pc"]), json_short(fs["sp"])))
+    if errs:
+        print("NG: 組版 %d 件" % len(errs))
+        for code, msg in errs:
+            print("  ✕ [%s] %s" % (code, msg))
+    else:
+        print("OK: 組版の 決めごと (L1〜L9) に 合っています")
+    return fail, errs
+
+
+
 def main():
-    real = io.open(CSS, encoding="utf-8").read()
+    path = sys.argv[1] if len(sys.argv) > 1 else CSS          # ★別の style.css (直す 前の 版) を 見る
+    real = io.open(path, encoding="utf-8").read()
     print("陰性テスト (わざと 壊した CSS を 止めるか)")
     fail = self_test(real)
     errs, seen = check(real)
@@ -464,9 +659,11 @@ def main():
             print("  ✕ [%s] %d 行: %s" % (code, ln, msg))
     else:
         print("OK: 動きの 決めごと (K1〜K6) に 合っています")
+    lfail, lerrs = layout_main(real, path)
+    fail = fail + lfail
     if fail:
         print("陰性テスト FAIL %d 件" % len(fail))
-    sys.exit(1 if (errs or fail) else 0)
+    sys.exit(1 if (errs or fail or lerrs) else 0)
 
 
 if __name__ == "__main__":

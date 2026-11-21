@@ -1,4 +1,4 @@
-// 動きの 試験 (2026-11-15。反論監査 ①②⑤⑧ で 見つかった 崩れを 二度と 出さない ため)
+// 動きの 試験 (2026-11-15。見直し ①②⑤⑧ で 見つかった 崩れを 二度と 出さない ため)
 //   node tools/test_motion.js            … いまの app.js を 試す
 //   node tools/test_motion.js 古い.js    … 別の app.js を 試す (★直す 前の 版で NG が 出る ことを 確かめる 用)
 // ★模擬 DOM + 仮想時計 (motion_harness.js)。タイマーは 時刻順に 回し、clearTimeout も 効く
@@ -122,7 +122,7 @@ for (const d of [300, 1500]) {
   ok(part === 0, "乱打 " + runs + " 回: 打ちかけの 行 0 (" + part + ")");
 }
 
-// ⑥ 読み上げ (監査⑧ F1): 打ち出し中の 行は aria-hidden、全文は 読み上げ用の 行に 先に 1 回
+// ⑥ 読み上げ (見直し): 打ち出し中の 行は aria-hidden、全文は 読み上げ用の 行に 先に 1 回
 {
   const a = mk({ date: "2026-11-28" });
   a.click("open");
@@ -139,7 +139,7 @@ for (const d of [300, 1500]) {
   ok(yomi === lines && lines >= 3, "読み上げ用の 行は 打つ 行と 同じ 数 (書き換えずに 1 回ずつ: " + yomi + " / " + lines + ")");
 }
 
-// ⑦ フォーカス (監査⑧ F5): キーボードで 選んだら、次の 選択肢の 先頭へ 移る / 幕を 開けたら 高座へ
+// ⑦ フォーカス (見直し): キーボードで 選んだら、次の 選択肢の 先頭へ 移る / 幕を 開けたら 高座へ
 {
   const a = mk({ date: "2026-11-28" });
   a.byId.open.focus();
@@ -158,7 +158,7 @@ for (const d of [300, 1500]) {
   ok(b.doc.activeElement === b.doc.body, "指で 押した ときは フォーカスを 動かさない");
 }
 
-// ⑧ パネル (監査⑧ F5): 開くと 中へ / Esc で 閉じて 呼んだ ボタンへ 戻す
+// ⑧ パネル (見直し): 開くと 中へ / Esc で 閉じて 呼んだ ボタンへ 戻す
 {
   const a = mk({ date: "2026-11-28" });
   a.click("open"); a.settle();
@@ -174,7 +174,7 @@ for (const d of [300, 1500]) {
   ok(b.byId.kin.hidden && b.doc.activeElement === b.byId.kinList, "全国の園を 閉じたら「全国の動物園から」へ 戻る");
 }
 
-// ⑨ もう一席 (監査⑧ F5): 札の 箱が 隠れても フォーカスは 高座へ → 次の 選択肢の 先頭へ
+// ⑨ もう一席 (見直し): 札の 箱が 隠れても フォーカスは 高座へ → 次の 選択肢の 先頭へ
 {
   const a = mk({ date: "2026-11-28", store: { "hanashiyama.type.v1": "0" } });
   toFirstSeat(a); a.settle();
@@ -188,7 +188,7 @@ for (const d of [300, 1500]) {
   ok(a.labels().length > 0 && !!fe && a.byId.choices.contains(fe), "もう一席の あと 次の 選択肢の 先頭へ (" + (fe && fe.textContent) + ")");
 }
 
-// ⑩ 進行の めくり (監査⑧ F8): 本題の 途中で「本題」が aria-current=step
+// ⑩ 進行の めくり (見直し): 本題の 途中で「本題」が aria-current=step
 {
   const a = mk({ date: "2026-11-28" });
   toFirstSeat(a);
@@ -198,7 +198,7 @@ for (const d of [300, 1500]) {
      "本題の 途中: 「本題」に aria-current=step、「まくら」は false");
 }
 
-// ⑪ 再訪で「別のところから」(監査①③ / 決定㊴): 「二つだけ」と 言った とおり 問いは 二つで 噺へ
+// ⑪ 再訪で「別のところから」(見直し / ): 「二つだけ」と 言った とおり 問いは 二つで 噺へ
 {
   const a = mk({ date: "2026-11-28", store: { "hanashiyama.pref.v1": "茨城県" } });
   a.click("open"); a.settle();
@@ -211,7 +211,7 @@ for (const d of [300, 1500]) {
      "再訪で 別のところから: 問いは 二つで 噺へ (" + (sh ? sh.mondo : "噺に 入らず") + ")");
 }
 
-// ⑦ 「はじめから」: 覚えていた 県を 忘れる / ?date= は 残す (2026-11-15 ユーザー指摘・監査⑤)
+// ⑦ 「はじめから」: 覚えていた 県を 忘れる / ?date= は 残す (2026-11-15 見直し・見直し)
 {
   const a = mk({ date: "2026-11-28", store: { "hanashiyama.pref.v1": "茨城県" } });
   a.click("open"); a.settle();
@@ -222,7 +222,7 @@ for (const d of [300, 1500]) {
   ok(/[?&]date=2026-11-28/.test(String(loc.href)) || loc._reloaded === true, "はじめから でも ?date= を 残す (" + String(loc.href).replace(/^.*\//, "") + ")");
 }
 
-// ⑧ 問いの 文は 前の 文から 行を 改める (2026-11-15 ユーザー指摘)
+// ⑧ 問いの 文は 前の 文から 行を 改める (2026-11-15 見直し)
 {
   const a = mk({ date: "2026-11-28" });
   a.click("open"); a.settle(); a.pick("いや、べつに"); a.settle();
@@ -230,7 +230,7 @@ for (const d of [300, 1500]) {
   ok(/。\nどちらからお越しで/.test(q), "問いの 文の 前で 改行する (" + JSON.stringify(q).slice(0, 40) + ")");
 }
 
-// ⑨ 写真の フェード (0.8 秒) の 間は 文字を 止める (2026-11-15 ユーザー指摘)
+// ⑨ 写真の フェード (0.8 秒) の 間は 文字を 止める (2026-11-15 見直し)
 {
   const a = mk({ date: "2026-11-28" });
   toFirstSeat(a);
@@ -252,7 +252,7 @@ for (const d of [300, 1500]) {
   ok(outN !== null && outN === outN2, "写真が 消える フェードの 間 字は 増えない (" + outN + " → " + outN2 + ")");
 }
 
-// ⑩ 客の 相槌 + 自動の 間 (「次へ」の 代わり。2026-11-15 ユーザー判断): 長く 読んだら 相槌で 止め、2〜5 秒で 自動で 続く /
+// ⑩ 客の 相槌 + 自動の 間 (「次へ」の 代わり。2026-11-15 作者の判断): 長く 読んだら 相槌で 止め、2〜5 秒で 自動で 続く /
 //    タップで 待たずに 続く / 早送りは 越えて 問いまで / ボタンは 出さない
 {
   const isAiz = (c) => /(^| )aizuchi( |$)/.test(c.className || "");
@@ -291,12 +291,12 @@ for (const d of [300, 1500]) {
   const a = mk({ date: "2026-11-28" });
   a.click("open"); a.settle();
   for (const l of ["いや、べつに", "県外から", "関東"]) { a.pick(l); a.settle(); }
-  a.pick("茨城県");
+  a.pick("埼玉県");
   for (let k = 0; k < 8; k += 1) { a.advance(120); if (k % 2) a.click("skip"); else a.tap(); }
   a.settle();
   const T = a.talkEls().filter((c) => has(c, "line") && !has(c, "kyaku")).map(txt);
-  const iPb = T.findIndex((t) => t.indexOf("茨城県といえば袋田の滝") === 0);
-  const iLast = T.findIndex((t) => t.indexOf("知られていないのは、こちらの山のほうでございます") === 0);
+  const iPb = T.findIndex((t) => t.indexOf("川の国、埼玉県のお客さんでございますな。") === 0);
+  const iLast = T.findIndex((t) => t.indexOf("そのお国からこの小さな山まで、話はひと跳びでございます") === 0);
   const iToi = T.findIndex((t) => /^噺の前に、ひとつ。/.test(t));
   ok(!a.errors.length && iPb >= 0 && iLast > iPb && iToi > iLast && T.filter((t) => /^噺の前に/.test(t)).length === 1 && a.labels().indexOf("思う") >= 0,
      "県の つなぎは 早送り・タップを 乱打しても 思い込みの 問いの 前に 揃って 1 回 (つなぎ " + iPb + "〜" + iLast + " / 問い " + iToi + ")");
@@ -305,7 +305,7 @@ for (const d of [300, 1500]) {
   ok(a.shown()[0] === "T-1128" && !a.errors.length, "その あと 一席目 (T-1128) に 入る");
 }
 
-// ⑪ オチの 註 (↳ 西山公園の ○○の こと): サゲの すぐ 下 / 札まで 畳まない (2026-11-15 ユーザー依頼)
+// ⑪ オチの 註 (↳ 西山公園の ○○の こと): サゲの すぐ 下 / 札まで 畳まない (2026-11-15 作者の案)
 //   ★2026-11-20: T-1128 の 註は「西山公園のはじまりの庭」(追い足しの「嚮陽渓」と 重ねない)
 {
   const a = mk({ date: "2026-11-28" });
@@ -319,7 +319,7 @@ for (const d of [300, 1500]) {
   ok(!a.byId.sageBox.hidden && note && !/(^| )tatami( |$)/.test(note.className || ""), "札が 出た とき、オチの 註は 畳まれていない");
 }
 
-// ⑫ 札の あと「もう一席」: 高座の 頭へ 戻す / 前の 席の 語りは 全部 畳む (2026-11-15 ユーザー指摘「画面が ずれた まま」)
+// ⑫ 札の あと「もう一席」: 高座の 頭へ 戻す / 前の 席の 語りは 全部 畳む (2026-11-15 見直しの 声「画面が ずれた まま」)
 {
   const a = mk({ date: "2026-11-28" });
   toFirstSeat(a); a.settle();
@@ -337,7 +337,7 @@ for (const d of [300, 1500]) {
   ok(old.length > 5 && open.length === 0, "もう一席で 前の 席の 語りは 全部 畳む (残り " + open.length + " / " + old.length + ")");
 }
 
-// ⑬ 札の 写真は オチの 註が 指す もの (2026-11-20 ユーザー判断): 命日 → 嚮陽庭園 の 札用の 写真を 読む
+// ⑬ 札の 写真は オチの 註が 指す もの (2026-11-20 作者の判断): 命日 → 嚮陽庭園 の 札用の 写真を 読む
 {
   const a = mk({ date: "2026-11-28" });
   toFirstSeat(a); a.settle();
@@ -345,6 +345,159 @@ for (const d of [300, 1500]) {
   const srcs = (a.scriptLog || []).map((s) => String(s.src));
   ok(srcs.some((s) => /card_kyoyo_teien\.js$/.test(s)) && !srcs.some((s) => /card_tsutsuji\.js$/.test(s)),
      "命日の 札は 嚮陽庭園の 写真 (読んだ 札の 群: " + srcs.filter((s) => /card_/.test(s)).map((s) => s.replace(/^.*\//, "")).join(",") + ")");
+}
+
+// ---- 2026-11-21 組版・間の 直し (作者の判断。見直し r7 の 1・9・案B) --------------------------------------
+//   ★node tools/test_motion.js 直す前の.js で ここが NG に なる ことで 効きを 見る
+const hasC = (c, k) => new RegExp("(^| )" + k + "( |$)").test((c && c.className) || "");
+const findEl = (a, k, from) => a.talkEls().slice(from || 0).find((c) => hasC(c, k));
+/** 行が 打ち終わった (land = 飾りつきの 全文が 入った) 時刻 */
+const landed = (c) => !!(c && c._html);
+// ★実演の 筋 (埼玉県) で 二席目 (P-埼玉県) の 4 択まで
+function toSaitama(a) {
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県"]) { a.pick(l); a.settle(); }
+  a.pick("思う"); a.settle();
+  a.pick("吉田松陰"); a.settle();
+  a.click("again"); a.settle();
+  for (let k = 0; k < 20 && a.labels().length && a.labels().indexOf("3園") < 0; k += 1) { a.pick(0); a.settle(); }
+}
+/** サゲ → 註 → 推量 の 時刻 (5ms 刻み) */
+function yoinTimes(a, startIdx) {
+  let sage = null, tLand = null, tNote = null, tSui = null;
+  for (let k = 0; k < 6000 && tSui == null; k += 1) {
+    a.advance(5);
+    if (!sage) sage = findEl(a, "sage", startIdx);
+    if (sage && tLand == null && landed(sage)) tLand = a.now;
+    if (tLand != null && tNote == null && findEl(a, "ochi-what", startIdx)) tNote = a.now;
+    if (tNote != null && tSui == null && findEl(a, "suiryo", startIdx)) tSui = a.now;
+  }
+  return { tLand, tNote, tSui, note: tNote - tLand, sui: tSui - tNote };
+}
+// ⑭ サゲの あとの 余韻: 打ち終えてから 註まで 2.4 秒・註から 推量まで 1.2 秒 (一字ずつ / 一度に / 動きを 減らす)
+for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashiyama.type.v1": "0" } }], ["動きを 減らす", { reduce: true }]]) {
+  const a = mk(Object.assign({ date: "2026-11-28" }, o));
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰");
+  const y = yoinTimes(a, 0);
+  ok(y.tLand != null && Math.abs(y.note - 2400) <= 10 && Math.abs(y.sui - 1200) <= 10,
+     "⑭ " + name + ": サゲを 打ち終えて 註まで " + y.note + "ms (2400)・註から 推量まで " + y.sui + "ms (1200)");
+  a.settle();
+  ok(!a.errors.length && !a.byId.sageBox.hidden, "  " + name + ": その あと 札まで 進む (例外 " + a.errors.length + ")");
+}
+// ⑭ 余韻は タップで 飛ばせる (1 回で 註・もう 1 回で 推量)。★早送りは 1 回で 札まで
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰");
+  let sage = null;
+  for (let k = 0; k < 6000 && !(sage && landed(sage)); k += 1) { a.advance(5); sage = sage || findEl(a, "sage"); }
+  a.advance(800);                                   // ★行末の 間 (0.7 秒) の あと = 余韻の 中
+  const n0 = !!findEl(a, "ochi-what");
+  a.tap();
+  const n1 = !!findEl(a, "ochi-what"), s1 = !!findEl(a, "suiryo");
+  a.tap();
+  const s2 = !!findEl(a, "suiryo");
+  ok(!n0 && n1 && !s1 && s2, "⑭ 余韻の 中の タップ: 1 回目で 註 (推量は まだ)・2 回目で 推量 (" + [n0, n1, s1, s2].join(",") + ")");
+  const b = mk({ date: "2026-11-28" });
+  toFirstSeat(b); b.settle();
+  b.pick("吉田松陰");
+  let sg = null;
+  for (let k = 0; k < 6000 && !(sg && landed(sg)); k += 1) { b.advance(5); sg = sg || findEl(b, "sage"); }
+  b.click("skip"); b.advance(100);
+  ok(!b.byId.sageBox.hidden && !b.errors.length, "⑭ サゲの あと 早送り 1 回で 余韻を 越えて 札まで");
+}
+// ⑮ 打ち出しの 速さ: 倍率の ある 行は 字の 大きさの 補正で 1 倍 未満に しない / サゲの 中の「、」は 600ms
+{
+  const PX = { sage: 25.9, kotae: 22.1, makura: 22.7 };
+  const sizes = (c) => { const s = " " + c + " "; for (const k of Object.keys(PX)) if (s.indexOf(" " + k + " ") >= 0) return PX[k]; return 18.9; };
+  const a = mk({ date: "2026-11-28", sizes });
+  toFirstSeat(a); a.settle();
+  // ★文字ごとの 出た 時刻 (1ms 刻み)
+  const gaps = (k) => {
+    let el = null, last = 0, tPrev = null; const g = [];
+    for (let n = 0; n < 20000; n += 1) {
+      a.advance(1);
+      el = el || findEl(a, k);
+      if (!el) continue;
+      if (landed(el)) break;
+      const t = String(el.textContent || "");
+      if (t.length > last) { if (tPrev != null) g.push([t[last - 1], a.now - tPrev]); last = t.length; tPrev = a.now; }
+    }
+    return g;
+  };
+  const med = (xs) => { const s = xs.slice().sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
+  const kana = (g) => g.filter(([c]) => /[ぁ-ゖ]/.test(c)).map(([, w]) => w);
+  a.pick("吉田松陰");
+  const gk = gaps("kotae");
+  const gs = gaps("sage");
+  const toten = gs.filter(([c]) => c === "、").map(([, w]) => w);
+  ok(med(kana(gk)) >= 46, "⑮ 返し (22.1px): かな 1 字 " + med(kana(gk)) + "ms (32 × 1.45 = 46 を 割らない)");
+  ok(med(kana(gs)) >= 51, "⑮ サゲ (25.9px): かな 1 字 " + med(kana(gs)) + "ms (32 × 1.6 = 51 を 割らない)");
+  ok(toten.length >= 2 && toten.every((w) => w === 600), "⑮ サゲの 中の「、」は 600ms (" + toten.join(",") + ")");
+  // ★対照: 倍率の 無い 行 (地の文 18.9px = 32ms・まくら 22.7px は 補正で 速い まま) は 変えない
+  const b = mk({ date: "2026-11-28", sizes });
+  b.click("open");
+  const gm = (() => { const g = []; let el = null, last = 0, tp = null;
+    for (let n = 0; n < 20000; n += 1) { b.advance(1); el = el || b.talkEls().find((c) => hasC(c, "line") && hasC(c, "shi"));
+      if (!el) continue; if (landed(el)) break; const t = String(el.textContent || "");
+      if (t.length > last) { if (tp != null) g.push([t[last - 1], b.now - tp]); last = t.length; tp = b.now; } } return g; })();
+  ok(med(kana(gm)) === 32, "  対照: 地の文 (18.9px) の かな 1 字は 32ms の まま (" + med(kana(gm)) + ")");
+}
+// ⑯ 正解の 1 行 (案B): 外れの 返し (hazure) を 打ち終えてから 正解まで 900ms (返しの 前の 一拍と 同じ)
+{
+  const a = mk({ date: "2026-11-28" });
+  toSaitama(a);
+  ok(a.shown()[1] === "P-埼玉県" && a.labels().indexOf("3園") >= 0, "⑯ 実演の 筋で 二席目 P-埼玉県 の 4 択 (" + a.shown().join(">") + ")");
+  const from = a.talkEls().length;
+  const tPick = a.now;
+  a.pick("3園");
+  let k0 = null, tK = null, tKL = null, tS = null;
+  for (let n = 0; n < 4000 && tS == null; n += 1) {
+    a.advance(5);
+    k0 = k0 || findEl(a, "kotae", from);
+    if (k0 && tK == null) tK = a.now;
+    if (k0 && tKL == null && landed(k0)) tKL = a.now;
+    if (tKL != null && findEl(a, "seikai", from)) tS = a.now;
+  }
+  ok(!!k0 && hasC(k0, "hazure"), "⑯ 外れの 返しの cls に hazure (" + (k0 ? k0.className : "-") + ")");
+  ok(tS != null && Math.abs(tS - tKL - 900) <= 10, "⑯ 返しを 打ち終えて 正解まで " + (tS - tKL) + "ms (900。返しの 前の 一拍 " + (tK - tPick) + "ms)");
+  const ks = a.talkEls().slice(from).filter((c) => !hasC(c, "sr"));
+  const iK = ks.indexOf(k0);
+  ok(iK >= 0 && hasC(ks[iK + 1], "seikai"), "⑯ 返しと 正解の 間に 空き (ma) を 挟まない (" + (ks[iK + 1] ? ks[iK + 1].className : "-") + ")");
+  a.settle();
+  ok(!a.errors.length && !a.byId.sageBox.hidden, "  その あと 札まで 進む");
+}
+
+// ⑰ あて推量の「……」(表示だけ。2026-11-21 作者の判断): 打ち出しは「……」で 約 0.8 秒 止まる / タップで 越えられる / 一度に 出す でも「……」は 出る
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰");
+  let el = null, last = 0, tPrev = null, ma = null;
+  for (let n = 0; n < 30000; n += 1) {
+    a.advance(1);
+    el = el || findEl(a, "suiryo");
+    if (!el) continue;
+    if (landed(el)) break;
+    const t = String(el.textContent || "");
+    if (t.length > last) {
+      if (tPrev != null && t[last - 1] === "…" && t[last - 2] === "…") ma = a.now - tEll;
+      if (t[t.length - 1] === "…" && t[t.length - 2] !== "…") var tEll = a.now;
+      last = t.length; tPrev = a.now;
+    }
+  }
+  ok(ma != null && ma >= 790 && ma <= 820, "⑰ 推量の「……」で 打ち出しが 止まる " + ma + "ms (約 800)");
+  const b = mk({ date: "2026-11-28", store: { "hanashiyama.type.v1": "0" } });
+  toFirstSeat(b); b.settle(); b.pick("吉田松陰"); b.settle();
+  const s2 = findEl(b, "suiryo");
+  ok(!!s2 && /……/.test(s2._html || "") && /<strong class="point">/.test(s2._html || ""), "  一度に 出す でも「……」と 太字の ポイントが 出る");
+  const c = mk({ date: "2026-11-28" });
+  toFirstSeat(c); c.settle(); c.pick("吉田松陰");
+  let e3 = null;
+  for (let n = 0; n < 30000; n += 1) { c.advance(1); e3 = e3 || findEl(c, "suiryo"); if (e3 && /……$/.test(String(e3.textContent || ""))) break; }
+  c.tap();
+  ok(!!e3 && landed(e3) && /ないでしょうか。/.test(e3._html || ""), "  「……」の 間で タップ → 行の 終わりまで 出る");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");

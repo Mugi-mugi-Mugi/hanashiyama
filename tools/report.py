@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """はなし山: 「噂の一言」を噺につけるのと、足したあとに読む吟味レポートを書き出す。
 
-なぜ要るか (★2026-09-22 ユーザー判断)
+なぜ要るか (★2026-09-22 作者の判断)
   「数字が割れているところ」「語らないと決めた話」は、見る人には要らない情報。
   → 画面の「タネ明かし」から外した。
   → 代わりに ① 噺のなかの「噂ですが」の一言として使う
@@ -15,11 +15,44 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 P = lambda *a: os.path.join(ROOT, *a)
 
 
+# ★噂の 一言が 受ける 語 (2026-11-20 見直し)。
+#   ★事実 ID だけで 付けると、その事実を 引いていても 本題に その話が 出てこない 席に 付き、
+#   「この獣」「第1回」「詮勝」が 何の ことか 分からなかった (S20・S44 の 遊具の 席 / S57 の 鐘 / S06 の 城)。
+#   → ★本題 (と 振り・サゲ) に この 語が 出てくる 席に だけ 付ける。★ここに 無い 割れ (about) は 付けない
+UWASA_NEEDS = {
+    "祈りの道の数": r"石仏|お地蔵|地蔵|祈りの道",
+    "ミンファは出て行ったのか": r"ミンファ",
+    "鯖江市と村上市の姉妹都市提携日": r"姉妹都市|村上",
+    "「日本一小さな動物園」の出所": r"日本一小さ",
+    # ★T-1007 (双子) には 付けない: 9 頭と 4 頭を 突き合わせた 推論で、出典は そう 書いていない (見直し)。
+    #   ★頭数の 話を 本題で している 席が できたら 付く
+    "現在飼育しているレッサーパンダは何頭か": r"何頭",
+    "移動先の動物園は何園か": r"行き先|渡した先|移った",
+    "桜の本数の内訳と合計": r"さくら|桜の名所、|全山に桜|桜を|桜の数",
+    "つつじまつりの回数": r"第\s*1\s*回|回目|第[一二三四五六七八九十]+回",
+    "動物園の開園時間の表記": r"閉まる|閉園|時刻|土日|一日に",
+    "公園は何年続いているか": r"嚮陽渓|庭",
+    "ティアラの移動記録": r"ティアラ",
+    "レッサーパンダを飼育している園は何園か": r"レッサーパンダ|赤い獣|あの赤い|赤い子",
+    "村上から来たのはどの殿様か": r"村上",
+    "同じ名前の別物": r"嚮陽",
+}
+
+
+def _body_text(s):
+    """噂の 一言が 受けて よい 範囲 = 振り・本題・問い・サゲ (★まくら・追い足し・札は 入れない)。
+    ★噂の 一言は サゲの あとに 出る → 問いで 訊いた ことも 受けられる"""
+    hs = [h if isinstance(h, str) else h.get("text", "") for h in s.get("hondai", [])]
+    q = (s.get("question") or {}).get("text", "")
+    return " ".join([s.get("furi", "")] + hs + [q, s.get("sage", "")])
+
+
 def attach_uwasa(stories, conflicts):
     """割れている数字を、噺のなかの「噂ですが」の一言としてつける。
 
     ★uwasa に書いてよい数字は、その conflict の values に出てくる数字だけ。
       ここで nums として持たせ、tools/validate.py がそれで検査する。
+    ★本題に その 話が 出てくる 席に だけ 付ける (UWASA_NEEDS)。
     """
     n = 0
     for c in conflicts:
@@ -28,6 +61,9 @@ def attach_uwasa(stories, conflicts):
         only = c.get("attachStories") or []      # 事実IDでは絞れないときに、噺IDで直に指す
         if not text or not (need or only):
             continue
+        pat = UWASA_NEEDS.get(c.get("about", ""))
+        if not pat:
+            continue                           # ★受ける 語が 決まっていない 割れは 付けない
         nums = set()
         for v in c.get("values", []):
             nums |= set(re.findall(r"[0-9]+", str(v.get("value", "")).replace(",", "")))
@@ -35,6 +71,8 @@ def attach_uwasa(stories, conflicts):
             if s.get("uwasa"):
                 continue                       # 1 席に 1 つまで
             hit = (s["id"] in only) if only else (set(need) <= set(s.get("facts", [])))
+            if hit and not re.search(pat, _body_text(s)):
+                hit = False
             if hit:
                 s["uwasa"] = {"text": text, "nums": sorted(nums)}
                 n += 1

@@ -199,7 +199,8 @@ function runPass(seed, date, word, kin, viaList, plan, opt) {
     const p = snaps[snaps.length - 1];
     if (!p || ["n", "mid", "mek", "bg", "lab", "cred", "hit", "zu", "haori", "stg1"].some((k) => p[k] !== s[k])) snaps.push(s);
     if (opt.marks) {
-      if (marks.furi == null && byId.talk.children.some((c) => /(^| )furi( |$)/.test(c.className || ""))) marks.furi = clock;
+      // ★2026-11-20: 前段で 問うた 席は 振りを 飛ばす → 振り か まくらの 早い ほうから 数える
+      if (marks.furi == null && byId.talk.children.some((c) => /(^| )(furi|makura)( |$)/.test(c.className || ""))) marks.furi = clock;
       if (marks.card == null && byId.sageBox.hidden === false) marks.card = clock;
     }
   };
@@ -332,7 +333,7 @@ ok(rl.href.indexOf("kin=") < 0,
 // ★トップの 一席目は 観光地の噺 (去年との 差別化。SPEC §11)
 const tops = [0, 1, 2, 3, 4, 5].map((sd) => runPass(sd, "2026-09-23", "", "", false, ["言わずにおく", "思う"]))
   .filter((r) => !r.err).map((r) => r.told[0]);
-// ★2026-11-15 ユーザー判断: 一席目は TOP_FIRST 3 + 手書きの 動物 6 (+ 県を いただけば その県の 噺) から 均等に
+// ★2026-11-15 作者の判断: 一席目は TOP_FIRST 3 + 手書きの 動物 6 (+ 県を いただけば その県の 噺) から 均等に
 ok(tops.length && tops.every((id) => ["S11", "S12", "S08", "S17", "S32", "S39", "S42", "S44", "S54"].indexOf(id) >= 0),
    "県を 言わない 客の 一席目は 候補 9 席の 中から (" + tops.join(", ") + ")");
 const kinFirst = runPass(0, "2026-09-23", "", "kushiro");
@@ -382,7 +383,7 @@ ok(!denied.err && denied.told[0] !== "S01",
    "否定された 思い込みの噺では 始めない (" + (denied.told[0] || "?") + ")");
 
 
-// ==== 2026-11-14 読む負担を 減らす 手当て (受け入れ条件) ===================
+// ==== 2026-11-14 読む負担を 減らす (受け入れ条件) ==========================
 const mondoOf = (r) => { const s = r.log.find((e) => e.event === "shown"); return s ? s.mondo : -1; };
 // ★P0-2 標準ルートは 問答 3 つ (県外 → 地方 → 県 は 1 つ)。★冒頭の「三つだけ」どおりに 終わる
 const std = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"]);
@@ -397,7 +398,7 @@ const rv = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "は�
 ok(!rv.err && mondoOf(rv) === 2 && /また茨城県からで/.test(rv.talkText) && /二つだけ伺います/.test(rv.talkText),
    "再訪: 「また茨城県からで?」で 問答 2 つ (" + mondoOf(rv) + ")");
 // ★「別のところから」は 言い直し (数を 増やさない)。★冒頭で「二つだけ」と 言ったので ★思い込みは 伺わず 噺へ
-//   (★2026-11-15 監査①③: 前は ここで 思い込みを 伺い「二つ」と 言って 三つに なって いたのを、この 試験が OK に して いた)
+//   (★2026-11-15 見直し: 前は ここで 思い込みを 伺い「二つ」と 言って 三つに なって いたのを、この 試験が OK に して いた)
 const rv2 = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "別のところから", "この福井から"], { store: { "hanashiyama.pref.v1": "茨城県" } });
 const rv2After = (rv2.talkText || "").split("別のところから")[1] || "";
 ok(!rv2.err && mondoOf(rv2) === 2 && /二つだけ伺います/.test(rv2.talkText) && !/噺の前に、ひとつ/.test(rv2After) && rv2.told.length >= 1,
@@ -467,7 +468,7 @@ if (seats) {
      "scenes に 指定の ある 席は 指定した 数だけ 写真が 出る (" + withSpec.length + " 席" +
      (bad1.length ? " → 合わない: " + bad1.map((x) => x.id + " " + x.photos.length + "/" + wantPhotos(x.st) + " " + JSON.stringify(x.st.scenes)).join(", ") : "") + ")");
   const bad2 = noSpec.filter((x) => x.photos.length);
-  // ★2026-11-15 から ★全席に 写真が 最低 1 枚 (ユーザー判断)。写真の 無い 席が 0 なら それを 確かめる
+  // ★2026-11-15 から ★全席に 写真が 最低 1 枚 (作者の判断)。写真の 無い 席が 0 なら それを 確かめる
   ok(noSpec.length === 0 ? withSpec.length === hand.length
                          : noSpec.every((x) => x.photos.length === 0),
      noSpec.length === 0 ? "手書きの 席は すべて 写真が 1 枚 以上 (" + withSpec.length + " 席)"
@@ -493,14 +494,16 @@ ok(bgSnaps.length >= 5 && !noCap.length,
 const capOrder = html.indexOf('id="haikeiLabel"') >= 0 && html.indexOf('id="haikeiLabel"') < html.indexOf('id="haikeiCredit"');
 ok(capOrder, "隅書きは「何の 写真か」が 先、出典が あと");
 
-// ★名前の 指定 (S50 = 本題の 半ばに panda@ひかり。★S17 の ミンファは オチの 先回りに なるので 外した (2026-11-14 審査)) では ★その子の 写真が 出る
-const s50 = runPass(0, "2026-07-15", "", "", false, ["ふつう", "言わずにおく", "いや、どうだか"], { until: "S50" });
+// ★名前の 指定 (S50 = 本題の 半ばに panda@ひかり。★S17 の ミンファは オチの 先回りに なるので 外した (2026-11-14 見直し)) では ★その子の 写真が 出る
+// ★2026-11-20 取り込み: S50 は ひかり (2024 年に 死亡) を 名指し しなくなった (担当 A)。★名前の 指定の 仕組みは 試験の 中で タカシに 差し替えて 見る
+const s50 = runPass(0, "2026-07-15", "", "", false, ["ふつう", "言わずにおく", "いや、どうだか"], { until: "S50",
+  patch: (H) => { const st = H.stories.find((s) => s.id === "S50"); (st.scenes || []).forEach((sc) => { delete sc.img; }); if (st.scenes && st.scenes[1]) st.scenes[1].img = "panda@タカシ"; } });
 const s50Seat = (!s50.err && seatPhotos(s50) || []).find((x) => x.id === "S50");
 const s50Spec = s50Seat && s50Seat.st.scenes;
 const s50Lab = s50Seat ? s50Seat.photos.map((f) => f.dataset.label || "") : [];
-ok(s50Seat && imgsOf(s50Seat.st).filter(Boolean).join(",") === "panda@ひかり" &&
-   s50Lab.length === 1 && s50Lab[0].indexOf("ひかり") >= 0,
-   "S50 (panda@ひかり) で ひかりの 写真が 1 枚 出る (" + (s50Seat ? s50Lab.join(" / ") || "出ず" : "S50 に 届かず [" + s50.told.join(">") + "]") + ")");
+ok(s50Seat && imgsOf(s50Seat.st).filter(Boolean).join(",") === "panda@タカシ" &&
+   s50Lab.length === 1 && s50Lab[0].indexOf("タカシ") >= 0,
+   "名前の 指定 (試験で S50 に panda@タカシ) で その子の 写真が 1 枚 出る (" + (s50Seat ? s50Lab.join(" / ") || "出ず" : "S50 に 届かず [" + s50.told.join(">") + "]") + ")");
 ok(std.loaded.every((s) => /^data\/img\/[a-z_]+\.js$/.test(s)) && std.loaded.length >= 2 && std.loaded.length <= 5,
    "写真は 席に 要る 群だけ 読む (" + std.loaded.length + " 本: " + std.loaded.join(", ") + ")");
 ok(std.loaded.some((s) => /card_/.test(s)), "札の 写真の 群も 読んだ");
@@ -517,13 +520,14 @@ ok(gj.log.some((e) => e.event === "genchi_offer"), "謎かけを 出したこと
 const gjSeat = (!gj.err && seatPhotos(gj) || []).find((x) => x.id === "S55");
 ok(gjSeat && Array.isArray(gjSeat.st.scenes) && gjSeat.photos.length === wantPhotos(gjSeat.st),
    "現地の 席 S55 も 台本の 指定どおりの 数の 写真 (" + (gjSeat ? gjSeat.photos.length + "/" + wantPhotos(gjSeat.st) + " " + JSON.stringify(gjSeat.st.scenes) : "席が 見つからない") + ")");
-ok(/坂の中ほど、結びの広場/.test(gj.talkText), "S55 の あと、G2 が まだ 確かめて いなくても 次の 場所は 言う");
+// ★2026-11-21 (文脈の 見直し): 次の 場所 (G2) が まだ 確かめて いない ときは「この続きは、結びの広場に」と 言わない (行っても 何も 出ない)
+ok(!/坂の中ほど、結びの広場/.test(gj.talkText), "S55 の あと、G2 が まだ 確かめて いなければ 次の 場所 (結びの広場) へ 送らない");
 const gm = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], { verify: ["G1"], words: ["あお"] });
 ok(!gm.err && /ヒントを ひとつ/.test(gm.talkText) && gm.log.some((e) => e.event === "genchi_miss"),
    "外れたら「惜しい」では なく ヒントを 一つ / 外れを 数える");
 ok(JSON.parse(gm.store["hanashiyama.genchi.v1"] || "{}").pending === "G1", "答えられなかった 謎かけは お預けとして 覚える (幕から 答えられる)");
 const gw = runPass(0, "2026-09-23", "", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], { verify: ["G1"], words: ["あお", "ＡＫＡ", "アカ"] });
-// ★2026-11-20 ユーザー判断: もう 公園に いる 人に「行ってみたい気持ち」を 聞かない
+// ★2026-11-20 作者の判断: もう 公園に いる 人に「行ってみたい気持ち」を 聞かない
 const IKITAI = /いま、いかがです。西山公園、行ってみたい気持ちは/g;
 // ★talkText には 読み上げ用の 写し (sr) も 入る → 台詞の 回数では なく ★記録 (q1) で 数える
 ok(!gj.err && gj.log.filter((e) => e.event === "q1").length === 1 && gj.log.filter((e) => e.event === "delta").length === 1,
@@ -858,7 +862,7 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
 }
 
 // ---- 羽織: ★見える 差 (前は 高座の 地 1.09:1 で、しかも 背景の 写真の 下) / 色の 層は opacity で 出す
-//   ★2026-11-15 (監査①③⑥): 写真より 上の 層 = 見出しの 帯 で 出す。まくらの 間は 濃い 層、本題で 消える
+//   ★2026-11-15 (見直し): 写真より 上の 層 = 見出しの 帯 で 出す。まくらの 間は 濃い 層、本題で 消える
 {
   const PAPER = "#f6f0e3";
   const tone = (declOf(".kozahead::before", "background") || "").trim();
@@ -880,10 +884,10 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
      "羽織は 背景の 写真より 上の 見出しの 帯で 出す (帯 z " + zHead + " / 写真 z " + zBg + ")");
 }
 
-// ---- 背景の 写真: 横長の まま 全体を 見せる (cover で 切らない) / 隅書きは タップを 奪わない (2026-11-15 監査⑧ F17・F6)
+// ---- 背景の 写真: 横長の まま 全体を 見せる (cover で 切らない) / 隅書きは タップを 奪わない (2026-11-15 見直し)
 {
   const fit = declOf(".haikei img", "object-fit"), h = declOf(".haikei img", "height"), pos = declOf(".haikei img", "object-position") || "";
-  // ★2026-11-15 (ユーザー指摘「背景が おかしい」): 層は 高座の 中だけ (absolute・紙色に 塗らない = 幕を 覆わない)。
+  // ★2026-11-15 (見直しの 声「背景が おかしい」): 層は 高座の 中だけ (absolute・紙色に 塗らない = 幕を 覆わない)。
   //   ★中の 枠を sticky で 画面の 高さに 置き、写真は 枠の 中で 全体を 見せる (contain)
   // ★2026-11-16: 写真は 下に 寄せる (隅書きの 1 行の すぐ 上)。高さは 枠から 足元と 隅書きを 引いた 分
   ok(fit === "contain" && /^calc\(100% - var\(--footh/.test(h || "") && /bottom/.test(pos) && declOf(".haikei img", "width") === "100%",
@@ -899,7 +903,7 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
   ok(declOf(".haikei-cap", "pointer-events") === "none", "写真の 隅書きは pointer-events: none (下の 選択肢の タップを 奪わない)");
 }
 
-// ---- 文字の 読みやすさ (2026-11-15 監査⑧ F3・F4・F8・F9): ★帯の 外の 字が 4.5:1 以上
+// ---- 文字の 読みやすさ (2026-11-15 見直し): ★帯の 外の 字が 4.5:1 以上
 {
   const V = { "var(--muted)": "#6d6256", "var(--ink)": "#1d1a16", "var(--paper)": "#f6f0e3" };
   const hex = (v) => { const x = V[(v || "").trim()] || (v || "").trim(); return /^#[0-9a-f]{3}$/i.test(x) ? "#" + x.slice(1).split("").map((c) => c + c).join("") : x; };
@@ -922,7 +926,7 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
   ok(declOf(".midashi", "white-space") !== "nowrap" && declOf(".midashi", "text-overflow") === null, "見出しは 拡大しても 省略で 切らない (折り返す)");
 }
 
-// ---- 読み上げ (2026-11-15 監査⑧ F1・F5)
+// ---- 読み上げ (2026-11-15 見直し)
 {
   const kids = std.err ? [] : std.byId.talk.children;
   const lines = kids.filter((c) => hasC(c, "line") && !hasC(c, "kyaku") && !hasC(c, "aizuchi"));   // ★相槌は 打ち出さない (そのまま 読ませる)
@@ -984,7 +988,7 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
 }
 
 // ★「命日」(T-1128) が 90 秒の 枠に 収まるかの 目安 (★合否に しない。★人が 押す 時間は 入らない)
-const meinichi = runPass(0, "2026-11-28", "", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], { marks: true });
+const meinichi = runPass(0, "2026-11-28", "", "", false, ["いや、べつに", "県外から", "関東", "埼玉県", "思う"], { marks: true });   // ★実演の 筋 (2026-11-20 から 埼玉県)
 if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != null && meinichi.marks.card != null) {
   const m = meinichi.marks;
   const sec = (m.card - m.furi) / 1000;
@@ -996,7 +1000,7 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
   ok(false, "「命日」の 目安を 出せなかった [" + (meinichi.err ? meinichi.err.message : meinichi.told.join(" → ")) + "]");
 }
 
-// ---- 県ごとの つなぎ (prefBridge。2026-11-15 ユーザー判断「噺に つなげる つなぎを 都道府県別で」) ----
+// ---- 県ごとの つなぎ (prefBridge。2026-11-15 作者の判断「噺に つなげる つなぎを 都道府県別で」) ----
 //   ★はじめから で 県を 答えた 人に、★県を 伺った 直後 (県の 返しの 後・思い込みの 問いの 前) に その県の lines を 地の文で 順に 言う。
 //   ★2026-11-15: 前は 一席目の 頭 (思い込みの 答えと 噺の 入りの 間) で、入り「その○○の話から」の 受ける 相手が 遠かった。
 //   ★最後の 文「では、…ひとつ。」は 言わない (後ろに「噺の前に、ひとつ。」が 続く)。その行の 前半は 残す
@@ -1005,7 +1009,7 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
 //   ★台本 (bundle) は 触らず、試験の 中で 差し込む。★HANASHI_APP = 別の app.js (直す 前の 版で NG を 見る)
 {
   const MH = require("./motion_harness");
-  const APPX = process.env.HANASHI_APP ? fs.readFileSync(process.env.HANASHI_APP, "utf8") : null;
+  const APPX = (process.env.HANASHI_APP || process.env.HANASHI_APP_ALL) ? fs.readFileSync(process.env.HANASHI_APP || process.env.HANASHI_APP_ALL, "utf8") : null;
   const PB = (w) => { w.HANASHI.prefBridge = {};
     w.HANASHI.prefectures.forEach((p) => { w.HANASHI.prefBridge[p] = { lines: ["試しの" + p + "の つなぎ 一。", "試しの" + p + "の つなぎ 二。では、試しの お客さんに、ひとつ。"], facts: ["F83"] }; }); };
   const F83 = JSON.parse(fs.readFileSync(path.join(ROOT, "app", "data", "facts.json"), "utf8"));
@@ -1078,7 +1082,7 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
 //   ★本物の 台本で 種を 変えて 回し、席の 入りの 前後を 見る。★HANASHI_APP = 直す 前の app.js で NG を 見る
 {
   const MH = require("./motion_harness");
-  const APPX = process.env.HANASHI_APP ? fs.readFileSync(process.env.HANASHI_APP, "utf8") : null;
+  const APPX = (process.env.HANASHI_APP || process.env.HANASHI_APP_ALL) ? fs.readFileSync(process.env.HANASHI_APP || process.env.HANASHI_APP_ALL, "utf8") : null;
   function run(opt, plan, N, onLabels) {
     const a = MH.makeApp(Object.assign({ date: "2026-11-15", seed: 1 }, APPX ? { srcPatch: () => APPX } : {}, opt));
     a.click("open");
@@ -1140,20 +1144,888 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
   const zc = z.map((r) => r.L.filter((x) => /在庫切れ/.test(x.t)).length);
   const anyN = z.map((r) => r.a.log().filter((e) => e.event === "shown" && e.by === "any").length);
   ok(zc.every((n) => n <= 1) && anyN.some((n) => n >= 2), "「在庫切れ」の 問いは 1 回に 1 度 (見繕い " + anyN.join(",") + " 席 / 問い " + zc.join(",") + " 度)");
-  let mata = 0;
-  const rm = run({ seed: 3 }, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], 6, (a, ls) => {
-    if (ls.includes("また来る") && !mata) { mata = 1; a.pick("また来る"); return true; }
-    if (!ls.length && mata === 1) { mata = 2; a.click("again"); return true; }
-    return false;
+  // ★2026-11-21: 「もう一席」を 押した あとは「お願いします / また来る」で もう一度 頼ませない (三席目を 頼むと 席より 先に 問いが 出ていた)
+  const askAfter = z.filter((r) => r.L.some((x, i) => /在庫切れ/.test(x.t) && r.L.slice(i + 1, i + 4).some((y) => /^(お願いします|また来る)$/.test(y.t))));
+  ok(!askAfter.length && zc.some((n) => n === 1), "「もう一席」の あとの 在庫切れは 問わずに 見繕う (問うた 回 " + askAfter.length + " / 断った 回 " + zc.filter((n) => n).length + ")");
+  // (e) 実演の 筋 (11/28・埼玉県・思う): 一席目 T-1128・二席目 P-埼玉県。二席目の 入りは 挨拶の 二度目に しない
+  //   ★2026-11-20 作者の判断: 実演の 二席目は P-埼玉県 (飼育記録 = オープンデータを 使う)。★種 1 だけで なく 1〜50 で 崩れない こと (見直し)
+  const SEEDS = Array.from({ length: 50 }, (_, k) => k + 1);
+  const demoBad = [];
+  let demo1 = null;
+  SEEDS.forEach((sd) => {
+    const sh = run({ date: "2026-11-28", search: "?date=2026-11-28", seed: sd }, ["いや、べつに", "県外から", "関東", "埼玉県", "思う"], 2);
+    const sb = bridges(sh.L);
+    const good = !sh.errors && sh.a.shown().slice(0, 2).join(">") === "T-1128>P-埼玉県" && sb.length >= 2 &&
+      sh.L[sb[0]].t === "では、今日という日の話を。" && sh.L[sb[1]].t.indexOf("からでございますか") < 0;
+    if (!good) demoBad.push(sd + ":" + sh.a.shown().slice(0, 2).join(">"));
+    if (sd === 1) demo1 = sb[1] != null ? sh.L[sb[1]].t : "?";
   });
-  const mc = rm.L.filter((x) => /在庫切れ/.test(x.t)).length;
-  ok(mata === 2 && mc === 2, "「また来る」の あと もう一席を 押すと 改めて 問う (問い " + mc + " 度)");
-  // (e) 実演の 筋 (11/28・茨城県・思う): 一席目 T-1128・二席目 P-茨城県。二席目の 入りは 挨拶の 二度目に しない
-  const sh = run({ date: "2026-11-28", search: "?date=2026-11-28", seed: 1 }, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], 2);
-  const sb = bridges(sh.L);
-  ok(sh.a.shown().slice(0, 2).join(">") === "T-1128>P-茨城県" && sb.length >= 2 && sh.L[sb[0]].t === "では、今日という日の話を。" &&
-     sh.L[sb[1]].t.indexOf("からでございますか") < 0,
-     "実演の 筋: T-1128 > P-茨城県。二席目の 入り「" + (sb[1] != null ? sh.L[sb[1]].t : "?") + "」");
+  ok(!demoBad.length, "実演の 筋: 種 1〜50 の すべてで T-1128 > P-埼玉県・二席目の 入りは 挨拶の 二度目に しない (崩れ " + demoBad.length + ") " +
+     demoBad.slice(0, 3).join(" ") + " / 種 1 の 二席目の 入り「" + demo1 + "」");
+}
+
+// ---- 見直し (2026-11-20) の 直し ----------------------------------------------------
+//   ★見直しで 画面の 台詞が 前後で 通じない 所を 拾った。★直した 点ごとに 1 つ 以上の 試験。
+//   ★HANASHI_APP_ALL (または HANASHI_APP) に 直す 前の app.js を 渡すと、ここの 試験が NG に なる (効きを 見る)
+{
+  const MH = require("./motion_harness");
+  const APPY = process.env.HANASHI_APP_ALL || process.env.HANASHI_APP;
+  const APPX = APPY ? fs.readFileSync(APPY, "utf8") : null;
+  const HTML = fs.readFileSync(process.env.HANASHI_HTML || path.join(ROOT, "app", "index.html"), "utf8");
+  // ★本物の 台本 (bundle) を 読む (席の 中身を 見る)
+  const BW = {}; new Function("window", "self", bundleSrc)(BW, BW);
+  const HB = BW.HANASHI;
+  const ALLB = [].concat(HB.stories, HB.prefStories, Object.values(HB.today).reduce((a, x) => a.concat(x), []));
+  const byIdB = (id) => ALLB.find((s) => s.id === id);
+  const beliefLabel = (lab) => (HB.beliefs.find((b) => b.label === lab) || {}).id || null;
+  /**
+   * 1 回 通す。@param opt makeApp の 指定 + words (打ち込む 語の 列) / plan = 押す 選択肢の 列 / N = 札まで 見る 席の 数
+   * 返り L = [{ k: "say"|"kyaku"|"aizuchi"|"seat"|"ma", cls, t }] (噺家・客の 台詞は 読み上げ用の 全文で 持つ)
+   */
+  function go2(opt, plan, N) {
+    const words = (opt.words || []).slice();
+    const a = MH.makeApp(Object.assign({ date: "2026-11-20", seed: 1 }, APPX ? { srcPatch: () => APPX } : {}, opt));
+    a.click("open");
+    for (let k = 0; k < 600; k++) {
+      a.settle();
+      if (a.shown().length >= N && !a.byId.sageBox.hidden) break;
+      const ls = a.labels();
+      if (!ls.length) { if (!a.byId.sageBox.hidden) { a.click("again"); continue; } break; }
+      if (ls.includes("(form)")) {
+        if (opt.later && ls.length) { const cs = a.choices(); const f = cs.find((c) => c.tagName === "FORM"); const lb = (function find(n) { for (const x of n.children) { if (/いまは よしておく/.test(x.textContent || "") && x.handlers.click) return x; const r = find(x); if (r) return r; } return null; })(f); if (lb) { opt.later = false; lb.click(); continue; } }
+        a.submit(words.length ? words.shift() : ""); continue;
+      }
+      const i = plan.length ? ls.indexOf(plan[0]) : -1;
+      if (i >= 0) { plan.shift(); a.pick(i); continue; }
+      if (ls.includes("お願いします")) { a.pick("お願いします"); continue; }
+      if (ls.includes("ふつう")) { a.pick("ふつう"); continue; }
+      a.pick(0);
+    }
+    const kids = a.talkEls();
+    const L = [];
+    for (let i = 0; i < kids.length; i++) {
+      const c = kids[i], cls = c.className || "";
+      if (/(^| )yomi( |$)/.test(cls)) { const nx = kids[i + 1] || {}; L.push({ k: "say", cls: nx.className || "", t: String(c.textContent) }); i += 1; continue; }
+      if (/(^| )seat-start( |$)/.test(cls)) { L.push({ k: "seat", cls, t: "" }); continue; }
+      if (/(^| )aizuchi( |$)/.test(cls)) { L.push({ k: "aizuchi", cls, t: String(c.textContent) }); continue; }
+      if (/(^| )line kyaku( |$)/.test(cls) || cls === "line kyaku") { L.push({ k: "kyaku", cls, t: String(c.textContent) }); continue; }
+      if (/(^| )ma( |$)/.test(cls)) { L.push({ k: "ma", cls, t: "" }); continue; }
+    }
+    return { a, L, txt: L.map((x) => x.t), shown: a.shown(), errors: a.errors.length + (a.bootErr ? 1 : 0), store: a.store };
+  }
+  const has = (r, w) => r.txt.some((t) => (w instanceof RegExp ? w.test(t) : t.indexOf(w) >= 0));
+  const SAI = ["いや、べつに", "県外から", "関東", "埼玉県"];
+
+  // #1 暦の 席 (isToday) は 当日 だけ。★「もうすぐ」「お手がかりから 外れますが」で 別の 日に 出さない
+  {
+    const cases = [
+      [{ seed: 5, words: ["つつじ"] }, ["ふつう", "県外から", "関東", "東京都", "ほかに言いたいことがある"]],
+      [{ seed: 13, words: ["パンダ"] }, ["ふつう", "県外から", "中部", "静岡県", "ほかに言いたいことがある"]],
+      [{ seed: 10, words: ["雪"] }, ["ふつう", "この福井から", "ほかに言いたいことがある"]],
+      [{ seed: 2, words: ["歴史"] }, ["ふつう", "言わずにおく", "ほかに言いたいことがある"]],
+      [{ seed: 3, date: "2026-11-21", search: "?date=2026-11-21" }, ["ふつう", "言わずにおく", "思う"]],
+      [{ seed: 4, date: "2026-11-27", search: "?date=2026-11-27" }, ["ふつう", "県外から", "北海道・東北", "宮城県", "思う"]],
+      [{ seed: 6, date: "2026-07-05", search: "?date=2026-07-05" }, ["ふつう", "県外から", "北海道・東北", "青森県", "思う"]],
+    ];
+    const bad = [];
+    let n = 0;
+    cases.forEach(([o, plan]) => [0, 1].forEach((dd) => {
+      const r = go2(Object.assign({}, o, { seed: o.seed + dd * 100 }), plan.slice(), 3);
+      n += 1;
+      const md = (o.date || "2026-11-20").slice(5);
+      const off = r.shown.map(byIdB).filter((s) => s && s.isToday && s.md !== md).map((s) => s.id);
+      if (r.errors || off.length || has(r, "もうすぐでございますが") || has(r, "外れますが") || has(r, "明日でございますが")) bad.push((o.words || [o.date])[0] + ":" + r.shown.join(">"));
+    }));
+    ok(!bad.length, "#1 暦の 席は 当日 だけ (別の 日に 出た 回 " + bad.length + " / " + n + ") " + bad.slice(0, 3).join(" / "));
+    const d28 = go2({ date: "2026-11-28", search: "?date=2026-11-28", seed: 1 }, SAI.concat(["思う"]), 1);
+    ok(d28.shown[0] === "T-1128", "  対照: 当日 (11/28) は 暦の 席 T-1128 が 出る (" + d28.shown[0] + ")");
+  }
+
+  // #5 園の 入口: 送りの 2 行は 一席目が その園 (か その県の 園) の 噺 だった ときだけ。送った あとに 断りを 重ねない
+  {
+    const KINS = ["tennoji", "asahikawa", "kushiro", "nagano", "okinawa", "tobu", "china"];
+    const bad = [];
+    let sent = 0, n = 0;
+    KINS.forEach((kin) => [12, 14, 1].forEach((sd) => ["思う", "いや、どうだか"].forEach((ans) => {
+      const r = go2({ seed: sd, search: "?kin=" + kin + "&date=2026-11-20" }, ["いや、べつに", ans], 2);
+      n += 1;
+      const i = r.txt.findIndex((t) => /の話は ここまでで。$/.test(t));
+      if (i < 0) return;
+      sent += 1;
+      const first = byIdB(r.shown[0]);
+      const ftxt = first ? [first.bridge, first.furi, first.makura, (first.hondai || []).map((h) => (typeof h === "string" ? h : h.text)).join(""), first.sage].join("") : "";
+      const zooName = r.txt[i].replace(/^さて、/, "").replace(/の話は ここまでで。$/, "");
+      const okFirst = ftxt.indexOf(zooName) >= 0 || ftxt.indexOf(zooName.replace(/^[^市区町村]{1,6}[市区町村]立?/, "")) >= 0 || /の園$/.test(zooName);
+      const after = r.txt.slice(i + 1, i + 4).join(" ");
+      if (!okFirst || /持ち合わせ|趣を変えて|お出しいたしました|前に お聞き/.test(after)) bad.push(kin + sd + ans + ":" + r.shown.join(">") + " / " + r.txt[i]);
+    })));
+    ok(sent > 0 && !bad.length, "#5 園の 送り「○○の話は ここまで」は 一席目が その園・その県の 園の 噺の ときだけ・直後に 断りなし (送った 回 " + sent + " / " + n + ") " + bad.slice(0, 2).join(" | "));
+    const tn = go2({ seed: 14, search: "?kin=tennoji&date=2026-11-20" }, ["いや、べつに", "いや、どうだか"], 2);
+    ok(!has(tn, "天王寺動物園の話は ここまで"), "  天王寺 (一席目 " + tn.shown[0] + " = 園と 関係ない 噺) で「天王寺動物園の話は ここまで」と 言わない");
+  }
+
+  // #33 ?kin=china:「中国から お越し」(地方の 名と 読める) と 言わない
+  {
+    const r = go2({ seed: 1, search: "?kin=china&date=2026-11-20" }, ["いや、べつに", "思う"], 1);
+    ok(!has(r, "中国から お越し") && has(r, "中国の動物園から お越し"), "#33 ?kin=china は「中国の動物園から お越しでございますか」");
+  }
+
+  // #6 あて推量 (guess) は ★サゲの あと・追い足しの 前 (2026-11-21 作者の判断。★問いの 前でも サゲの 直前でも ない)
+  {
+    const runs = [go2({ date: "2026-11-28", search: "?date=2026-11-28", seed: 1 }, SAI.concat(["思う"]), 2)];
+    [177, 3, 8].forEach((sd) => runs.push(go2({ seed: sd }, ["いや、べつに", "県外から", "関東", "群馬県", "思う"], 3)));
+    let seen = 0; const bad = [];
+    runs.forEach((r) => r.shown.forEach((id) => {
+      const st = byIdB(id);
+      if (!st || !st.guess || !st.question) return;
+      const iG = r.txt.indexOf(st.guess), iQ = r.txt.indexOf(st.question.text), iS = r.txt.findIndex((t) => t.indexOf(st.sage) === 0);
+      const iA = st.atogaki ? r.txt.indexOf(st.atogaki) : -1;
+      if (iG < 0 || iQ < 0 || iS < 0) return;
+      seen += 1;
+      if (!(iG > iQ && iG > iS && (iA < 0 || iG < iA))) bad.push(id + " (問い " + iQ + " / サゲ " + iS + " / 推量 " + iG + " / 追い足し " + iA + ")");
+    }));
+    ok(seen > 0 && !bad.length, "#6 あて推量は サゲの あと・追い足しの 前 (見た 席 " + seen + ") " + bad.slice(0, 3).join(" "));
+  }
+
+  // #7 前段で 問う 思い込みは 台本の furiBelief (無い 席は hooks.beliefs の 先頭)
+  {
+    const FB = "b_night_nothing";
+    const lab = (HB.beliefs.find((b) => b.id === FB) || {}).label;
+    const patch = (w) => [].concat(w.HANASHI.stories, w.HANASHI.prefStories, Object.values(w.HANASHI.today).reduce((x, y) => x.concat(y), []))
+      .forEach((s) => { if (((s.hooks || {}).beliefs || []).length) s.furiBelief = FB; });
+    const rs = [1, 2, 3].map((sd) => go2({ seed: sd, patch }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 1));
+    ok(!!lab && rs.every((r) => has(r, "噺の前に、ひとつ。\n「" + lab + "」")), "#7 前段の 問いは 台本の furiBelief を 問う (「" + lab + "」)");
+    const r0 = go2({ seed: 1 }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 1);
+    const st0 = byIdB(r0.shown[0]);
+    const lab0 = st0 && (HB.beliefs.find((b) => b.id === (st0.furiBelief || st0.hooks.beliefs[0])) || {}).label;
+    ok(!lab0 || has(r0, "噺の前に、ひとつ。\n「" + lab0 + "」"), "  furiBelief の 無い 席は これまでどおり 先頭の 思い込み (" + (st0 && st0.id) + ")");
+  }
+
+  // #9「言わずにおく」の 人の 県を 打ち込みの 語から 決めつけない (県の つなぎ・次回の「また○○から」に 使わない)
+  {
+    const r = go2({ seed: 3, words: ["旭山動物園"] }, ["ふつう", "言わずにおく", "ほかに言いたいことがある"], 1);
+    const pb = (HB.prefBridge["北海道"] || { lines: [] }).lines;
+    const said = pb.filter((l) => has(r, l.slice(0, 12)));
+    ok(!r.errors && r.shown.length >= 1 && !r.store["hanashiyama.pref.v1"] && !said.length && !has(r, /^(北海道のお客さんに、|北海道からでございますか)/),
+       "#9 打ち込み「旭山動物園」で 県を 決めつけない (覚えた 県 " + (r.store["hanashiyama.pref.v1"] || "なし") + " / 北海道の つなぎ " + said.length + " 行) [" + r.shown.join(">") + "]");
+  }
+
+  // #11 相槌: 客の 台詞・「?」で 終わる 行の 直後に 出さない / 客が 打った (答えた) あとは 読んだ 字を 数え直す
+  {
+    const runs = [
+      go2({ seed: 51, words: ["赤", "足あと", "愛の鐘"], patch: (w) => w.HANASHI.genchi.forEach((g) => { if (["G1", "G2", "G3"].indexOf(g.id) >= 0) g.verified_onsite = "2026-11-20"; }) }, ["いや、べつに", "この福井から", "思う"], 4),
+      go2({ seed: 3, words: ["旭山動物園"] }, ["ふつう", "言わずにおく", "ほかに言いたいことがある"], 2),
+      go2({ seed: 7 }, ["いや、べつに", "県外から", "近畿", "兵庫県", "思う"], 3),
+      go2({ seed: 12, words: ["めがね"] }, ["ふつう", "県外から", "関東", "神奈川県", "ほかに言いたいことがある"], 3),
+    ];
+    const bad = [];
+    let nA = 0;
+    runs.forEach((r, ri) => r.L.forEach((x, i) => {
+      if (x.k !== "aizuchi") return;
+      nA += 1;
+      let j = i - 1;
+      while (j >= 0 && (r.L[j].k === "ma" || r.L[j].k === "seat")) j -= 1;
+      const prev = r.L[j] || {};
+      if (prev.k === "kyaku" || /kyaku2/.test(prev.cls || "") || /[?？]\s*$/.test(prev.t || "")) bad.push(ri + ":直前「" + String(prev.t).slice(-14) + "」");
+      // ★客が 最後に 押した・打った ところから 数えて 100 字 未満なら 早すぎる (前の 字数を 引きずっている)
+      let ch = 0;
+      for (let q = i - 1; q >= 0 && r.L[q].k !== "kyaku"; q--) if (r.L[q].k === "say") ch += r.L[q].t.length;
+      if (ch < 100) bad.push(ri + ":客の あと " + ch + " 字で 相槌");
+    }));
+    ok(nA > 0 && !bad.length, "#11 相槌は 客の 台詞・問いの 直後や 打ち込みの すぐ あとに 出さない (相槌 " + nA + " 回) " + bad.slice(0, 3).join(" / "));
+  }
+
+  // #12 「持ち合わせが ございません」を 手がかりの 席が ある 客に 言わない / 同じ 断りは 1 回に 1 度
+  {
+    const runs = [177, 1, 2, 3, 4].map((sd) => go2({ seed: sd }, ["いや、べつに", "県外から", "関東", "群馬県", "思う"], 3))
+      .concat([5, 6].map((sd) => go2({ seed: sd }, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], 4)));
+    const NOTES = /持ち合わせ|趣を変えて|お出しいたしました|前に お聞き|またの機会に/;
+    const bad = [];
+    runs.forEach((r) => {
+      if (has(r, "持ち合わせがございません")) bad.push("持ち合わせ:" + r.shown.join(">"));
+      const ns = r.txt.filter((t) => NOTES.test(t));
+      if (new Set(ns).size !== ns.length) bad.push("二度:" + r.shown.join(">"));
+    });
+    ok(!bad.length, "#12 県の 噺が ある 客に「持ち合わせが ございません」と 言わない・同じ 断りを 二度 言わない (" + runs.length + " 回) " + bad.slice(0, 2).join(" | "));
+  }
+
+  // #13 動物の 噺か = オチが 何の ことか (ochiWhat)。★S51・S50・S19・S34・S41 は 動物、S39・S44 (遊具) は 動物で ない
+  {
+    const fs2 = APPX || fs.readFileSync(path.join(ROOT, "app", "app.js"), "utf8");
+    const W2 = {}; new Function("window", fs2)(W2);
+    const C2 = W2.HanashiCore;
+    const ia = (id) => (C2 && typeof C2.isAnimal === "function" ? C2.isAnimal(byIdB(id)) : null);
+    ok(["S51", "S50", "S19", "S34", "S41"].every((id) => ia(id) === true) && ["S39", "S44"].every((id) => ia(id) === false),
+       "#13 動物園の 噺 (S51 S50 S19 S34 S41) は 動物・遊具の 噺 (S39 S44) は 動物で ない");
+    const ref = (st) => !!st && /動物園|レッサーパンダ/.test(st.ochiWhat || "");
+    const runs = [177, 1, 2, 3].map((sd) => go2({ seed: sd }, ["いや、べつに", "県外から", "関東", "群馬県", "思う"], 2));
+    const two = runs.filter((r) => r.shown.length >= 2 && ref(byIdB(r.shown[0])) && ref(byIdB(r.shown[1]))).map((r) => r.shown.join(">"));
+    ok(!two.length, "  一席目が 動物園の 噺なら 二席目は 動物園の 噺で ない (" + runs.length + " 回) " + two.join(" "));
+  }
+
+  // #14 一席目が 県の 推し量った 数 (F21 / F26) を 使う 席なら、県の つなぎの「大半が 地元」「84%」を 言わない
+  // #15 再訪の 福井は「どうりで」を 言わない (受ける 返し「手強い 地元の お客さん」が 無い)
+  {
+    const LOCAL = (st) => !!st && (st.facts || []).some((f) => f === "F21" || f === "F26");
+    const runs = [];
+    for (let sd = 300; sd < 316; sd++) runs.push(go2({ seed: sd }, ["いや、べつに", "県外から", "近畿", "大阪府", "思う"], 1));
+    for (let sd = 300; sd < 306; sd++) runs.push(go2({ seed: sd }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 1));
+    for (let sd = 200; sd < 212; sd++) runs.push(go2({ seed: sd }, ["いや、べつに", "この福井から", "思う"], 1));
+    const loc = runs.filter((r) => LOCAL(byIdB(r.shown[0])));
+    const bad = loc.filter((r) => has(r, /大半が|84[%％]/)).map((r) => r.shown[0]);
+    ok(loc.length > 0 && !bad.length, "#14 一席目が 同じ 数の 席 (" + loc.length + " 回: " + [...new Set(loc.map((r) => r.shown[0]))].join(",") + ") で つなぎの「大半が地元 / 84%」を 言わない " + bad.join(","));
+    const again = [22, 1, 2].map((sd) => go2({ seed: sd, store: { "hanashiyama.pref.v1": "福井県" } }, ["行きたい", "はい、また"], 1));
+    ok(again.every((r) => !r.errors && !has(r, /^どうりで/)), "#15 再訪の 福井で「どうりで、…」を 言わない");
+    // ★はじめての 福井は 一席目が ほぼ S10 (同じ 数の 席 = つなぎの 84% と どうりでを 言わない)。★S10 を 前に 聞いた 端末で 見る
+    const heardS10 = { "hanashiyama.log.v1": JSON.stringify([{ event: "shown", story: "S10" }]) };
+    const fk2 = [1, 2, 3, 4].map((sd) => go2({ seed: sd, store: heardS10 }, ["いや、べつに", "この福井から", "思う"], 1));
+    const fkCtl = fk2.filter((r) => !LOCAL(byIdB(r.shown[1])) && has(r, "手強い") && has(r, /^どうりで/)).length;   // ★shown[0] は 前に 聞いた S10 (記録)
+    ok(fkCtl > 0, "  対照: はじめての 福井 (「手強い」の 返しの あと) では「どうりで」を 言う (" + fkCtl + " 回)");
+    // ★2026-11-20 取り込み: 県の つなぎで 同じ 数を 言うのは 福井の「大半が」だけに なった (担当 B)。★対照は S10 を 前に 聞いた 福井で 見る
+    const ctl = fk2.filter((r) => !LOCAL(byIdB(r.shown[1])) && has(r, /大半が|84[%％]/)).length;
+    ok(ctl > 0, "  対照: ほかの 一席目では つなぎの その 行を 言う (" + ctl + " 回)");
+  }
+
+  // #16 否定した 思い込みの 席を 二席目 以降も 出さない。暦の 席が 否定した 思い込みなら 振りを 飛ばす
+  {
+    const bad = [];
+    let n = 0;
+    for (let sd = 201; sd <= 212; sd++) {
+      const r = go2({ seed: sd }, ["いや、べつに", "この福井から", "いや、どうだか"], 3);
+      n += 1;
+      const qi = r.txt.findIndex((t) => /^噺の前に、ひとつ。\n?「/.test(t));
+      const lab = qi >= 0 ? r.txt[qi].replace(/^噺の前に、ひとつ。\n?「/, "").replace(/」[\s\S]*$/, "") : null;
+      const bid = lab && beliefLabel(lab);
+      const hit = r.shown.map(byIdB).filter((s) => s && !s.isToday && bid && ((s.hooks || {}).beliefs || []).concat(s.furiBelief ? [s.furiBelief] : []).indexOf(bid) >= 0);
+      if (hit.length) bad.push(sd + ":" + lab + "→" + hit.map((s) => s.id).join(","));
+    }
+    ok(!bad.length, "#16 否定した 思い込みの 席を 二席目 以降に 出さない (" + n + " 回) " + bad.slice(0, 3).join(" "));
+    const dd = go2({ date: "2026-11-28", search: "?date=2026-11-28", seed: 1 }, SAI.concat(["いや、どうだか"]), 2);
+    const t28 = byIdB("T-1128");
+    ok(dd.shown.indexOf("T-1128") > 0 && !has(dd, t28.furi), "  11/28 に「幕末の悪役」を 否定 → 二席目の T-1128 は 振りを 飛ばす [" + dd.shown.join(">") + "]");
+  }
+
+  // #17 公園に いない 客を レジの 前に 立たせない (県の つなぎ)。★公園に いる 客は そのまま
+  {
+    const away = go2({ date: "2026-11-28", search: "?date=2026-11-28", seed: 1 }, SAI.concat(["思う"]), 1);
+    const here = go2({ date: "2026-11-28", search: "?date=2026-11-28", seed: 1 }, ["いま、公園におります", "県外から", "関東", "埼玉県", "思う"], 1);
+    // ★2026-11-20 取り込み: 県の つなぎの 文から「このレジの前まで」が 消えた (担当 B)。★画面ごしの 付け足しは 残す (台本に 戻った とき 用)
+    ok(!away.errors && !away.txt.some((t) => /この(?:小さな山の麓のレジ|裏山の麓|レジの前)まで/.test(t) && !/画面ごし/.test(t)),
+       "#17 公園に いない 客を レジの 前に 立たせない (県の つなぎ)");
+    ok(!here.errors && !has(here, "画面ごし"), "  公園に いる 客には「画面ごし」を 付けない");
+  }
+
+  // #20 前段で 問うた 思い込みを 振りで もう一度 問わない (実演の T-1128)
+  {
+    const r = go2({ date: "2026-11-28", search: "?date=2026-11-28", seed: 1 }, SAI.concat(["思う"]), 1);
+    const t28 = byIdB("T-1128");
+    ok(r.shown[0] === "T-1128" && !has(r, t28.furi) && r.txt.some((t) => t.replace(/\n/g, "").indexOf(t28.makura) >= 0), "#20 前段で 問うた 席は 振りを 飛ばして まくらから (T-1128)");
+  }
+
+  // #22 県の つなぎを 言う 県では お礼を 重ねない / 答えた 県を 聞き直さない
+  {
+    const ish = go2({ seed: 1 }, ["いや、べつに", "県外から", "中部", "石川県", "思う"], 1);
+    const kan = go2({ seed: 1 }, ["いや、べつに", "県外から", "関東", "神奈川県", "思う"], 1);
+    // ★2026-11-21 取り込み: つなぎの 1 行目は「千枚田の、あのお国のお客さんで。」(県名を 言わない = 担当 B)。★前段の「さようで、石川県から。」が 県を 受け、つなぎは 県名を 重ねない
+    const pb1 = HB.prefBridge && HB.prefBridge["石川県"] ? HB.prefBridge["石川県"].lines[0] : "";
+    ok(!ish.errors && ish.shown.length >= 1 && !has(ish, "遠いところを") && (/石川県/.test(pb1) ? !has(ish, "さようで、石川県から") : has(ish, "さようで、石川県から")) && (pb1 ? has(ish, pb1) : true),
+       "#22 石川県: 「遠いところを」の お礼を 重ねない・県名は 前段か つなぎの どちらか 一度");
+    ok(!has(kan, "遠いところを") && !kan.txt.some((t) => /神奈川県からでございますか/.test(t)), "  神奈川県: 答えた 県を 聞き直さない");
+  }
+
+  // #24「次のお客さんの話を」の 直後に「○○のお客さんに」と 話しかけない / #25 二席目は「さきほどは、「…」で」
+  {
+    const runs = [1, 2, 3].map((sd) => go2({ date: "2026-11-28", search: "?date=2026-11-28", seed: sd }, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], 2))
+      .concat([1, 2].map((sd) => go2({ seed: sd }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 3)));
+    const bad = [];
+    runs.forEach((r) => r.txt.forEach((t, i) => {
+      if (t.indexOf("次のお客さんの話を") >= 0 && r.txt.slice(i + 1, i + 3).some((u) => u.indexOf("お客さんに") >= 0)) bad.push(r.shown.join(">"));
+    }));
+    const pIb = runs.filter((r) => r.shown[1] === "P-茨城県").length;
+    ok(pIb > 0 && !bad.length, "#24「次のお客さんの話を」の 直後に「○○のお客さんに」を 続けない (二席目 P-茨城県 " + pIb + " 回) " + bad.slice(0, 2).join(" "));
+    const r2 = runs[0];
+    ok(!has(r2, "はじめに、お気持ちを伺いました") && has(r2, /^さきほどは、「/), "#25 二席目の 前置きは「さきほどは、「…」でございました」");
+  }
+
+  // #27 現地の 謎かけの 前置きで「二席目」と 呼ばない (家の「もう一席」と 重なる)
+  {
+    const r = go2({ seed: 1, later: true, patch: (w) => w.HANASHI.genchi.forEach((g) => { if (g.id === "G1") g.verified_onsite = "2026-11-20"; }) }, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], 2);
+    ok(has(r, "西山公園に置いてまいりました") && !has(r, "二席目"), "#27 現地の 謎かけは「現地でだけ聞ける一席」と 呼ぶ (「二席目」と 言わない)");
+  }
+
+  // #4 (画面の 側の 直し) 差し替えの 謎かけ (alt_of) が 元と 同じ 席なら 出さない (★G2b = 眼鏡の ベンチで 足あとの ベンチの 噺 S56 が 始まっていた)
+  {
+    const vf = (ids) => (w) => w.HANASHI.genchi.forEach((g) => { if (ids.indexOf(g.id) >= 0) g.verified_onsite = "2026-11-20"; });
+    const r = go2({ seed: 54, words: ["赤", "めがね", "愛の鐘"], patch: vf(["G1", "G2b", "G3"]) }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 3);
+    const g2b = (HB.genchi || []).find((g) => g.id === "G2b") || {};
+    const g2 = (HB.genchi || []).find((g) => g.id === "G2") || {};
+    const same = g2b.story && g2b.story === g2.story;
+    ok(r.shown.indexOf("S55") >= 0 && (!same || r.shown.indexOf(g2b.story) < 0),
+       "#4 差し替えの 謎かけ G2b が 元 (G2) と 同じ 席 (" + g2b.story + ") なら 出さない [" + r.shown.join(">") + "]");
+  }
+
+  // #35 二席目 以降の「在庫切れ」は 頼まれた ことを 受けてから
+  {
+    const z = [1, 2, 3, 4, 5, 6].map((sd) => go2({ seed: sd }, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], 9));
+    const lines = [];
+    z.forEach((r) => r.txt.forEach((t, i) => { if (/在庫切れ/.test(t) && r.txt.slice(0, i).some((u) => /次のお客さんの話を|もう一席。$/.test(u))) lines.push(t); }));
+    ok(lines.length > 0 && lines.every((t) => /ありがたい/.test(t)), "#35「もう一席」の あとの 在庫切れは「ありがたいことで。ただ、…」(" + lines.length + " 回)");
+  }
+
+  // L2 札の 写真の 出典は 正式な 表示に 近づける (作品名・提供元・ライセンス (URL)・加工の 旨・BY-SA)
+  {
+    const fs3 = APPX || fs.readFileSync(path.join(ROOT, "app", "app.js"), "utf8");
+    const W3 = {}; new Function("window", fs3)(W3);
+    const C3 = W3.HanashiCore;
+    const cc = (c) => (C3 && typeof C3.cardCredit === "function" ? C3.cardCredit(c) : "");
+    const fk = cc("福井ふるさと百景「紅葉に映える日本庭園（嚮陽庭園）」、福井県、クリエイティブ・コモンズ・ライセンス 表示4.0 国際（https://creativecommons.org/licenses/by/4.0/deed.ja） / 縮小して使用");
+    const sa = cc("Wikimedia Commons「Nishiyama park.JPG」 Jjp 233 (CC BY-SA 4.0) / 縮小して使用");
+    ok(/嚮陽庭園/.test(fk) && /福井県/.test(fk) && /CC BY 4\.0/.test(fk) && /creativecommons\.org\/licenses\/by\/4\.0/.test(fk) && /加工/.test(fk),
+       "L2 札の 出典: 作品名・福井県・CC BY 4.0 (URL)・加工の 旨 (" + fk.slice(0, 40) + "…)");
+    ok(/この札は CC BY-SA 4\.0/.test(sa) && /by-sa\/4\.0/.test(sa), "  継承 (BY-SA) の 写真なら 札も BY-SA と 書く");
+    ok(/cardCredit\(img\.credit\)/.test(fs3), "  札の 描画は cardCredit を 使う");
+  }
+
+  // H2 / M3 表紙の 言い方 (index.html)
+  {
+    ok(!/外への通信はありません/.test(HTML) && /同じ場所/.test(HTML) && /ネットが無くても/.test(HTML),
+       "M3 表紙は「外への通信はありません」と 言い切らず、同じ場所の ファイルだけ / 手元で 開けば ネットが 無くても、と 言い分ける");
+    const li4 = (HTML.match(/<ol class="nagare">([\s\S]*?)<\/ol>/) || ["", ""])[1].split("<li>")[4] || "";
+    ok(/確かめ/.test(li4), "H2「はじめての方へ」4 番: 現地の 謎かけは 現地で 確かめた 場所から 出る と 分かる (" + li4.replace(/<[^>]+>/g, "").trim().slice(0, 40) + ")");
+  }
+}
+
+// ---- 文脈の 見直し 2 回目 (2026-11-21) の 直し ---------------------------------------------
+//   ★直した 点ごとに 1 つ 以上の 試験。★HANASHI_APP_ALL (または HANASHI_APP) に 直す 前の app.js を 渡すと、ここの 試験が NG に なる (効きを 見る)
+//   ★HANASHI_HTML = 直す 前の index.html (コメントの 言い方の 試験)
+{
+  const MH = require("./motion_harness");
+  const APPY = process.env.HANASHI_APP_ALL || process.env.HANASHI_APP;
+  const APPX = APPY ? fs.readFileSync(APPY, "utf8") : null;
+  const APPTXT = APPX || fs.readFileSync(path.join(ROOT, "app", "app.js"), "utf8");
+  const HTML = fs.readFileSync(process.env.HANASHI_HTML || path.join(ROOT, "app", "index.html"), "utf8");
+  const BW = {}; new Function("window", "self", bundleSrc)(BW, BW);
+  const HB = BW.HANASHI;
+  const ALLB = [].concat(HB.stories, HB.prefStories, Object.values(HB.today).reduce((a, x) => a.concat(x), []));
+  const byIdB = (id) => ALLB.find((s) => s.id === id);
+  const W0 = {}; new Function("window", APPTXT)(W0);
+  const C0 = W0.HanashiCore;
+  const vf = (ids) => (w) => w.HANASHI.genchi.forEach((g) => { if (ids.indexOf(g.id) >= 0) g.verified_onsite = "2026-11-20"; });
+  /**
+   * 1 回 通す。opt = makeApp の 指定 + words (打ち込む 語) / ans ("correct" = 4 択は 正解を 押す / "wrong" = 正解で ない 先頭) /
+   *   via (幕で 押す ボタン) / end (終わりの 問いで 押す 答え)
+   * 返り L = [{ k: "say"|"kyaku"|"aizuchi"|"seat"|"ma"|"fig"|"note", cls, t }]
+   */
+  function go3(opt, plan, N) {
+    const words = (opt.words || []).slice();
+    const a = MH.makeApp(Object.assign({ date: "2026-11-20", seed: 1 }, APPX ? { srcPatch: () => APPX } : {}, opt));
+    a.click(opt.via || "open");
+    const cur = () => {
+      const id = a.shown().slice(-1)[0];
+      const H2 = a.win.HANASHI;
+      return [].concat(H2.stories, H2.prefStories, Object.values(H2.today).reduce((x, y) => x.concat(y), [])).find((x) => x.id === id);
+    };
+    for (let k = 0; k < 600; k++) {
+      a.settle();
+      if (a.shown().length >= N && !a.byId.sageBox.hidden) break;
+      const ls = a.labels();
+      if (!ls.length) { if (!a.byId.sageBox.hidden) { a.click("again"); continue; } break; }
+      if (ls.includes("(form)")) { a.submit(words.length ? words.shift() : ""); continue; }
+      const i = plan.length ? ls.indexOf(plan[0]) : -1;
+      if (i >= 0) { plan.shift(); a.pick(i); continue; }
+      const st = cur();
+      if (opt.ans && st && st.question && ls.join("|") === st.question.choices.join("|")) {
+        const j = opt.ans === "correct" ? st.question.answer : (st.question.answer === 0 ? 1 : 0);
+        a.pick(j); continue;
+      }
+      if (ls.includes("お願いします")) { a.pick("お願いします"); continue; }
+      if (opt.end && ls.includes(opt.end)) { a.pick(opt.end); continue; }
+      if (ls.includes("ふつう")) { a.pick("ふつう"); continue; }
+      a.pick(0);
+    }
+    const kids = a.talkEls();
+    const L = [];
+    for (let i = 0; i < kids.length; i++) {
+      const c = kids[i], cls = c.className || "";
+      if (/(^| )yomi( |$)/.test(cls)) { const nx = kids[i + 1] || {}; L.push({ k: "say", cls: nx.className || "", t: String(c.textContent) }); i += 1; continue; }
+      if (/(^| )seat-start( |$)/.test(cls)) { L.push({ k: "seat", cls, t: "" }); continue; }
+      if (/(^| )aizuchi( |$)/.test(cls)) { L.push({ k: "aizuchi", cls, t: String(c.textContent) }); continue; }
+      if (/(^| )kyaku( |$)/.test(cls)) { L.push({ k: "kyaku", cls, t: String(c.textContent) }); continue; }
+      if (/(^| )figure( |$)/.test(cls)) { L.push({ k: "fig", cls, t: "" }); continue; }
+      if (/(^| )ochi-what( |$)/.test(cls)) { L.push({ k: "note", cls, t: String(c.textContent) }); continue; }
+      if (/(^| )ma( |$)/.test(cls)) { L.push({ k: "ma", cls, t: "" }); continue; }
+    }
+    return { a, L, txt: L.map((x) => x.t), shown: a.shown(), errors: a.errors.length + (a.bootErr ? 1 : 0) };
+  }
+  const has = (r, w) => r.txt.some((t) => (w instanceof RegExp ? w.test(t) : t.indexOf(w) >= 0));
+  const idx = (r, w, from) => r.txt.findIndex((t, i) => i >= (from || 0) && (w instanceof RegExp ? w.test(t) : t.indexOf(w) >= 0));
+  const D28 = { date: "2026-11-28", search: "?date=2026-11-28" };
+  const DEMO = ["いや、べつに", "県外から", "関東", "埼玉県", "思う"];
+
+  // R1 (N1・N2・N10) あて推量は サゲの あと (サゲ → 註 → 推量 → 追い足し)。★実演の T-1128 で 推量が ひっくり返しを 先に 言わない
+  {
+    const runs = [go3(Object.assign({ seed: 1 }, D28), DEMO.slice(), 2)];
+    [61, 71, 3].forEach((sd) => runs.push(go3({ seed: sd }, ["ふつう", "言わずにおく", "思う"], 3)));
+    [1, 2].forEach((sd) => runs.push(go3({ seed: sd, ans: "correct" }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 3)));
+    let seen = 0; const bad = [];
+    runs.forEach((r) => r.shown.forEach((id) => {
+      const st = byIdB(id);
+      if (!st || !st.guess) return;
+      const iS = r.txt.findIndex((t) => t.indexOf(st.sage) === 0), iG = r.txt.map((t) => t.replace("……", "")).indexOf(st.guess);   // ★推量の「……」(表示だけ) は 除いて 比べる
+      if (iS < 0 || iG < 0) return;
+      seen += 1;
+      const iN = r.L.findIndex((x, i) => i > iS && x.k === "note");
+      const iA = st.atogaki ? r.txt.indexOf(st.atogaki) : -1;
+      if (!(iG > iS && (!st.ochiWhat || (iN > iS && iN < iG)) && (iA < 0 || iG < iA))) bad.push(id + " (サゲ " + iS + " / 註 " + iN + " / 推量 " + iG + " / 追い足し " + iA + ")");
+    }));
+    ok(seen >= 3 && !bad.length, "R1 あて推量は サゲ → 註 の あと・追い足しの 前 (見た 席 " + seen + ") " + bad.slice(0, 3).join(" "));
+    const t28 = byIdB("T-1128"), r28 = runs[0];
+    ok(r28.shown[0] === "T-1128" && idx(r28, t28.guess.slice(0, 20)) > idx(r28, t28.sage.slice(0, 12)), "  実演の T-1128: 推量 (国元では人の笑う顔…) は サゲ (自ら鍬を持って…) の あと");
+  }
+
+  // R2 (N6) 4 択を 外したら 外れの 返しの あとに 正解を 1 行。★正解なら 言わない。★返しが もう 正解を 言って いれば 重ねない
+  {
+    const w = go3(Object.assign({ seed: 1 }, D28), DEMO.slice(), 2);       // ★二席目 P-埼玉県 は 先頭 (3園) = 外れ
+    const ps = byIdB("P-埼玉県");
+    const ans = ps.question.choices[ps.question.answer];
+    const iK = w.txt.indexOf(ps.question.choices[0]), iA = idx(w, "答えは、" + ans + "でございます。"), iS = w.txt.findIndex((t) => t.indexOf(ps.sage) === 0);
+    ok(w.shown[1] === "P-埼玉県" && ps.question.answer !== 0 && iK >= 0 && iA > iK && iA < iS && !!w.L[iA - 1] && /kotae/.test(w.L[iA - 1].cls),
+       "R2 実演の 二席目 (P-埼玉県) で 外すと、返しの すぐ あと・サゲの 前に「答えは、" + ans + "でございます。」(返し " + (iA - 1) + " / 正解 " + iA + " / サゲ " + iS + ")");
+    const c = go3(Object.assign({ seed: 1, ans: "correct" }, D28), DEMO.slice(), 2);
+    ok(c.shown[1] === "P-埼玉県" && !has(c, /^答えは、.*でございます。$/), "  正解を 押したら 正解の 1 行は 言わない");
+    const t28w = go3(Object.assign({ seed: 1, ans: "wrong" }, D28), DEMO.slice(), 1);
+    const t28 = byIdB("T-1128"), a28 = t28.question.choices[t28.question.answer];
+    ok(t28w.shown[0] === "T-1128" && has(t28w, /^それが、/) && !has(t28w, "答えは、" + a28), "  返しが もう 正解 (" + a28 + ") を 言う 席 (T-1128) では 重ねない");
+    const al = (C0 && typeof C0.answerLine === "function") ? C0.answerLine : () => "";
+    ok(al({ choices: ["a", "静止画に変わる"], answer: 1 }) === "答えは、「静止画に変わる」でございます。" && al({ choices: ["29園", "3園"], answer: 0 }) === "答えは、29園でございます。",
+       "  札が 言い切りの 形 (静止画に変わる) なら「」で 包む・数なら そのまま");
+    // ★答え合わせの あとに 出す 図 (when=after) の 席: 返し → 正解 → 図 (★「答えは」を 二度 言わない)
+    const figPatch = (w2) => { const s2 = w2.HANASHI.prefStories.find((x) => x.id === "P-埼玉県"); s2.fig = { when: "after", title: "試しの図", unit: "園", items: [{ label: "試し", value: 29 }] }; };
+    const f = go3(Object.assign({ seed: 1, patch: figPatch }, D28), DEMO.slice(), 2);
+    const iA2 = idx(f, "答えは、" + ans), iF = f.L.findIndex((x, i) => i > iA2 && x.k === "fig"), iS2 = f.txt.findIndex((t) => t.indexOf(ps.sage) === 0);
+    ok(iA2 > 0 && iF > iA2 && iF < iS2 && !has(f, "答えは、この一枚で。") && has(f, "数字で並べますと、この一枚で。"),
+       "  答え合わせの 図 (when=after) の 席: 返し → 正解の 1 行 → 図 → サゲ。「答えは」を 二度 言わない (正解 " + iA2 + " / 図 " + iF + " / サゲ " + iS2 + ")");
+  }
+
+  // R3 (N3) 前も いまも いちばん 上 (行ってみたい) なら「動きませんか。精進いたします。」で 受けない
+  {
+    const r = go3(Object.assign({ seed: 1, end: "行ってみたい" }, D28), ["行きたい", "県外から", "関東", "埼玉県", "思う"], 3);
+    const n5 = r.txt.filter((t) => t === "行ってみたい").length;
+    ok(n5 >= 2 && !has(r, "動きませんか") && has(r, "変わらず、行ってみたいと"), "R3「行きたい」→ 終わりも「行ってみたい」(" + n5 + " 回) で「動きませんか」と 言わない");
+    const r2 = go3(Object.assign({ seed: 1 }, D28), DEMO.slice(), 3);
+    ok(has(r2, "動きませんか。精進いたします。"), "  対照: ふつう → ふつう は これまでどおり「動きませんか。精進いたします。」");
+  }
+
+  // R4 (N4) 否定した 思い込みで 外すのは その 席が ひっくり返す 思い込み (furiBelief / 無ければ 先頭) が 一致する 席だけ
+  {
+    const ph = byIdB("P-北海道");
+    const main = ph && (ph.furiBelief || ph.hooks.beliefs[0]);
+    const sub = ph && ((ph.hooks || {}).beliefs || []).find((b) => b !== main);
+    const count = (den) => {
+      let n = 0;
+      if (C0) for (let sd = 1; sd <= 30; sd++) {
+        const got = C0.choose(HB, { pref: "北海道", beliefs: [], date: "2026-11-20" }, null, [], [], { denied: [den], rng: seeded(sd) });
+        if (got && got.story.id === "P-北海道") n += 1;
+      }
+      return n;
+    };
+    if (sub) {
+      const hit = count(sub);
+      ok(hit > 0, "R4 副の 思い込み (" + sub + ") を 否定しても その県の 噺 (P-北海道) は 残る (30 回 中 " + hit + " 回 選ばれた)");
+    } else {
+      ok(true, "R4 (P-北海道 に 副の 思い込みが 無い 台本 = 試す 相手が 無い)");
+    }
+    const hit2 = count(main);
+    ok(hit2 === 0, "  対照: その 席が ひっくり返す 思い込み (" + main + ") を 否定したら 外す (選ばれた " + hit2 + " 回)");
+  }
+
+  // R5 (#5・N13) 園の 送り「生まれた 山の話を」の あとは 西山公園の 席。★「話は ○○へ 飛びまして」も 二重の 入りも 言わない
+  {
+    const KINS = ["kushiro", "nagano", "okinawa", "tennoji", "asahikawa", "tobu"];
+    let sent = 0; const bad = [];
+    KINS.forEach((kin) => [1, 12, 14].forEach((sd) => ["いや、べつに", "いま、公園におります"].forEach((q) => {
+      const r = go3({ seed: sd, search: "?kin=" + kin + "&date=2026-11-20" }, [q, "思う"], 2);
+      const i = idx(r, /の話は ここまでで。$/);
+      if (i < 0) return;
+      sent += 1;
+      const after = r.txt.slice(i + 1, i + 5);
+      const dbl = after.some((t, j) => /ひとつ。$/.test(t) && /^では、/.test(after[j + 1] || ""));
+      if (r.errors || /^P-/.test(r.shown[1] || "") || after.some((t) => /^話は [^、]+(飛びまして|戻りまして)/.test(t)) || dbl) bad.push(kin + sd + ":" + r.shown.join(">") + " " + after.slice(0, 2).join("/"));
+    })));
+    ok(sent > 0 && !bad.length, "R5 園の 送りの あとは 西山公園の 席・「飛びまして」も 二重の 入りも 無し (送った 回 " + sent + ") " + bad.slice(0, 2).join(" | "));
+  }
+
+  // R6 (N5) 暦の 席へ 入る ときの 断りは 1 行 (「今日という日」を 二度 言わない・「次のお客さん」と「その筋」を 並べない)
+  {
+    const bad = []; let n28 = 0;
+    [1, 2, 3, 4, 5, 6].forEach((sd) => {
+      const r = go3(Object.assign({ seed: sd }, D28), ["いや、べつに", "県外から", "関東", "埼玉県", "いや、どうだか"], 3);
+      const k = r.shown.indexOf("T-1128");
+      if (k < 1) return;
+      n28 += 1;
+      const seats = r.L.map((x, i) => (x.k === "seat" ? i : -1)).filter((i) => i >= 0);
+      const s0 = seats[k - 1], mk = r.txt.map((t) => t.replace(/\n/g, "")).indexOf(byIdB("T-1128").makura, s0);   // ★引用の 前後の 改行は 除いて 比べる
+      const intro = r.txt.slice(s0 + 1, mk);
+      const kyo = intro.filter((t) => /今日という日/.test(t)).length;
+      if (kyo !== 1 || intro.some((t) => /趣を変えて|お出しいたしました|持ち合わせ/.test(t)) || intro.length > 2) bad.push(sd + ":" + intro.join("/"));
+    });
+    ok(n28 > 0 && !bad.length, "R6「いや、どうだか」で 二席目 以降に 入る T-1128 の 入りは 断り 無しの「では、今日という日の話を。」(" + n28 + " 回) " + bad.slice(0, 2).join(" | "));
+    const rs = [1, 2, 3, 4, 5, 6, 7, 8].map((sd) => go3({ seed: sd }, ["いや、べつに", "県外から", "関東", "群馬県", "思う"], 3));
+    const both = rs.filter((r) => r.txt.some((t, i) => t === "さて、次のお客さんの話を、もう一席。" && /趣を変えて|お出しいたしました|前に お聞き|またの機会/.test(r.txt[i + 1] || "")));
+    ok(!both.length, "  断り (この 客の 話) の 前に「次のお客さんの話を」と 言わない (" + rs.length + " 回) " + both.map((r) => r.shown.join(">")).join(" "));
+  }
+
+  // R7 (N7) 謎かけに 当たった 客 (= 公園に いる) には この あとの 席でも「行ってみたい気持ち」を 聞かない。何も 伺って いないのに「はじめに 伺いました」と 言わない
+  {
+    const cover = go3({ seed: 1, via: "genchiBtn", words: ["赤", "足あと", "愛の鐘"], patch: vf(["G1", "G2", "G3"]),
+                        store: { "hanashiyama.genchi.v1": JSON.stringify({ pending: "G1" }), "hanashiyama.pref.v1": "埼玉県" } }, [], 4);
+    ok(!cover.errors && cover.shown.length >= 4 && !has(cover, "はじめに、お気持ちを伺いました") && !has(cover, "行ってみたい気持ちは"),
+       "R7 表紙の「現地の謎かけに答える」から 入った 回 (" + cover.shown.join(">") + ") で「はじめに、お気持ちを伺いました」も「行ってみたい気持ち」も 言わない");
+    const home = go3({ seed: 51, words: ["赤", "足あと", "愛の鐘"], patch: vf(["G1", "G2", "G3"]) }, ["いや、べつに", "この福井から", "思う"], 5);
+    const iU = idx(home, "ご名答。現地まで、ようこそ。");
+    ok(home.shown.length >= 5 && iU > 0 && idx(home, "行ってみたい気持ちは", iU) < 0 && idx(home, "行ってみたい気持ちは") >= 0 && idx(home, "行ってみたい気持ちは") < iU,
+       "  一席目の あと 謎かけを 解いた 客 (" + home.shown.join(">") + ") には、その あとの 席で 聞かない (一席目の 終わりには 聞く)");
+  }
+
+  // R8 (N8) 次の 謎かけの 場所が まだ 確かめて いない ときは「この続きは、結びの広場に」と 言わない。★確かめて あれば 言う
+  {
+    const PL = ["いや、べつに", "県外から", "関東", "東京都", "思う"];
+    const off = go3({ seed: 54, words: ["赤", "めがね", "愛の鐘"], patch: vf(["G1", "G2b", "G3"]) }, PL.slice(), 3);
+    const on = go3({ seed: 54, words: ["赤", "足あと", "愛の鐘"], patch: vf(["G1", "G2", "G3"]) }, PL.slice(), 4);
+    const g1 = (HB.genchi || []).find((g) => g.id === "G1") || {};
+    ok(!!g1.nextLine && off.shown.indexOf("S55") >= 0 && !has(off, g1.nextLine), "R8 G2 が まだ 確かめて いない 回は S55 の あとに「" + String(g1.nextLine).slice(0, 14) + "…」と 言わない [" + off.shown.join(">") + "]");
+    ok(on.shown.indexOf("S56") >= 0 && has(on, g1.nextLine), "  対照: G2 を 確かめて あれば 言って 次の 謎かけへ [" + on.shown.join(">") + "]");
+  }
+
+  // R9 (#14) 福井の 県の つなぎで「大半が」を 言ったら、二席目 以降も 同じ 数の 席 (F21・F26) を 後ろへ
+  {
+    const LOCAL = (id) => { const s2 = byIdB(id); return !!s2 && (s2.facts || []).some((f) => f === "F21" || f === "F26"); };
+    const heardS10 = { "hanashiyama.log.v1": JSON.stringify([{ event: "shown", story: "S10" }]) };
+    let said = 0; const bad = [];
+    for (let sd = 1; sd <= 25; sd++) {
+      const r = go3({ seed: sd, store: heardS10 }, ["いや、べつに", "この福井から", "思う"], 5);
+      if (!has(r, /大半が/)) continue;
+      said += 1;
+      const mine = r.shown.slice(1);                 // ★shown[0] は 前に 聞いた S10 (記録)
+      if (mine.slice(1).some(LOCAL)) bad.push(sd + ":" + mine.join(">"));
+    }
+    ok(said > 0 && !bad.length, "R9「大半が」を 言った 回 (" + said + ") の 二席目 以降に 同じ 数の 席を 出さない " + bad.slice(0, 2).join(" "));
+  }
+
+  // R10 (N12) 暦の 席が 二つ 続く ときは「今日という日の話を」を 二度 言わない
+  {
+    // ★2026-11-21: 5/5 の 暦の 席どうしは 題材が 重なり、ふつうは 続かなくなった → ★試験の 中で 暦で ない 席を 抜いて 二つ 続く 形を 作る
+    const r = go3({ seed: 530, date: "2026-05-05", search: "?date=2026-05-05", patch: (w) => { w.HANASHI.stories = w.HANASHI.stories.filter((s) => s.genchi); w.HANASHI.prefStories = [];
+      (w.HANASHI.today["05-05"] || []).forEach((s, i) => { s.title = "暦の席" + i; s.furi = "ご存じで?"; s.sage = "試しの サゲ " + i + "。"; (s.scenes || []).forEach((sc) => { sc.head = "場面"; }); }); /* ★題材 (題・振り・サゲ・見出し) を 中立に */ } }, ["行きたい", "言わずにおく", "思う"], 2);
+    const two = r.shown.length >= 2 && r.shown.slice(0, 2).every((id) => (byIdB(id) || {}).isToday);
+    ok(two && r.txt.filter((t) => /今日という日の話を/.test(t)).length === 1 && has(r, "もう一つ、今日の話を。"),
+       "R10 5/5 に 暦の 席が 二つ 続く 回 (" + r.shown.join(">") + "): 二つ目の 入りは「もう一つ、今日の話を。」");
+  }
+
+  // R11 (N13) 入りの 二重 (「東京都のお客さんに、ひとつ。」→「では、新宿の話から。」) を 1 文に
+  {
+    const rs = [1, 2, 3, 4, 5].map((sd) => go3({ seed: sd }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 2));
+    const s13 = rs.filter((r) => r.shown.indexOf("S13") > 0);
+    const bad = s13.filter((r) => r.txt.some((t, i) => /お客さんに、ひとつ。$/.test(t) && /^では、/.test(r.txt[i + 1] || "")));
+    ok(s13.length > 0 && !bad.length, "R11 二席目の S13 (" + s13.length + " 回) で「…お客さんに、ひとつ。」の 直後に「では、…」を 重ねない");
+  }
+
+  // R12 三席目を 頼んだ とき、席より 先に「お願いします / また来る」で もう一度 頼ませない (実演の 筋)
+  {
+    const bad = [];
+    [1, 2, 3, 4].forEach((sd) => {
+      const r = go3(Object.assign({ seed: sd }, D28), DEMO.slice(), 3);
+      if (r.shown.length < 3 || has(r, /^(お願いします|また来る)$/)) bad.push(sd + ":" + r.shown.join(">"));
+    });
+    ok(!bad.length, "R12 実演の 筋で 三席目を 頼むと、問わずに 三席目へ (崩れ " + bad.length + ") " + bad.join(" "));
+  }
+
+  // R13 (N14) 再訪で「別のところから」: 「どちらからお越しで?」と 問い直さない (★「二つだけ」の 約束)
+  {
+    const r = go3({ seed: 21, store: { "hanashiyama.pref.v1": "茨城県" } }, ["行きたい", "別のところから", "県外から", "関東", "東京都"], 1);
+    ok(!r.errors && r.shown.length >= 1 && has(r, "二つだけ伺います") && !has(r, "どちらからお越しで"),
+       "R13 再訪の「別のところから」の あとは「どちらからお越しで?」と 問い直さない [" + r.shown.join(">") + "]");
+  }
+
+  // R14 (N15) 相槌の すぐ あとに 客の 台詞が 続かない
+  {
+    const runs = [go3(Object.assign({ seed: 1 }, D28), DEMO.slice(), 2)].concat([3, 7, 12].map((sd) => go3({ seed: sd }, ["いや、べつに", "県外から", "近畿", "兵庫県", "思う"], 3)));
+    let nA = 0; const bad = [];
+    runs.forEach((r) => r.L.forEach((x, i) => {
+      if (x.k !== "aizuchi") return;
+      nA += 1;
+      let j = i + 1;
+      while (j < r.L.length && r.L[j].k === "ma") j += 1;
+      const nx = r.L[j] || {};
+      if (/kyaku2/.test(nx.cls || "")) bad.push("相槌の あと「" + String(nx.t).slice(0, 14) + "」");
+    }));
+    ok(nA > 0 && !bad.length, "R14 相槌の すぐ あとに 客の 台詞を 続けない (相槌 " + nA + " 回) " + bad.slice(0, 2).join(" / "));
+  }
+
+  // R15 (N11) 在庫切れ → 見繕いでも 二席目は 交互 (一席目が 動物なら 動物で ない 席)
+  {
+    const isA = (id) => (C0 && typeof C0.isAnimal === "function" ? C0.isAnimal(byIdB(id)) : false);
+    const bad = []; let n = 0;
+    [["中国・四国", "岡山県", 334], ["北海道・東北", "北海道", 117], ["関東", "群馬県", 180], ["九州・沖縄", "沖縄県", 432]].forEach(([b, p, sd]) => {
+      const r = go3({ seed: sd }, ["いや、べつに", "県外から", b, p, "いや、どうだか"], 2);
+      n += 1;
+      if (r.shown.length >= 2 && isA(r.shown[0]) && isA(r.shown[1])) bad.push(p + ":" + r.shown.join(">"));
+    });
+    ok(!bad.length, "R15 見繕いの 経路でも 動物の 席を 続けない (" + n + " 回) " + bad.join(" "));
+  }
+
+  // R17〜R19 (2026-11-21 (60)) 動物の 噺は 3 席 まで 続けて よい / 同じ 話を 二度 聞かせない (S03 ↔ P-北海道・S02 ↔ 名前の 型)
+  //   ★7 席の 筋を 通して 数える。★対照 = 動物の 噺は 3 席 続く 筋が ある (数え方は 壊れていない)
+  {
+    const isA = (id) => { const s = byIdB(id); return !!s && (typeof s.animal === "boolean" ? s.animal : /動物園|レッサーパンダ/.test(s.ochiWhat || "")); };
+    const ansOf = (id) => { const s = byIdB(id); return s && s.question && s.question.choices ? String(s.question.choices[s.question.answer]) : ""; };
+    const maxRun = (ids) => { let c = 0, m = 0; ids.forEach((id) => { c = isA(id) ? c + 1 : 0; m = Math.max(m, c); }); return m; };
+    const R = [];
+    [1, 2, 3, 4, 5, 6].forEach((sd) => R.push(["北海道", go3({ seed: sd }, ["いや、べつに", "県外から", "北海道・東北", "北海道", "思う"], 7)]));
+    [1, 2, 3, 4].forEach((sd) => R.push(["東京都", go3({ seed: sd }, ["いや、べつに", "県外から", "関東", "東京都", "思う"], 7)]));
+    ["宮城県", "群馬県", "愛知県", "福岡県", "沖縄県"].forEach((p) => [1, 2, 3, 4].forEach((sd) =>
+      R.push([p, go3({ seed: sd }, ["いや、べつに", "県外から", { "宮城県": "北海道・東北", "群馬県": "関東", "愛知県": "中部", "福岡県": "九州・沖縄", "沖縄県": "九州・沖縄" }[p], p, "思う"], 7)])));
+    const short = R.filter(([, r]) => r.errors || r.shown.length < 7).map(([p, r]) => p + ":" + r.shown.join(">"));
+    ok(!short.length, "R17 7 席まで 通る (" + (R.length - short.length) + " / " + R.length + ") " + short.slice(0, 2).join(" "));
+    const run4 = R.filter(([, r]) => maxRun(r.shown) >= 4).map(([p, r]) => p + ":" + r.shown.join(">"));
+    ok(!run4.length, "R17 動物の 噺は 4 席 続けない (" + R.length + " 回) " + run4.slice(0, 2).join(" "));
+    const zk = R.filter(([, r]) => has(r, "在庫切れ")).length;
+    ok(zk > 0, "  対照: 在庫切れの あとの 見繕いを 通った 筋も 含む (" + zk + " / " + R.length + " 回)");
+    const run3 = R.filter(([, r]) => maxRun(r.shown) === 3).length;
+    ok(run3 > 0, "  対照: 3 席 続く 筋は ある (" + run3 + " 回)");
+    const hk = R.filter(([p]) => p === "北海道").map(([, r]) => r);
+    const dupHk = hk.filter((r) => r.shown.indexOf("S03") >= 0 && r.shown.indexOf("P-北海道") >= 0).map((r) => r.shown.join(">"));
+    ok(hk.some((r) => r.shown.indexOf("S03") >= 0) && !dupHk.length, "R18 北海道の 客に S03 と P-北海道 (同じ 1993 年の 旭山・答え 29園) を 同じ 回に 出さない (" + hk.length + " 回) " + dupHk.slice(0, 2).join(" "));
+    const nm = R.filter(([p]) => /^(宮城県|群馬県|愛知県|福岡県|沖縄県)$/.test(p));
+    const dupNm = nm.filter(([p, r]) => r.shown.indexOf("S02") >= 0 && r.shown.some((id) => ansOf(id) === "この赤いほう")).map(([p, r]) => p + ":" + r.shown.join(">"));
+    const ctlNm = nm.filter(([, r]) => r.shown.some((id) => ansOf(id) === "この赤いほう")).length;
+    ok(ctlNm > 0 && !dupNm.length, "R19 名前の 型の 席 (" + ctlNm + " 回) と S02 (元祖パンダ) を 同じ 回に 出さない " + dupNm.slice(0, 2).join(" "));
+    // ★見繕いの 側でも: 名前の 型を 聞いた あと、S02 しか 手がかりの 席が 無くても S02 を 出さない (Core)
+    const C0s = C0 && typeof C0.sameTalk === "function";
+    ok(C0s && C0.sameTalk(HB, byIdB("S03"), byIdB("P-北海道")) && C0.sameTalk(HB, byIdB("S02"), byIdB("T-pandaday-22")) &&
+       !C0.sameTalk(HB, byIdB("S01"), byIdB("T-1128")) && !C0.sameTalk(HB, byIdB("S03"), byIdB("S02")),
+       "  同じ 話の 判定: S03↔P-北海道・S02↔T-pandaday-22 は 同じ、S01↔T-1128・S03↔S02 は 違う");
+    // ★実演の 筋 (11/28・埼玉県) は 7 席 通しても 一席目 T-1128・二席目 P-埼玉県 の まま
+    const dm = [1, 2, 3].map((sd) => go3(Object.assign({ seed: sd }, D28), DEMO.slice(), 7));
+    ok(dm.every((r) => !r.errors && r.shown[0] === "T-1128" && r.shown[1] === "P-埼玉県" && maxRun(r.shown) < 4),
+       "  実演の 筋は T-1128 > P-埼玉県 の まま (7 席: " + dm.map((r) => r.shown.join(">")).join(" | ") + ")");
+  }
+
+  // R20〜R22 組版・間の 直し (2026-11-21 作者の判断): 外れの 返しと 正解の 1 行を「一続きの 一声」に (hazure + seikai)
+  //   ★時間 (余韻 2.4 秒・註から 推量 1.2 秒・返しから 正解 0.9 秒・打ち出しの 速さ) は test_motion.js ⑭〜⑯ で 見る
+  {
+    const seq = (r) => r.L.filter((x) => x.k !== "aizuchi");
+    const near = (r, re) => { const L = seq(r); const i = L.findIndex((x) => x.k === "say" && re.test(" " + x.cls + " ")); return { i, L }; };
+    // R20 P-埼玉県 を 外す (3園): 返しは hazure、すぐ 下 (空き なし) に 正解の 1 行 (seikai)
+    const w = go3(Object.assign({ seed: 1, ans: "wrong" }, D28), DEMO.slice(), 2);
+    const { i: iK, L: Lw } = near(w, / kotae hazure /);
+    const nx = Lw[iK + 1] || {};
+    ok(!w.errors && w.shown[1] === "P-埼玉県" && iK >= 0 && /それが、思いのほか方々へ/.test(Lw[iK].t),
+       "R20 外れの 返しは hazure (P-埼玉県「" + (iK >= 0 ? Lw[iK].t : "無し") + "」)");
+    ok(nx.k === "say" && / seikai /.test(" " + nx.cls + " ") && /^答えは、29園でございます。$/.test(nx.t),
+       "  返しの すぐ 下 (間の 空き なし) に 正解の 1 行 (" + (nx.k || "") + " " + (nx.cls || "") + " " + (nx.t || "") + ")");
+    // ★外れの 返しは 一席に 1 つ。★T-1128 (外れでも 返しが 正解を 言う) は hazure に しない
+    const kw = Lw.filter((x) => x.k === "say" && / kotae /.test(" " + x.cls + " "));
+    ok(kw.length === 2 && / kotae /.test(" " + kw[0].cls + " ") && !/ hazure /.test(" " + kw[0].cls + " ") && /吉田松陰/.test(kw[0].t),
+       "R21 返しが もう 正解を 言う 外れ (T-1128「" + (kw[0] ? kw[0].t : "") + "」) は hazure に しない・正解の 1 行も 足さない");
+    // R21 正解を 押したら 今どおり (hazure なし・正解の 1 行 なし)
+    const c = go3(Object.assign({ seed: 1, ans: "correct" }, D28), DEMO.slice(), 2);
+    const kc = seq(c).filter((x) => x.k === "say" && / kotae /.test(" " + x.cls + " "));
+    ok(!c.errors && kc.length === 2 && kc.every((x) => !/ hazure /.test(" " + x.cls + " ")) && !seq(c).some((x) => / seikai /.test(" " + x.cls + " ")),
+       "  正解を 押したら 返しは 今どおり (" + kc.map((x) => x.cls.replace(/ ?tatami/, "") + "「" + x.t + "」").join(" / ") + ")");
+    // R22 サゲ → 註 → 推量 → 追い足し の 順。★余韻は 時間だけ (サゲと 註の 間・註と 推量の 間に 空きの 行 (ma) を 作らない)
+    const L2 = seq(w);
+    const iS = L2.map((x, k) => (x.k === "say" && / sage /.test(" " + x.cls + " ") ? k : -1)).filter((k) => k >= 0);
+    const okSeq = iS.length === 2 && iS.every((k) => L2[k + 1] && L2[k + 1].k === "note" && L2[k + 2] && / suiryo /.test(" " + L2[k + 2].cls + " ")
+      && L2[k + 3] && / ato /.test(" " + L2[k + 3].cls + " "));
+    ok(okSeq, "R22 サゲの あと 註 → 推量 → 追い足し (空きの 行を 挟まない。2 席: " +
+       iS.map((k) => L2.slice(k, k + 4).map((x) => x.k === "say" ? x.cls.replace(/^line shi |\s*tatami/g, "") : x.k).join(">")).join(" | ") + ")");
+  }
+
+  // R23 」の 後の 改行 (2026-11-21 作者の判断): 」。 で 文が 終わり 次の 文が 続く ときは 句点まで 前の 行に 残して 改行
+  {
+    const kb = C0 && typeof C0.kagiBreak === "function" ? C0.kagiBreak : null;
+    const cases = [
+      ["名は「炎色のネコ」。いまも、そう呼ばれます。", "名は「炎色のネコ」。\nいまも、そう呼ばれます。"],
+      ["噺の前に、ひとつ。「幕末の悪役は、悪役のまま」。\nそう思っておいでで?", "噺の前に、ひとつ。\n「幕末の悪役は、悪役のまま」。\nそう思っておいでで?"],   // ★qBreak の 後でも 二重に しない・「 の 前でも 改行
+      ["青森県からでございますか。「とっておきの青森」の。 うちの裏の山の話で ひとつ。", "青森県からでございますか。\n「とっておきの青森」の。 うちの裏の山の話で ひとつ。"],   // ★句点の 後の「 の 前で 改行 (」+助詞 は そのまま)
+      ["「祈りの道」は、約900メートル。", "「祈りの道」は、約900メートル。"],                         // ★行の 頭が もう「
+      ["市の紹介で、「言われています」とございます。", "市の紹介で、「言われています」とございます。"],     // ★語の 引用 (7 字・読点なし) は「 の 前が 読点でも 改行しない
+      ["そこで「達成」とございます。", "そこで「達成」とございます。"],                                 // ★「 の 前が 助詞 (文が 続く)
+      ["名づけた庭「嚮陽渓」が、西山公園のはじまりでございます。", "名づけた庭「嚮陽渓」が、西山公園のはじまりでございます。"],   // ★語の 引用 + 助詞 は 改行しない
+      ["客「そうかい。「大きな園」。なんだろうね。」", "客「そうかい。「大きな園」。なんだろうね。」"],                     // ★行 全体が 台詞
+      ["年表はひとこと、「達成」。", "年表はひとこと、「達成」。"],                                                       // ★」。 で 行が 終わる
+    ];
+    const bad = kb ? cases.filter(([i, o]) => kb(i) !== o).map(([i]) => i) : ["kagiBreak が 無い"];
+    ok(!bad.length, "R23 」の 後・「 の 前の 改行: 」。 + 次の 文 / 句点 +「 は 改行。」+助詞・読点や 助詞 +「・行頭の「・台詞・行末・qBreak 済み は そのまま (" + cases.length + " 例) " + bad.join(" | "));
+    // ★実演の 前段の 振り: ひとつ。⏎「…」。⏎そう思って (qBreak と 二重に ならない)
+    const r = go3(Object.assign({ seed: 1 }, D28), DEMO.slice(), 1);
+    const furi0 = r.L.find((x) => x.k === "say" && /^噺の前に、ひとつ。/.test(x.t));
+    ok(!!furi0 && furi0.t === "噺の前に、ひとつ。\n「幕末の悪役は、悪役のまま」。\nそう思っておいでで?", "  実演の 前段の 振りは「噺の前に、ひとつ。⏎「…」。⏎そう思っておいでで?」(改行 2 つ・二重なし)");
+  }
+  // R24 文節で 改行 (2026-11-21 作者の判断): auto-phrase が 効かない ブラウザ用の 切れ目 (<wbr>)。★語・数字 + 単位・人名・短い「…」の 中で 切らない
+  {
+    const pb = C0 && typeof C0.phraseBreaks === "function" ? C0.phraseBreaks : null;
+    const wb = C0 && typeof C0.withWbr === "function" ? C0.withWbr : null;
+    const cut = (t) => { const b = pb(t); let o = "", k0 = 0; b.forEach((p) => { o += t.slice(k0, p) + "|"; k0 = p; }); return o + t.slice(k0); };
+    const NOCUT = ["送り主", "2011年", "29園", "東武動物公園", "レッサーパンダ", "お殿様", "ご縁", "ひと跳び", "それ以来", "」が", "」と", "吉田松陰", "間部詮勝", "「達成」", "その子", "よその", "どれほど", "私「"];
+    const T = ["さぞ大きな園とお思いのその送り主が、このレジの裏の、日本一小さいといわれる園。",
+      "記録によりますと2011年、福井から東武動物公園へ、レッサーパンダが移りました。その子は、もう記録の上だけでございますが。",
+      "答えは、29園でございます。", "時は幕末、この鯖江の藩に、お殿様がおりました。", "私「ご自慢の園と、ここ、帳面の上ではご縁がございます。」",
+      "そのお国からこの小さな山まで、話はひと跳びでございます。", "道を訊かれて、まるきり逆をお教えしたことがございます。それ以来、地図が手放せません。",
+      "名づけた庭「嚮陽渓」が、西山公園のはじまりでございます。", "レジで「鯖江のお殿様は、どなたで」と訊かれまして。", "それが、あの吉田松陰なんでございます。",
+      "間部詮勝、1884年の今日に亡くなりました。", "市の年表はひとこと、「達成」。", "うちの名所は、思いつきからして、よその庭。", "埼玉県へ送り出した園、どれほどの構えだとお思いで。"];
+    const cutIn = [];
+    if (!pb) cutIn.push("phraseBreaks が 無い");
+    else T.forEach((t) => { const b = pb(t); NOCUT.forEach((w) => { let i = t.indexOf(w);
+      while (i >= 0) { const j = i; if (b.some((p) => p > j && p < j + w.length)) cutIn.push(w + " ← " + cut(t)); i = t.indexOf(w, i + 1); } }); });
+    ok(!cutIn.length, "R24 文節の 切れ目は 語の 中に 入らない (" + NOCUT.length + " 語 × " + T.length + " 文) " + cutIn.slice(0, 2).join(" ／ "));
+    const want = pb ? [["さぞ大きな園とお思いのその送り主が、このレジの裏の、日本一小さいといわれる園。", "さぞ|大きな|園と|お思いの|その送り主が、|このレジの|裏の、|日本一小さいといわれる|園。"]]
+      .filter(([t, o]) => cut(t) !== o).map(([t]) => cut(t)) : ["phraseBreaks が 無い"];
+    ok(!want.length, "  P-埼玉県の サゲの 切れ目 = さぞ|大きな|園と|お思いの|その送り主が、|このレジの|裏の、|日本一小さいといわれる|園。 " + want.join(""));
+    const h = wb ? wb('答えは、<b class="kazu">29園</b>でございます。', [4]) : "";
+    ok(h === '答えは、<wbr><b class="kazu">29園</b>でございます。', "  <wbr> は 飾りの タグの 前に 入る (数字の 飾りの 中に 入れない) " + h);
+    // ★煙試験の 最小 DOM (CSS.supports が 無い = auto-phrase が 効かない 側) で、語りの 行に <wbr> が 入り、字は 変わらない
+    const r = go3(Object.assign({ seed: 1, ans: "wrong" }, D28), DEMO.slice(), 2);
+    const sg = r.a.talkEls().filter((c) => /(^| )sage( |$)/.test(c.className || ""));
+    ok(sg.length === 2 && sg.every((c) => /<wbr>/.test(c._html || "")) &&
+       sg.every((c) => (c._html || "").replace(/<[^>]+>/g, "") === String(r.L.find((x) => x.k === "say" && / sage /.test(" " + x.cls + " ") && (c._html || "").replace(/<[^>]+>/g, "").indexOf(x.t.slice(0, 6)) === 0).t)),
+       "  auto-phrase の 無い 側: サゲの 行に <wbr> が 入り、字は 読み上げ用の 行と 同じ (" + sg.length + " 席)");
+  }
+
+  // R25 キーとなる 単語 (2026-11-21 作者の判断) = サゲが あとで 受け返す 語句を 太字。1 行 1 か所・同じ 語句は 席で 1 回・1 席 3 か所まで。
+  //   ★問いの 答えと 重なる 語句・サゲ / 註 / 推量 / 追い足し には 付けない。★「」の 飾り (もう 太字) と 二重に しない
+  {
+    const kp = C0 && typeof C0.keyPhrase === "function" ? C0.keyPhrase : null;
+    const sk = C0 && typeof C0.seatKeys === "function" ? C0.seatKeys : null;
+    const wk = C0 && typeof C0.withKey === "function" ? C0.withKey : null;
+    const P = byIdB("P-埼玉県"), T28 = byIdB("T-1128");
+    const ex = kp ? [
+      [kp("そうかい、福井から来た子だったのか。さぞ大きな園なんだろうね。", P.sage, "29園"), "さぞ大きな園"],
+      [kp("答えは29園でございまして、29園のうち。", "その29園のうちの一つが、うちの裏。", "29園"), null],          // ★答えと 重なる
+      [kp("どれほどの構えだとお思いで。", P.sage, "29園"), null],                                                  // ★言い回し (お思い) は 拾わない
+      [kp("この老中を襲う相談をしたのは、誰でしょう。", T28.sage, "吉田松陰"), null],                              // ★2 字 (老中) は 拾わない
+      [kp("名の通った園と申します。", "名の通った園で。", "", ["通った園"]), "通った園"],                          // ★keys が あれば そちら
+    ] : [[0, 1]];
+    const bad = ex.filter(([g, w]) => g !== w).map(([g, w]) => String(g) + "≠" + String(w));
+    ok(!bad.length, "R25 キーの 語句: P-埼玉県の 客の 台詞 →「さぞ大きな園」/ 答えと 重なる・言い回し・2 字 は 拾わない / keys を 優先 " + bad.join(" | "));
+    // ★130 席: 1 席 3 か所まで・同じ 語句は 1 回・読点を またがない
+    let over = 0, dup = 0, seatsK = 0, linesK = 0;
+    if (sk) ALLB.forEach((st) => {
+      const L = [].concat(st.furi ? [st.furi] : [], [st.makura], st.hondai || []).filter(Boolean);
+      const ks = sk(L, st).filter(Boolean);
+      if (ks.length > 3) over += 1;
+      if (new Set(ks).size !== ks.length) dup += 1;
+      if (ks.some((k) => /[、。]/.test(k) || k.length < 3)) over += 1;
+      linesK += ks.length; if (ks.length) seatsK += 1;
+    });
+    ok(sk && !over && !dup && linesK > 0, "  130 席: 太字の 行 " + linesK + " / 席 " + seatsK + "・1 席 4 か所 以上 0・同じ 語句の 二度 0 (" + over + "/" + dup + ")");
+    const h1 = wk ? wk('<em class="kagi">「さぞ大きな園」</em>です', "さぞ大きな園") : "";
+    const h2 = wk ? wk('答えは<b class="kazu">29園</b>の園です', "29園の園") : "";
+    ok(wk && h1 === '<em class="kagi">「さぞ大きな園」</em>です' && h2 === '答えは<strong class="key"><b class="kazu">29園</b>の園</strong>です',
+       "  「」の 飾りの 中には 付けない / 数字の 飾りは 太字の 中に そのまま " + h2);
+    // ★実演の 筋 (外れ): P-埼玉県の 客の 台詞だけ 太字。★サゲ・註・推量・追い足しには 無い。★字は 変わらない
+    const r = go3(Object.assign({ seed: 1, ans: "wrong" }, D28), DEMO.slice(), 2);
+    const ks2 = r.a.talkEls().filter((c) => /<strong class="key">/.test(c._html || ""));
+    const where = ks2.map((c) => (c.className || "").replace(/ ?(tatami|shigusa)/g, "") + ":" + (((c._html || "").match(/<strong class="key">(.*?)<\/strong>/) || [])[1] || "").replace(/<wbr>/g, ""));
+    ok(ks2.length === 1 && where[0] === "line serifu kyaku2:さぞ大きな園" &&
+       !ks2.some((c) => / (sage|suiryo|ato) /.test(" " + c.className + " ")),
+       "  実演の 筋: 太字は P-埼玉県の 客の 台詞「さぞ大きな園」の 1 か所だけ (" + where.join(" / ") + ")");
+    const txtOf = (c) => (c._html || "").replace(/<[^>]+>/g, "");
+    ok(ks2.every((c) => txtOf(c) === "客「そうかい、福井から来た子だったのか。さぞ大きな園なんだろうね。」"), "  太字を 付けても 字は 変わらない (<wbr> と 一緒でも)");
+  }
+  // R26 めくり (題) を 折らない (2026-11-21 見直し): 題の 字数を data-n に (スマホは 字数で 小さく)。
+  //   ★130 席の 題が 360px 幅で 1 塊で 収まる (計算: 和字 1em・数字 0.55em・字間 0.02em・左右の 余白 + 枠 22px・高座の 中身 336px)
+  {
+    const a = MH.makeApp(Object.assign({ date: "2026-11-28", seed: 1 }, APPX ? { srcPatch: () => APPX } : {}));
+    a.click("open"); a.settle();
+    for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
+    ok(a.byId.mekuri.dataset.n === "6", "R26 めくりに 題の 字数 (data-n): T-1128「" + a.byId.mekuri.textContent + "」→ " + a.byId.mekuri.dataset.n);
+    const css = fs.readFileSync(path.join(ROOT, "app", "style.css"), "utf8");
+    const tier = {};
+    (css.match(/\.mekuri\[data-n="\d+"\][^{]*\{\s*font-size:\s*[\d.]+rem/g) || []).forEach((m) => {
+      const f = Number(m.match(/font-size:\s*([\d.]+)rem/)[1]);
+      (m.match(/data-n="(\d+)"/g) || []).forEach((x) => { tier[Number(x.match(/\d+/)[0])] = f; });
+    });
+    const fsOf = (n) => tier[Math.min(16, n)] || 1.12;
+    const tooWide = ALLB.filter((s) => {
+      const n = Array.from(s.title).length;
+      const px = fsOf(n) * 16;
+      const w = Array.from(s.title).reduce((x, c) => x + (/[0-9A-Za-z]/.test(c) ? 0.55 : 1) * px + 0.02 * px, 0) + 22;
+      return w > 336 || fsOf(n) < 0.95;
+    }).map((s) => s.title);
+    const maxN = Math.max.apply(null, ALLB.map((s) => Array.from(s.title).length));
+    ok(Object.keys(tier).length > 0 && !tooWide.length, "  130 席の 題 (最長 " + maxN + " 字) が 360px で 1 塊 (0.95rem 以上) " + tooWide.join(","));
+  }
+
+  // R27 人の 言葉の 引用 (「」の 中が 8 字 以上 / 読点・?・! を 含む) は「 の 前と 」の 後で 改行 (2026-11-21 見直し)。
+  //   ★語の 引用 (7 字 以下・読点なし)・行 全体が 台詞・サゲは そのまま。★私の 台詞の 中の 引用は 改行。★」の 後が 2 字 以下で 文が 終わる なら 切らない
+  {
+    const kb = C0 && typeof C0.kagiBreak === "function" ? C0.kagiBreak : null;
+    const cases = [
+      ["レジで「鯖江のお殿様は、どなたで」と訊かれまして、答えに詰まったことがございます。", "レジで\n「鯖江のお殿様は、どなたで」\nと訊かれまして、答えに詰まったことがございます。"],
+      ["平成20年の欄に、「レッサーパンダのミンファが逃走し話題となる」とございます。", "平成20年の欄に、\n「レッサーパンダのミンファが逃走し話題となる」\nとございます。"],
+      ["よろしければ、この札を お持ち帰りを。「この札をもらう」で、お手元に 残ります。", "よろしければ、この札を お持ち帰りを。\n「この札をもらう」で、お手元に 残ります。"],   // ★語の 引用 (7 字)
+      ["私「「とっておきの青森」のお国の方に、並べてお聞かせします。」", "私「「とっておきの青森」\nのお国の方に、並べてお聞かせします。」"],   // ★私の 台詞の 中の 引用
+      ["客「「入口の時計、合ってる?」って、よく訊かれるでしょう。」", "客「「入口の時計、合ってる?」って、よく訊かれるでしょう。」"],   // ★客の 台詞は 対象外
+      ["青森県からでございますか。「とっておきの青森」の。 うちの裏の山の話で ひとつ。", "青森県からでございますか。\n「とっておきの青森」の。 うちの裏の山の話で ひとつ。"],   // ★」の 後が「の。」(2 字 以下) は 切らない
+      ["顔のところが「入口の時計、合ってる」、尾がしっぽ。", "顔のところが\n「入口の時計、合ってる」、\n尾がしっぽ。"],   // ★」、 は 読点まで 前の 行
+    ];
+    const bad = kb ? cases.filter(([i, o]) => kb(i) !== o).map(([i]) => i.slice(0, 16)) : ["kagiBreak が 無い"];
+    const sageOk = kb ? kb("レジで「鯖江のお殿様は、どなたで」と訊かれた山。", { quote: false }) === "レジで「鯖江のお殿様は、どなたで」と訊かれた山。" : false;
+    ok(!bad.length && sageOk, "R27 人の 言葉の 引用は「」の 前後で 改行・語の 引用 / 客の 台詞 / サゲ は そのまま (" + (cases.length + 1) + " 例) " + bad.join(" | "));
+    // ★実演の 筋: T-1128 の まくら・終わりの 問いの 前の「はじめに伺ったときは、「いや、べつに」でございました。」
+    const r = go3(Object.assign({ seed: 1, ans: "correct" }, D28), DEMO.slice(), 1);
+    const mk = r.L.find((x) => x.k === "say" && /^レジで/.test(x.t));
+    const hj = r.L.find((x) => x.k === "say" && /^はじめに伺ったときは/.test(x.t));
+    const sg = r.L.find((x) => x.k === "say" && / sage /.test(" " + x.cls + " "));
+    ok(!!mk && mk.t === "レジで\n「鯖江のお殿様は、どなたで」\nと訊かれまして、答えに詰まったことがございます。" &&
+       !!hj && hj.t === "はじめに伺ったときは、\n「いや、べつに」\nでございました。" && !!sg && sg.t.indexOf("\n") < 0,
+       "  実演の 筋: T-1128 の まくら「レジで⏎「…」⏎と訊かれまして」・「はじめに伺ったときは、⏎「いや、べつに」⏎でございました。」・サゲは 改行なし");
+  }
+
+  // R28 あて推量の 表示 (2026-11-21 作者の判断): ポイント (「ではないか / のでは」の 直前の 句) を 太字・その 後に「……」の 間。★台本の 文は 変えない
+  {
+    const gs = C0 && typeof C0.guessShape === "function" ? C0.guessShape : null;
+    const g1 = gs && gs(byIdB("P-埼玉県").guess), g2 = gs && gs(byIdB("T-1128").guess), g3 = gs && gs(byIdB("S55").guess);
+    const g4 = gs && gs("書いてはおりませんが、園と園で子をやりとりするのには、それなりのわけがあるように思われます。");
+    const g5 = gs && gs(byIdB("S52").guess);
+    ok(!!g1 && g1.point === "血筋を絶やさぬため" && g1.text === "書いてはおりませんが、遠くまで送り出したのは、血筋を絶やさぬためではないか……と存じます。" &&
+       !!g2 && g2.point === "人の笑う顔を見たかった" && g2.text === "書いてはおりませんが、京で厳しい役目を負ったぶん、国元では人の笑う顔を見たかったのでは……ないでしょうか。" &&
+       !!g3 && g3.point === "迷うから" && !!g5 && g5.point === "人の集まる用事が あった" && g4 === null,
+       "R28 推量の 形: P-埼玉県「血筋を絶やさぬため」ではないか……/ T-1128「人の笑う顔を見たかった」のでは……/ 長い 句は 後ろの 要 (S52「人の集まる用事が あった」S55「迷うから」) / ように思われます は そのまま");
+    // ★62 席: ポイントは 3〜14 字・「……」は 1 か所・字は 台本の 文 +「……」だけ
+    let bad = 0, n = 0, nOmo = 0;
+    if (gs) ALLB.filter((s) => s.guess).forEach((s) => {
+      if (/ように思われます/.test(Array.isArray(s.guess) ? s.guess.join("") : s.guess)) { nOmo += 1; if (gs(s.guess)) bad += 1; return; }   // ★そのまま (太字も「……」も 付けない)
+      const g = gs(s.guess); if (!g) return; n += 1;
+      const raw = Array.isArray(s.guess) ? s.guess.join("") : s.guess;
+      const L = Array.from(g.point).length;
+      if (L < 3 || L > 14 || g.text.split("……").length !== 2 || g.text.replace("……", "") !== raw || raw.indexOf(g.point) < 0) bad += 1;
+    });
+    ok(gs && n > 0 && nOmo === 15 && !bad, "  推量 " + n + " 席: ポイントは 3〜14 字・「……」は 1 か所・字は 台本 +「……」だけ (崩れ " + bad + ")・ように思われます の " + nOmo + " 席は そのまま");
+    // ★実演の 筋: 推量の 行に 太字の ポイントと「……」。★サゲ・追い足しには 付かない
+    const r = go3(Object.assign({ seed: 1, ans: "wrong" }, D28), DEMO.slice(), 2);
+    const sui = r.a.talkEls().filter((c) => /(^| )suiryo( |$)/.test(c.className || ""));
+    const pts = sui.map((c) => (((c._html || "").match(/<strong class="point">(.*?)<\/strong>/) || [])[1] || "").replace(/<wbr>/g, ""));
+    ok(sui.length === 2 && pts[0] === "人の笑う顔を見たかった" && pts[1] === "血筋を絶やさぬため" && sui.every((c) => /……/.test(c._html || "")) &&
+       !r.a.talkEls().some((c) => !/(^| )suiryo( |$)/.test(c.className || "") && /class="point"/.test(c._html || "")),
+       "  実演の 筋: 推量の 行の 太字 = " + pts.join(" / ") + "・「……」あり・推量の 箱の 外には 付かない");
+  }
+
+  // R16 公開物の コメントに 外から 受けた 指摘を そのまま 映した 言い方 (かぎかっこで 引いた 指摘 + 手当て の 型) を 書かない / 札の ライセンスの URL は 読みに 行かない 文字と 分かる
+  {
+    const css = fs.readFileSync(path.join(ROOT, "app", "style.css"), "utf8");
+    const me = fs.readFileSync(__filename, "utf8");
+    const NG_WORDS = /への ?手当て|」への/;   // ★言い方の 型で 見る (★指摘の 文言そのものは ここにも 書かない)
+    const where = [["app.js", APPTXT], ["style.css", css], ["index.html", HTML], ["test_flow.js", me.split("// R16 公開物")[0]]].filter(([, t]) => NG_WORDS.test(t)).map(([n]) => n);
+    ok(!where.length, "R16 app.js・style.css・index.html・test_flow.js の コメントに 受けた 指摘を そのまま 映した 言い方 0 " + where.join(","));
+    const lines = APPTXT.split("\n");
+    const lic = lines.findIndex((l) => /creativecommons\.org/.test(l));
+    const near = lines.slice(Math.max(0, lic - 3), lic + 1).join("\n");
+    ok(lic >= 0 && /読みに 行かない/.test(near), "  札の ライセンスの URL (creativecommons.org) の 前に「読みに 行かない (札に 書く 文字)」の 注記");
+    ok(!/\bfetch\s*\(|XMLHttpRequest|sendBeacon|WebSocket|EventSource/.test(APPTXT), "  app.js に 外へ 読みに 行く 処理 0 (fetch / XHR / sendBeacon / WebSocket / EventSource)");
+  }
 }
 
 console.log(fail.length ? "FAIL " + fail.length + " 件" : "ALL OK");

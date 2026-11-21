@@ -24,6 +24,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import validate                      # ★app.js の文言の検査を 直に 呼ぶ
 BUNDLE = os.path.join(ROOT, "app", "data", "bundle.js")
+# ★手元の パスの 試験に 使う 頭 (★この ファイルは 公開物に 入るので、作業メモの パスを 字面で 書かない)
+DOCS = "docs" + "/"
 fail = []
 
 
@@ -94,7 +96,7 @@ def m_spoil_fig(b):
 
 # ---- 画面に出る文字に手元のパス ----
 def m_path(b):
-    b["facts"][0]["source"] = "docs/調査/20260916_なにか.md"
+    b["facts"][0]["source"] = DOCS + "調査/20260916_なにか.md"
 
 
 # ---- 噂の一言 ----
@@ -193,7 +195,7 @@ def m_est_ban(b):
 
 
 def m_est_ban_nobody(b):
-    """★推計の 0 を サゲで「表の上で誰もいなかった」と 言い切る (監査⑦ B5 で 実際に あった形)"""
+    """★推計の 0 を サゲで「表の上で誰もいなかった」と 言い切る (見直し で 実際に あった形)"""
     _story(b, "S09")["sage"] = "表の上で誰もいなかったその雪の山に、市の年表は、スキー場。"
 
 
@@ -310,7 +312,7 @@ def m_head_many(b):
     _set_heads(_head_seat(b), OK_HEADS + ["その日の空", "帰り道の話"])
 
 
-# ---- 題 (演目名) の 先回り / 答えの 言い直し / 見出しの 無い 席 (2026-11-15 反論監査② F2・F4 / ③ 重1) ----
+# ---- 題 (演目名) の 先回り / 答えの 言い直し / 見出しの 無い 席 (2026-11-15 見直し) ----
 def m_title_ans(b):
     """★題に 問いの 答え (前の S49「金曜の顔」の 形)"""
     s = _head_seat(b)
@@ -318,9 +320,9 @@ def m_title_ans(b):
 
 
 def m_title_ans1(b):
-    """★答えが 1 字でも 止める (前の S18「桜が先だった」← 答え「桜」)"""
-    s = _story(b, "S18")
-    s["title"] = "桜が先だった"
+    """★答えが 1 字でも 止める (2026-11-21 から S30。答え「木」。前は S18「桜が先だった」← 答え「桜」)"""
+    s = _story(b, "S30")
+    s["title"] = "木の鐘のころ"
 
 
 def m_title_kanji(b):
@@ -381,7 +383,7 @@ def m_yokoku(b):
 
 
 run(m_title_ans, "題が 問いの 答えを 含む", expect="が 問いの 答え")
-run(m_title_ans1, "題が 1 字の 答え (桜) を 含む", expect="が 問いの 答え「桜」")
+run(m_title_ans1, "題が 1 字の 答え (木) を 含む", expect="が 問いの 答え「木」")
 run(m_title_kanji, "題が 漢数字で 答えの 数を 言う", expect="問いの 答えの 数")
 run(m_title_sage, "題が サゲの 最後の 語を 含む", expect="が サゲの 最後の 語")
 run(m_title_insage, "題が サゲの 最後の 句に そのまま ある", expect="サゲの 中に そのまま")
@@ -435,6 +437,147 @@ run(m_scene_index, "写真の指定の 番号が 群の 枚数を 越えた", ex
 run(m_ok, "壊していない状態 (ここは通るのが正しい)", want_ng=False)
 
 
+# ---- 数の 位 (千・万) を 値として 読む (2026-11-20 見直し) ----
+#   ★前の validate は「5千両」も「5万両」も 5 と 読み、桁の 誤りが 素通りした (終了コード 0)。
+#   ★「864千人」を 8641000 と つないで 読み、原文の 864 とは 照合できていなかった。
+def _replace_in_story(st, old, new):
+    """台本の 文字列 (本題の 台詞も) の 中の old を new に 置き換える。当たらなければ StopIteration"""
+    hit = False
+    for k in ("makura", "sage", "atogaki", "furi", "guess"):
+        if isinstance(st.get(k), str) and old in st[k]:
+            st[k] = st[k].replace(old, new); hit = True
+    for i, h in enumerate(st.get("hondai", [])):
+        if isinstance(h, str) and old in h:
+            st["hondai"][i] = h.replace(old, new); hit = True
+        elif isinstance(h, dict) and old in h.get("text", ""):
+            h["text"] = h["text"].replace(old, new); hit = True
+    if not hit:
+        raise StopIteration
+    return st
+
+
+def m_keta_man(b):
+    """★「5千両」→「5万両」(台帳の 原文は 5千両)。★前の validate では 通っていた"""
+    _replace_in_story(_story(b, "S06"), "5千両", "5万両")
+
+
+def m_keta_kanji(b):
+    """★漢数字で 書いても 同じ (「五万両」。★前は 両 が 数えことばに 無く 数として 読まなかった)"""
+    _replace_in_story(_story(b, "S06"), "5千両", "五万両")
+
+
+def m_keta_sen(b):
+    """★「864千人」→「8,640千人」(10 倍)。★前は 8641000 と 86401000 で どちらも claim と 照合していた"""
+    _replace_in_story(_story(b, "S11"), "864千人", "8,640千人")
+
+
+def m_keta_same_ok(b):
+    """★同じ 値の 言い換え (5千両 → 五千両) は 通る"""
+    _replace_in_story(_story(b, "S06"), "5千両", "五千両")
+
+
+def m_keta_mixed_ok(b):
+    """★「864千人」→「86万4千人」(同じ 値) は 通る"""
+    _replace_in_story(_story(b, "S11"), "864千人", "86万4千人")
+
+
+def m_claim_only(b):
+    """★claim にだけ ある 数は 注意 (止めない)。★原文 (quote) に 無い 数を claim に 足して 語らせる"""
+    f = next(x for x in b["facts"] if x["id"] == "F07")
+    f["claim"] += " 設計図は9,991枚。"
+    _replace_in_story(_story(b, "S06"), "設計図まで", "設計図9,991枚まで")
+
+
+run(m_keta_man, "台帳の 5千両 を 語りで 5万両 に した (桁の 誤り)", expect="数字「50000」が参照事実に無い")
+run(m_keta_kanji, "台帳の 5千両 を 語りで 五万両 に した (漢数字)", expect="数字「50000」が参照事実に無い")
+run(m_keta_sen, "台帳の 864千人 を 8,640千人 に した (10 倍)", expect="数字「8640000」が参照事実に無い")
+run(m_keta_same_ok, "5千両 を 五千両 と 書き換えた (同じ 値。通るのが正しい)", want_ng=False)
+run(m_keta_mixed_ok, "864千人 を 86万4千人 と 書き換えた (同じ 値。通るのが正しい)", want_ng=False)
+run(m_claim_only, "claim にだけ ある 数は 注意 (止めない)", want_ng=False,
+    expect_warn="作り手の 要約 (claim) に だけ ある もの")
+
+
+
+# ---- 漢数字は 後ろの 語を 問わず 読む (2026-11-21。見直し) ----
+#   ★前は 数えことば (頭・人・両 など) が 直後に ある ときだけ 読み、
+#     「百七十を越す」「千八百の車」「十名」「九時」「三か月」は 数として 読まなかった → 書き換えても 通った
+def _card(st):
+    return st.setdefault("card", {})
+
+
+def m_kan_wo(b):
+    """★サゲ「ならせば百七十を越す」→「九百七十を越す」(後ろが「を」)"""
+    _replace_in_story(_story(b, "S47"), "百七十を越す", "九百七十を越す")
+
+
+def m_kan_no(b):
+    """★札「千八百の車」→「一万八百の車」(後ろが「の」。札は _replace_in_story の 外)"""
+    c = _card(_story(b, "S52"))
+    if "千八百の車" not in c.get("big", ""):
+        raise StopIteration
+    c["big"] = c["big"].replace("千八百の車", "一万八百の車")
+
+
+def m_kan_mei(b):
+    """★「十名」→「二十名」(後ろが「名」)"""
+    _replace_in_story(_story(b, "S34"), "十名", "二十名")
+
+
+def m_kan_ji(b):
+    """★「朝の九時ごろ」→「朝の七時ごろ」(後ろが「時」)"""
+    _replace_in_story(_story(b, "S54"), "九時", "七時")
+
+
+def m_kan_kagetsu(b):
+    """★「夏の 三か月で」→「夏の 九か月で」(後ろが「か月」)"""
+    _replace_in_story(_story(b, "S53"), "三か月", "九か月")
+
+
+def m_kan_round_ng(b):
+    """★丸めの 範囲を 越えた 書き換え (原文 1,829 台 → 札「千九百の車」) は 止まる"""
+    c = _card(_story(b, "S52"))
+    if "千八百の車" not in c.get("big", ""):
+        raise StopIteration
+    c["big"] = c["big"].replace("千八百の車", "千九百の車")
+
+
+# ---- 台帳の 要約 (claim) と 語りが 同じ 誤りを した (2026-11-21。見直し) ----
+def m_claim_slip(b):
+    """★語りも claim も「5万両」(原文 quote は「5千両」)。★前は claim にだけ ある 数の 注意 1 行で 通った"""
+    f = next(x for x in b["facts"] if x["id"] == "F07")
+    if "5千両" not in f["claim"] and "五千両" not in f["claim"]:
+        raise StopIteration
+    f["claim"] = f["claim"].replace("5千両", "5万両").replace("五千両", "五万両")
+    _replace_in_story(_story(b, "S06"), "5千両", "5万両")
+
+
+run(m_kan_wo, "サゲの 百七十を越す を 九百七十を越す に した (後ろが を)", expect="数字「970」")
+run(m_kan_no, "札の 千八百の車 を 一万八百の車 に した (後ろが の)", expect="数字「10800」")
+run(m_kan_mei, "十名 を 二十名 に した (後ろが 名)", expect="数字「20」")
+run(m_kan_ji, "九時 を 七時 に した (後ろが 時)", expect="数字「7」")
+run(m_kan_kagetsu, "三か月 を 九か月 に した (後ろが か月)", expect="数字「9」")
+run(m_kan_round_ng, "原文 1,829 台を 札で 千九百 と した (丸めの 範囲の 外)", expect="数字「1900」")
+run(m_claim_slip, "語りと claim を 両方 5万両 に した (原文は 5千両)", expect="桁だけ 違う")
+
+# ★読み方 そのものを 直に 見る (figs.py の _amounts と 同じ 値に なること)
+import figs as _figs
+#   ★figs と 比べるのは 算用数字 + 位 1 つ の 形だけ (figs は 漢数字・「86万4千」を 読まない)
+for _t, _want, _vs_figs in [("5千両", ["5000"], True), ("5万両", ["50000"], True), ("864千人", ["864000"], True),
+                            ("約1.5万人", ["15000"], True), ("50,025株", ["50025"], True), ("108.4%", ["108.4"], True),
+                            ("86万4千人", ["864000"], False), ("五千両", ["5000"], False), ("二〇二六年", ["2026"], False),
+                            ("兼六園", [], False), ("四万十川", [], False), ("一頭", [], False),
+                            # ★2026-11-21: 後ろの 語を 問わず 読む / 地名は 読まない / 「十分に」は 数で ない
+                            ("十名", ["10"], False), ("百七十を越す", ["170"], False), ("千八百の車", ["1800"], False),
+                            ("二十分", ["20"], False), ("九時", ["9"], False), ("三か月", ["3"], False),
+                            ("一万八百の車", ["10800"], False), ("毎年十万人", ["100000"], False),
+                            ("千葉県", [], False), ("鯖江百景", [], False), ("十分に", [], False), ("二十分に一本", ["20"], False)]:
+    _got = validate.num_values(_t)
+    _ok = _got == _want and (not _vs_figs or all(float(x) in _figs._amounts(_t) for x in _got))
+    print(("  OK   " if _ok else "  NG   ") + "数の 読み方「%s」→ %s" % (_t, _got))
+    if not _ok:
+        fail.append("数の 読み方 " + _t)
+
+
 # ---- 県から 一席目への つなぎ (prefBridge。2026-11-15) ----
 def _pb(b, pref):
     return b["prefBridge"][pref]["lines"]
@@ -459,9 +602,10 @@ def m_pb_hedge(b):
 
 def m_pb_hedge_far(b):
     """★断りが 別の 行に だけ ある (数字を 言う 行には 無い) も 止める"""
-    ln = _pb(b, "福井県")
-    ln[0] = ln[0].replace("推し量った", "まとめた")
-    ln[1] = "推し量った話でございますが、" + ln[1]
+    # ★2026-11-21: 福井の つなぎは 数字を 言わなく なった → 4% を 言う 石川県で 試す
+    ln = _pb(b, "石川県")
+    ln[1] = ln[1].replace("推し量った", "まとめた")
+    ln[0] = "推し量った話でございますが、" + ln[0]
 
 
 def m_pb_three(b):
@@ -473,7 +617,7 @@ def m_pb_three(b):
 def m_pb_long(b):
     """★1 行が 60 字を 越える"""
     ln = _pb(b, "北海道")
-    ln[0] = ln[0] + "はるばる海を越え、山を越え、峠を越えて、ようやくこの小さな山の麓まで。"
+    ln[0] = ln[0] + "はるばる海を越え、山を越え、峠をいくつも越えて、長い長い道のりの末に、ようやくこの小さな山の麓まで。"
 
 
 def m_pb_end(b):
@@ -496,7 +640,7 @@ def m_pb_invite(b):
 
 
 def m_pb_path(b):
-    _pb(b, "北海道")[1] = "docs/参考 によりますと、北海道は。"
+    _pb(b, "北海道")[1] = DOCS + "参考 によりますと、北海道は。"
 
 
 def m_pb_nopref(b):
@@ -511,7 +655,7 @@ def m_pb_fact(b):
 run(m_pb_missing, "つなぎが 47 県 そろっていない", expect="47 都道府県 そろっていない")
 run(m_pb_num, "つなぎの 割合を 書き違えた", expect="つなぎ 石川県: 数字「14」")
 run(m_pb_hedge, "つなぎで 推計の 数字を 断りなしで 言った", expect="数字を 言う 行に")
-run(m_pb_hedge_far, "つなぎの 断りが 別の 行に だけ ある", expect="つなぎ 福井県: 推計の 数字を 言う 行に")
+run(m_pb_hedge_far, "つなぎの 断りが 別の 行に だけ ある", expect="つなぎ 石川県: 推計の 数字を 言う 行に")
 run(m_pb_three, "つなぎの 数字が 3 粒", expect="つなぎ 石川県: 数字が 3 粒")
 run(m_pb_long, "つなぎの 1 行が 60 字を 越えた", expect="つなぎ 北海道: 1 行が")
 run(m_pb_end, "つなぎの 最後の 行が 結びで ない", expect="で 結んでいない")
@@ -582,7 +726,7 @@ def m_ow_invite(b):
 
 
 def m_ow_path(b):
-    _story(b, "S06")["ochiWhat"] = "docs/参考 に書いた西山公園の庭"
+    _story(b, "S06")["ochiWhat"] = DOCS + "参考 に書いた西山公園の庭"
 
 
 def m_ow_ok(b):
@@ -606,7 +750,7 @@ run(m_ow_path, "オチの 註に 手元のパス", expect="S06: オチの 註に
 run(m_ow_ok, "オチの 註を 作法どおりに 書き換えた (通るのが正しい)", want_ng=False)
 
 
-# ---- 同じ サゲを 複数の 席で 使わない (# 19b。2026-11-20 ユーザー判断「重なったサゲを 調べて 書き分ける」) ----
+# ---- 同じ サゲを 複数の 席で 使わない (# 19b。2026-11-20 作者の判断「重なったサゲを 調べて 書き分ける」) ----
 def _pref_story(b, pref):
     return next(x for x in b["prefStories"] if x["id"] == "P-" + pref)
 
@@ -641,7 +785,7 @@ run(m_sage_dup_ok, "前半が 同じでも オチの 違う サゲ (通るのが
 #   ★実際に「……」が 1 本 紛れていた。★台本の検査だけでは 届かない ことの 試験。
 for _bad, _why in [("えー、ぜひ お越しください。", "誘い文句"),
                    ("さようで。……それはそれは。", "「……」"),
-                   ("docs/参考 を ご覧ください。", "手元のパス")]:
+                   (DOCS + "参考 を ご覧ください。", "手元のパス")]:
     _e, _n = validate.check_app_text('const a = "' + _bad + '";', ["日本で最も古い公園"])
     _ok = bool(_e)
     print(("  OK   " if _ok else "  NG   ") + "app.js の文言の " + _why + " を 捕まえる")

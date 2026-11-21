@@ -1,4 +1,4 @@
-// 動きの 試験 (test_motion.js) 用の 模擬 DOM + 仮想時計 (2026-11-15。監査⑤の 道具を 写した)
+// 動きの 試験 (test_motion.js) 用の 模擬 DOM + 仮想時計 (2026-11-15。見直しの 道具を 写した)
 // ★test_flow.js の el() を 下敷きに 拡張。app/ の ファイルは 読むだけ
 //   test_flow.js との 違い:
 //     ・タイマーは 仮想時計で 時刻順に 回す。clearTimeout が 効く
@@ -64,7 +64,7 @@ function makeApp(opt) {
       append(...cs) { cs.forEach((c) => { c.parent = this; this.children.push(c); }); },
       addEventListener(n, f) { (this.handlers[n] = this.handlers[n] || []).push(f); },
       attrs: {}, setAttribute(k, v) { this.attrs[k] = String(v); }, getAttribute(k) { return k in this.attrs ? this.attrs[k] : null; },
-      // ★フォーカスの 行き先を 見る (2026-11-15 監査⑧ F5): focus() で doc.activeElement を 替える / contains() は 親を たどる
+      // ★フォーカスの 行き先を 見る (2026-11-15 見直し): focus() で doc.activeElement を 替える / contains() は 親を たどる
       focus() { doc.activeElement = this; }, remove() {}, select() {},
       contains(n) { while (n) { if (n === this) return true; n = n.parent; } return false; },
       closest(sel) { let n = this; while (n) { if (sel === "button" && n.tagName === "BUTTON") return n; if (sel === "a" && n.tagName === "A") return n; n = n.parent; } return null; },

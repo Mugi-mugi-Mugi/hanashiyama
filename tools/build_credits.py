@@ -8,6 +8,7 @@
   → ★facts.json を 正にして、印の あいだだけ 機械が 書き直す。
 
   ★印の 外 (ライセンス・加工の説明・写真の表) は 人が 書く。機械は 触らない。
+  ★ただし SA の ファイル (*_sa.js) が SA の 表に 載っているかは 見る (載っていなければ 終了コード 1)。
 
 実行: python tools/build_credits.py          → CREDITS.md の 印の あいだを 書き直す
       python tools/build_credits.py --check  → 書き直さず、ずれているかだけ 見る (終了コード 1)
@@ -52,8 +53,23 @@ def build():
     return "\n".join(out)
 
 
+def sa_missing(cur):
+    """★CC BY-SA の ファイル (app/data/img/*_sa.js) が CREDITS の SA の 節に 1 本ずつ 載っているか (2026-11-20)。
+    ★SA の 節は 人が 書く (印の 外)。★札用の card_illumination_sa.js が 載っていなかった (見直し)"""
+    d = os.path.join(ROOT, "app", "data", "img")
+    if not os.path.isdir(d):
+        return []
+    sa = sorted(n for n in os.listdir(d) if n.endswith("_sa.js"))
+    return [n for n in sa if ("`app/data/img/%s`" % n) not in cur]
+
+
 def main(check_only=False):
     cur = io.open(CRED, encoding="utf-8").read()
+    miss = sa_missing(cur)
+    if miss:
+        print("★CREDITS.md の「CC BY-SA 4.0 の写真」の 表に 無い SA の ファイル: %s" % " / ".join(miss))
+        print("  → 表に 1 行ずつ 足し、「N ファイル」の 数も 直す (この 節は 人が 書く)")
+        return 1
     block = build()
     if BEGIN in cur and END in cur:
         head = cur[:cur.index(BEGIN)]

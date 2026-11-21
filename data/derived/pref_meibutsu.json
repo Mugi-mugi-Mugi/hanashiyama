@@ -12,8 +12,9 @@
   ],
   "verify": "quote_verbatim = そのURLの HTML 本文(または alt/title 属性)に原文が実在することを 2026-09-20 に機械確認した結果",
   "caution": "notes に 『語りで触れないほうがよい』 と判断した事情を書いた。空でも安全の保証ではない",
-  "source_doc": "docs/調査/20260921_都道府県の名物.md",
-  "useIndex": "語りに使う名物の位置。指定が無ければ0。並び順が変わっても崩れないよう明示する"
+  "source_doc": "(作業メモ。公開に含めない)",
+  "useIndex": "語りに使う名物の位置。指定が無ければ0。並び順が変わっても崩れないよう明示する",
+  "kataru": "語りに使う名物の語。quote (原文一致を確かめた語) の中から取る (2026-11-20 見直し)。build.py が quote に含まれるかを確かめる。「」は県の掲げる言葉そのまま (キャッチ) の印"
  },
  "items": [
   {
@@ -28,7 +29,8 @@
    "url": "https://www.visit-hokkaido.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "アイヌ民族の文化・地名に触れるときは、県外の借り物の言い方をしない。公式の表記に従う"
+   "notes": "アイヌ民族の文化・地名に触れるときは、県外の借り物の言い方をしない。公式の表記に従う",
+   "kataru": "雄大な風景"
   },
   {
    "pref": "青森県",
@@ -42,7 +44,8 @@
    "url": "https://aomori-tourism.com/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "「とっておきの青森」"
   },
   {
    "pref": "岩手県",
@@ -56,7 +59,8 @@
    "url": "https://iwatetabi.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "三陸は東日本大震災の被災地。海の幸を語るのはよいが、震災そのものを名物として並べない"
+   "notes": "三陸は東日本大震災の被災地。海の幸を語るのはよいが、震災そのものを名物として並べない",
+   "kataru": "「旅せよ岩手」"
   },
   {
    "pref": "宮城県",
@@ -70,7 +74,8 @@
    "url": "https://www.miyagi-kankou.or.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "東日本大震災の被災地。震災を話の落としどころに使わない"
+   "notes": "東日本大震災の被災地。震災を話の落としどころに使わない",
+   "kataru": "伊達な文化"
   },
   {
    "pref": "秋田県",
@@ -84,7 +89,8 @@
    "url": "https://akita-fun.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "なまはげは信仰と結びついた行事。お化け扱い・怖がらせネタにしない"
+   "notes": "なまはげは信仰と結びついた行事。お化け扱い・怖がらせネタにしない",
+   "kataru": "無形民俗文化財"
   },
   {
    "pref": "山形県",
@@ -99,7 +105,8 @@
    "checked": "2026-09-20",
    "quote_verbatim": true,
    "notes": "",
-   "useIndex": 1
+   "useIndex": 1,
+   "kataru": "果樹王国"
   },
   {
    "pref": "福島県",
@@ -113,7 +120,8 @@
    "url": "https://www.tif.ne.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★要注意。公式サイト自身が震災・原子力災害からの復興を主題として発信している。復興・風評を語りの材料にしない。触れるなら県自身の言葉の範囲だけ"
+   "notes": "★要注意。公式サイト自身が震災・原子力災害からの復興を主題として発信している。復興・風評を語りの材料にしない。触れるなら県自身の言葉の範囲だけ",
+   "kataru": "「福のしま」"
   },
   {
    "pref": "茨城県",
@@ -127,7 +135,8 @@
    "url": "https://www.ibarakiguide.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "原文はトップのメインビジュアル画像の alt に入っている。本文テキストではない"
+   "notes": "原文はトップのメインビジュアル画像の alt に入っている。本文テキストではない",
+   "kataru": "「いま、いばらきが咲いている」"
   },
   {
    "pref": "栃木県",
@@ -141,7 +150,8 @@
    "url": "https://www.tochigiji.or.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "緑豊かな牧場"
   },
   {
    "pref": "群馬県",
@@ -155,7 +165,8 @@
    "url": "https://gunma-kanko.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "「心にググっと」"
   },
   {
    "pref": "埼玉県",
@@ -169,7 +180,8 @@
    "url": "https://chocotabi-saitama.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "「都会ではない」といった言い方は 自虐の押しつけになる。県は『川の国』『うどん共和国』を自分から掲げている"
+   "notes": "「都会ではない」といった言い方は 自虐の押しつけになる。県は『川の国』『うどん共和国』を自分から掲げている",
+   "kataru": "川の国"
   },
   {
    "pref": "千葉県",
@@ -183,7 +195,8 @@
    "url": "https://maruchiba.jp/index.html",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "発酵県"
   },
   {
    "pref": "東京都",
@@ -197,7 +210,9 @@
    "url": "https://www.gotokyo.org/jp/see-and-do/attractions/index.html",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "原文は銀座についての記述で、東京都全体の自己紹介ではない。都全体の言い方が要るときは取り直す"
+   "notes": "原文は銀座についての記述で、東京都全体の自己紹介ではない。都全体の言い方が要るときは取り直す",
+   "kataru": "銀座",
+   "kataru_aru": true
   },
   {
    "pref": "神奈川県",
@@ -211,7 +226,8 @@
    "url": "https://www.kanagawa-kankou.or.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "江の島"
   },
   {
    "pref": "新潟県",
@@ -225,7 +241,8 @@
    "url": "https://niigata-kankou.or.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "「うまさぎっしり」"
   },
   {
    "pref": "富山県",
@@ -239,7 +256,8 @@
    "url": "https://www.info-toyama.com/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "名湯と絶景"
   },
   {
    "pref": "石川県",
@@ -253,7 +271,8 @@
    "url": "https://www.hot-ishikawa.jp/index.html",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★要注意。能登半島地震の被災地を含む。輪島・能登を語るときは復興を材料にしない。隣県として気安く扱わない"
+   "notes": "★要注意。能登半島地震の被災地を含む。輪島・能登を語るときは復興を材料にしない。隣県として気安く扱わない",
+   "kataru": "千枚田"
   },
   {
    "pref": "福井県",
@@ -268,7 +287,8 @@
    "url": "https://www.fuku-e.com/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "鯖江市の地元。キャッチコピーは恐竜化石を「掘る」に掛けた県自身の言葉。越前がには公式特集の見出しが「冬の味覚の王者！「越前がに」の美味しさの秘密」(https://www.fuku-e.com/feature/detail_182.html)。地元をいちばん強く落とせる側なので、自虐は福井・鯖江に寄せてよい"
+   "notes": "鯖江市の地元。キャッチコピーは恐竜化石を「掘る」に掛けた県自身の言葉。越前がには公式特集の見出しが「冬の味覚の王者！「越前がに」の美味しさの秘密」(https://www.fuku-e.com/feature/detail_182.html)。地元をいちばん強く落とせる側なので、自虐は福井・鯖江に寄せてよい",
+   "kataru": "「いいとこ、掘りだくさん」"
   },
   {
    "pref": "山梨県",
@@ -282,7 +302,8 @@
    "url": "https://www.yamanashi-kankou.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "富士山は静岡県とまたがる。どちらかの持ち物のように言わない"
+   "notes": "富士山は静岡県とまたがる。どちらかの持ち物のように言わない",
+   "kataru": "「ここでしかできない体験」"
   },
   {
    "pref": "長野県",
@@ -296,7 +317,8 @@
    "url": "https://www.go-nagano.net/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "「宇宙県」は星空観光の公式キャッチフレーズ。ネタに見えるが県自身の言葉なので、こちらが作った冗談のように扱わない"
+   "notes": "「宇宙県」は星空観光の公式キャッチフレーズ。ネタに見えるが県自身の言葉なので、こちらが作った冗談のように扱わない",
+   "kataru": "宇宙県"
   },
   {
    "pref": "岐阜県",
@@ -310,7 +332,8 @@
    "url": "https://www.kankou-gifu.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "下呂温泉"
   },
   {
    "pref": "静岡県",
@@ -325,7 +348,8 @@
    "checked": "2026-09-20",
    "quote_verbatim": true,
    "notes": "県庁の観光ページ(pref.shizuoka.jp)には統一キャッチが見当たらず、県観光協会の公式ガイドに切り替えた",
-   "useIndex": 1
+   "useIndex": 1,
+   "kataru": "駿河湾の海の幸"
   },
   {
    "pref": "愛知県",
@@ -339,7 +363,8 @@
    "url": "https://aichinow.pref.aichi.jp/about",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "大都会名古屋"
   },
   {
    "pref": "三重県",
@@ -353,7 +378,8 @@
    "url": "https://www.kankomie.or.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "伊勢神宮・熊野古道は信仰の場。参拝の作法を笑いの材料にしない"
+   "notes": "伊勢神宮・熊野古道は信仰の場。参拝の作法を笑いの材料にしない",
+   "kataru": "熊野古道"
   },
   {
    "pref": "滋賀県",
@@ -367,7 +393,8 @@
    "url": "https://www.pref.shiga.lg.jp/miryoku/kanko/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "琵琶湖を「県の大半が湖」といった誇張でいじらない"
+   "notes": "琵琶湖を「県の大半が湖」といった誇張でいじらない",
+   "kataru": "「命の源」"
   },
   {
    "pref": "京都府",
@@ -382,7 +409,8 @@
    "checked": "2026-09-20",
    "quote_verbatim": true,
    "notes": "京都府 = 京都市 ではない。府の公式は海の京都・森の京都も強く押している",
-   "useIndex": 1
+   "useIndex": 1,
+   "kataru": "天橋立"
   },
   {
    "pref": "大阪府",
@@ -396,7 +424,8 @@
    "url": "https://osaka-info.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★公式の自己紹介は歴史・商業が中心で、お笑いを前面に出していない。「大阪＝お笑い」一色で片づけると、公式の自己像とずれる。語り手が落語をやる場に大阪の客が来たときは特に注意"
+   "notes": "★公式の自己紹介は歴史・商業が中心で、お笑いを前面に出していない。「大阪＝お笑い」一色で片づけると、公式の自己像とずれる。語り手が落語をやる場に大阪の客が来たときは特に注意",
+   "kataru": "古墳"
   },
   {
    "pref": "兵庫県",
@@ -410,7 +439,8 @@
    "url": "https://www.hyogo-tourism.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "全体キャッチは「私の感動、その先へ 兵庫テロワール旅」。阪神・淡路大震災には触れない"
+   "notes": "全体キャッチは「私の感動、その先へ 兵庫テロワール旅」。阪神・淡路大震災には触れない",
+   "kataru": "神秘の絶景"
   },
   {
    "pref": "奈良県",
@@ -425,7 +455,8 @@
    "checked": "2026-09-20",
    "quote_verbatim": true,
    "notes": "★鹿は国の天然記念物。「鹿に襲われる」「鹿しかいない」のような笑いは失礼。動物の体格・生死をオチにしないという作法にも触れる",
-   "useIndex": 0
+   "useIndex": 0,
+   "kataru": "古都"
   },
   {
    "pref": "和歌山県",
@@ -439,7 +470,8 @@
    "url": "https://www.wakayama-kanko.or.jp/features/about-wakayama",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "海・山・川の大自然"
   },
   {
    "pref": "鳥取県",
@@ -453,7 +485,8 @@
    "url": "https://www.tottori-guide.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★「鳥取と島根の区別がつかない」「人口が少ない」は 定番だが 相手を下げる笑い。使わない"
+   "notes": "★「鳥取と島根の区別がつかない」「人口が少ない」は 定番だが 相手を下げる笑い。使わない",
+   "kataru": "かに"
   },
   {
    "pref": "島根県",
@@ -468,7 +501,8 @@
    "checked": "2026-09-20",
    "quote_verbatim": true,
    "notes": "★鳥取県との「取り違えネタ」は使わない。出雲大社は信仰の場",
-   "useIndex": 1
+   "useIndex": 1,
+   "kataru": "神話の世界"
   },
   {
    "pref": "岡山県",
@@ -482,7 +516,8 @@
    "url": "https://www.okayama-kanko.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "晴れの国"
   },
   {
    "pref": "広島県",
@@ -496,7 +531,8 @@
    "url": "https://dive-hiroshima.com/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "引用元の原文は世界遺産として原爆ドームにも触れているが、引用箇所からは外した。★原爆ドーム・平和記念公園は公式も世界遺産として紹介しているが、名物として他と並べて軽く扱わない。意図的に meibutsu から外した"
+   "notes": "引用元の原文は世界遺産として原爆ドームにも触れているが、引用箇所からは外した。★原爆ドーム・平和記念公園は公式も世界遺産として紹介しているが、名物として他と並べて軽く扱わない。意図的に meibutsu から外した",
+   "kataru": "牡蠣"
   },
   {
    "pref": "山口県",
@@ -510,7 +546,8 @@
    "url": "https://yamaguchi-tourism.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "はなし山で 幕末の話（吉田松陰）を語る場合、山口は松陰の郷里。福井（安政の大獄で処刑された側）と対に置くときは、どちらの側も下げない"
+   "notes": "はなし山で 幕末の話（吉田松陰）を語る場合、山口は松陰の郷里。福井（安政の大獄で処刑された側）と対に置くときは、どちらの側も下げない",
+   "kataru": "ふくの国"
   },
   {
    "pref": "徳島県",
@@ -524,7 +561,8 @@
    "url": "https://www.awanavi.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "阿波の歴史"
   },
   {
    "pref": "香川県",
@@ -538,7 +576,8 @@
    "url": "https://www.my-kagawa.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "「うどん県」は県自身の自称。うどんしかない、のような詰め方はしない（自称の便乗は 相手を下げる形になりやすい）"
+   "notes": "「うどん県」は県自身の自称。うどんしかない、のような詰め方はしない（自称の便乗は 相手を下げる形になりやすい）",
+   "kataru": "うどん県"
   },
   {
    "pref": "愛媛県",
@@ -552,7 +591,8 @@
    "url": "https://www.iyokannet.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "原文はサイトのキャッチコピー画像の alt / title 属性に入っている"
+   "notes": "原文はサイトのキャッチコピー画像の alt / title 属性に入っている",
+   "kataru": "「疲れたら、愛媛」"
   },
   {
    "pref": "高知県",
@@ -566,7 +606,8 @@
    "url": "https://kochi-tabi.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "酒の量をネタにする定番（べろべろ等）は 個人を落とす形になりやすい"
+   "notes": "酒の量をネタにする定番（べろべろ等）は 個人を落とす形になりやすい",
+   "kataru": "土佐の旨いもん"
   },
   {
    "pref": "福岡県",
@@ -580,7 +621,8 @@
    "url": "https://www.crossroadfukuoka.jp/feature",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "「福岡よかとこ」"
   },
   {
    "pref": "佐賀県",
@@ -594,7 +636,8 @@
    "url": "https://www.asobo-saga.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★「何もない県」という定番のいじりは 相手を下げる笑い。使わない"
+   "notes": "★「何もない県」という定番のいじりは 相手を下げる笑い。使わない",
+   "kataru": "有田焼"
   },
   {
    "pref": "長崎県",
@@ -608,7 +651,8 @@
    "url": "https://www.nagasaki-tabinet.com/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★要注意。原爆と潜伏キリシタンの歴史は 名物として並べない。教会群は公式も『世界遺産』として紹介しているが、信仰と迫害の歴史であることを忘れない"
+   "notes": "★要注意。原爆と潜伏キリシタンの歴史は 名物として並べない。教会群は公式も『世界遺産』として紹介しているが、信仰と迫害の歴史であることを忘れない",
+   "kataru": "夜景"
   },
   {
    "pref": "熊本県",
@@ -623,7 +667,8 @@
    "checked": "2026-09-20",
    "quote_verbatim": true,
    "notes": "★★最重要。2026-09-20 時点で 公式サイトに『県内で発生した地震に伴う交通情報について（9/17追記）』(2026年7月28日掲載) が出ている。鹿児島県の公式サイトにも『令和8年熊本地震を受けての知事メッセージ』が掲載中。★熊本の語りは 地震に一切触れない。阿蘇の噴火・火口も材料にしない。サイトの愛称は「もっと、もーっと！くまもっと。」",
-   "useIndex": 1
+   "useIndex": 1,
+   "kataru": "イルカウォッチング"
   },
   {
    "pref": "大分県",
@@ -637,7 +682,8 @@
    "url": "https://www.visit-oita.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "原文はページの title 要素。「おんせん県」は県自身の登録済み呼称"
+   "notes": "原文はページの title 要素。「おんせん県」は県自身の登録済み呼称",
+   "kataru": "おんせん県"
   },
   {
    "pref": "宮崎県",
@@ -651,7 +697,8 @@
    "url": "https://www.kanko-miyazaki.jp/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": ""
+   "notes": "",
+   "kataru": "高千穂峡"
   },
   {
    "pref": "鹿児島県",
@@ -665,7 +712,8 @@
    "url": "https://www.kagoshima-kankou.com/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★桜島は活火山。降灰や噴火を笑いの材料にしない。知覧特攻平和会館も公式に載っているが、名物として並べない"
+   "notes": "★桜島は活火山。降灰や噴火を笑いの材料にしない。知覧特攻平和会館も公式に載っているが、名物として並べない",
+   "kataru": "桜島"
   },
   {
    "pref": "沖縄県",
@@ -679,7 +727,8 @@
    "url": "https://www.okinawastory.jp/about/",
    "checked": "2026-09-20",
    "quote_verbatim": true,
-   "notes": "★★戦跡・基地・沖縄戦は 名物として並べない。方言や「ゆるい県民性」といった型に当てはめた笑いも避ける。琉球の歴史を本土側から軽く扱わない"
+   "notes": "★★戦跡・基地・沖縄戦は 名物として並べない。方言や「ゆるい県民性」といった型に当てはめた笑いも避ける。琉球の歴史を本土側から軽く扱わない",
+   "kataru": "エメラルドグリーンに輝く海"
   }
  ]
 }

@@ -17,6 +17,7 @@ import base64
 import io
 import json
 import os
+import sys
 
 import fitz  # PyMuPDF
 
@@ -70,7 +71,7 @@ PLACES = [
      "https://www.city.sabae.fukui.jp/kanko_sangyo/kankoshisetsu_meisho/sabaehyakkei/"),
 ]
 
-# ★2026-11-14: 噺の途中の 写真が「これは何?」に なっていた (ユーザー指摘)。
+# ★2026-11-14: 噺の途中の 写真が「これは何?」に なっていた (見直し)。
 #   ①写真 1 枚ずつに「何の写真か」(label) を 持たせ、画面の 写真の 下に 出す
 #   ②噺の 場面に 合う 素材を 足す (古い写真 / 市の資料の 写真 / 名前の 分かる レッサーパンダ)
 # ★古い写真 = 鯖江市オープンデータ「古い写真」(furui_shashin.csv。CC BY)。★2026-11-14 に 生きていた 7 件
@@ -100,7 +101,7 @@ DOCS = [
 ]
 USE_CITY_PHOTOS = False   # ★市の 許可が 取れるまで False
 
-# ★外部の 自由に 使える 写真 (2026-11-14 ユーザー指示「自由に使える写真か確認して全て足して」)
+# ★外部の 自由に 使える 写真 (2026-11-14 作者の判断「自由に使える写真か確認して全て足して」)
 #   条件・中身の 確認は data/raw/ext_20261114/_manifest.tsv (1 枚ずつ 原文の ライセンスと 目視)。
 #   ★福井県オープンデータ「福井ふるさと百景」= CC BY 4.0 / ★Wikimedia Commons = 1 枚ずつ CC BY 2.1 JP・4.0・BY-SA 4.0
 #   ★鯖江市 360photo = CC BY-SA 4.0 (切り出した 改変物) / ★鯖江市「古い写真」083 = CC BY 3.0
@@ -190,7 +191,7 @@ def ext_manifest():
                                "sa": r["継承(SA)の有無"].startswith("あり")}
     return out
 
-# ★写真の 中身に 合わせた「何の写真か」(★ページの 見出しの ままだと 語りと 食い違う。2026-11-14 審査)
+# ★写真の 中身に 合わせた「何の写真か」(★ページの 見出しの ままだと 語りと 食い違う。2026-11-14 見直し)
 #   愛の鐘 = 写っているのは ★いまの 姿 (柱の 上の スピーカー)。木の鐘・鉄筋コンクリートの 鐘 では ない
 #   大噴水 = 写っているのは ★夜の ライトアップ
 LABEL_OVERRIDE = {"ainokane": "いまの 愛の鐘 (頂上)", "funsui": "大噴水 (夜の ライトアップ)"}
@@ -202,7 +203,7 @@ GROUP_LABEL = {"tsutsuji": "西山公園の つつじ", "koyo": "西山公園の
 def zip_name(ds):
     """個体写真の zip の 中の フォルダ名 = その子の 名前。
     ★名前は UTF-8 で 入っている (旗が 立っていなくても)。★cp932 で 読むと
-      「タカシ」が「繧ｿ繧ｫ繧ｷ」に 化ける = もっともらしい 別物 (決定㉜)。★UTF-8 を 先に 試す"""
+      「タカシ」が「繧ｿ繧ｫ繧ｷ」に 化ける = もっともらしい 別物。★UTF-8 を 先に 試す"""
     import zipfile
     p = P("data", "raw", "media", ds + ".zip")
     if not os.path.exists(p):
@@ -261,14 +262,14 @@ def extracted():
 WIDTH = 810
 BAND = 360
 QUALITY = 46
-# ★噺の途中に 小さく 出す 写真 (挿し絵の 代わり。2026-09-23 ユーザー指示)
+# ★噺の途中に 小さく 出す 写真 (挿し絵の 代わり。2026-09-23 作者の判断)
 #   手描きの SVG は 抽象的すぎて 噺との つながりが 分からなかった。
 SMALL_W = 480
 SMALL_H = 320
 SMALL_Q = 48
 
 
-# ★札に 使う 群 (2026-11-20。docs/手順/20261120_札の写真の割り当て.md)。★つつじ・紅葉は 前から ある (GROUPS)
+# ★札に 使う 群 (2026-11-20。札の 写真の 割り当ての 手順書 = 作業メモ)。★つつじ・紅葉は 前から ある (GROUPS)
 CARD_FROM_SMALL = ["panda", "kyoyo_teien", "furui_ski", "murakami", "illumination_sa", "nishiyama_sakura",
                    "illust_east_gate", "illust_kopanda", "illust_parking", "illust_meganetokei", "illust_inori2",
                    "illust_koryu", "illust_michinoeki", "illust_fountain_am", "illust_baseball", "illust_pandabench"]
@@ -405,7 +406,7 @@ def main():
         total += n
         print("  小 %-9s %2d 枚 / %.0f KB" % (k, len(v["shots"]), n / 1024))
     print("  小 合計 %d 枚 / %.0f KB" % (sum(len(v["shots"]) for v in small.values()), total / 1024))
-    # ★2026-11-20 ユーザー判断: 札の 写真を オチの 註が 指す もの の 写真に。★札に 使う 群だけ 札用の 帯を 元の 写真から 作る
+    # ★2026-11-20 作者の判断: 札の 写真を オチの 註が 指す もの の 写真に。★札に 使う 群だけ 札用の 帯を 元の 写真から 作る
     #   (★場面の 小さい 版を 伸ばすと 粗い)。★パンダは 22 枚 あるので 幅 640 で 軽く
     for k in CARD_FROM_SMALL:
         g = small.get(k)
@@ -429,12 +430,41 @@ def main():
             if g.get("sa"):
                 out[k]["sa"] = True
             print("  札 %-20s %2d 枚 / %.0f KB" % (k, len(cs), sum(x["bytes"] for x in cs) / 1024))
-    for v in small.values():                   # ★元の 場所は 書き出さない (手元の パス = 決定⑳)
+    for v in small.values():                   # ★元の 場所は 書き出さない (手元の パス = )
         for s in v["shots"]:
             s.pop("_src", None)
     out["_small"] = small
 
     write_split(out)
+
+
+SHRINK_LIMIT = 0.8      # ★前の 目録の 8 割 未満に 減ったら 止める
+
+
+def existing_groups(d):
+    """いまの 目録 (_keys.js) に ある 群の 名 → {"small:…", "card:…"}。無ければ 空"""
+    p = os.path.join(d, "_keys.js")
+    if not os.path.exists(p):
+        return set()
+    t = io.open(p, encoding="utf-8").read()
+    try:
+        keys = json.loads(t.split("=", 1)[1].strip().rstrip(";"))
+    except (IndexError, ValueError):
+        return set()
+    return {"small:" + k for k in keys.get("small", {})} | {"card:" + k for k in keys.get("card", {})}
+
+
+def count_existing(d):
+    """いまの 目録 (_keys.js) に ある 写真の 枚数 (場面 + 札)。無ければ 0"""
+    p = os.path.join(d, "_keys.js")
+    if not os.path.exists(p):
+        return 0
+    t = io.open(p, encoding="utf-8").read()
+    try:
+        keys = json.loads(t.split("=", 1)[1].strip().rstrip(";"))
+    except (IndexError, ValueError):
+        return 0
+    return sum(v.get("n", 0) for v in keys.get("small", {}).values()) +         sum(v.get("n", 0) for v in keys.get("card", {}).values())
 
 
 def write_split(out):
@@ -447,6 +477,27 @@ def write_split(out):
     ★どれも 同じ フォルダの ファイル = 外部通信は 増えない。"""
     d = P("app", "data", "img")
     os.makedirs(d, exist_ok=True)
+    # ★消す 前に 数を 比べる (2026-11-20)。
+    #   ★前は 入力の 写真が 1 枚も 無くても (= data/raw の 無い 公開物の 写しで 回すと)、
+    #     ここで 全部 消して 空の 目録を 書き、終了コード 0 を 返していた。
+    #   ★入力が 0 枚、または 前の 目録より 大きく 減ったら ★消さずに 止める (終了コード 1)。
+    #     わざと 減らす ときは --force
+    n_new = sum(len(v["shots"]) for v in out["_small"].values()) +         sum(len(v["shots"]) for k, v in out.items() if k != "_small")
+    n_old = count_existing(d)
+    # ★(2026-11-21) 枚数が 8 割を 越えて 残っても、★群が まるごと 消える ときは 止める
+    #   (前は パンダの 群 22 枚 = 全体の 17% が そっくり 無くても 消して 終了コード 0 だった)
+    gone = sorted(existing_groups(d) - ({"small:" + k for k in out["_small"]} |
+                                        {"card:" + k for k in out if k != "_small"}))
+    if gone and "--force" not in sys.argv:
+        print("★止めました: いまの 目録に ある 群が %d 個 無くなります (%s)。app/data/img/ は 消していません。"
+              % (len(gone), " ".join(gone)))
+        print("  ★元の 写真 (data/raw/) の 置き場所を 確かめる。わざと 群を 外す ときは python tools/build_images.py --force")
+        sys.exit(1)
+    if n_new == 0 or (n_old and n_new < n_old * SHRINK_LIMIT and "--force" not in sys.argv):
+        print("★止めました: 書き出す 写真が %d 枚 (いまの 目録は %d 枚)。app/data/img/ は 消していません。" % (n_new, n_old))
+        print("  ★元の 写真 (data/raw/) が 無いと 作り直せません (data/raw は 公開物に 入っていません)。")
+        print("  ★わざと 減らす ときは python tools/build_images.py --force")
+        sys.exit(1)
     for name in os.listdir(d):                 # ★消えた 群の ファイルを 残さない
         if name.endswith(".js"):
             os.remove(os.path.join(d, name))

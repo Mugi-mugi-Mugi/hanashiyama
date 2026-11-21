@@ -4,7 +4,9 @@
 検査すること
   1. 事実台帳: ID の重複なし / verified / 出典URL / 原文引用 がそろっている
   2. 語り (手書き台本・自動生成・今日の話) が参照する事実IDが台帳にある
-  3. ★語りに出てくる数字は、参照している事実の claim / quote か、生成時の evidence に必ず含まれる
+  3. ★語りに出てくる数字は、参照している事実の quote (出典の原文) か、生成時の evidence に含まれる
+     ★claim (作り手の要約。集計・言い換えを含む) にだけ在る数は「注意」として数と一覧を出す (止めない)
+     ★どこにも無い数は止める。★位 (千・万・億) は値として読む (5千両 = 5000。figs.py と同じ読み方)
      (問いの選択肢のうち、正解でない選択肢の数字は検査しない = わざと違う数字を並べるため)
   4. 不採用の言い回し (facts.json の rejected) が語りに入っていない
   5. 「来てください」系の誘い文句が入っていない
@@ -17,7 +19,7 @@
   9b. ★あて推量 (guess) は「書いていない」と断ってから始め、言い切らず、★数字を一切入れない
       (出典に動機が無いとき、噺家が引き受けて推し量る。★事実として語らないための決まり)
  10. ★画面に出る文字に、手元のファイルパスや、文字になった「\\n」が混ざっていない
-     (公開時に docs/ や data/ は含めない = 見た人が開けない。出典は「名前」で書く)
+     (公開時に 作業メモや 生データは 含めない = 見た人が開けない。出典は「名前」で書く)
  16. ★場面の見出し (scenes[].head): 1 行・16 字まで / 数字なし / 段の名だけにしない /
      問いの答え・サゲの最後の語を含めない / 場面 3〜4 (本題 3 行以下は 2 も可)。写真の無い席は注意
      ★見出しの無い席 (scenes が無い / head が 1 本も無い) を残さない (2026-11-15)
@@ -29,8 +31,13 @@
  20. ★オチの註 (ochiWhat。サゲの下に「↳ ○○のこと」): 全席にある / 40 字まで / 末尾に「のこと」を書かない /
      数字は参照事実の中だけ / 推計の数字なら註の中に断り / 不採用・誘い文句・パスなし
 
-限界 (docs/手順 に記載)
-  - 漢数字 (三、五千) は数字として検査しない
+限界 (作業メモの 手順書にも 記載)
+  - 漢数字は、十・百・千・万を 含む もの (と 2 字以上) は 後ろの 語を 問わず 数として 読む。
+    一字の 二〜九は 数えことば (頭・人・名・時・か月 など) が すぐ後ろに あるときだけ 読む。
+    地名・固有名 (「千葉」「四万十」「千枚田」「百選」など) は 表 (_KANJI_NAMES) で 外す。
+    熟語の 途中 (「兼六園」「鯖江百景」) は 読まない。「一」ひと文字も 読まない
+  - 出典の 数を 丸めた 数 (1,829 → 千八百 / 174 → 百七十) は、元の 上 2 桁を 残した ときだけ 通す (注意に 一覧)
+  - 数字の無い文 (「年を追うごとにふえる」など) の 正しさは 見ない
   - 固有名詞・言い回しの正しさは人が原文と照合する (台帳の quote を必ず読む)
 
 実行: python tools/validate.py   (失敗があれば終了コード 1)
@@ -66,6 +73,11 @@ def load_bundle():
 # ★漢数字 → 算用数字 (2026-09-22)
 #   検査が 算用数字しか 見ていなかったため、「三頭」「五万株」と 書けば
 #   ★出典の 照合も 粒数の 検査も すり抜けられた。★ここで 同じ土俵に 乗せる。
+# ★★位 (千・万・億) は ★値として 読む (2026-11-20。figs.py の _amounts と 同じ 読み方)
+#   ★前は「5千両」も「5万両」も 5 と 読み (位を 落とす)、「864千人」を 8641000 と つないで 読んでいた。
+#   ★そのため 桁の 誤り (5千両 → 5万両) が 照合を 素通りした。★test_validate の「位」の 試験が 見る。
+from decimal import Decimal, InvalidOperation
+
 _K = {"〇": 0, "零": 0, "一": 1, "二": 2, "三": 3, "四": 4, "五": 5,
       "六": 6, "七": 7, "八": 8, "九": 9}
 _UNIT = {"十": 10, "百": 100, "千": 1000}
@@ -73,12 +85,15 @@ _BIG = {"万": 10000, "億": 100000000}
 
 
 def kanji_to_num(t):
-    """「二十三」→23 / 「五万」→50000 / 「十一」→11。読めなければ None"""
-    total, cur, digit, seen = 0, 0, 0, False
+    """「二十三」→23 / 「五万」→50000 / 「十一」→11 / 「二〇二六」→2026。読めなければ None"""
+    total, cur, digit, seen, prev_digit = 0, 0, 0, False, False
     for ch in t:
         if ch in _K:
-            digit = _K[ch]; seen = True
-        elif ch in _UNIT:
+            digit = digit * 10 + _K[ch] if prev_digit else _K[ch]
+            seen = True; prev_digit = True
+            continue
+        prev_digit = False
+        if ch in _UNIT:
             cur += (digit or 1) * _UNIT[ch]; digit = 0; seen = True
         elif ch in _BIG:
             total += (cur + digit or 1) * _BIG[ch]; cur = digit = 0; seen = True
@@ -88,32 +103,175 @@ def kanji_to_num(t):
 
 
 _KANJI = re.compile(r"[〇零一二三四五六七八九十百千万億]{1,8}")
+# ★漢数字を 数として 読む 数えことば (★2026-11-20 に 両・台・円・回・歳・匹・枚・倍・石 を 足した。
+#   前は「五千両」と 書けば 数として 読まれず、照合を すり抜けた)
+# ★(2026-11-21) 名・分・時・か月 (ヶ月・カ月・ケ月) を 足した。前は「十名→二十名」「九時→十一時」
+#   「三か月→五か月」と 書き換えても 照合を すり抜けた (test_validate の「漢数字」の 試験が 見る)
+_COUNTERS = r"頭|人|種|株|本|園|件|か所|年|月|日|時間|羽|体|基|席|両|台|円|回|歳|匹|枚|倍|石|名|分|時|か月|ヶ月|カ月|ケ月"
+# ★★十・百・千・万・億を 含む 漢数字 (と 2 字以上の 漢数字「二〇二六」) は ★後ろの 語を 問わず 数として 読む (2026-11-21)
+#   前は 数えことばが 直後に ある ときだけ 読んだので「百七十を越す→九百七十を越す」「千八百の車→一万八百の車」が 通った。
+#   ★代わりに 地名・固有名の 誤読を ★下の 表で 外す (「千枚田」と 同じ 型)。★誤読が 出たら ここに 足す
+_KANJI_BIG = r"[〇零一二三四五六七八九十百千万億]*[十百千万億][〇零一二三四五六七八九十百千万億]*|[〇零一二三四五六七八九]{2,8}"
+# ★数として 読まない 語 (読みの かなに 置き換える)。★長い 語から 当てる。★直前が 漢数字の ときは 当てない (「二十分に」の「十分に」)
+_KANJI_NAMES = sorted([
+    ("十人が十人", "みなさん"),
+    ("千枚田", "せんまいだ"),         # 石川県の 名物
+    ("千葉", "ちば"),
+    ("千里浜", "ちりはま"),
+    ("九十九島", "くじゅうくしま"),
+    ("九十九里", "くじゅうくり"),
+    ("十和田", "とわだ"),
+    ("四万十", "しまんと"),
+    ("二十世紀梨", "にじっせいきなし"),
+    ("千歳", "ちとせ"),
+    ("千曲", "ちくま"),
+    ("八千代", "やちよ"),
+    ("千代", "ちよ"),
+    ("千鳥", "ちどり"),
+    ("十勝", "とかち"),
+    ("十日町", "とおかまち"),
+    ("百舌鳥", "もず"),
+    ("百合", "ゆり"),
+    ("八百屋", "やおや"),
+    ("百貨店", "ひゃっかてん"),
+    ("万博", "ばんぱく"),
+    ("万葉", "まんよう"),
+    ("百選", "ひゃくせん"),           # 「日本の歴史公園100選」などの 名
+    ("十分に", "じゅうぶんに"),     # 「たっぷり」の 意味。★「二十分に」は 直前が 漢数字なので 当たらない
+    ("十分な", "じゅうぶんな"),
+], key=lambda x: -len(x[0]))
+_KANJI_NAMES_RE = [(re.compile(r"(?<![〇零一二三四五六七八九十百千万億])" + re.escape(a)), b) for a, b in _KANJI_NAMES]
+# ★直前が 漢字でも 読む 接頭の 字 (「約十名」「毎年十万人」「第三十回」)。★ほかの 漢字の あと (「兼六園」「鯖江百景」) は 読まない
+_KANJI_PREFIX = "約計全総毎第年週"   # ★月・日は 入れない (「五月五日」を 2 粒に 数え直さない)
+# ★算用数字 + 位の 漢字 (「5千」「864千」「86万4千」「1.5万」)。★位が 1 つも 無い ものは ここでは 読まない
+_NUM = r"\d+(?:\.\d+)?"
+_MIXED = re.compile(r"(?:(%s)億)?(?:(%s)万)?(?:(%s)千)?(?:(%s)百)?(%s)?" % (_NUM, _NUM, _NUM, _NUM, _NUM))
+
+
+def _canon(d):
+    """Decimal → 照合用の 文字列 (5000 / 108.4 / 0.5)。「08」と「8」も 同じに なる"""
+    if d == d.to_integral_value():
+        return str(int(d))
+    return format(d.normalize(), "f")
+
+
+def _mixed_value(m):
+    g = m.groups()
+    if not any(g[:4]):
+        return None          # 位が 無い = ただの 算用数字 (あとで 読む)
+    v = Decimal(0)
+    for x, mul in zip(g, (100000000, 10000, 1000, 100, 1)):
+        if x:
+            v += Decimal(x) * mul
+    return v
 
 
 def norm(s):
-    s = s.translate(str.maketrans("０１２３４５６７８９，", "0123456789,"))
+    """語りの 文字列を、数が すべて 算用数字の 値で 書かれた 形に そろえる"""
+    s = s.translate(str.maketrans("０１２３４５６７８９，．", "0123456789,."))
     s = re.sub(r"(?<=\d),(?=\d)", "", s)
-    # 単位のつく 漢数字だけを 数として 読む (「一つ」「三度」などの 数え方も 含む)
+    # (1) 算用数字 + 位 (5千 / 864千 / 86万4千) を 値に 置き換える
+    def mrep(m):
+        if not m.group(0):
+            return m.group(0)
+        v = _mixed_value(m)
+        return m.group(0) if v is None else _canon(v)
+    s = _MIXED.sub(mrep, s)
+    # (2) 単位のつく 漢数字だけを 数として 読む (「一つ」「三度」などの 数え方も 含む)
     def rep(m):
         v = kanji_to_num(m.group(0))
         return str(v) if v is not None else m.group(0)
     # ★漢数字を 数として 読むのは ★次の 条件を すべて 満たす ときだけ。
     #   ここを ゆるめると「兼六園」の 六、「四万十川」の 四 を 数として 拾ってしまう。
-    #     ・直前が 漢字で ない (= 熟語の 途中では ない)
+    #     ・直前が 漢字で ない (= 熟語の 途中では ない)。★直前が 算用数字でも 読まない ((1) で 読み済み)
     #     ・単位 (数える語) が すぐ 後ろに ある
     #     ・「一」ひと文字だけ の ものは 数えない (「一頭」「一年」は たいてい 数えことば)
-    s = s.replace("十人が十人", "みなさん")
-    return re.sub(r"(?<![一-龥])(" + _KANJI.pattern + r")(?=頭|人|種|株|本|園|件|か所|年|月|日|時間|羽|体|基|席)",
+    for rx, kana in _KANJI_NAMES_RE:
+        s = rx.sub(kana, s)
+    before = r"(?:(?<![一-龥\d.])|(?<=[" + _KANJI_PREFIX + r"]))"
+    # ★十・百・千・万を 含む もの (と 2 字以上) は 後ろを 問わない。★それ以外 (一字の 二〜九) は 数えことばが 直後に ある ときだけ
+    s = re.sub(before + r"(" + _KANJI_BIG + r")", rep, s)
+    return re.sub(before + r"(" + _KANJI.pattern + r")(?=" + _COUNTERS + r")",
                   lambda m: m.group(0) if m.group(1) == "一" else rep(m), s)
 
 
-def numbers(s):
-    return set(re.findall(r"\d+", norm(s)))
-
-
 def num_values(s):
-    """108.4% は 1 つと数える (2.274 → 1 つ)"""
-    return re.findall(r"\d+(?:\.\d+)*", norm(s))
+    """語りの 数を 値の 文字列で 並べる (108.4% は 1 つ / 5千両 は 5000 で 1 つ)"""
+    out = []
+    for x in re.findall(r"\d+(?:\.\d+)?", norm(s)):
+        try:
+            out.append(_canon(Decimal(x)))
+        except InvalidOperation:
+            out.append(x)
+    return out
+
+
+def numbers(s):
+    return set(num_values(s))
+
+
+def canon_list(xs):
+    """台帳・report が 渡す 数の 文字列 (uwasa の nums など) を 照合用に そろえる"""
+    out = set()
+    for x in xs:
+        out |= numbers(str(x))
+    return out
+
+
+def rounded_from(n, pool):
+    """n が pool の どれかを ★丸めた 数なら その 元の 数 (「1,829台」→「千八百」/「174人」→「百七十を越す」)。
+    ★丸めは 位を 1 つ 以上 落とした ものだけ、かつ ★元の 数の 上 2 桁は 残す (1,829 → 1,800 は 可、2,000 / 1,000 は 不可)。
+    ★桁の 取り違え (5,000 → 50,000) は 丸めに ならないので 止まる"""
+    try:
+        v = Decimal(n)
+    except InvalidOperation:
+        return None
+    if v != v.to_integral_value() or v < 10:
+        return None
+    v = int(v)
+    k = 0
+    while v % (10 ** (k + 1)) == 0:
+        k += 1
+    if k == 0:
+        return None
+    unit = 10 ** k
+    for m in sorted(pool):
+        try:
+            mv = Decimal(m)
+        except InvalidOperation:
+            continue
+        if mv == v or mv < unit * 10:
+            continue
+        down = int(mv // unit) * unit
+        half = int((mv + unit // 2) // unit) * unit
+        if v in (down, half):
+            return m
+    return None
+
+
+def classify_nums(text, src_allowed, claim_allowed, rounded=None):
+    """→ (出典 (quote・evidence) に ある 数, claim にだけ ある 数, どこにも 無い 数)。
+    ★出典の 数を 丸めた もの (rounded_from) は 出典に ある 扱い、claim の 数を 丸めた ものは claim にだけ ある 扱い。
+    ★丸めた 数は rounded (リスト) に (数, 元の数) で 足す (止めないが 数と 一覧を 出す)"""
+    ok, claim_only, bad = [], [], []
+    for n in sorted(numbers(text)):
+        if n in src_allowed:
+            ok.append(n)
+        elif n in claim_allowed:
+            claim_only.append(n)
+        else:
+            m = rounded_from(n, src_allowed)
+            if m is not None:
+                ok.append(n)
+            else:
+                m = rounded_from(n, claim_allowed)
+                if m is not None:
+                    claim_only.append(n)
+            if m is None:
+                bad.append(n)
+            elif rounded is not None:
+                rounded.append((n, m, text))
+    return ok, claim_only, bad
 
 
 def sentences(s):
@@ -164,7 +322,7 @@ def story_texts(st, include_wrong_choices=False):
 _JP_LITERAL = re.compile(r'"([^"\
 ]*[぀-ヿ一-鿿][^"\
 ]*)"')
-_APP_PATHS = re.compile(r"docs/|data/derived|data/raw|app/data|tools/|\.csv|\.md|\.py|\.xlsx")
+_APP_PATHS = re.compile(r"docs\/|data/derived|data/raw|app/data|tools/|\.csv|\.md|\.py|\.xlsx")
 
 
 # ★場面の 見出し (# 16) の 作法 (2026-11-15)
@@ -221,6 +379,58 @@ def check_app_text(src, rejected):
     return out, len(lines)
 
 
+_UNIT_AFTER = re.compile(r"(\d+(?:\.\d+)?)\s*(か所|か月|ヶ月|カ月|時間|[頭人種株本園件年月日羽体基席両台円回歳匹枚倍石名分時%％])")
+
+
+def num_units(s):
+    """→ {(値, 単位)} (「5千両」→ ("5000", "両"))。単位の 付かない 数は 入れない"""
+    out = set()
+    for v, u in _UNIT_AFTER.findall(norm(s)):
+        try:
+            out.add((_canon(Decimal(v)), "%" if u == "％" else u))
+        except InvalidOperation:
+            pass
+    return out
+
+
+def digit_slips(text, conly, refs, facts):
+    """★claim にだけ ある 数 (conly) の うち、原文 (quote) に ★同じ 単位で 桁だけ 違う 数が ある もの → [(数, 原文の数, 単位)]
+    (★2026-11-21。前は 語りと claim を 両方「5万両」に 誤ると、原文が「5千両」でも 注意 1 行で 通った)"""
+    if not conly:
+        return []
+    qunits = set()
+    for fid in refs:
+        if fid in facts:
+            qunits |= num_units(facts[fid]["quote"])
+    out = []
+    for n, u in sorted(num_units(text)):
+        if n not in conly:
+            continue
+        for m, u2 in sorted(qunits):
+            if u2 != u or m == n:
+                continue
+            try:
+                r = Decimal(n) / Decimal(m)
+            except (InvalidOperation, ZeroDivisionError):
+                continue
+            if r in (Decimal(10) ** j for j in (-4, -3, -2, -1, 1, 2, 3, 4)):
+                out.append((n, m, u))
+    return out
+
+
+def src_claim_allowed(st, refs, facts):
+    """→ (出典の 原文・根拠に ある 数, claim に ある 数)。★台帳に 無い ID は 飛ばす (別の 検査が 止める)"""
+    src, claim = set(), set()
+    for fid in refs:
+        if fid in facts:
+            src |= numbers(facts[fid]["quote"])
+            claim |= numbers(facts[fid]["claim"])
+    src |= numbers(json.dumps(st.get("evidence", []), ensure_ascii=False))
+    # 噂の一言に出てよい数字は、その「割れている数字」の値に出てくるものだけ
+    src |= canon_list((st.get("uwasa") or {}).get("nums", []))
+    return src, claim
+
+
 def main():
     b = load_bundle()
     errors, warns = [], []
@@ -243,6 +453,8 @@ def main():
 
     rejected = [r["text"] for r in b["rejected"]]
     checked_numbers = 0
+    claim_only = []      # ★(席, 数, 文): 出典の 原文に 無く claim にだけ ある 数 (注意)
+    rounded_all = []     # ★(数, 元の数, 文): 出典・claim の 数を 丸めた もの (注意。2026-11-21)
     for kind, st in all_items:
         label = "%s %s" % (kind, st["id"])
         # 2. 事実ID
@@ -253,18 +465,22 @@ def main():
             if fid not in facts:
                 errors.append(label + ": 台帳に無い事実ID " + fid)
         # 3. 数字
-        allowed = set()
-        for fid in refs:
-            if fid in facts:
-                allowed |= numbers(facts[fid]["claim"] + " " + facts[fid]["quote"])
-        allowed |= numbers(json.dumps(st.get("evidence", []), ensure_ascii=False))
-        # 噂の一言に出てよい数字は、その「割れている数字」の値に出てくるものだけ
-        allowed |= set((st.get("uwasa") or {}).get("nums", []))
+        #   ★照合の 相手を 2 つに 分ける (2026-11-20)
+        #     src   = 出典の 原文 (quote)・生成時の 根拠 (evidence)・噂の 割れている 数 → ここに あれば OK
+        #     claim = 作り手が 書いた 要約 (集計・合計・言い換えを 含む) → ここに だけ あれば ★注意 (数と 一覧を 出す)
+        #     どちらにも 無い → NG
+        #   ★claim だけを 止めに すると 今の 台本で 組み立てが 止まる (約 190 個)。★まず 見える ように する
+        src_ok, claim_ok = src_claim_allowed(st, refs, facts)
         for t in story_texts(st):
-            for n in numbers(t):
-                checked_numbers += 1
-                if n not in allowed:
-                    errors.append("%s: 数字「%s」が参照事実に無い → 「%s」" % (label, n, t[:60]))
+            ok, conly, bad = classify_nums(t, src_ok, claim_ok, rounded_all)
+            checked_numbers += len(ok) + len(conly) + len(bad)
+            for n in conly:
+                claim_only.append((label, n, t))
+            for n in bad:
+                errors.append("%s: 数字「%s」が参照事実に無い → 「%s」" % (label, n, t[:60]))
+            for n, m, u in digit_slips(t, conly, refs, facts):
+                errors.append("%s: 数字「%s%s」は 要約 (claim) にだけ あり、原文 (quote) は「%s%s」(桁だけ 違う) → 「%s」"
+                              % (label, n, u, m, u, t[:60]))
         # 4. 不採用の言い回し
         joined = " ".join(story_texts(st, include_wrong_choices=True))
         for r in rejected:
@@ -288,7 +504,7 @@ def main():
         for k in ("correct", "wrong"):
             if any(ch.isdigit() for ch in norm(r.get(k, ""))):
                 errors.append("%s: 噺家の返し(%s)に数字が入っている" % (label, k))
-        # 8. サゲの作法 (docs/参考/20260920_はなし山のサゲ作法.md)
+        # 8. サゲの作法 (サゲ作法の 作業メモ §2〜§5)
         sage = st.get("sage", "")
         if len(sentences(sage)) > 1:
             errors.append("%s: サゲが %d 文ある (1 文にする) → 「%s」" % (label, len(sentences(sage)), sage[:40]))
@@ -448,7 +664,7 @@ def main():
                                       % (label, w, q["choices"][j], j))
 
     # 9. 画面に出る文字に、手元のファイルパスが混ざっていないか
-    PATHS = re.compile(r"docs/|data/derived|data/raw|app/data|tools/|\.csv|\.md|\.py|\.xlsx")
+    PATHS = re.compile(r"docs\/|data/derived|data/raw|app/data|tools/|\.csv|\.md|\.py|\.xlsx")
     # ★改行のつもりで 「\\n」を 文字として 書いてしまう 事故 (通算 5 回) を 捕まえる
     YEN_N = "\\n"
     n_str = 0
@@ -496,7 +712,7 @@ def main():
         errors.append("CREDITS.md に 事実の出典が 無い → %s "
                       "(python tools/build_credits.py で 直る)" % u[:70])
 
-    # 13. ★推し量った数 (推計) を ★実数として 語っていないか (2026-11-14 監査で 発覚)
+    # 13. ★推し量った数 (推計) を ★実数として 語っていないか (2026-11-14 見直しで 発覚)
     #   ★人流データの「0人」は 10 人単位に 丸めた 推計で、「誰も来なかった」では ない。
     #     それを「数えた表」「ひとりも来なかった」「訪れた人は0人」と 語っていた (4 席)。
     #   ★9 月に 公園の入場者数 (F69) では 手当てしたのに、同じ型の 人流・入込数には 及ばなかった。
@@ -505,7 +721,7 @@ def main():
     #   (c) 推計の事実を 引く席で「数えた」「ひとりも来なかった」「訪れた人は」と 言い切らない
     EST_SRC = ("人流データ", "(推計)")
     EST_HEDGE = ("推し量", "推計", "推定")
-    #   ★2026-11-15 監査⑦: 「表の上で ひとりも数えられなかった」「表の上で誰もいなかった」が 通っていた
+    #   ★2026-11-15 見直し: 「表の上で ひとりも数えられなかった」「表の上で誰もいなかった」が 通っていた
     #     → 「ひとりも」「誰もいな」を 足した。★客の 台詞 (思い込み) は 見ない。地の文と 噺家の 台詞だけ
     EST_BAN = ("人の数を数えた", "ひとりも来なかった", "訪れた人は", "ひとりも", "誰もいな")
     est_ids = set()
@@ -562,21 +778,24 @@ def main():
         if not isinstance(refs, list) or not refs:
             errors.append(label + ": 参照する事実IDが無い")
             refs = []
-        allowed = set()
         for fid in refs:
             if fid not in facts:
                 errors.append(label + ": 台帳に無い事実ID " + fid)
-            else:
-                allowed |= numbers(facts[fid]["claim"] + " " + facts[fid]["quote"])
+        src_ok, claim_ok = src_claim_allowed({}, refs, facts)
         est = any(fid in est_ids for fid in refs)
         joined = " ".join(lines)
         for ln in lines:
             if len(ln) > 60:
                 errors.append("%s: 1 行が %d 字 (60 字まで) → 「%s」" % (label, len(ln), ln[:30]))
-            for n in numbers(ln):
-                pb_nums += 1
-                if n not in allowed:
-                    errors.append("%s: 数字「%s」が参照事実に無い → 「%s」" % (label, n, ln[:60]))
+            ok, conly, bad = classify_nums(ln, src_ok, claim_ok, rounded_all)
+            pb_nums += len(ok) + len(conly) + len(bad)
+            for n in conly:
+                claim_only.append((label, n, ln))
+            for n in bad:
+                errors.append("%s: 数字「%s」が参照事実に無い → 「%s」" % (label, n, ln[:60]))
+            for n, m, u in digit_slips(ln, conly, refs, facts):
+                errors.append("%s: 数字「%s%s」は 要約 (claim) にだけ あり、原文 (quote) は「%s%s」(桁だけ 違う) → 「%s」"
+                              % (label, n, u, m, u, ln[:60]))
             if est and numbers(ln) and not any(h in ln for h in EST_HEDGE):
                 errors.append("%s: 推計の 数字を 言う 行に、推し量った数だという 断り (%s) が 無い → 「%s」"
                               % (label, " / ".join(EST_HEDGE), ln[:40]))
@@ -687,13 +906,13 @@ def main():
                 if not re.match(r"^\d+$", m.group(3)) or not int(m.group(3)) < n:
                     errors.append("%s %s: 写真の指定 %r の 番号が 範囲外 (0〜%d)" % (kind, st["id"], sp, n - 1))
 
-    # 16. ★場面の 見出し (head) の 作法 (2026-11-15。計画 docs/企画/20261114_追加改修計画_P0-3_P1-3_P1-4.md §2-4・§2-5)
+    # 16. ★場面の 見出し (head) の 作法 (2026-11-15。作業計画 §2-4・§2-5)
     #   ★見出しが オチの 先回りに なるのが いちばん 恐い。★空の head は 見ない (書き起こし前 = 画面は 演目名を 出す)
     #   (a) 1 行・16 字まで (スマホの 1 行)  (b) 数字 (算用・漢数字) を 入れない (本文の 数字 2 粒と ぶつかる)
     #   (c) 段の 名 (本題・まくら・サゲ・続き…) だけに しない = 中身を 言う
     #   (d) 問いの 正解の 札 / サゲの 最後の 語 (2 字以上) を 含めない
     #   (e) 見出しの ある 席は 場面 3〜4 (本題 3 行以下は 2 も可)。5 以上は 注意
-    #   (f) 1 席に 最低 1 枚 写真 (ユーザー決定 2026-11-15)。★撮影が 済むまでは 注意 (warns) に とどめる
+    #   (f) 1 席に 最低 1 枚 写真 (作者の判断 2026-11-15)。★撮影が 済むまでは 注意 (warns) に とどめる
     #       ★scenes の 無い 席 (自動の 席) は 写真を 画面 (app.js sceneList) が 選ぶ ので ここでは 見ない
     head_seats, head_n = 0, 0
     nophoto, nophoto_seen, auto_seats = [], set(), set()
@@ -741,7 +960,7 @@ def main():
     if nophoto:
         warns.append("写真の 無い 席 (1 席に 最低 1 枚。撮影が 済むまで 注意): %d 席 → %s"
                      % (len(nophoto), " ".join(nophoto)))
-    # 16g. ★見出しの 無い 席を 残さない (2026-11-15 反論監査③ 重1)
+    # 16g. ★見出しの 無い 席を 残さない (2026-11-15 見直し)
     #   ★自動の 82 席に 見出しが 1 本も 無く、22 席は scenes そのものが 無かった (= ここまでの 検査が 素通り)。
     #   ★11/28 の「もう一席」(P-茨城県・P-福井県) が ちょうど そこに 当たっていた
     for kind, st in all_items:
@@ -751,7 +970,7 @@ def main():
         elif not any(isinstance(x.get("head"), str) and x["head"].strip() for x in sc):
             errors.append("%s %s: 場面の 見出しが 1 本も 無い" % (kind, st["id"]))
 
-    # 17. ★題 (演目名) の 先回り (2026-11-15 反論監査② F2)
+    # 17. ★題 (演目名) の 先回り (2026-11-15 見直し)
     #   ★題は めくりに 席の 間 ずっと 出ている (見出しと 同じ 場所・同じ 大きさ)。★#16 は 見出しだけ 見ていた
     #   (a) 問いの 正解の 札を 含まない (1 字でも。「桜が先だった」← 答え「桜」)
     #   (b) サゲの 最後の 語 (2 字以上) を 含まない (「寝耳ベンチ」「達成」)
@@ -786,7 +1005,7 @@ def main():
         if len(tk) >= 3 and (tk in _nospace(tail) or _nospace(norm(title)) in sage_k):
             errors.append("%s: 題「%s」が サゲの 中に そのまま ある (めくりが オチを 言う)" % (label, title))
 
-    # 18. ★答えの 言い直し (2026-11-15 反論監査② F4。決定㊻「問いの 答えを サゲで 言い直さない」)
+    # 18. ★答えの 言い直し (2026-11-15 見直し。「問いの 答えを サゲで 言い直さない」)
     #   (a) 答え合わせの あとに 出す 図 (when=after) が サゲの 数字を 先に 見せない
     #   (b) ★自動の 席 (県の噺・暦の噺) の サゲは 問いの 答えを そのまま 含まない
     #       (★手書きの 席は 並びの 型 (三つ目が 答え) が あるので 人が 読む)
@@ -812,7 +1031,7 @@ def main():
         if "yokoku" in st and not isinstance(st["yokoku"], bool):
             errors.append("%s: yokoku は true / false (%r)" % (label, st["yokoku"]))
 
-    # 19b. ★同じ サゲを 複数の 席で 使わない (2026-11-20 ユーザー判断「重なったサゲを 調べて 書き分ける」)
+    # 19b. ★同じ サゲを 複数の 席で 使わない (2026-11-20 作者の判断「重なったサゲを 調べて 書き分ける」)
     #   ★11/15 に 自動の 席の サゲを 書き直したとき、似た形が まとまり ★異なりが 107 → 88 に 減っていた
     #   (誕生日 23 席が 6 本・県の噺 47 席の 中で 2〜4 席ずつ 同じ 文)。★同じ 文 = 同じ 札 に なる
     #   (a) 句読点・空白を 除いて 同じ 文が 2 席 以上 → 誤り
@@ -839,7 +1058,7 @@ def main():
             warns.append("サゲの 型が 名前・県名・数字の 差し替えだけで %d 席 → %s「%s」"
                          % (len(pairs), " ".join(i for i, _ in pairs[:6]), k[:30]))
 
-    # 20. ★オチが 西山公園の 何の ことか (ochiWhat。2026-11-15 ユーザー依頼)
+    # 20. ★オチが 西山公園の 何の ことか (ochiWhat。2026-11-15 作者の案)
     #   ★画面は サゲの すぐ 下に「↳ <ochiWhat>のこと」と 小さく 出す。★story_texts には 入れない
     #     (入れると # 13 の 断りの 判定が「註に 推し量った と ある」で 席 全体を 通して しまう) → ここで 同じ 作法を かける
     #   (a) 全 130 席に ある / 文字列 / 40 字まで / 末尾が「のこと」で ない (画面が 付けるので 二重に なる)
@@ -865,15 +1084,16 @@ def main():
         if "\n" in ow or "\r" in ow:
             errors.append("%s: オチの 註に 改行が ある → %r" % (label, ow))
         refs = st.get("facts", [])
-        allowed = set()
-        for fid in refs:
-            if fid in facts:
-                allowed |= numbers(facts[fid]["claim"] + " " + facts[fid]["quote"])
-        allowed |= numbers(json.dumps(st.get("evidence", []), ensure_ascii=False))
-        for n in numbers(ow):
-            ow_nums += 1
-            if n not in allowed:
-                errors.append("%s: オチの 註の 数字「%s」が参照事実に無い → 「%s」" % (label, n, ow))
+        src_ok, claim_ok = src_claim_allowed(st, refs, facts)
+        ok, conly, bad = classify_nums(ow, src_ok, claim_ok, rounded_all)
+        ow_nums += len(ok) + len(conly) + len(bad)
+        for n in conly:
+            claim_only.append((label + " (註)", n, ow))
+        for n in bad:
+            errors.append("%s: オチの 註の 数字「%s」が参照事実に無い → 「%s」" % (label, n, ow))
+        for n, m, u in digit_slips(ow, conly, refs, facts):
+            errors.append("%s: オチの 註の 数字「%s%s」は 要約 (claim) にだけ あり、原文 (quote) は「%s%s」(桁だけ 違う)"
+                          % (label, n, u, m, u))
         mine = [fid for fid in refs if fid in est_ids]
         if mine:
             nums_est = set()
@@ -920,8 +1140,23 @@ def main():
     print("サゲの 異なり: %d / %d 席 (型の 異なり %d。# 19b)" % (len(sage_seen), sum(len(v) for v in sage_seen.values()), len(sage_skel)))
     print("写真の無い席: %d 席 (scenes を 持つ %d 席の 中で。scenes の 無い 自動の 席 %d 席は 画面が 選ぶので 見ていない)"
           % (len(nophoto), scene_seats, len(auto_seats)))
+    # ★claim にだけ ある 数 (2026-11-20)。★止めないが、数と 一覧を 毎回 出す
+    if claim_only:
+        seats = sorted({x[0] for x in claim_only})
+        warns.append("語りの 数字の うち、出典の 原文 (quote)・根拠 (evidence) に 無く、作り手の 要約 (claim) に だけ ある もの: "
+                     "%d 個 / %d 席 (止めない。下の 一覧。原文を 足すか、語りを 原文の 数に 寄せる)" % (len(claim_only), len(seats)))
+    if rounded_all:
+        warns.append("丸めた 数 (元の 数の 上 2 桁を 残して 位を 落とした もの。止めない): %d 個 → %s"
+                     % (len(rounded_all), " / ".join("%s←%s「%s」" % (n, m, t[:20].replace(chr(10), " ")) for n, m, t in rounded_all)))
     for w in warns:
         print("  注意:", w)
+    if claim_only:
+        by = defaultdict(list)
+        for lab, n, t in claim_only:
+            by[lab].append((n, t))
+        print("  claim にだけ ある 数 (%d 個):" % len(claim_only))
+        for lab in sorted(by):
+            print("    %s: %s" % (lab, " / ".join("%s「%s」" % (n, t[:36]) for n, t in by[lab])))
     if errors:
         print("NG: %d 件" % len(errors))
         for e in errors:

@@ -6,7 +6,7 @@ ctx.globalThis = ctx;
 vm.createContext(ctx);
 vm.runInContext(fs.readFileSync(require("path").join(__dirname, "..", "app", "data", "bundle.js"), "utf8").replace("window.HANASHI", "globalThis.HANASHI"), ctx);
 // ★HANASHI_APP = 別の app.js (直す 前の 版を 渡して、試験が NG を 出すか = 効きを 見る)
-const APP_PATH = process.env.HANASHI_APP || require("path").join(__dirname, "..", "app", "app.js");
+const APP_PATH = process.env.HANASHI_APP || process.env.HANASHI_APP_ALL || require("path").join(__dirname, "..", "app", "app.js");
 const APP_SRC = fs.readFileSync(APP_PATH, "utf8");
 vm.runInContext(APP_SRC, ctx);
 const H = ctx.HANASHI, C = ctx.HanashiCore;
@@ -18,7 +18,7 @@ const cases = [
   ["山口県", { pref: "山口県", date: "2026-09-17" }],
   ["東京都 + 信念カード(パンダは白黒)", { pref: "東京都", beliefs: ["b_panda_bw"], date: "2026-09-17" }],
   ["神奈川県だけ", { pref: "神奈川県", date: "2026-09-17" }],
-  ["審査会の日 (何も答えない)", { date: "2026-11-28" }],
+  ["発表会の日 (何も答えない)", { date: "2026-11-28" }],
   ["パンダデー期間 2026", { date: "2026-09-20" }],
   ["パンダデー期間 2027 (出ないはず)", { date: "2027-09-20" }],
   ["双子の誕生日 6/26 (記録上の誕生日)", { date: "2026-06-26" }],
@@ -32,8 +32,10 @@ for (const [name, input] of cases) {
 const expect = (cond, msg) => { if (!cond) { fail++; console.log("  ✕", msg); } else console.log("  ✓", msg); };
 expect(C.pick(H, { date: "2026-03-15" }).length === 0,
        "手がかりが無い日は語らない(第二条)  ★暦から 遠い 日で 見る");
-expect(C.pick(H, { date: "2026-09-17" }).length > 0,
-       "  対照: 暦の 2 日前なら 候補が 出る (数え方は 壊れていない)");
+expect(C.pick(H, { date: "2026-09-19" }).length > 0,
+       "  対照: 暦の 当日なら 候補が 出る (数え方は 壊れていない)");
+expect(C.pick(H, { date: "2026-09-17" }).length === 0,
+       "暦の 2 日前は 候補に しない (★暦の 席は 当日 だけ。2026-11-20 作者の判断)");
 expect(C.pick(H, { pref: "山口県", date: "2026-09-17" })[0].story.id === "S01", "山口県は松陰の話が先頭");
 expect(C.pick(H, { date: "2026-11-28" })[0].story.id === "T-1128", "11/28 は命日の話が先頭");
 // ★現地の 謎かけの 答え合わせ (全角/半角・かな/カナ を 吸収 / 打ち消しは 外れ。2026-11-15)
@@ -170,37 +172,36 @@ expect(C.allStories(H).length === H.stories.length + H.prefStories.length +
        "allStories が 手書き + 県 + 今日 を すべて 返す (" + C.allStories(H).length + " 席)");
 
 
-// ---- 暦の噺を、その日 以外でも 出す (2026-09-25 ユーザー指示) ----------------
-//   ① 手前 7 日 …「もうすぐ」  ② 好きなものが 合えば いつでも「こういう情報も」
-//   ★当日 (+4) を 押しのけない ことが 大事
+// ---- 暦の噺は ★その日 だけ (2026-11-20 作者の判断。見直し) ----------------
+//   ★前 (2026-09-25〜) は ① 手前 7 日 …「もうすぐ」 ② 好きなものが 合えば いつでも「こういう情報も」として 出していたが、
+//     台本の 入り・本題・追い足しが「今日」「本日」と 言い切るので、別の 日に 出すと 嘘に なる (11 月に「今日 14 時に 双子の 公開」)
 const tsu = (d) => C.pick(H, { pref: "", beliefs: [], date: d })
   .filter((x) => x.story.id.indexOf("T-tsutsuji") === 0);
 expect(tsu("2026-04-25").length === 0, "8 日以上 前は 出ない");
-expect(tsu("2026-05-01").length > 0, "2 日前は 出る (もうすぐ)");
+expect(tsu("2026-05-01").length === 0, "2 日前も 出ない (「もうすぐ」で 出さない)");
 expect(tsu("2026-05-06").length === 0, "過ぎたら 出ない");
 const onDay = tsu("2026-05-03");
-const same = onDay.find((x) => x.story.id === "T-tsutsuji-03");
-const other = onDay.find((x) => x.story.id !== "T-tsutsuji-03");
-expect(same && other && same.score > other.score,
-       "当日の席が 手前の席より 点が 高い (" + (same && same.score) + " > " + (other && other.score) + ")");
-expect(same && same.reasons.indexOf("today") >= 0, "当日は today、手前は soon");
+expect(onDay.length === 1 && onDay[0].story.id === "T-tsutsuji-03" && onDay[0].reasons.indexOf("today") >= 0,
+       "当日は その日の 席 (T-tsutsuji-03) だけ・today (" + onDay.map((x) => x.story.id).join(",") + ")");
 
-const byLike = (w) => {
+const byLike = (w, d) => {
   const m = C.match(H, w);
-  return C.pick(H, { pref: "", beliefs: [m.belief], date: "2026-09-25" })
+  return C.pick(H, { pref: "", beliefs: [m.belief], date: d || "2026-09-25" })
     .filter((x) => x.story.isToday);
 };
-expect(byLike("歴史").some((x) => x.story.id === "T-1128"),
-       "「歴史」から 命日の噺が 候補に 入る (日付は 9/25)");
-expect(byLike("雪").some((x) => x.story.id === "T-0124"),
-       "「雪」から 0 人の日が 候補に 入る");
+expect(!byLike("歴史").some((x) => x.story.id === "T-1128"),
+       "「歴史」と 打っても 9/25 に 命日の噺を 出さない");
+expect(!byLike("雪").some((x) => x.story.id === "T-0124"),
+       "「雪」と 打っても 9/25 に 0 人の日を 出さない");
+expect(byLike("歴史", "2026-11-28").some((x) => x.story.id === "T-1128"),
+       "  対照: 11/28 当日なら「歴史」で 命日の噺が 候補に 入る");
 expect(C.daysUntil({ md: "05-03" }, "2026-05-01") === 2, "daysUntil が 日数を 返す");
 expect(C.daysUntil({ md: "05-03" }, "2026-05-03") === 0, "当日は 0");
 
 
 // ---- 絵図: 棒の中に 置く 数字は ★白で 出ること (2026-09-26) ----
 //   ★SVG の fill="#fff" 属性は ★CSS の .figv { fill: var(--ink) } に 負ける。
-//   ★2026-09-26 まで 棒の朱に 黒い数字が 埋もれていた (ユーザー指摘・画面で 発覚)。
+//   ★2026-09-26 まで 棒の朱に 黒い数字が 埋もれていた (見直し・画面で 発覚)。
 //   ★クラス (figv-in) で 当てること。★属性で 書くと また 埋もれる。
 const svgLong = C.figSvg({ title: "長い棒", unit: "株",
   items: [{ label: "多い", value: 31400 }, { label: "少ない", value: 25 }] });
@@ -222,9 +223,9 @@ expect(over === 0, "棒の外に 置いた 数字が 枠を はみ出さない")
 
 
 
-// ==== 選び方の 偏りを 直す (2026-11-15 ユーザー判断「次回、同じ人が見たときに違う話に」) ====
+// ==== 選び方の 偏りを 直す (2026-11-15 作者の判断「次回、同じ人が見たときに違う話に」) ====
 //   ★直す 前は 点が 同じ 席を 毎回 同じ 順で 選び、はじめからの 3 席目 S44・4 席目 S45 に ほぼ 固定、
-//     園の 入口は 2〜4 席目が 58 園中 41 園で S54→S51→S41 だった (C:\tmp\bias の 模擬の 通し)。
+//     園の 入口は 2〜4 席目が 58 園中 41 園で S54→S51→S41 だった (手元の作業フォルダ の 模擬の 通し)。
 //   ★ここでは 画面を 通しで 動かす (motion_harness)。★写真の 選び (Math.random) は 毎回 同じ 種に 固定し、
 //     ★選び方の 乱数 (HANASHI_RNG) だけを 替える。
 const DATE = "2026-11-15";
@@ -285,12 +286,13 @@ expect(got.X0 > got.X2, "点の 高い 席ほど 選ばれやすい (重み)");
 const tcs = [{ story: { id: "T" }, score: 7, reasons: ["today"] }, { story: { id: "Y" }, score: 7, reasons: ["soon"] }];
 expect([1, 2, 3, 4, 5, 6].every((sd) => po(tcs, { rng: seeded(sd) }).story.id === "T"), "当日の 暦の 席が 先頭なら 当日の 席だけから 選ぶ");
 
-// ---- ④ 11/28 の 一席目は T-1128 のまま (審査会の 実演: 茨城県・思う) ----
-const d28 = [1, 2, 3, 4, 5].map((sd) => drive({ date: "2026-11-28", search: "?date=2026-11-28", seed: sd }, IBARAKI(), 2));
-console.log("■ 11/28 茨城県・思う (種 1〜5):", d28.map((r) => r.seats.join(">")).join(" / "));
+// ---- ④ 11/28 の 一席目は T-1128 のまま (発表会の 実演: 2026-11-20 から 埼玉県・思う) ----
+const SAITAMA = (ans) => ["いや、べつに", "県外から", "関東", "埼玉県", ans || "思う"];
+const d28 = [1, 2, 3, 4, 5].map((sd) => drive({ date: "2026-11-28", search: "?date=2026-11-28", seed: sd }, SAITAMA(), 2));
+console.log("■ 11/28 埼玉県・思う (種 1〜5):", d28.map((r) => r.seats.join(">")).join(" / "));
 expect(d28.every((r) => r.seats[0] === "T-1128"), "11/28 の 一席目は どの 種でも T-1128");
-expect(d28.every((r) => r.seats[1] === "P-茨城県"), "11/28 の 二席目は その県の 噺 P-茨城県 (記録が 空の とき)");
-const d28b = drive({ date: "2026-11-28", search: "?date=2026-11-28", seed: 9, store: again(d28[0].store), before: 2 }, IBARAKI(), 1);
+expect(d28.every((r) => r.seats[1] === "P-埼玉県"), "11/28 の 二席目は その県の 噺 P-埼玉県 (記録が 空の とき)");
+const d28b = drive({ date: "2026-11-28", search: "?date=2026-11-28", seed: 9, store: again(d28[0].store), before: 2 }, SAITAMA(), 1);
 expect(d28b.seats[0] === "T-1128", "前に T-1128 を 聞いていても 11/28 の 一席目は T-1128 (今日の 暦は 固定)");
 
 // ---- ⑤ 手がかり (県・好き) を 握りつぶさない (㉞) / 県の 手書きの 噺 (㊱) ----
@@ -330,6 +332,17 @@ const said = runs.map((r) => {
 expect(JL.length >= 3 && said.some((x) => x.n > 0), "見繕いで 筋が 飛ぶ 席に つなぎの 一言が 入る (種 8 通りで " + said.reduce((a, x) => a + x.n, 0) + " 回)");
 expect(said.every((x) => !x.early), "つなぎの 一言は 一席目の 前には 言わない");
 expect(JL.every((t) => !/[0-9０-９]/.test(t)), "つなぎの 一言に 数字を 入れない");
+// ★使い切ったら ひと回り させる (2026-11-20 見直し。前は 6 席目 以降 乱数で 同じ 一言を 引き、3 回 続いた)
+{
+  const badJ = [];
+  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].forEach((sd) => {
+    const rr = seeded(sd), used = [];
+    for (let k = 0; k < JL.length * 3; k++) used.push(C.jumpLine(used, rr));
+    for (let k = 0; k < used.length; k += JL.length) if (new Set(used.slice(k, k + JL.length)).size !== JL.length) badJ.push(sd + ":回り" + k / JL.length);
+    for (let k = 1; k < used.length; k++) if (used[k] === used[k - 1]) badJ.push(sd + ":続き" + k);
+  });
+  expect(!badJ.length, "つなぎの 一言は " + JL.length + " つを 使い切るまで 重ねず、回りの 境でも 直前と 同じに しない (種 10 × " + JL.length * 3 + " 回) " + badJ.slice(0, 3).join(" "));
+}
 
 // ---- ⑧ 席の 入り (bridge) を 前後に 合わせる (2026-11-15。ランダムで 選ぶと かみ合わない 所が 出た) ----
 //   ★台本の 文は 変えず、画面に 出す ときに 言い換える (Core.bridgeText / seatLines / prefBridgeLead)
@@ -345,10 +358,10 @@ expect(JL.every((t) => !/[0-9０-９]/.test(t)), "つなぎの 一言に 数字�
          "県の つなぎ (前段の 形) は 47 件とも「…ひとつ。」で 終わらない");
   expect(leads.some(([, src]) => /ひとつ。$/.test(src[src.length - 1])), "  対照: 台本の 県の つなぎは「…ひとつ。」で 終わる (数え方は 壊れていない)");
   const ib = leads.find(([p]) => p === "茨城県")[2];
-  expect(ib[ib.length - 1] === "知られていないのは、こちらの山のほうでございます。", "最後の 行の 前半は 残す (茨城県: " + ib[ib.length - 1] + ")");
+  expect(ib[ib.length - 1] === "そのお国からこの小さな山まで、話はひと跳びでございます。", "最後の 行の 前半は 残す (茨城県: " + ib[ib.length - 1] + ")");
   // (b)「その」は 直前の 客の 答えを 受けて 選んだ 席だけ
-  expect(bt("S12", { pref: "茨城県", answered: false }) === "では、恐竜の話から。" && bt("S12", { pref: "茨城県", answered: true }) === "では、その恐竜の話から。",
-         "「では、その恐竜の話から。」は 答えを 受けた ときだけ「その」を 残す");
+  expect(bt("S01", { pref: "茨城県", answered: false }) === "では、悪役の話から。" && bt("S01", { pref: "茨城県", answered: true }) === "では、その悪役の話から。",
+         "「では、その悪役の話から。」は 答えを 受けた ときだけ「その」を 残す");
   expect(bt("S06", { pref: "" }) === "城の話で。", "「その、城の話で。」→「城の話で。」");
   // (c) 県の噺 (P-○○): 同じ 県なら 挨拶を 省く / 違う 県なら「話は ○○へ 飛びまして」・客向けに しない
   const pIds = ALL.filter((s) => /^P-/.test(s.id));
@@ -393,7 +406,7 @@ expect(JL.every((t) => !/[0-9０-９]/.test(t)), "つなぎの 一言に 数字�
   expect(r5.length === 1 && r5[0].indexOf("宮城県のお客さんに") < 0, "入りに「お客さんに」が あれば「○○のお客さんに」を 足さない");
 }
 
-// ==== 題材の 重なりを 避ける (2026-11-20 ユーザー判断) ====
+// ==== 題材の 重なりを 避ける (2026-11-20 作者の判断) ====
 //   ★一席目 S11・三席目 S33 が どちらも 新幹線 だった。★題材は 題・振り・サゲ・見出しの 語で 決める (Core.topics / TOPICS)
 //   ★題材の 読み取りは ★今の app/app.js で 行う (HANASHI_APP に 直す 前の 版を 渡しても 同じ 物差しで 数える)
 {
@@ -434,6 +447,40 @@ expect(JL.every((t) => !/[0-9０-９]/.test(t)), "つなぎの 一言に 数字�
   console.log("■ 題材の 重なり (画面の 通し " + runsN + " 回):", ov, exs.join(" / "));
   expect(!short4, "題材で 避けても 4 席まで 通る (" + (runsN - short4) + " / " + runsN + ")");
   expect(!ov, "4 席の 中で 題材が 重ならない (重なった 回 " + ov + " / " + runsN + ") " + exs.join(" / "));
+}
+
+// ==== 同じ 話・動物の 連続 (2026-11-21 (60)) ====
+//   ★S03 ↔ P-北海道 (同じ 1993 年の 旭山・答え 29園・同じ 落ち) / S02 ↔ 名前の 型 (元祖パンダ・炎色のネコ) を 二度 聞かせない。
+//   ★動物の 噺が 3 席 続いたら 次は 動物で ない 噺 (画面の 側 = test_flow R17)
+{
+  const st = (id) => C.allStories(H).find((x) => x.id === id);
+  const fn = (k) => typeof C[k] === "function";
+  expect(fn("sameTalk") && C.sameTalk(H, st("S03"), st("P-北海道")) && C.sameTalk(H, st("P-北海道"), st("S03")), "S03 と P-北海道 は 同じ 話 (両向き)");
+  const NAME = ["宮城県", "茨城県", "栃木県", "群馬県", "千葉県", "福井県", "愛知県", "愛媛県", "高知県", "福岡県", "熊本県", "宮崎県", "鹿児島県", "沖縄県"].map((p) => "P-" + p)
+    .concat(["19", "20", "21", "22", "23"].map((d) => "T-pandaday-" + d));
+  expect(fn("sameTalk") && NAME.every((id) => C.sameTalk(H, st("S02"), st(id))), "S02 と 名前の 型 (県 14・T-pandaday 5) は 同じ 話");
+  // ★対照: 違う 話は 同じに しない (数え方が 広がりすぎて いない)
+  const NOT = [["S01", "T-1128"], ["S09", "T-0124"], ["S11", "S33"], ["S03", "S02"], ["S02", "P-北海道"], ["S03", "P-山梨県"]];
+  expect(fn("sameTalk") && NOT.every(([a, b]) => !C.sameTalk(H, st(a), st(b))), "  対照: " + NOT.map((x) => x.join("↔")).join(" / ") + " は 同じ 話に しない");
+  // ① 北海道の 客: S03 を 語った あと、県の 噺の 加点が あっても P-北海道 を 出さない (★対照: S03 の 前なら P-北海道 が 出る)
+  const inHk = { pref: "北海道", beliefs: ["b_zoo_big"], date: "2026-11-20" };
+  const S03 = st("S03");
+  //   ★画面は「もう一席」で 語り終えた 思い込みを 手がかりに しない (nextStory) → preferBelief は null
+  const g1 = [1, 2, 3, 4, 5, 6, 7, 8].map((sd) => C.choose(H, inHk, null, ["S03", "S16"], [S03.sage, st("S16").sage], { rng: seeded(sd), realPref: "北海道" }));
+  expect(g1.every((c) => !c || c.story.id !== "P-北海道"), "S03 の あと P-北海道 を 出さない (" + g1.map((c) => (c ? c.story.id : "見繕いへ")).join(",") + ")");
+  const g0 = [1, 2, 3, 4, 5, 6, 7, 8].map((sd) => C.choose(H, { pref: "北海道", beliefs: [], date: "2026-11-20" }, null, ["S16"], [], { rng: seeded(sd), realPref: "北海道" }));
+  expect(g0.some((c) => c && c.story.id === "P-北海道"), "  対照: S03 を 語る 前なら P-北海道 が 出る (" + g0.map((c) => (c ? c.story.id : "-")).join(",") + ")");
+  // ② 宮城の 客: 名前の 型 P-宮城県 から 4 席 語った あと (直す 前は 五席目に S02 が 出ていた)、S02 を 出さない (★残りが 同じ 話 だけなら 見繕いへ = null)
+  const sh2 = ["P-宮城県", "S48", "S50", "S17"];
+  const g2 = [1, 2, 3, 4].map((sd) => C.choose(H, { pref: "宮城県", beliefs: ["b_panda_bw"], date: "2026-11-20" }, null, sh2, sh2.map((i) => st(i).sage), { rng: seeded(sd), realPref: "宮城県" }));
+  expect(g2.every((c) => !c || c.story.id !== "S02"), "P-宮城県 の あと S02 を 出さない (" + g2.map((c) => (c ? c.story.id : "見繕いへ")).join(",") + ")");
+  // ③ 見繕い (leastSimilar) でも 同じ 話は 後ろ
+  //   ★S40 は 前の 席と 似ている 点 4 (S02 は 事実 1 + 思い込み 2 = 3)。★同じ 話は 似ている 点より 重い
+  const ls = fn("leastSimilar") ? C.leastSimilar(H, sh2, [{ story: st("S02"), score: 5 }, { story: st("S40"), score: 3 }]) : [];
+  expect(ls.length === 1 && ls[0].story.id === "S40", "見繕いでも 名前の 型の あとは S02 を 後ろへ (似ている 点が 多い 席より 後ろ) (" + ls.map((c) => c.story.id).join(",") + ")");
+  // ④ 動物の 連続の 数え方
+  expect(fn("animalRun") && C.animalRun(H, ["S05", "S51", "S41", "S54"]) === 3 && C.animalRun(H, ["S51", "S41", "S05"]) === 0 && C.ANIMAL_MAX === 3,
+         "動物の 噺の 連続を 末尾から 数える (S05>S51>S41>S54 = 3 / S51>S41>S05 = 0)・上限 3");
 }
 
 console.log(fail ? "FAIL " + fail : "ALL OK");
