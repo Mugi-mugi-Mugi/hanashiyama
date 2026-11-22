@@ -417,13 +417,12 @@ ok(std.store["hanashiyama.pref.v1"] === "茨城県", "県を この端末に 覚
 const nn = runPass(0, "2026-09-23", "", "", false, ["ふつう", "言わずにおく", "思う"]);
 ok(!nn.err && /言わずにおく 結構でございます。/.test(nn.talkText.replace(/\s+/g, " ")), "「言わずにおく」には「結構でございます」と 返す");
 
-// ★P0-3 画面に 大きく 出す 語りは ★いま + 直前 の 2 つ まで (★残りは 畳む)
+// ★2026-11-22 作者の判断: 語りは ★畳まずに 流す (前は「いま + 直前」の 2 塊だけ 残して 畳み、読んでいる 途中の 行が 消えた)
 const allRuns = [std, k2, rv, fr, nn];
+const tkAll = allRuns.reduce((s, r) => s + r.byId.talk.children.filter((c) => /(^| )tatami( |$)/.test(c.className || "")).length, 0);
 const mx = Math.max.apply(null, allRuns.map((r) => r.maxVisible || 0));
-ok(mx <= 2, "どの 時点でも 大きく 出ている 語りは 2 ブロック まで (最大 " + mx + ")");
-ok(std.byId.tatami.hidden === false && /これまでの語り/.test(std.byId.tatami.textContent), "畳んだ 語りを 開く ボタンが 出る");
-const tk2 = std.byId.talk.children.filter((c) => /tatami/.test(c.className || "")).length;
-ok(tk2 > 5, "畳んだ 語りは 消さずに 残している (" + tk2 + " ブロック)");
+ok(tkAll === 0 && mx > 10, "語りは どの 行も 畳まない (畳んだ 行 " + tkAll + " / 見えている 語りの 最大 " + mx + " 塊)");
+ok(!std.byId.tatami && std.byId.tsuzuki && std.byId.tsuzuki.hidden === true, "「これまでの語りを 開く」は 無く、追っている 間は「▼ 語りの続きへ」を 出さない");
 
 // ★P0-4 写真: 前段で 1 枚 + 本題の 場面ごと + 札。★2026-11-15 から 背景の 層に 出る
 const sc = std.byId.talk.children.map((c, i) => [c.className, i]);
@@ -732,18 +731,17 @@ const seatKids = (r) => {
   ok(seatsN >= 20 && sensuN >= 20 && !bad.length,
      "扇子の 区切りは 各席 (場面数 − 1) 本・席の 頭と 終わりに 無い・aria-hidden (" + seatsN + " 席 / 扇子 " + sensuN +
      " 本 / 1 場面の 席 " + oneScene + (bad.length ? " → " + bad.slice(0, 5).join(" / ") : "") + ")");
-  // ★いまの 場面の 扇子は 畳まない (場面の あいだ 見えている)。前の 場面の 扇子は 畳む
+  // ★2026-11-22: 語りを 畳まない ので 扇子も 畳まない (前の 場面の 扇子も 場面の 区切りと して 残る)
+  let sensuAll = 0;
   const foldBad = [];
   runs13.forEach((r) => {
-    const kids = r.byId.talk.children;
-    const lastHead = kids.map((c, i) => [c, i]).filter(([c]) => hasC(c, "midashi-sr")).pop();
-    kids.forEach((c, i) => {
+    r.byId.talk.children.forEach((c, i) => {
       if (!hasC(c, "sensu")) return;
-      const cur = lastHead && i === lastHead[1] - 1;
-      if (cur === hasC(c, "tatami")) foldBad.push(i + (cur ? " いまの 場面なのに 畳んだ" : " 前の 場面なのに 畳んで いない"));
+      sensuAll += 1;
+      if (hasC(c, "tatami")) foldBad.push(i + " 畳んだ");
     });
   });
-  ok(!foldBad.length, "いまの 場面の 扇子は 畳まず、前の 場面の 扇子は 畳む (" + (foldBad.length ? foldBad.slice(0, 3).join(" / ") : "崩れ 0") + ")");
+  ok(sensuAll > 0 && !foldBad.length, "扇子の 区切りは 畳まない (扇子 " + sensuAll + " 本 / 畳んだ " + foldBad.length + ")");
 }
 
 // ---- 羽織を 脱ぐ: 1 席に 1 回 / 進行が「本題」に 替わる 瞬間 / 次の 席の 頭で 戻す / 演目名の めくりは 席の 頭
@@ -910,7 +908,7 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
   const isH = (x) => /^#[0-9a-f]{6}$/i.test(x);
   const rows = [
     ["あて推量の ラベル", hex(declOf(".line.suiryo::before", "color")), hex(declOf(".line.suiryo", "background"))],
-    ["畳んだ 語りを 開いた とき", hex(declOf(".talk.open .tatami", "color")), "#f6f0e3"],
+    ["語りの続きへ (ボタン)", hex(declOf(".tsuzuki-btn", "color")), hex(declOf(".tsuzuki-btn", "background"))],
     ["進行の めくり (まだ)", hex(declOf(".shinko", "color")), hex(declOf(".shinko li", "background"))],
     ["進行の めくり (済んだ)", hex(declOf(".shinko li.done", "color")), "#f6f0e3"],
     ["進行の めくり (いま)", hex(declOf(".shinko li.now", "color")), "#b8322a"],
@@ -918,7 +916,7 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
   ];
   const bad = rows.filter(([, a, b]) => !(isH(a) && isH(b) && ratio(a, b) >= 4.5));
   ok(!bad.length, "帯の 外の 字は 4.5:1 以上 (" + rows.map(([n, a, b]) => n + " " + (isH(a) && isH(b) ? ratio(a, b).toFixed(2) : "?")).join(" / ") + ")");
-  ok(declOf(".talk.open .tatami", "opacity") === null, "畳んだ 語りを 開いた ときに 薄く (opacity) しない");
+  ok(declOf(".talk .tatami", "position") === null && declOf(".tatami-btn", "display") === null, "畳みの 規則 (.tatami / .tatami-btn) は 残して いない");
   ok(/✓/.test(declOf(".shinko li.done::before", "content") || "") && declOf(".shinko li.now", "font-weight") === "bold",
      "進行の めくりの いまの 段を 色だけで 示さない (済んだ 段に ✓ / いまの 段は 太字)");
   ok(declOf(".footbar", "flex-wrap") === "wrap" && declOf(".footbar .link", "white-space") === "nowrap" && declOf(".footbar .link", "min-height") === "44px",

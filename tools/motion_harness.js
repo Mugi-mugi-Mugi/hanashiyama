@@ -85,7 +85,7 @@ function makeApp(opt) {
     byId[i].hidden = !!(tag && /\shidden(\s|>|=)/.test(tag[0]));
   });
   // 親子 (泡立ちを 見るため): footbar・sageBox の ボタン → koza
-  ["skip", "typeBtn", "other", "baBtn", "restart", "talk", "choices", "tatami", "sageBox", "midashi", "zu", "haikei", "mekuri"].forEach((i) => { byId[i].parent = byId.koza; });
+  ["skip", "typeBtn", "other", "baBtn", "restart", "talk", "choices", "tsuzuki", "sageBox", "midashi", "zu", "haikei", "mekuri"].forEach((i) => { byId[i].parent = byId.koza; });
   ["save", "copyCard", "koe", "again", "sourcesBtn", "sources", "card"].forEach((i) => { byId[i].parent = byId.sageBox; });
   ["exportLog", "clearLog", "closeBa", "baBody", "baH"].forEach((i) => { if (byId[i]) byId[i].parent = byId.ba; });
   ["closeKin", "kinBody", "kinNote", "kinH"].forEach((i) => { if (byId[i]) byId[i].parent = byId.kin; });
@@ -127,7 +127,9 @@ function makeApp(opt) {
   };
   const sizes = opt.sizes || null;              // class → px (打ち出しの 速さの 見積もり)
   const win = {
-    scrollTo(x, y) { (this._scrollTo = this._scrollTo || []).push([x, y]); }, scrollBy() {}, innerHeight: 800,   // ★scrollTo は 記録する (もう一席で 頭へ 戻すかを 見る) confirm: () => (opt.confirm !== false),
+    scrollTo(x, y) { (this._scrollTo = this._scrollTo || []).push([x, y]); this.scrollY = y; }, scrollBy(a, b) { const dy = typeof a === "object" ? a.top : b; this.scrollY = (this.scrollY || 0) + (dy || 0); (this._scrollBy = this._scrollBy || []).push(dy); }, innerHeight: 800, scrollY: 0,
+    handlers: {}, addEventListener(n, f) { (this.handlers[n] = this.handlers[n] || []).push(f); },   // ★2026-11-22 追従の 試験 (scroll・wheel を 起こす)
+      // ★scrollTo は 記録する (もう一席で 頭へ 戻すかを 見る) confirm: () => (opt.confirm !== false),
     matchMedia: (qq) => ({ matches: (!!opt.reduce && /prefers-reduced-motion:\s*reduce/.test(qq)) || (!!opt.mobile && /max-width/.test(qq)) }),
     requestAnimationFrame: (f) => f(),
     localStorage: ls, location: loc,
@@ -137,6 +139,7 @@ function makeApp(opt) {
   };
   // ★選び方の 乱数 (app.js の Core.rng が window.HANASHI_RNG を 見る)。opt.rng / opt.seed で 替える
   win.HANASHI_RNG = opt.rng || seeded(opt.seed == null ? 1 : opt.seed);
+  win.HANASHI_NOW = () => now;                   // ★追従の 時刻 (app.js の nowMs) も 仮想の 時計で
   if (sizes) win.getComputedStyle = (n) => ({ fontSize: String(sizes(n.className || "")) + "px" });
   const doc = { createElement: el, getElementById: (i) => byId[i] || null, body: el("body"), head, execCommand: () => true, activeElement: null };
   doc.activeElement = doc.body;
@@ -155,6 +158,7 @@ function makeApp(opt) {
   const api = {
     win, doc, byId, store, errors, bootErr, loaded, scriptLog, get now() { return now; },
     get pending() { return q.length; },
+    fireWin(n, ev) { try { (win.handlers[n] || []).forEach((f) => f(ev || {})); } catch (e) { errors.push({ at: now, e }); } },
     breakStorage(v) { lsBroken = v; },
     // 時計を ms 進める (その間の タイマーを 回す)
     advance(ms) { const end = now + ms; while (q.length) { q.sort((a, b) => a[0] - b[0] || a[1] - b[1]); if (q[0][0] > end) break; runOne(); } now = end; },

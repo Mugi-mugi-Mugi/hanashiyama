@@ -319,7 +319,8 @@ for (const d of [300, 1500]) {
   ok(!a.byId.sageBox.hidden && note && !/(^| )tatami( |$)/.test(note.className || ""), "札が 出た とき、オチの 註は 畳まれていない");
 }
 
-// ⑫ 札の あと「もう一席」: 高座の 頭へ 戻す / 前の 席の 語りは 全部 畳む (2026-11-15 見直しの 声「画面が ずれた まま」)
+// ⑫ 札の あと「もう一席」: 新しい 席の 頭を 画面の 上へ 送る (2026-11-15 見直しの 声「画面が ずれた まま」)
+//   ★2026-11-22: 前の 席の 語りは 畳まない (上へ 戻れば 読める)
 {
   const a = mk({ date: "2026-11-28" });
   toFirstSeat(a); a.settle();
@@ -327,14 +328,14 @@ for (const d of [300, 1500]) {
   const nBefore = a.talkEls().length;
   const s0 = (a.win._scrollTo || []).length;
   a.click("again");
-  // ★新しい 席の 振りが 出た 瞬間に 見る (★あとで 見ると 普通の 畳みでも 畳まれて いて 差が 出ない)
   const furiN = () => a.talkEls().filter((c) => /(^| )furi( |$)/.test(c.className || "")).length;
   const f0 = furiN();
   for (let k = 0; k < 2000 && furiN() === f0; k += 1) a.advance(20);
-  ok((a.win._scrollTo || []).length > s0, "もう一席で 高座の 頭へ 戻す (scrollTo)");
+  ok((a.win._scrollTo || []).length > s0, "もう一席で 新しい 席の 頭へ 送る (scrollTo)");
+  ok(a.talkEls().some((c) => has(c, "seat-start") && !has(c, "sr")), "席の 頭の 印は 高さ 0 の 行 (位置を 測れる。sr では ない)");
   const old = a.talkEls().slice(0, nBefore).filter((c) => /(^| )line( |$)/.test(c.className || ""));
   const open = old.filter((c) => !/(^| )tatami( |$)/.test(c.className || ""));
-  ok(old.length > 5 && open.length === 0, "もう一席で 前の 席の 語りは 全部 畳む (残り " + open.length + " / " + old.length + ")");
+  ok(old.length > 5 && open.length === old.length, "もう一席でも 前の 席の 語りは 畳まない (残り " + open.length + " / " + old.length + ")");
 }
 
 // ⑬ 札の 写真は オチの 註が 指す もの (2026-11-20 作者の判断): 命日 → 嚮陽庭園 の 札用の 写真を 読む
@@ -514,6 +515,44 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   }
   ok(!!se && se.getAttribute("aria-hidden") === "true" && tNext != null && tNext - tS < 2400,
      "⑱ 扇子の あと 語りは 扇子の 動き (2.4 秒) を 待たずに 続く (" + (tNext - tS) + "ms)");
+}
+
+// ⑲ 追従 (2026-11-22 畳まずに 流す): 上へ 戻して 読み返している 間は 下へ 引き戻さない /「▼ 語りの続きへ」で 戻る /
+//    自分で 動かした スクロール・タップだけの あとの 縮みは 読み返しと 見ない / どの 行も 畳まない
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.advance(1500);
+  const btn = a.byId.tsuzuki;
+  ok(btn && btn.hidden === true, "⑲ 追っている 間は「▼ 語りの続きへ」を 出さない");
+  // ★人が 上へ 戻す (ホイール → スクロールが 上へ)
+  a.fireWin("wheel", { deltaY: -120 });
+  a.win.scrollY = (a.win.scrollY || 0) - 300; a.fireWin("scroll");
+  ok(btn.hidden === false, "⑲ ホイールで 上へ 戻したら「▼ 語りの続きへ」が 出る");
+  const b0 = (a.win._scrollBy || []).length;
+  a.advance(4000);
+  ok((a.win._scrollBy || []).length === b0, "⑲ 読み返している 間は 語りが 進んでも 下へ 引き戻さない (" + ((a.win._scrollBy || []).length - b0) + " 回)");
+  ok(a.talkEls().filter((c) => has(c, "line")).length > 3, "⑲ 読み返している 間も 語りは 止めない");
+  a.click("tsuzuki");
+  ok(btn.hidden === true && (a.win._scrollBy || []).length > b0, "⑲「▼ 語りの続きへ」を 押すと 消えて、いちばん 新しい 行へ 送る");
+  // ★人の 操作が 無い (1 秒 以上 前) まま 上へ 動いた (選択肢を 消して 下が 縮んだ など) → 読み返しと 見ない
+  a.advance(1500);
+  a.win.scrollY = (a.win.scrollY || 0) - 200; a.fireWin("scroll");
+  ok(btn.hidden === true, "⑲ 人の 操作の 無い 上への 動き (下が 縮んだ など) は 読み返しと 見ない");
+  // ★自分で 動かした スクロール (隠れた 新しい 行へ なめらかに 上へ 戻す 等) の 直後は、マウスを 押した あとでも 読み返しと 見ない
+  //   (★模擬画面では 行の 位置が 固定 = 新しい 行は いつも 見出しの 裏 → scroll() は 上へ 戻す)
+  a.win.scrollY = 3000; a.fireWin("scroll");
+  a.advance(1500);
+  a.fireWin("mousedown");
+  const y0 = a.win.scrollY;
+  a.click("tsuzuki");
+  ok(a.win.scrollY < y0, "⑲ (前提) 隠れた 行へ 上へ 戻した (" + y0 + " → " + a.win.scrollY + ")");
+  a.fireWin("scroll");
+  ok(btn.hidden === true, "⑲ 自分で 上へ 戻した スクロールは、マウスを 押した 直後でも 読み返しと 見ない");
+  a.settle(); a.pick("吉田松陰"); a.settle();
+  a.click("again");
+  a.settle();
+  const tk = a.talkEls().filter((c) => has(c, "tatami")).length;
+  ok(tk === 0 && a.errors.length === 0, "⑲ 二席 聴いても 畳んだ 行は 0・例外 0 (" + tk + " / " + a.errors.length + ")");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");
