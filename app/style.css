@@ -626,16 +626,21 @@ footer .credit { opacity: 0.75; }
 .sensu svg { display: block; width: min(240px, 64vw); height: auto; overflow: visible; }
 .sensu .sen { stroke: currentColor; stroke-width: 1.2; }
 /* ★扇面: 要を 中心に 回る (transform-origin = 要)。★ふだんは 閉じた 形 (回転 0)。
-   ★場面が 替わる ときに 1 度だけ 開いて (0.3 秒) 閉じる (0.3 秒)。★動きを 減らす 設定では `*` で 止まり 閉じた まま */
+   ★場面が 替わる ときに 開いて (0.6 秒) 閉じる (0.6 秒) を 2 回 (2026-11-22 作者の判断「倍の ゆっくりに して 2 回」。前は 0.3 + 0.3 秒を 1 回)。
+   ★動かすのは transform (回転) だけ。★無限には 繰り返さない。★動きを 減らす 設定では `*` で 止まり 閉じた まま
+   ★動きの 決めごと (0.15〜0.3 秒) の 例外 = 扇子だけ (test_css の SENSU_OK)。★語りは 扇子を 待たない (下に 続けて 出る) */
 .sensu .hane {
   fill: var(--vermilion); stroke: var(--wood); stroke-width: 0.6;
   transform-box: fill-box; transform-origin: 50% 100%;   /* ★扇面の 下端の 中央 = 要 */
-  animation: hiraku 0.3s ease-out, tojiru 0.3s ease-in 0.3s;
+  animation: hirakutoji 1.2s 2;
 }
 .sensu .hane.ura { fill: var(--gold); }
 .sensu .kaname { fill: var(--wood); }
-@keyframes hiraku { from { transform: rotate(0deg); } to { transform: rotate(var(--a)); } }
-@keyframes tojiru { from { transform: rotate(var(--a)); } to { transform: rotate(0deg); } }
+@keyframes hirakutoji {
+  0% { transform: rotate(0deg); animation-timing-function: ease-out; }       /* 開く 0.6 秒 */
+  50% { transform: rotate(var(--a)); animation-timing-function: ease-in; }   /* 閉じる 0.6 秒 */
+  100% { transform: rotate(0deg); }
+}
 
 /* 手拭い = 帳面 (タネ明かし)。★豆絞りの 柄は ★上下の 縁の 帯 (::before / ::after) だけ。
    ★本文の 下には 敷かない。★本文の 文字の 色・大きさ・地の 色は 今までどおり
