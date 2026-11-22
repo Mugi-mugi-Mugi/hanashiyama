@@ -542,17 +542,47 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   //   (★模擬画面では 行の 位置が 固定 = 新しい 行は いつも 見出しの 裏 → scroll() は 上へ 戻す)
   a.win.scrollY = 3000; a.fireWin("scroll");
   a.advance(1500);
-  a.fireWin("mousedown");
+  a.fireWin("wheel", { deltaY: -60 });
   const y0 = a.win.scrollY;
   a.click("tsuzuki");
   ok(a.win.scrollY < y0, "⑲ (前提) 隠れた 行へ 上へ 戻した (" + y0 + " → " + a.win.scrollY + ")");
   a.fireWin("scroll");
-  ok(btn.hidden === true, "⑲ 自分で 上へ 戻した スクロールは、マウスを 押した 直後でも 読み返しと 見ない");
+  ok(btn.hidden === true, "⑲ 自分で 上へ 戻した スクロールは、ホイールを 回した 直後でも 読み返しと 見ない");
   a.settle(); a.pick("吉田松陰"); a.settle();
   a.click("again");
   a.settle();
   const tk = a.talkEls().filter((c) => has(c, "tatami")).length;
   ok(tk === 0 && a.errors.length === 0, "⑲ 二席 聴いても 畳んだ 行は 0・例外 0 (" + tk + " / " + a.errors.length + ")");
+}
+
+// ⑳ 見直し r8 (2026-11-22): 読み返しの あと 選択肢を 押したら 追い直す (H1) / タップ・下回し・語の キーは 読み返しと 見ない (M2)
+{
+  const a = mk({ date: "2026-11-28" });
+  a.click("open"); a.settle();
+  const btn = a.byId.tsuzuki;
+  a.win.scrollY = 2000; a.fireWin("scroll"); a.advance(1500);
+  a.fireWin("wheel", { deltaY: -120 }); a.win.scrollY = 1700; a.fireWin("scroll");
+  ok(btn.hidden === false, "⑳ (前提) 上へ 戻して 読み返し中");
+  a.pick(a.labels()[0]);
+  ok(btn.hidden === true, "⑳ 読み返し中に 選択肢を 押したら 追い直す (「▼ 語りの続きへ」が 消える)");
+  const b0 = (a.win._scrollBy || []).length;
+  a.advance(3000);
+  ok((a.win._scrollBy || []).length > b0, "⑳ 押した あとは また 送る (" + ((a.win._scrollBy || []).length - b0) + " 回)");
+  // ★読み返しと 見ない 操作: 要素への mousedown (スマホの タップでも 出る)・ホイールの 下回し・↓キー
+  const notBack = [["mousedown", { target: a.byId.talk }], ["wheel", { deltaY: 120 }], ["keydown", { key: "ArrowDown" }], ["touchstart", { touches: [{ clientY: 300 }] }]];
+  const bad = [];
+  notBack.forEach(([n, ev]) => {
+    a.advance(1500);
+    a.fireWin(n, ev);
+    a.win.scrollY = (a.win.scrollY || 0) - 150; a.fireWin("scroll");
+    if (btn.hidden !== true) { bad.push(n); a.click("tsuzuki"); }
+  });
+  ok(!bad.length, "⑳ タップ (mousedown・touchstart)・ホイールの 下回し・↓ の あとの 上への 動きは 読み返しと 見ない (" + (bad.join(",") || "誤り 0") + ")");
+  // ★指を 下へ なぞる (= 画面は 上へ) は 読み返し
+  a.advance(1500);
+  a.fireWin("touchstart", { touches: [{ clientY: 300 }] }); a.fireWin("touchmove", { touches: [{ clientY: 420 }] });
+  a.win.scrollY = (a.win.scrollY || 0) - 150; a.fireWin("scroll");
+  ok(btn.hidden === false, "⑳ 指を 下へ なぞって 上へ 戻したら 読み返し");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");

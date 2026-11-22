@@ -86,7 +86,7 @@ function makeApp(opt) {
   });
   // 親子 (泡立ちを 見るため): footbar・sageBox の ボタン → koza
   ["skip", "typeBtn", "other", "baBtn", "restart", "talk", "choices", "tsuzuki", "sageBox", "midashi", "zu", "haikei", "mekuri"].forEach((i) => { byId[i].parent = byId.koza; });
-  ["save", "copyCard", "koe", "again", "sourcesBtn", "sources", "card"].forEach((i) => { byId[i].parent = byId.sageBox; });
+  ["save", "koe", "again", "sourcesBtn", "sources", "card"].forEach((i) => { byId[i].parent = byId.sageBox; });
   ["exportLog", "clearLog", "closeBa", "baBody", "baH"].forEach((i) => { if (byId[i]) byId[i].parent = byId.ba; });
   ["closeKin", "kinBody", "kinNote", "kinH"].forEach((i) => { if (byId[i]) byId[i].parent = byId.kin; });
   byId.koza.tagName = "MAIN";
@@ -158,7 +158,7 @@ function makeApp(opt) {
   const api = {
     win, doc, byId, store, errors, bootErr, loaded, scriptLog, get now() { return now; },
     get pending() { return q.length; },
-    fireWin(n, ev) { try { (win.handlers[n] || []).forEach((f) => f(ev || {})); } catch (e) { errors.push({ at: now, e }); } },
+    fireWin(n, ev) { try { const e = Object.assign({ type: n }, ev || {}); (win.handlers[n] || []).forEach((f) => f(e)); } catch (e) { errors.push({ at: now, e }); } },
     breakStorage(v) { lsBroken = v; },
     // 時計を ms 進める (その間の タイマーを 回す)
     advance(ms) { const end = now + ms; while (q.length) { q.sort((a, b) => a[0] - b[0] || a[1] - b[1]); if (q[0][0] > end) break; runOne(); } now = end; },

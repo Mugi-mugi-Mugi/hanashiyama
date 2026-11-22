@@ -1470,7 +1470,7 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
     ok(lines.length > 0 && lines.every((t) => /ありがたい/.test(t)), "#35「もう一席」の あとの 在庫切れは「ありがたいことで。ただ、…」(" + lines.length + " 回)");
   }
 
-  // L2 札の 写真の 出典は 正式な 表示に 近づける (作品名・提供元・ライセンス (URL)・加工の 旨・BY-SA)
+  // L2 札の 写真の 出典は 作品名・提供元・ライセンス (URL)・BY-SA。★2026-11-22 作者の判断: 加工の 旨は 札に 書かない (CREDITS.md に 書く)・イラストは 作者と ライセンスだけ
   {
     const fs3 = APPX || fs.readFileSync(path.join(ROOT, "app", "app.js"), "utf8");
     const W3 = {}; new Function("window", fs3)(W3);
@@ -1478,10 +1478,21 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
     const cc = (c) => (C3 && typeof C3.cardCredit === "function" ? C3.cardCredit(c) : "");
     const fk = cc("福井ふるさと百景「紅葉に映える日本庭園（嚮陽庭園）」、福井県、クリエイティブ・コモンズ・ライセンス 表示4.0 国際（https://creativecommons.org/licenses/by/4.0/deed.ja） / 縮小して使用");
     const sa = cc("Wikimedia Commons「Nishiyama park.JPG」 Jjp 233 (CC BY-SA 4.0) / 縮小して使用");
-    ok(/嚮陽庭園/.test(fk) && /福井県/.test(fk) && /CC BY 4\.0/.test(fk) && /creativecommons\.org\/licenses\/by\/4\.0/.test(fk) && /加工/.test(fk),
-       "L2 札の 出典: 作品名・福井県・CC BY 4.0 (URL)・加工の 旨 (" + fk.slice(0, 40) + "…)");
-    ok(/この札は CC BY-SA 4\.0/.test(sa) && /by-sa\/4\.0/.test(sa), "  継承 (BY-SA) の 写真なら 札も BY-SA と 書く");
+    const il = cc("イラスト: Mugi-mugi-Mugi (CC BY 4.0)");
+    ok(/嚮陽庭園/.test(fk) && /福井県/.test(fk) && /CC BY 4\.0/.test(fk) && /creativecommons\.org\/licenses\/by\/4\.0/.test(fk) && !/加工|切り抜き/.test(fk),
+       "L2 札の 出典: 作品名・福井県・CC BY 4.0 (URL)。加工の 旨は 書かない (" + fk.slice(0, 40) + "…)");
+    ok(il === "イラスト: Mugi-mugi-Mugi (CC BY 4.0)", "  イラストの 札は 作者と ライセンスだけ (" + il + ")");
+    const j21 = cc("鯖江市オープンデータ「西山公園ツツジ画像」(CC BY 2.1 JP)");
+    ok(/\(一部を切り出して使用\)/.test(fk) && /\(一部を切り出して使用\)/.test(sa) && !/切り出/.test(j21),
+       "  4.0 の 写真の 札だけ「(一部を切り出して使用)」(見直し B-1。2.1 JP は 付けない: " + j21.slice(0, 30) + "…)");
+    ok(/札も CC BY-SA 4\.0/.test(sa) && /by-sa\/4\.0/.test(sa), "  継承 (BY-SA) の 写真なら 札も BY-SA と 書く");
     ok(/cardCredit\(img\.credit\)/.test(fs3), "  札の 描画は cardCredit を 使う");
+  }
+  // ★2026-11-22 作者の判断: 札の 下の ボタンは 横一列 (字は ボタンの 中で 折り返して よい)。「オチの文を写す」は 外した
+  {
+    const css4 = fs.readFileSync(path.join(ROOT, "app", "style.css"), "utf8");
+    ok(!/id="copyCard"|>オチの文を写す</.test(HTML) && /\.actions \{[^}]*flex-wrap: nowrap/.test(css4) && /\.actions \.btn \{[^}]*white-space: normal/.test(css4),
+       "札の 下の ボタンは 横一列 (折り返さない)・字は ボタンの 中で 折り返す・「オチの文を写す」は 無い");
   }
 
   // H2 / M3 表紙の 言い方 (index.html)
