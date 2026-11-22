@@ -500,5 +500,21 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   ok(!!e3 && landed(e3) && /ないでしょうか。/.test(e3._html || ""), "  「……」の 間で タップ → 行の 終わりまで 出る");
 }
 
+// ⑱ 扇子 (場面の 区切り) は 語りを 止めない (2026-11-22: 扇子の 動きを 2.4 秒に した。★語りは 扇子の 下に 続けて 出る = 待たない)
+//   ★CSS の 長さ・回数・動きを 減らす 設定は test_css (L11・扇子の 例外・K6) で 見る
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a);
+  let se = null, tS = null, tNext = null, nSensu = 0;
+  for (let n = 0; n < 40000 && tNext == null; n += 1) {
+    a.advance(5);
+    const ks = a.talkEls();
+    if (!se) { se = ks.find((c) => hasC(c, "sensu")); if (se) { tS = a.now; nSensu = ks.indexOf(se); } continue; }
+    if (ks.slice(nSensu + 1).some((c) => hasC(c, "line"))) tNext = a.now;
+  }
+  ok(!!se && se.getAttribute("aria-hidden") === "true" && tNext != null && tNext - tS < 2400,
+     "⑱ 扇子の あと 語りは 扇子の 動き (2.4 秒) を 待たずに 続く (" + (tNext - tS) + "ms)");
+}
+
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");
 process.exit(fail.length ? 1 : 0);

@@ -24,7 +24,7 @@
   - 選択子の 詳しさ (specificity) は「`*` か、同じ 選択子か」の 2 通りしか 比べない
 
 実行: python tools/test_css.py [別の style.css]   (陰性テストか style.css の どちらかが 落ちれば 終了コード 1)
-  ★2026-11-21: 組版の 決めごと (L1〜L10) も 見る (check_layout)
+  ★2026-11-21: 組版の 決めごと (L1〜L11) も 見る (check_layout)
 """
 import io
 import os
@@ -48,6 +48,13 @@ ANIM_KW = TIMING | {"infinite", "normal", "reverse", "alternate", "alternate-rev
 RED_FADE_OK = (".haikei", ".haikei-cap", ".haikei-in::after", ".haikei.kawari #haikeiImg")
 FADE_KF = ("usu",)                # ★opacity だけを 動かす keyframes
 T_FADE = 0.80                     # ★写真の フェードだけ 0.8 秒まで (2026-11-15 見直しの 声「もう少し 長く」)
+# ★扇子 (場面の 区切り) だけの 例外 (2026-11-22 作者の判断「倍の ゆっくりに して 2 回」):
+#   開いて 閉じる 1 回 = 1.2 秒まで (開く 0.6 + 閉じる 0.6)・繰り返しは 2 回まで・動かすのは transform だけ (K1 は そのまま)。
+#   ★動きを 減らす 設定では 止める (K6 は そのまま)。★ほかの 選択子・ほかの keyframes には 効かない
+SENSU_OK = (".sensu .hane",)
+SENSU_KF = ("hirakutoji",)
+T_SENSU = 1.20
+N_SENSU = 2
 RE_RED = re.compile(r"prefers-reduced-motion\s*:\s*reduce", re.I)
 RE_NOPREF = re.compile(r"prefers-reduced-motion\s*:\s*no-preference", re.I)
 RE_KF = re.compile(r"^@(-webkit-)?keyframes\b", re.I)
@@ -191,11 +198,13 @@ def check(text):
     def err(code, line, msg):
         errs.append((code, line, msg))
 
-    cur = {"fade": False}             # ★いま 見ている 宣言が 写真の フェード (opacity だけ・決めた 選択子) か
+    cur = {"fade": False, "sensu": False}   # ★いま 見ている 宣言が 写真の フェード / 扇子 (決めた 選択子・決めた keyframes) か
 
     def time_check(where, ln, ts, what):
         for k, x in enumerate(ts):
             if k == 0 and cur["fade"] and T_MIN - 1e-9 <= x <= T_FADE + 1e-9:
+                continue
+            if k == 0 and cur["sensu"] and T_MIN - 1e-9 <= x <= T_SENSU + 1e-9:
                 continue
             if k == 0 and not (T_MIN - 1e-9 <= x <= T_MAX + 1e-9):
                 m = "%s の %s が %g 秒 (%.2f〜%.2f 秒)" % (where, what, x, T_MIN, T_MAX)
@@ -228,10 +237,18 @@ def check(text):
             kind, moving, stopping = None, False, False
             fade_only = False             # ★opacity だけの フェードか (減らす 設定の 例外に 使う)
             cur["fade"] = False
+            cur["sensu"] = False
             if p == "animation":
                 fade_only = vl != "none" and all(
                     any(w.lower() in FADE_KF for w in words(item)) for item in split_top(v, ","))
                 cur["fade"] = fade_only and all(s in RED_FADE_OK for s in r.sels)
+                cur["sensu"] = vl != "none" and all(s in SENSU_OK for s in r.sels) and all(
+                    any(w.lower() in SENSU_KF for w in words(item)) for item in split_top(v, ","))
+                if cur["sensu"]:
+                    for item in split_top(v, ","):
+                        nums = [w for w in words(item) if re.fullmatch(r"\d+(\.\d+)?", w)]
+                        if nums and float(nums[0]) > N_SENSU:
+                            err("K3", ln, "%s の 扇子の 繰り返しが %s 回 (%d 回まで)" % (sel_s, nums[0], N_SENSU))
                 kind = "animation"
                 seen["animation"] += 1
                 if vl == "none":
@@ -413,6 +430,11 @@ SELF = [
     ("写真の フェードは 0.8 秒まで 長くできる", CLEAN + ".haikei { transition: opacity 0.8s ease; }", None),
     ("写真の フェードでも 1.2 秒は 長すぎ", CLEAN + ".haikei { transition: opacity 1.2s ease; }", "K2"),
     ("写真の 層でも transform の 0.8 秒は 止める", CLEAN + ".haikei { transition: transform 0.8s ease; }", "K2"),
+    ("扇子は 1.2 秒 × 2 回まで 動かせる", CLEAN + "@keyframes hirakutoji { to { transform: rotate(10deg); } }\n.sensu .hane { animation: hirakutoji 1.2s 2; }", None),
+    ("扇子でも 1.6 秒は 長すぎ", CLEAN + ".sensu .hane { animation: hirakutoji 1.6s 2; }", "K2"),
+    ("扇子でも 3 回は 多すぎ", CLEAN + ".sensu .hane { animation: hirakutoji 1.2s 3; }", "K3"),
+    ("扇子 以外の 選択子の 1.2 秒は 止める", CLEAN + ".z { animation: hirakutoji 1.2s 2; }", "K2"),
+    ("扇子でも 別の keyframes の 1.2 秒は 止める", CLEAN + ".sensu .hane { animation: rise 1.2s; }", "K2"),
     ("写真 以外の 選択子の フェードは 減らす 設定で 止める",
      CLEAN + "@media (prefers-reduced-motion: reduce) { .z { transition: opacity 0.3s ease !important; } }", "K6"),
 ]
@@ -460,7 +482,7 @@ def self_test(real_text):
 #   L4  文節で 改行: .talk .line に word-break: auto-phrase / 効かない ブラウザ用に @supports not (…) の 中で keep-all。
 #       ★index.html の html に lang="ja" (auto-phrase は 言語で 効く)
 #   L5  強弱の 直し (返し (当たり) は 墨・左の 空き・推量の 塗りは 元の #efeadc・スマホの 見出し 1rem・めくり 太字)
-#   L6  あて推量の ラベルは 箱の 外に 1 回だけ / L7 めくりと 段の 札は 折らない / L8 キーとなる 単語は 太字だけ / L9 推量の ポイントは 太字だけ / L10 名前の まとまりは 折らない
+#   L6  あて推量の ラベルは 箱の 外に 1 回だけ / L7 めくりと 段の 札は 折らない / L8 キーとなる 単語は 太字だけ / L9 推量の ポイントは 太字だけ / L10 名前の まとまりは 折らない / L11 扇子は 倍の ゆっくり × 2 回
 #   ★python tools/test_css.py 古い.css で 直す 前の style.css を 見る (★L1〜L4 が NG に なる ことで 効きを 見る)
 HTML = os.path.join(ROOT, "app", "index.html")
 MOBILE = "@media (max-width: 480px)"
@@ -608,6 +630,15 @@ def check_layout(text, html_text):
     # L10 名前の まとまり (<span class="nb">) は 折らない (white-space: nowrap)。★Safari の keep-all + <wbr> でも auto-phrase でも 効く
     if decl(rules, ".nb", "white-space") != "nowrap":
         errs.append(("L10", ".nb が white-space: nowrap で ない (「道の駅」が「道の」で 折れる)"))
+    # L11 扇子は 開く 0.6 秒・閉じる 0.6 秒 (前の 倍) を 2 回 (2026-11-22 作者の判断)。★動きを 減らす 設定で 止まるのは K6 が 見る
+    an11 = decl(rules, ".sensu .hane", "animation") or ""
+    ws11 = an11.split()
+    t11 = times(an11)
+    kf11 = [r for r in rules if r.ctx and RE_KF.match(r.ctx[-1]) and "hirakutoji" in r.ctx[-1]]
+    if not (ws11[:1] == ["hirakutoji"] and t11[:1] == [T_SENSU] and "2" in ws11):
+        errs.append(("L11", "扇子が 開いて 閉じる 1.2 秒 (開く 0.6 + 閉じる 0.6) を 2 回 で ない (%s)" % an11))
+    elif not any("50%" in r.sels for r in kf11):
+        errs.append(("L11", "扇子の keyframes に 開ききる 50% が 無い (開く と 閉じる を 半分ずつ)"))
     return errs
 
 
@@ -618,7 +649,7 @@ def json_short(d):
 def layout_main(real, path):
     html_text = io.open(HTML, encoding="utf-8").read()
     fail = []
-    print("組版の 決めごと (L1〜L10) — 陰性テスト")
+    print("組版の 決めごと (L1〜L11) — 陰性テスト")
     for name, css, want in [
         ("正解の 1 行の 規則を 消した 写し", re.sub(r"\.talk \.line\.seikai \{[^}]*\}", "", real, count=1), "L1"),
         ("スマホの サゲを 1rem に した 写し", real + "\n@media (max-width: 480px) { .line.sage { font-size: 1rem; } }\n", "L2"),
@@ -630,6 +661,7 @@ def layout_main(real, path):
         ("キーの 太字を 消した 写し", real.replace(".line .key { font-weight: bold;", ".line .key { font-weight: normal;"), "L8"),
         ("推量の ポイントの 太字を 消した 写し", real.replace(".line.suiryo .point { font-weight: bold;", ".line.suiryo .point { font-weight: normal;"), "L9"),
         ("名前の 包みの nowrap を 消した 写し", real.replace(".nb { white-space: nowrap; }", ".nb { }"), "L10"),
+        ("扇子を 1 回に 戻した 写し", real.replace("animation: hirakutoji 1.2s 2;", "animation: hirakutoji 1.2s;"), "L11"),
     ]:
         got = check_layout(css, html_text)
         okk = any(e[0] == want for e in got)
@@ -644,7 +676,7 @@ def layout_main(real, path):
         for code, msg in errs:
             print("  ✕ [%s] %s" % (code, msg))
     else:
-        print("OK: 組版の 決めごと (L1〜L10) に 合っています")
+        print("OK: 組版の 決めごと (L1〜L11) に 合っています")
     return fail, errs
 
 
