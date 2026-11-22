@@ -679,6 +679,52 @@
       if (!point || point.indexOf("書いてはおりませんが") >= 0) return null;
       return { text: s.slice(0, cut) + "……" + s.slice(cut), point: point };
     },
+    /** ★折らない 名前 (2026-11-22)。★台本に 出る 固有名 (data/derived/entities.json の 名と 別名から 拾い、手で 足した もの)。長い 順 */
+    NB_NAMES: ["リスザルとのふれあい体験", "西山公園のはじまりの庭", "国際レッサーパンダデー", "道の駅西山公園の駅長", "シセンレッサーパンダ", "仙台市八木山動物公園", "鯖江ライオンズクラブ", "日本動物園水族館協会", "日本一小さな動物園", "ジャイアントパンダ", "神戸市立王子動物園", "東京都多摩動物公園", "秋田市大森山動物園", "めがねのまちさばえ", "株式会社Agoop", "さばえつつじまつり", "レッサーパンダデー", "福井ふるさと百景", "ボリビアリスザル", "鯖江市西山動物園", "旭川市旭山動物園", "イルミネーション", "道の駅西山公園", "こぱんだらんど", "レッサーパンダ", "八木山動物公園", "京都の都ホテル", "パンダらんど", "日本一小さい", "多摩動物公園", "大森山動物園", "水戸の偕楽園", "ヒラドツツジ", "PGMツツジ", "群馬県太田市", "つつじまつり", "結びの広場", "西山動物園", "めがね時計", "旭山動物園", "王子動物園", "大久保通り", "安政の大獄", "祈りの道", "西山公園", "嚮陽会館", "嚮陽庭園", "間部詮勝", "吉田松陰", "リスザル", "おしどり", "都ホテル", "道の駅", "愛の鐘", "嚮陽渓", "北の庭", "大噴水", "野球場", "偕楽園", "花菖蒲", "鯖江市", "福井県", "新宿区", "村上市", "はなし山"],
+    /** ★名前の 位置 (字の 数え) = [[始め, 終わり], …]。★長い 名前から 取り、重ならない ように */
+    nbRanges(plain) {
+      const out = [];
+      Core.NB_NAMES.slice().sort((x, y) => y.length - x.length).forEach((n) => {
+        for (let i = plain.indexOf(n); i >= 0; i = plain.indexOf(n, i + 1)) {
+          const j = i + n.length;
+          if (!out.some(([a, b]) => i < b && j > a)) out.push([i, j]);
+        }
+      });
+      return out.sort((x, y) => x[0] - y[0]);
+    },
+    /** ★html (飾りつき) の 字の 位置 a〜b (b は 含まない) を open / close で 包む。★飾りの 途中を またぐ (入れ子が 壊れる) なら null */
+    wrapAt(html, a, b, open, close) {
+      const pos = [], len = [];
+      for (let i = 0; i < html.length;) {
+        if (html[i] === "<") { i = html.indexOf(">", i) + 1; continue; }
+        const ch = html[i] === "&" ? html.slice(i, html.indexOf(";", i) + 1) : html[i];
+        pos.push(i); len.push(ch.length);
+        i += ch.length;
+      }
+      if (a < 0 || b > pos.length || a >= b) return null;
+      let pa = pos[a], pb = pos[b - 1] + len[b - 1];
+      while (pa > 0 && html[pa - 1] === ">") { const t0 = html.lastIndexOf("<", pa - 1); if (html[t0 + 1] === "/" || /^<wbr/i.test(html.slice(t0))) break; pa = t0; }
+      while (html.slice(pb, pb + 2) === "</") pb = html.indexOf(">", pb) + 1;
+      const mid = html.slice(pa, pb);
+      let depth = 0, okk = true;
+      (mid.match(/<[^>]+>/g) || []).forEach((t) => { if (/^<wbr/i.test(t)) return; depth += t[1] === "/" ? -1 : 1; if (depth < 0) okk = false; });
+      if (!okk || depth !== 0) return null;
+      return html.slice(0, pa) + open + mid + close + html.slice(pb);
+    },
+    /** ★行の 仕上げ: 名前を 折らない 包み (<span class="nb">) + (auto-phrase の 効かない ブラウザ = iPhone の Safari など で) 文節の 切れ目の <wbr>。
+     *  ★名前の 中には <wbr> を 入れない。★包めない (飾りを またぐ) 名前も <wbr> は 入れない (keep-all で 折れない) */
+    finish(html, wbr) {
+      const plain = html.replace(/<[^>]*>/g, "").replace(/&(amp|lt|gt);/g, (m, k) => ({ amp: "&", lt: "<", gt: ">" }[k]));
+      const R = Core.nbRanges(plain);
+      let h = html;
+      for (let k = R.length - 1; k >= 0; k -= 1) {
+        const w = Core.wrapAt(h, R[k][0], R[k][1], '<span class="nb">', "</span>");
+        if (w) h = w;
+      }
+      if (!wbr) return h;
+      const br = Core.phraseBreaks(plain).filter((q) => !R.some(([a, b]) => q > a && q < b));
+      return Core.withWbr(h, br);
+    },
     withKey(html, key, opt) {
       if (!key) return html;
       const pos = [], len = [];
@@ -730,6 +776,8 @@
         const a = s[p - 1], b = s[p];
         if (a === "\n" || b === "\n" || /\s/.test(a) || /\s/.test(b)) continue;
         if (CLOSE.test(b)) continue;                         // ★句読点・閉じ括弧は 行の 頭に 置かない
+        if (b === "ー" || b === "ゝ" || b === "ゞ") continue;  // ★長音・踊り字は 前の 字から 離さない (「えー」)
+        if (a === "か" && b === "所" && /[0-9０-９一二三四五六七八九十何数]/.test(s[p - 2] || "")) continue;   // ★数 + か所
         if (CLOSE.test(a)) {
           if (/[」』）)〉]/.test(a) && HIRA.test(b)) continue;    // ★「…」と・「…」が は 一つの 文節 (閉じ括弧と 助詞の 間で 切らない)
           add(p);
@@ -737,6 +785,12 @@
         }
         if (OPEN.test(b)) { if (!OPEN.test(a) && p > 1) add(p); continue; }   // ★台詞の 話し手 (客「・私「) と「 の 間は 切らない
         if (HIRA.test(a) && CONTENT.test(b)) {
+          // ★漢字 1〜3 字 + の + 漢字 1〜2 字 (道の駅・愛の鐘・市の木・鯖江の藩・山の中腹) は 一つの 名前 → 「の」の 後で 切らない (2026-11-22)
+          if (a === "の" && p - 2 >= 0 && KANJI.test(s[p - 2]) && KANJI.test(b)) {
+            let L = 0; while (p - 2 - L >= 0 && KANJI.test(s[p - 2 - L])) L += 1;
+            let R2 = 0; while (p + R2 < s.length && KANJI.test(s[p + R2])) R2 += 1;
+            if (L <= 3 && R2 <= 2) continue;
+          }
           // ★漢字 + かな 1 字 + 漢字 で、かなが 助詞で ない (送り主・取り締まり の「り」) ときは 一つの 語
           if (p - 2 >= 0 && KANJI.test(s[p - 2]) && KANJI.test(b) && !/[がをにはのでとへもや]/.test(a)) continue;
           // ★後ろの 語に 付く かな: 接頭の お・ご (お殿様・ご縁) / この・その・あの・これ・それ・あれ / ひと (ひと跳び)
@@ -1255,7 +1309,7 @@
   function deco(text, key) {
     // ★key = 語句 (キーとなる 単語) か { text, cls, last } (推量の ポイント)
     const h = !key ? decoBare(text) : typeof key === "object" ? Core.withKey(decoBare(text), key.text, key) : Core.withKey(decoBare(text), key);
-    return NEED_WBR ? Core.withWbr(h, Core.phraseBreaks(plainOf(h))) : h;
+    return Core.finish(h, NEED_WBR);                 // ★名前を 折らない 包み + (Safari などで) 文節の <wbr>
   }
   const escHtml = (x) => String(x).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   const plainOf = (h) => h.replace(/<[^>]*>/g, "").replace(/&(amp|lt|gt);/g, (m, k) => ({ amp: "&", lt: "<", gt: ">" }[k]));
@@ -1268,8 +1322,8 @@
   /** ★飾りの 無い 行 (見出し・オチの 註) にも 文節の 切れ目を。★包めない 所 (煙試験の 最小 DOM) では 字の まま */
   function setPhrase(el, text) {
     el.textContent = text;
-    if (!NEED_WBR || !text || typeof document === "undefined" || !document.createTreeWalker) return;
-    el.innerHTML = Core.withWbr(escHtml(text), Core.phraseBreaks(text));
+    if (!text || typeof document === "undefined" || !document.createTreeWalker) return;
+    el.innerHTML = Core.finish(escHtml(text), NEED_WBR);   // ★名前の 包みは どの ブラウザでも (auto-phrase でも 名前の 中で 折れない)
   }
   function decoBare(text) {
     return escHtml(text)
@@ -1526,13 +1580,13 @@
       const b = document.createElement("button");
       b.className = "btn choice";
       b.type = "button";
-      b.textContent = c.label;
+      setPhrase(b, c.label);                       // ★選択肢も 名前・文節の 途中で 折らない (2026-11-22)
       b.addEventListener("click", () => {
         clearChoices();
         state.readChars = 0;                       // ★客が 選んだ = ここまで 読んだ
         const me = document.createElement("p");
         me.className = "line kyaku";
-        me.textContent = c.label;
+        setPhrase(me, c.label);                    // ★客の 吹き出しも 名前・文節の 途中で 折らない (2026-11-22)
         put(me);
         scroll();
         onPick(c.value, c.label);

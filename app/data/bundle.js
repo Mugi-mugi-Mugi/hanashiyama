@@ -1,6 +1,6 @@
 /* 自動生成: python tools/build.py  (手で編集しない) */
 window.HANASHI = {
- "builtAt": "2026-11-21 21:57",
+ "builtAt": "2026-11-22 09:47",
  "prefectures": [
   "北海道",
   "青森県",

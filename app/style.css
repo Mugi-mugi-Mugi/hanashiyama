@@ -776,3 +776,10 @@ footer .credit { opacity: 0.75; }
 /* ---- 2026-11-21 あて推量の ポイント (「ではないか / のでは」の 直前の 句) は 太字 (作者の判断) -----------------------
    ★色・大きさは 変えない。★「……」の 間は app.js (打ち出しで 約 0.8 秒)。★キーの 太字 (.key) とは 別 = 推量の 箱の 中だけ */
 .line.suiryo .point { font-weight: bold; color: inherit; font-size: 1em; }
+
+/* ---- 2026-11-22 名前の まとまりを 折らない (見直し: iPhone で「道の駅」が「道の」で 改行) -------------------------
+   ★app.js が 台本の 固有名を <span class="nb"> で 包む (Core.NB_NAMES)。★Safari の keep-all + <wbr> でも auto-phrase でも 名前の 中では 折れない。
+   ★選択肢の ボタンも 文節で 折る (語の 途中で 折らない) */
+.nb { white-space: nowrap; }
+.btn.choice { word-break: auto-phrase; }
+@supports not (word-break: auto-phrase) { .btn.choice { word-break: keep-all; overflow-wrap: anywhere; } }

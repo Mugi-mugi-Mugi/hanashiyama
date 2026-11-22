@@ -24,7 +24,7 @@
   - 選択子の 詳しさ (specificity) は「`*` か、同じ 選択子か」の 2 通りしか 比べない
 
 実行: python tools/test_css.py [別の style.css]   (陰性テストか style.css の どちらかが 落ちれば 終了コード 1)
-  ★2026-11-21: 組版の 決めごと (L1〜L9) も 見る (check_layout)
+  ★2026-11-21: 組版の 決めごと (L1〜L10) も 見る (check_layout)
 """
 import io
 import os
@@ -460,7 +460,7 @@ def self_test(real_text):
 #   L4  文節で 改行: .talk .line に word-break: auto-phrase / 効かない ブラウザ用に @supports not (…) の 中で keep-all。
 #       ★index.html の html に lang="ja" (auto-phrase は 言語で 効く)
 #   L5  強弱の 直し (返し (当たり) は 墨・左の 空き・推量の 塗りは 元の #efeadc・スマホの 見出し 1rem・めくり 太字)
-#   L6  あて推量の ラベルは 箱の 外に 1 回だけ / L7 めくりと 段の 札は 折らない / L8 キーとなる 単語は 太字だけ / L9 推量の ポイントは 太字だけ
+#   L6  あて推量の ラベルは 箱の 外に 1 回だけ / L7 めくりと 段の 札は 折らない / L8 キーとなる 単語は 太字だけ / L9 推量の ポイントは 太字だけ / L10 名前の まとまりは 折らない
 #   ★python tools/test_css.py 古い.css で 直す 前の style.css を 見る (★L1〜L4 が NG に なる ことで 効きを 見る)
 HTML = os.path.join(ROOT, "app", "index.html")
 MOBILE = "@media (max-width: 480px)"
@@ -605,6 +605,9 @@ def check_layout(text, html_text):
     # L9 あて推量の ポイント (「ではないか / のでは」の 直前の 句) は 太字だけ (推量の 箱の 中)
     if decl(rules, ".line.suiryo .point", "font-weight") != "bold" or decl(rules, ".line.suiryo .point", "color") != "inherit":
         errs.append(("L9", ".line.suiryo .point が 太字だけ (色は 行の まま) に なっていない"))
+    # L10 名前の まとまり (<span class="nb">) は 折らない (white-space: nowrap)。★Safari の keep-all + <wbr> でも auto-phrase でも 効く
+    if decl(rules, ".nb", "white-space") != "nowrap":
+        errs.append(("L10", ".nb が white-space: nowrap で ない (「道の駅」が「道の」で 折れる)"))
     return errs
 
 
@@ -615,7 +618,7 @@ def json_short(d):
 def layout_main(real, path):
     html_text = io.open(HTML, encoding="utf-8").read()
     fail = []
-    print("組版の 決めごと (L1〜L9) — 陰性テスト")
+    print("組版の 決めごと (L1〜L10) — 陰性テスト")
     for name, css, want in [
         ("正解の 1 行の 規則を 消した 写し", re.sub(r"\.talk \.line\.seikai \{[^}]*\}", "", real, count=1), "L1"),
         ("スマホの サゲを 1rem に した 写し", real + "\n@media (max-width: 480px) { .line.sage { font-size: 1rem; } }\n", "L2"),
@@ -626,6 +629,7 @@ def layout_main(real, path):
         ("めくりの nowrap を 消した 写し", real.replace(".mekuri, .shinko, .shinko li { white-space: nowrap; }", ""), "L7"),
         ("キーの 太字を 消した 写し", real.replace(".line .key { font-weight: bold;", ".line .key { font-weight: normal;"), "L8"),
         ("推量の ポイントの 太字を 消した 写し", real.replace(".line.suiryo .point { font-weight: bold;", ".line.suiryo .point { font-weight: normal;"), "L9"),
+        ("名前の 包みの nowrap を 消した 写し", real.replace(".nb { white-space: nowrap; }", ".nb { }"), "L10"),
     ]:
         got = check_layout(css, html_text)
         okk = any(e[0] == want for e in got)
@@ -640,7 +644,7 @@ def layout_main(real, path):
         for code, msg in errs:
             print("  ✕ [%s] %s" % (code, msg))
     else:
-        print("OK: 組版の 決めごと (L1〜L9) に 合っています")
+        print("OK: 組版の 決めごと (L1〜L10) に 合っています")
     return fail, errs
 
 

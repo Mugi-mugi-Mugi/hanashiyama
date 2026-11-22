@@ -2013,6 +2013,42 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
        "  実演の 筋: 推量の 行の 太字 = " + pts.join(" / ") + "・「……」あり・推量の 箱の 外には 付かない");
   }
 
+  // R29 名前の まとまりを 折らない (2026-11-22 見直し: iPhone で「道の駅」が「道の」で 改行)。★Safari の 経路 (<wbr> + keep-all) を 主に 見る
+  {
+    const pb = C0 && typeof C0.phraseBreaks === "function" ? C0.phraseBreaks : null;
+    const fin = C0 && typeof C0.finish === "function" ? C0.finish : null;
+    const nbr = C0 && typeof C0.nbRanges === "function" ? C0.nbRanges : null;
+    const inside = (t, w) => { const i = t.indexOf(w); return pb ? pb(t).some((q) => q > i && q < i + w.length) : true; };
+    const T1 = ["鯖江の藩に、お殿様がおりました。", "山の中腹の、愛の鐘の下。", "市の木は、さくら。", "えー、いらっしゃいまし。"];
+    const W1 = ["鯖江の藩", "山の中腹", "愛の鐘", "市の木", "えー"];
+    const cut1 = [];
+    T1.forEach((t) => W1.forEach((w) => { if (t.indexOf(w) >= 0 && inside(t, w)) cut1.push(w); }));
+    ok(pb && !cut1.length, "R29 漢字 1〜3 字 + の + 漢字 1〜2 字 (鯖江の藩・山の中腹・愛の鐘・市の木) と「えー」の 中に 切れ目を 入れない " + cut1.join(","));
+    const h1 = fin ? fin("えー、いらっしゃいまし。道の駅西山公園のレジに立っております、はなし山と申します。", true) : "";
+    const h2 = fin ? fin('<em class="kagi">「愛の鐘」</em>が<strong class="key">道の駅</strong>の<b class="kazu">3か所</b>', true) : "";
+    ok(/<span class="nb">道の駅西山公園<\/span>/.test(h1) && /<span class="nb">はなし山<\/span>/.test(h1) &&
+       h2 === '<em class="kagi">「<span class="nb">愛の鐘</span>」</em>が<wbr><span class="nb"><strong class="key">道の駅</strong></span>の<wbr><b class="kazu">3か所</b>',
+       "  名前は <span class=\"nb\"> で 包む (中に <wbr> なし)・「」の 飾り / 太字 / 数字 と 入れ子が 壊れない " + h2);
+    // ★130 席の 全文: 名前の 途中に <wbr> が 入る 数 = 0 (名前の 包みの 中は 切れ目を 落とす)
+    let bad = 0, nNames = 0; const ex = [];
+    if (fin && nbr) {
+      const strs = new Set();
+      ALLB.forEach((st) => [].concat(st.furi ? [st.furi] : [], [st.makura], st.hondai || [], st.atogaki ? [st.atogaki] : [], st.guess ? [st.guess] : [],
+        st.sage ? [st.sage] : [], st.ochiWhat ? [st.ochiWhat] : []).filter(Boolean).forEach((l) => strs.add(typeof l === "object" ? l.who + "「" + l.text + "」" : String(l))));
+      strs.forEach((t) => {
+        const h = fin(t.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])), true);
+        (h.match(/<span class="nb">([\s\S]*?)<\/span>/g) || []).forEach((m) => { nNames += 1; if (/<wbr>/.test(m)) { bad += 1; if (ex.length < 3) ex.push(m); } });
+        C0.NB_NAMES.forEach((n) => { if (t.indexOf(n) >= 0 && !nbr(t).length) bad += 1; });
+      });
+    }
+    ok(fin && nNames > 0 && !bad, "  130 席の 全文: 名前の 包み " + nNames + " か所・中に <wbr> 0 (" + bad + ") " + ex.join(" "));
+    // ★実演の 筋: 一行目の「道の駅西山公園」・選択肢の 経路も 同じ 規則 (煙試験では 字の まま)
+    const r = go3(Object.assign({ seed: 1 }, D28), DEMO.slice(), 1);
+    const first = r.a.talkEls().find((c) => /道の駅/.test(c._html || ""));
+    ok(!!first && /<span class="nb">道の駅西山公園<\/span>/.test(first._html) && !/道の<wbr>駅/.test(first._html),
+       "  実演の 筋: 一行目の「道の駅西山公園」は 包まれ、「道の」で 折れない");
+  }
+
   // R16 公開物の コメントに 外から 受けた 指摘を そのまま 映した 言い方 (かぎかっこで 引いた 指摘 + 手当て の 型) を 書かない / 札の ライセンスの URL は 読みに 行かない 文字と 分かる
   {
     const css = fs.readFileSync(path.join(ROOT, "app", "style.css"), "utf8");
