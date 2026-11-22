@@ -470,26 +470,18 @@ footer .credit { opacity: 0.75; }
 .shinko li.now { color: #fff; background: var(--vermilion); border-color: var(--vermilion); font-weight: bold; }
 .shinko[hidden] { display: none; }
 
-/* ★前の 語りを 畳む。★畳んだ 行は 見えないが 読み上げには 残す (sr-only) */
-.talk .tatami {
-  position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0;
-  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+/* ★語りは 畳まずに 流す (2026-11-22)。★上へ 戻して 読み返している 間だけ、足元の 上に「▼ 語りの続きへ」 */
+.tsuzuki-btn {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(var(--footh, 52px) + 14px); z-index: 4;
+  min-height: 44px; padding: 8px 18px; border: 0; border-radius: 22px;
+  background: var(--ink); color: var(--paper); font-family: var(--sans); font-size: 0.9rem; font-weight: bold;
+  white-space: nowrap; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
-/* ★開くのは 読み返す ため。★薄くせず (前は opacity 0.55 = 2.2〜3.8:1) 薄墨の 字 (紙の 上 5.24:1) に。
-   ★畳んだ 行で あることは 左の 罫線で 示す (2026-11-15 見直し) */
-.talk.open .tatami {
-  position: static !important; width: auto; height: auto; margin: 0 0 8px; overflow: visible;
-  clip: auto; white-space: normal; font-size: 0.9rem; color: var(--muted); animation: none;
-  border-left: 3px solid #d8cdb9; padding-left: 10px;
-}
-.talk.open .tatami.ma { display: none; }
-.talk.open figure.tatami { max-width: 140px; }
-.tatami-btn {
-  display: block; width: 100%; margin: 0 0 14px; padding: 8px 10px;
-  background: transparent; border: 1px dashed #c9bfa9; color: var(--muted);
-  font-family: var(--sans); font-size: 0.82rem; text-align: left; cursor: pointer;
-}
-.tatami-btn[hidden] { display: none; }
+.tsuzuki-btn[hidden] { display: none; }
+/* ★語りの 最後の 行を 写真の 上 (画面の 半分まで) に 持ち上げられる ように、高座の 終わりに 余白 (★選択肢を 消して 下が 縮んでも 画面が 引き戻されない) */
+.koza::after { content: ""; display: block; height: 70vh; }
+/* ★席の 頭の 印 (二席目から)。★高さ 0 = 位置を 測る だけ */
+.talk .seat-start { height: 0; margin: 0; padding: 0; }
 
 /* ---- 2026-11-15 場面の 見出しと 背景の 写真 (P0-3 第 1 段) ------------------------ */
 /* ★高座を 重なりの 基準に する。★背景の 層 (z-index:-1) は 高座の 地の上・語りの下に 描かれる */
@@ -568,8 +560,6 @@ footer .credit { opacity: 0.75; }
 .choices .btn.tsugi { margin-left: auto; display: block; min-width: 7em; }
 /* ★細い 字が 帯の 端で 埋もれない ように 紙の 色の 縁取り (★行の 幅は 変わらない) */
 .talk .line { text-shadow: 0 0 2px var(--paper); }
-/* ★「これまでの 語り を 開く」も 写真の 上で 読める 地 */
-.tatami-btn { background: rgba(246, 240, 227, 0.95); }
 /* ★打ち出しの 途中は ★残りの 字を 見えない まま 置いて 行の 幅を 最後の 形で 取る (★打ち終わりで 改行が 動かない) */
 .talk .line .mada { visibility: hidden; }
 /* ★客の 相槌 (「次へ」の 代わり。2026-11-15)。★客の 吹き出しより 小さく・控えめに */
@@ -598,8 +588,8 @@ footer .credit { opacity: 0.75; }
 .haikei-cap span::before { content: " ｜ "; opacity: 0.7; }
 
 
-/* ★場面の 頭の 見出し行 (読み上げ用)。★画面には 出さない。★畳んだ 語りを 開いても 出さない */
-.talk .sr, .talk.open .sr.tatami {
+/* ★場面の 頭の 見出し行 (読み上げ用)。★画面には 出さない */
+.talk .sr {
   position: absolute !important; width: 1px !important; height: 1px !important; margin: -1px !important;
   padding: 0 !important; overflow: hidden !important; clip: rect(0 0 0 0) !important;
   white-space: nowrap !important; border: 0 !important;
@@ -704,8 +694,6 @@ footer .credit { opacity: 0.75; }
   display: block; margin: 0; padding: 0 6px; line-height: 1.4;
   font-size: 0.8rem; background: linear-gradient(to bottom, var(--paper) 50%, #efeadc 50%); color: var(--muted);
 }
-/* ★畳んだ 語りを 開いた ときは 箱が ふつうの 行に 戻る → ラベルも 行の 頭に 戻す */
-.talk.open .line.suiryo.tatami::before { position: static; transform: none; padding: 0; background: none; }
 /* 13. めくり (題) */
 .mekuri { font-size: 1.12rem; font-weight: bold; }
 /* ★めくりと 段の 札は 折らない (2026-11-21 見直し: スマホで「埼玉県へ渡った記 / 録」「まく / ら」と 折れた)。
