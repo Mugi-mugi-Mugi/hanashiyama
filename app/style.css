@@ -203,7 +203,12 @@ body {
 /* ---------- 札 ---------- */
 .sagebox { margin-top: 20px; }
 #card { width: 100%; height: auto; border: 1px solid #d8cdb9; background: #fff; }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+/* ★札の 下の ボタンは 横一列 (2026-11-22 作者の判断「字は 折り返しても よいので ボタンは 一列」)。
+   ★幅は 字数に 応じて 分け合い (flex 1 1 auto)、足りない ときは ボタンの 中で 文節ごとに 折り返す (★字を 省かない・縮めて 消さない = ㊲) */
+.actions { display: flex; flex-wrap: nowrap; gap: 8px; margin-top: 12px; align-items: stretch; }
+.actions .btn { flex: 1 1 auto; min-width: 0; padding: 10px 12px; white-space: normal; word-break: auto-phrase; overflow-wrap: anywhere; line-height: 1.35; }
+@supports not (word-break: auto-phrase) { .actions .btn { word-break: keep-all; overflow-wrap: anywhere; } }
+@media (max-width: 480px) { .actions { gap: 6px; } .actions .btn { font-size: 0.88rem; padding: 8px 6px; } }
 .sources { margin-top: 16px; font-size: 0.9rem; font-family: var(--sans); }
 .sources li { margin-bottom: 12px; }
 .sources blockquote { margin: 4px 0; padding-left: 10px; border-left: 3px solid #d8cdb9; color: var(--muted); }
@@ -382,6 +387,8 @@ footer .credit { opacity: 0.75; }
 }
 .chui .rights::before { content: none; }
 .chui .rights b { color: var(--gold); font-weight: bold; margin-right: 4px; }
+/* ★出典と 改変の 一覧へ (2026-11-22 見直し B-5)。★同じ 場所の ファイル = 外への 通信は 増えない */
+.chui .credits-link { color: var(--gold); text-decoration: underline; margin-left: 4px; }
 /* ★いま どの版を 見ているか。★上げ直したのに 変わらない = 前の版が 残っている */
 .chui .built2 { display: inline-block; margin-top: 6px; opacity: 0.8; letter-spacing: 0.04em; }
 
@@ -455,6 +462,9 @@ footer .credit { opacity: 0.75; }
 .hajimete summary::before { content: "▸ "; }
 .hajimete[open] summary::before { content: "▾ "; }
 .hajimete .nerai { margin-top: 10px; }
+/* ★注意書きの 畳み (2026-11-22)。★「はじめての方へ」の すぐ 下に 並べる */
+.hajimete + .hajimete { margin-top: 0; }
+.hajimete .chui { margin-top: 8px; }
 
 /* ★進みぐあい (まくら → 本題 → サゲ)。★いま いる 札だけ 朱で */
 .kozatop { align-items: center; gap: 12px; }

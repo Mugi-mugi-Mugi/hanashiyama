@@ -44,14 +44,22 @@
           <li>オチを書いた札を1枚さしあげます。西山公園の現地でだけ解ける謎かけは、現地で確かめ終えた場所から順に出します</li>
         </ol>
       </details>
+      <!-- ★注意書きも「はじめての方へ」と 同じく 畳む (2026-11-22 作者の判断)。★権利表示 (MIT・CC BY の 表示) は 義務なので 畳まない -->
+      <details class="hajimete kotowari">
+        <summary>このアプリについて</summary>
+        <ul class="chui">
+          <li>語りはすべて、鯖江市のオープンデータと、出典を確かめた事実だけでできています。各席の「タネ明かし」から原文を見られます。</li>
+          <li>人流データは、株式会社Agoop「マチレポ」提供データです。</li>
+          <li>レジ係「はなし山」は実在の人物ではありません。噺は人が書いています。</li>
+          <li>読むのは、このページと同じ場所に置いたファイルだけです (ほかのサービスへは通信しません)。手元のファイルで開けば、ネットが無くても動きます。記録はこの端末の中だけに残ります。</li>
+        </ul>
+      </details>
       <ul class="chui">
-        <li>語りはすべて、鯖江市のオープンデータと、出典を確かめた事実だけでできています。</li>
-        <li>レジ係「はなし山」は実在の人物ではありません。噺は人が書いています。</li>
-        <li>読むのは、このページと同じ場所に置いたファイルだけです (ほかのサービスへは通信しません)。手元のファイルで開けば、ネットが無くても動きます。記録はこの端末の中だけに残ります。</li>
         <li class="rights">
           <b>プログラム</b> MIT License / &copy; 2026 Mugi-mugi-Mugi (ソースは公開しています)<br>
           <b>写真・数値</b> 鯖江市オープンデータ (CC BY 2.1 JP) ほか。
-          写真には1枚ずつ、数値には席ごとの「タネ明かし」に出典を付けています。<br>
+          写真には1枚ずつ、数値には席ごとの「タネ明かし」に出典を付けています。
+          <a class="credits-link" href="../CREDITS.md">出典と改変の一覧 (CREDITS)</a><br>
           <span id="built2" class="built2"></span>
         </li>
       </ul>
@@ -85,9 +93,9 @@
 
     <div id="sageBox" class="sagebox" hidden>
       <canvas id="card" width="1080" height="1350" role="img" aria-label="オチ札"></canvas>
+      <!-- ★札の 下の ボタンは 横一列 (2026-11-22 作者の判断)。★幅が 足りない ときは ボタンの 中の 字を 文節で 折り返す。「オチの文を写す」は 外した -->
       <div class="actions">
         <button id="save" class="btn primary">この札をもらう</button>
-        <button id="copyCard" class="btn">オチの文を写す</button>
         <button id="koe" class="btn" hidden>レッサーパンダの鳴き声を聞く</button>
         <button id="again" class="btn">もう一席</button>
         <button id="genchiAgain" class="btn" hidden>現地の謎かけに答える</button>
@@ -126,9 +134,8 @@
     <p class="note">記録はこの端末の中だけに残ります。外へは送りません。</p>
   </section>
 
+  <!-- ★足元は 権利の 一文だけ (2026-11-22 作者の判断)。★ほかは 表紙の「このアプリについて」へ・データ作成の 日時は 表紙の 権利表示 (built2) -->
   <footer id="foot" hidden>
-    <p>語りは、出典を確かめた事実だけで作っています。各席の「タネ明かし」から原文を見られます。</p>
-    <p class="credit">データ: 鯖江市オープンデータ (CC BY 2.1 JP) ほか。人流データ：株式会社Agoop「マチレポ」提供データ。<span id="built"></span></p>
     <p class="credit">プログラム: MIT License / &copy; 2026 Mugi-mugi-Mugi。データと引用はMITの対象外で、各出典のライセンスに従います。</p>
   </footer>
 

@@ -252,9 +252,12 @@
       return lic ? src + " (" + lic + ")" : src;
     },
     /** ★札 (保存される 画像) に 書く 写真の 出典 (2026-11-20)。★札は 端末の 外へ 出るので 正式な 表示に 近づける:
-     *  作品名・提供元・ライセンス (と その URL)・札に 合わせて 加工した 旨。★継承 (BY-SA) の 写真なら 札も BY-SA と 書く */
+     *  作品名・提供元・ライセンス (と その URL)。★継承 (BY-SA) の 写真なら 札も BY-SA と 書く。
+     *  ★2026-11-22 作者の判断: 札は 簡素に。★加工の 中身は CREDITS.md (改変の 節) に 書く。★イラスト (作者の 絵) は 作者と ライセンスだけ (URL も 付けない)。
+     *  ★同日 (見直し B-1 を 受けた 作者の判断): ★CC BY 4.0・BY-SA 4.0 の 写真だけ「(一部を切り出して使用)」を 残す (4.0 は 改変の 表示を 求める・福井県の 規約も) */
     cardCredit(c) {
-      c = String(c || "").replace(/\s*\/\s*縮小して使用\s*$/, "").trim();
+      c = String(c || "").replace(/\s*\/\s*(一部を)?(切り出して)?縮小して使用\s*$/, "").trim();
+      c = c.replace(/\s*[A-Z]*\d*\s*を\s*切り出して使用\s*/, "");   // ★(2026-11-22) 札は 簡素に: 元の 番号と「切り出して使用」も 札には 書かない (CREDITS.md に 書く)
       if (!c) return "";
       const LIC = [
         // ★下の URL 4 本は ★札に 書く 文字 (ライセンスの 正式な 表示)。★読みに 行かない (通信は しない。fetch も リンクも 作らない)
@@ -263,13 +266,15 @@
         [/CC BY 2\.1/, "CC BY 2.1 JP", "https://creativecommons.org/licenses/by/2.1/jp/"],
         [/CC BY 3\.0/, "CC BY 3.0", "https://creativecommons.org/licenses/by/3.0/deed.ja"],
       ];
+      if (/^イラスト/.test(c)) return c.replace(/\s+https?:\/\/[^\s)）]+/g, "").trim();
       const hit = LIC.find((x) => x[0].test(c));
       let s = c;
       // ★福井ふるさと百景の 長い 書き方 (「クリエイティブ・コモンズ・ライセンス 表示4.0 国際（URL）」) は 略号 + URL に まとめる
       s = s.replace(/、?\s*クリエイティブ・コモンズ・ライセンス\s*表示4\.0\s*国際（[^）]*）/, " (CC BY 4.0)");
       if (hit && s.indexOf(hit[2]) < 0) s = s.replace(/\)\s*$/, "") + (/\)\s*$/.test(s) ? " " : " (") + hit[2] + ")";
       const sa = hit && hit[1] === "CC BY-SA 4.0";
-      return (/^イラスト/.test(s) ? "" : "写真: ") + s + " を 札に合わせて切り抜き・加工" + (sa ? "。この札は CC BY-SA 4.0 で提供します" : "");
+      const v4 = hit && /4\.0/.test(hit[1]);
+      return "写真: " + s + (v4 ? " (一部を切り出して使用)" : "") + (sa ? "。札も CC BY-SA 4.0" : "");
     },
     /** ★その 席が 扱う 思い込み (hooks.beliefs + 前段で 問う furiBelief)。★否定された 思い込みの 判定に 使う (2026-11-20) */
     beliefsOf(st) {
@@ -1096,7 +1101,7 @@
   //   ブラウザは 既定で「前に 見ていた 高さ」に 戻すので、幕の 途中から 始まる
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
-  // ★データを いつ 作ったか。★幕の 中と ページの 足元、両方に 出す。
+  // ★データを いつ 作ったか。★幕の 中に 出す (★2026-11-22 から 足元には 出さない。足元は 権利の 一文だけ)。
   //   ★前は 幕を 開けた あとにしか 入らず、★TOP からは 見えなかった (2026-09-23 指摘)
   function showBuilt() {
     const s = "データ作成: " + root.HANASHI.builtAt;
@@ -1476,29 +1481,68 @@
     const r = last.getBoundingClientRect();
     return r.bottom <= window.innerHeight - bottomRoom(90) + 24;
   }
-  function onUserInput() { follow.inputAt = nowMs(); }
+  /** ★上へ 戻そうと した 操作 だけを 数える (2026-11-22 見直し: スマホの タップでも mousedown が 出て、
+   *  タップの 直後の 上への 動き (図が 消えた・文字盤が 閉じた 等) を 読み返しと 取り違えうる)。
+   *  ホイールの 上回し / 指を 下へ なぞる / ↑・PageUp・Home・Shift+空白 / スクロールバーを つまむ (html への mousedown) */
+  function onUserInput(e) {
+    const k = e && e.type;
+    if (k === "touchstart") { const t0 = e.touches && e.touches[0]; follow.touchY = t0 ? t0.clientY : null; return; }
+    if (k === "wheel" && !(e.deltaY < 0)) return;
+    if (k === "touchmove") {
+      const t1 = e.touches && e.touches[0];
+      if (!t1 || follow.touchY == null || !(t1.clientY > follow.touchY + 6)) return;
+    }
+    if (k === "keydown" && ["ArrowUp", "PageUp", "Home"].indexOf(e.key) < 0 && !(e.key === " " && e.shiftKey)) return;
+    if (k === "mousedown" && e.target !== document.documentElement) return;
+    follow.inputAt = nowMs();
+  }
   function onScroll() {
     const y = scrollY();
     const up = y < follow.lastY - 4;
     follow.lastY = y;
     if (nowMs() < follow.ignoreUntil || $("koza").hidden) return;
-    // ★上へ 動いた + 直前 1 秒に 人の 操作 (ホイール・指で なぞる・キー・マウス) が あった = 読み返し
-    //   ★(指で タップ しただけ (touchstart) は 数えない。★選択肢を 押して 下が 縮んでも 読み返しと 見ない)
+    // ★上へ 動いた + 直前 1 秒に 上へ 戻そうと した 操作 (onUserInput) が あった = 読み返し
+    //   ★(タップ だけ は 数えない。★選択肢を 押して 下が 縮んでも 読み返しと 見ない)
     if (up && nowMs() - follow.inputAt < 1000) { if (follow.on) setFollow(false); return; }
     if (!follow.on && atLatest()) setFollow(true);
   }
   if (root.addEventListener) {
-    ["wheel", "touchmove", "keydown", "mousedown"].forEach((n) => root.addEventListener(n, onUserInput, { passive: true }));
+    ["wheel", "touchstart", "touchmove", "keydown", "mousedown"].forEach((n) => root.addEventListener(n, onUserInput, { passive: true }));
     root.addEventListener("scroll", onScroll, { passive: true });
   }
 
+  /** 見出し (高座の 上に 残る 枠) の 下端 */
+  function headBottom() {
+    try { const hb = $("kozahead").getBoundingClientRect(); return Math.max(0, hb.bottom); } catch (e) { return 0; }
+  }
+  /** ★見出しの 下に 残す 行 (2026-11-22 見直し): 選択肢が 出ている 間は その 問い / それ以外は いまの 席の サゲ。
+   *  ★写真の 上で 止める 窓が 狭い (投影・スマホ) ので、送りすぎて 問いの 頭や サゲを 見出しの 裏へ 押し出さない */
+  function anchorEl() {
+    const kids = $("talk").children;
+    if ($("choices").children.length) {
+      for (let i = kids.length - 1; i >= Math.max(0, kids.length - 4); i -= 1) if (hasCls(kids[i], "toi")) return kids[i];
+    }
+    const sid = state && state.current ? state.current.id : null;
+    if (sid) for (let i = kids.length - 1; i >= 0; i -= 1) if (hasCls(kids[i], "sage") && kids[i].dataset && kids[i].dataset.sid === sid) return kids[i];
+    return null;
+  }
+  /** 下へ 送る 量を 決める。★順番 = ①いちばん 新しい 行が 画面から 落ちない ②残す 行が 見出しの 下に 見える ③写真に かぶらない */
+  function sendBy(dy, lastBottom) {
+    if (!(dy > 0)) return dy;
+    const a = anchorEl();
+    if (!a) return dy;
+    const keep = a.getBoundingClientRect().top - (headBottom() + 6);
+    const must = lastBottom - (window.innerHeight - 70);
+    return Math.max(Math.min(dy, keep), must, 0);
+  }
   /** 打っている最中は、行の下端が画面に収まるまでだけ追う (画面が跳ねないように) */
   function keepBottom() {
     if (!typing || !follow.on) return;
     const r = typing.el.getBoundingClientRect();
     const margin = bottomRoom(160); // 選択肢と足元のぶん
     if (r.bottom > window.innerHeight - margin) {
-      autoScrollBy(r.bottom - (window.innerHeight - margin), false);
+      const dy = sendBy(r.bottom - (window.innerHeight - margin), r.bottom);
+      if (dy > 0) autoScrollBy(dy, false);
     }
   }
 
@@ -1518,9 +1562,11 @@
       const goal = window.innerHeight - room;
       // ★下に はみ出したら 上げる。★新しい 行が 画面の 上に 隠れて いたら (見出しの 裏より 上) 見える ところまで 下げる
       //   (★上の ほうに 見えて いる ときは 動かさない = 二席目の 頭を 画面の 上へ 送った 直後を 崩さない)
-      let headB = 0;
-      try { const hb = $("kozahead").getBoundingClientRect(); headB = Math.max(0, hb.bottom); } catch (e) {}
-      if (r.bottom > goal || r.bottom < headB + 8) autoScrollBy(r.bottom - goal, !lessMotion());
+      //   ★札を 見ている (札が 出ている) 間は 上へ 戻さない (見直し: 札・タネ明かしを 見に 下へ 送った 直後に 引き戻された)
+      if (r.bottom > goal) {
+        const dy = sendBy(r.bottom - goal, r.bottom);
+        if (dy > 0) autoScrollBy(dy, !lessMotion());
+      } else if (r.bottom < headBottom() + 8 && $("sageBox").hidden) autoScrollBy(r.bottom - goal, !lessMotion());
     });
   }
 
@@ -1552,6 +1598,7 @@
     state.pauseFn = null;
     if (activeIn(box)) state.focusChoices = true;
     box.innerHTML = "";
+    setFollow(true);   // ★客が 選んだ・打ち込んだ = 先へ 進む 合図 → 追い直す (2026-11-22 見直し: 読み返しの あと 押しても 追わなかった)
   }
   /** ★長く 読んだ ところで 止める。★「次へ」か 画面の タップで 続ける (★早送りは 越えて 進む) */
   // ★2026-11-15 作者の判断:「次へ」は 分かりづらい → ★客の 相槌 + 自動の 間 (寄席の 客は ボタンを 押さない。うなずく)。
@@ -2882,6 +2929,7 @@
   }
 
   function nextStory() {
+    setFollow(true);                                       // ★別の噺・もう一席 = 先へ (見直し)
     // ★2026-11-15 (見直し): 語りの 途中で 押すと、走っている 文字送りの タイマーが 前の 席の 筋を
     //   続けて ★席が 二重に 走っていた。★まず 止める。★写真待ちの 呼び戻しも 世代で 捨てる (enterScene)
     if (typing) {
@@ -3291,10 +3339,10 @@
       big.forEach((line, i2) => ctx.fillText(line, W / 2, 900 - total / 2 + size * 0.62 + i2 * size * 1.25));
 
       // ★写真の 出典 (2026-11-20)。★札は 端末の 外 (SNS など) へ 出るので、画面の 隅書き (1 行) より 長く
-      //   作品名・提供元・ライセンス (URL)・札に 合わせて 加工した 旨。★継承 (BY-SA) の 写真なら 札も BY-SA と 書く (Core.cardCredit)
+      //   作品名・提供元・ライセンス (URL)。★4.0 の 写真だけ「(一部を切り出して使用)」(2026-11-22。cardCredit)。★継承 (BY-SA) の 写真なら 札も BY-SA と 書く (Core.cardCredit)
       //   ★行が 増えたら 判子・問いの 結果・下の 文を その ぶん 上へ
       ctx.font = "20px " + sans;
-      const credLines = wrapLines(ctx, (img ? Core.cardCredit(img.credit) + " / " : "") + "語りの出典はアプリ内「タネ明かし」", W - 120);
+      const credLines = wrapLines(ctx, (img ? Core.cardCredit(img.credit) + " / " : "") + "出典は「タネ明かし」", W - 120);
       const CLH = 26;
       const off = Math.max(0, credLines.length - 2) * CLH;
 
@@ -3409,39 +3457,6 @@
     log("saved", st);
   }
 
-  /** ★札の 文を 写す。★画像より 軽く、そのまま 人に 渡せる。
-   *  外へは 送らない (クリップボードに 置くだけ)。 */
-  function copyCard() {
-    const st = state.current;
-    const line = [
-      st.card.big.split("\n").join(""),
-      "— " + (st.sage || ""),
-      "はなし山 / 福井県鯖江市 西山公園",
-      st.card.bottom,
-    ].join("\n");
-    const done = () => {
-      $("copyCard").textContent = "写しました";
-      setTimeout(() => { $("copyCard").textContent = "オチの文を写す"; }, 1600);
-      log("copied", st);
-    };
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(line).then(done, () => fallback(line, done));
-      } else fallback(line, done);
-    } catch (e) { fallback(line, done); }
-  }
-
-  function fallback(text, done) {
-    const t = document.createElement("textarea");
-    t.value = text;
-    t.style.position = "fixed";
-    t.style.opacity = "0";
-    document.body.appendChild(t);
-    t.select();
-    try { document.execCommand("copy"); done(); } catch (e) {}
-    document.body.removeChild(t);
-  }
-
   function exportLog() {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(readLog())], { type: "application/json" }));
@@ -3465,6 +3480,7 @@
   });
   $("koza").addEventListener("click", (e) => {
     if (e.target.closest("button") || e.target.closest("a")) return;
+    setFollow(true);                                       // ★画面の タップ = 先へ (見直し)
     if (!typing && state.pauseFn) return state.pauseFn();   // ★「次へ」で 止めている ときは 画面の タップでも 続ける
     hurry();
   });
@@ -3473,6 +3489,7 @@
   //   ★上限を 置くのは ★万一 止まらない ときに 固まらせないため。
   $("skip").addEventListener("click", (e) => {
     e.stopPropagation();
+    setFollow(true);                                       // ★早送り = 先へ (見直し)
     //   ★2026-11-15 (見直し): 前は 打ちかけの 行を 打ち終えた ところで「進まなかった」と 見て 止まり、
     //     既定の「一字ずつ」では 1 回 1 行しか 進まなかった。★打ち終えたら もう一度 押して 次へ。
     const isStop = (t) => / toi | sage | kotae /.test(" " + ((t && t.el && t.el.className) || "") + " ");
@@ -3503,7 +3520,6 @@
   $("exportLog").addEventListener("click", exportLog);
   $("clearLog").addEventListener("click", clearLog);
   $("kinList").addEventListener("click", (e) => { e.stopPropagation(); showKin(); });
-  $("copyCard").addEventListener("click", (e) => { e.stopPropagation(); copyCard(); });
   $("closeKin").addEventListener("click", () => closePanel("kin"));
   const typeLabel = () => { $("typeBtn").textContent = typeOn ? "文字: 一字ずつ" : "文字: 一度に"; };
   typeLabel();
