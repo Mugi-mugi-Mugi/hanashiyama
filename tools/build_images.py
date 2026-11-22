@@ -267,6 +267,28 @@ QUALITY = 46
 SMALL_W = 480
 SMALL_H = 320
 SMALL_Q = 48
+# ★縦長の 写真を 背景用に 横 4:3 で 切る (2026-11-22 作者の判断。1 枚ずつ 見本を 見て 位置を 選んだ)。
+#   背景は 横長の 枠に 全体を 入れる (contain) ので、縦長の ままだと 細い 柱に なり 左右が 空く。
+#   値 = 切る 位置 (0 = 上を 残す / 0.5 = 中 / 1 = 下を 残す / 0.25 = 上と 中の 間)。キー = data/raw/ からの 場所。
+#   ★札の 帯 (CARD_FROM_SMALL) は 元の 写真から 別に 作るので、ここは 効かない
+CROP43 = {
+    "media/18207_nishiyamakoentsutsuzipicture_1.jpg": 1.0,    # つつじ: 下
+    "media/18207_nishiyamakoentsutsuzipicture_3.jpg": 1.0,    # つつじ: 下
+    "media/18207_nishiyamakoentsutsuzipicture_7.jpg": 0.5,    # つつじ: 中 (向きの 情報で 縦に 回る 写真)
+    "media/_extract/panda01.jpg": 0.0,                        # アケビ: 上 (向きの 情報で 縦に 回る 写真)
+    "media/_extract/panda16.jpg": 0.0,                        # まつば: 上
+    "media/_extract/zoo01.jpg": 0.25,                         # ボリビアリスザル: 上と 中の 間
+    "media/_extract/zoo02.jpg": 0.25,                         # フランソワルトン: 上と 中の 間
+    "media/_extract/zoo03.jpg": 0.0,                          # シロテテナガザル: 上
+    "ext_20261114/pref_hyakkei_162.jpg": 0.5,                 # 恐竜博物館の 館内: 中 (★いまは どの 席からも 呼ばれない)
+    "ext_20261114/pref_hyakkei_163.jpg": 0.0,                 # 恐竜博物館の 骨格展示: 上 (★同上)
+    # ★横長 (16:9) の 5 枚 (同日)。値 = 0 = 左を 残す / 0.5 = 中 / 1 = 右を 残す
+    "ext_20261114/sabae_360_R0010038_front_crop.jpg": 0.5,    # イルミネーション: 中
+    "media/_extract/panda02.jpg": 0.5,                        # チャチャ: 中
+    "media/_extract/panda04.jpg": 0.5,                        # チャオ: 中
+    "media/_extract2/panda_takashi.jpg": 1.0,                 # タカシ: 右
+    "media/_extract2/panda_shurara.jpg": 1.0,                 # シュララ: 右
+}
 
 
 # ★札に 使う 群 (2026-11-20。札の 写真の 割り当ての 手順書 = 作業メモ)。★つつじ・紅葉は 前から ある (GROUPS)
@@ -315,8 +337,20 @@ def main():
         doc = fitz.open(src)
         page = doc[0]
         r = page.rect
+        clip = None
+        pos = CROP43.get(os.path.relpath(src, P("data", "raw")).replace(os.sep, "/"))
+        if pos is not None and r.width / r.height < 4 / 3 - 0.01:
+            ch = r.width * 3 / 4                       # ★縦長 → 横 4:3 に 切る (幅は そのまま・高さを 削る)
+            top = (r.height - ch) * pos
+            clip = fitz.Rect(r.x0, r.y0 + top, r.x1, r.y0 + top + ch)
+            r = clip
+        elif pos is not None and r.width / r.height > 4 / 3 + 0.01:
+            cw = r.height * 4 / 3                      # ★横長 (16:9) → 4:3 に 切る (高さは そのまま・幅を 削る)
+            left = (r.width - cw) * pos
+            clip = fitz.Rect(r.x0 + left, r.y0, r.x0 + left + cw, r.y1)
+            r = clip
         sc = min(SMALL_W / r.width, SMALL_H / r.height)
-        pix = page.get_pixmap(matrix=fitz.Matrix(sc, sc), alpha=False)
+        pix = page.get_pixmap(matrix=fitz.Matrix(sc, sc), clip=clip, alpha=False)
         data = pix.tobytes("jpeg", jpg_quality=SMALL_Q)
         return {"dataUri": "data:image/jpeg;base64," + base64.b64encode(data).decode("ascii"),
                 "w": pix.width, "h": pix.height, "bytes": len(data), "_src": src}   # ★_src = 札用の 帯を 作る ため (書き出す 前に 消す)
@@ -390,7 +424,7 @@ def main():
         #   福井県の 利用規約も 改変した 場合の 書き方を 求めている)。★切り出しは 目録の 文言に 書いてある
         cr = info["credit"]
         if "切り出して" not in cr:
-            cr += " / 縮小して使用"
+            cr += " / 一部を切り出して縮小して使用" if ("ext_20261114/" + fn) in CROP43 else " / 縮小して使用"
         g["shots"].append(dict(shrink_small(src), credit=cr, url=info["url"],
                                label=info["label"], license=info["license"], sa=info["sa"]))
     for key, name, label, credit, url in (DOCS if USE_CITY_PHOTOS else []):  # ★市の 資料の 写真 (★使わない)
