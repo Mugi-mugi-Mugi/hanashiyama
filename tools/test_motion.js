@@ -585,5 +585,39 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   ok(btn.hidden === false, "⑳ 指を 下へ なぞって 上へ 戻したら 読み返し");
 }
 
+// ㉑ 写真が 入って 空ける 幅が 広がっても 一気に 飛ばさない (2026-11-22 見直し): 打ち出し中は 1 字ごとに 6px まで / 新しい 行が 画面から 落ちそうなら すぐ 送る
+{
+  const a = mk({ date: "2026-12-03" });
+  a.click("open"); a.advance(300);
+  a.byId.koza.className += " haikei-on";
+  const img = a.byId.haikeiImg; img.naturalWidth = 4; img.naturalHeight = 3;
+  img.getBoundingClientRect = () => ({ top: 0, bottom: 700, left: 0, right: 400, width: 400, height: 700 });   // ★写真の 上端 = 400 (画面 800 の 半分)
+  const last = a.byId.talk.lastElementChild;
+  last.getBoundingClientRect = () => ({ top: 600, bottom: 640, left: 0, right: 100, width: 100, height: 40 });
+  const b0 = (a.win._scrollBy || []).length;
+  a.advance(400);
+  const s1 = (a.win._scrollBy || []).slice(b0).filter((d) => d > 0);
+  ok(s1.length > 0 && Math.max.apply(null, s1) <= 6, "㉑ 写真で 空ける 幅が 広がっても、打ち出し中は 少しずつ 送る (" + s1.length + " 回・最大 " + (s1.length ? Math.max.apply(null, s1) : "-") + "px)");
+  const low = () => ({ top: 720, bottom: 760, left: 0, right: 100, width: 100, height: 40 });
+  const b1 = (a.win._scrollBy || []).length;
+  for (let k = 0; k < 40; k += 1) { a.byId.talk.children.forEach((c) => { c.getBoundingClientRect = low; }); a.advance(50); }
+  const s2 = (a.win._scrollBy || []).slice(b1).filter((d) => d > 0);
+  ok(s2.some((d) => d >= 30), "㉑ いちばん 新しい 行が 画面から 落ちそうなら すぐ 送る (" + s2.slice(0, 3).join(",") + ")");
+}
+
+// ㉒ 札を 渡した あと (「お持ち帰りを」の 一言の あと) 画面を 半分 ほど 下へ 送る (2026-11-22 見直しの 声「下へ スクロールしないと 出てこない」)
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰"); a.settle();
+  a.byId.sageBox.getBoundingClientRect = () => ({ top: 900, bottom: 1500, left: 0, right: 100, width: 100, height: 600 });
+  const b0 = (a.win._scrollBy || []).length;
+  const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.pick(want); a.settle();
+  const s = (a.win._scrollBy || []).slice(b0);
+  const told = a.talkEls().some((c) => /この札を お持ち帰りを/.test(txt(c)));
+  ok(told && s.indexOf(400) >= 0, "㉒「お持ち帰りを」の あと 画面の 半分 (400px) 下へ 送る (" + s.filter((d) => d > 0).join(",") + ")");
+}
+
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");
 process.exit(fail.length ? 1 : 0);
