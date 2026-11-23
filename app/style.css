@@ -786,3 +786,20 @@ footer .credit { opacity: 0.75; }
 .nb { white-space: nowrap; }
 .btn.choice { word-break: auto-phrase; }
 @supports not (word-break: auto-phrase) { .btn.choice { word-break: keep-all; overflow-wrap: anywhere; } }
+
+/* ---- 2026-11-24 作者の判断: スクロールしても 画面の 上 (1/8 ほど) に 定式幕 (黒・萌黄・柿) を 少し 残す ---- */
+/*   ★幕の 帯は 画面に 固定。★場面の 見出しの 枠 (kozahead) は 帯の すぐ 下に 付く。★高座の 中身は 帯の 下から 始まる */
+:root { --makuh: 12.5vh; }
+@supports (height: 1dvh) { :root { --makuh: 12.5dvh; } }
+.maku-band {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--makuh); z-index: 3; pointer-events: none;
+  background: repeating-linear-gradient(90deg,
+    #17150f 0 64px, #2f6b40 64px 128px, #17150f 128px 192px, #9c4a24 192px 256px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.koza { padding-top: calc(16px + var(--makuh)); }
+.kozahead { top: var(--makuh); }
+@media (max-width: 480px) {
+  .maku-band { background-size: 132px 100%; }
+  .koza { padding-top: calc(12px + var(--makuh)); }
+}
