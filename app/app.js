@@ -243,6 +243,7 @@
         : /CC BY/.test(c) ? "CC BY" : "";
       let src = c;
       if (/^イラスト/.test(c)) src = "イラスト: Mugi-mugi-Mugi";
+      else if (/^写真:\s*Mugi-mugi-Mugi/.test(c)) src = "写真: Mugi-mugi-Mugi";   // ★現地で 撮った 写真 (2026-11-23)
       else if (/^福井ふるさと百景/.test(c)) src = "福井ふるさと百景";
       else if (/^鯖江市/.test(c)) src = "鯖江市オープンデータ";
       else if (/^Wikimedia Commons/.test(c)) {
@@ -266,7 +267,7 @@
         [/CC BY 2\.1/, "CC BY 2.1 JP", "https://creativecommons.org/licenses/by/2.1/jp/"],
         [/CC BY 3\.0/, "CC BY 3.0", "https://creativecommons.org/licenses/by/3.0/deed.ja"],
       ];
-      if (/^イラスト/.test(c)) return c.replace(/\s+https?:\/\/[^\s)）]+/g, "").trim();
+      if (/^(イラスト|写真):\s*Mugi-mugi-Mugi/.test(c)) return c.replace(/\s+https?:\/\/[^\s)）]+/g, "").trim();
       const hit = LIC.find((x) => x[0].test(c));
       let s = c;
       // ★福井ふるさと百景の 長い 書き方 (「クリエイティブ・コモンズ・ライセンス 表示4.0 国際（URL）」) は 略号 + URL に まとめる
@@ -1465,13 +1466,14 @@
   }
   /** 自分で 動かす スクロール。★その あいだの スクロールを 人の 操作と 見ない */
   function autoScrollBy(dy, smooth) {
-    follow.ignoreUntil = nowMs() + (smooth ? 900 : 200);
+    follow.ignoreUntil = Math.max(follow.ignoreUntil, nowMs() + (smooth ? 900 : 200));   // ★前の なめらかな 送りの 待ちを 縮めない (見直し r9 H6)
     if (smooth) window.scrollBy({ top: dy, behavior: "smooth" });
     else window.scrollBy(0, dy);
   }
-  function autoScrollTo(y) {
-    follow.ignoreUntil = nowMs() + 200;
-    window.scrollTo(0, y);
+  function autoScrollTo(y, smooth) {
+    follow.ignoreUntil = Math.max(follow.ignoreUntil, nowMs() + (smooth ? 1200 : 200));
+    if (smooth) window.scrollTo({ top: y, behavior: "smooth" });
+    else window.scrollTo(0, y);
     follow.lastY = y;
   }
   /** いちばん 新しい 行 (か 選択肢) が 画面の 下の 置き場に 見えて いるか */
@@ -1548,9 +1550,10 @@
     const margin = bottomRoom(160); // 選択肢と足元のぶん
     if (r.bottom > window.innerHeight - margin) {
       let dy = sendBy(r.bottom - (window.innerHeight - margin), r.bottom);
-      if (dy > 0 && mustBy(r.bottom) <= 0) dy = Math.min(dy, DRIFT);
+      if (dy > 0) dy = Math.min(dy, Math.max(DRIFT, mustBy(r.bottom) + DRIFT));   // ★落ちそうな ときも 落ちる ぶん + DRIFT まで (見直し r9 H2: 前は 上限が 丸ごと 外れ 409px 送った)
       if (dy > 0) autoScrollBy(dy, false);
     }
+    cardPeek(true);                                  // ★札の 上に 謎かけの 文が 足されても 札を 消さない
   }
 
   /** ★動きを 減らす 設定か (★なめらかな スクロールも 動き。止める) */
@@ -1572,9 +1575,10 @@
       //   ★札を 見ている (札が 出ている) 間は 上へ 戻さない (見直し: 札・タネ明かしを 見に 下へ 送った 直後に 引き戻された)
       if (r.bottom > goal) {
         let dy = sendBy(r.bottom - goal, r.bottom);
-        if (dy > 0 && mustBy(r.bottom) <= 0) dy = Math.min(dy, JUMP);   // ★一気に 飛ばさない (上の DRIFT / JUMP)
+        if (dy > 0) dy = Math.min(dy, Math.max(JUMP, mustBy(r.bottom) + JUMP));   // ★一気に 飛ばさない (上の DRIFT / JUMP。落ちそうな ときも 落ちる ぶん + JUMP まで)
         if (dy > 0) autoScrollBy(dy, !lessMotion());
       } else if (r.bottom < headBottom() + 8 && $("sageBox").hidden) autoScrollBy(r.bottom - goal, !lessMotion());
+      cardPeek();
     });
   }
 
@@ -1734,16 +1738,18 @@
   const specGroup = (sp) => (sp ? String(sp).split(/[@#]/)[0] : null);
   // ★自動の 席 (県の噺・暦の噺) だけが 使う。★語が はっきり 場所を 指す ものだけ
   //   ★「花」「春」「夜」「年表」「ベンチ」のような 広い 語では 選ばない (雪の噺に つつじ が 出ていた)
+  // ★2026-11-23: 現地で 撮った 写真の 群 (photo_*) を 場所に 当てた。★ただし 全 130 席に 台本の 場面 (scenes) が ある ので、いまは この 表は 使われない (見直し r9 B-8)。
+  //   ★「愛の鐘」の 行の ainokane は 群が 無い = 当たらない (★写真は S57 の 札 だけ)
   const PLACE = [
-    [/パンダらんど|遊具|すべり台/, "pandarando"],
-    [/祈りの道|お地蔵|地蔵|石像|石仏/, "inorinomichi"],
+    [/パンダらんど|遊具|すべり台/, "photo_pandarando"],
+    [/祈りの道|お地蔵|地蔵|石像|石仏/, "photo_inori"],
     [/愛の鐘|マリンバ/, "ainokane"],
-    [/噴水/, "funsui"],
-    [/北の庭/, "kitanoniwa"],
+    [/噴水/, "photo_fountain"],
+    [/北の庭/, "photo_north_garden"],
     [/展望台/, "tenbodai"],
     [/松堂|茶室|呈茶/, "shodoan"],
-    [/道の駅|交流室/, "michinoeki"],
-    [/嚮陽会館|駐車場/, "kyoyokaikan"],
+    [/道の駅|交流室/, "photo_michinoeki"],
+    [/嚮陽会館|駐車場/, "photo_parking"],
     [/三十三間堂|信仰の道/, "sanjusan"],
     [/西山橋/, "nishiyamabashi"],
     [/嚮陽渓|上段の庭|庭を造|鋤|鍬/, "jodan"],
@@ -1918,6 +1924,16 @@
       swap();
     }
   }
+  /** ★高座の 上に 残る 枠 (見出し・図) を 替える ときは、★替わった 高さの ぶん 画面を 合わせて 語りの 位置を 動かさない
+   *  (2026-11-23 見直しの 声「節目で 飛ぶ」: 見出しが 1 行 ↔ 2 行・図が 出る / 消える と、枠の 下の 語りが 一度に ずれていた)。
+   *  ★合わせた あとの 送りは ふだんの 追従 (少しずつ) に 任せる */
+  function withHead(fn) {
+    const hd = $("kozahead");
+    const h0 = (hd && hd.offsetHeight) || 0;
+    fn();
+    const d = ((hd && hd.offsetHeight) || 0) - h0;
+    if (d && scrollY() > 0) autoScrollBy(d, false);
+  }
   /** 見出し (★高座の 上に 残る 1 行)。★空なら 隠す */
   function setMidashi(text) {
     setPhrase($("midashi"), text || "");
@@ -1980,8 +1996,7 @@
     // ★2026-11-15 見直し: 写真が 出る ときに 文字も 替わり (見出し・畳み)、読んでいた 所が 分からなく なった。
     //   ★写真は 読んでいた 文字を 残した まま 入れ (一拍)、★入って から 見出しを 替え・語りを 続ける
     const finish = (pick) => {
-      setMidashi(head);
-      hideZu();
+      withHead(() => { setMidashi(head); hideZu(); if (useFig) showZu(st.fig); });
       const what = pick ? "（写真：" + (pick.label || "西山公園の写真") + "）" : useFig ? "（図：" + st.fig.title + "）" : "";
       if (j > 0) sensu();
       const sr = srLine("midashi-sr", head + what);
@@ -1989,7 +2004,6 @@
       sr.dataset.head = head;
       sr.dataset.shown = pick ? "1" : "";
       sr.dataset.label = pick ? pick.label || "" : "";
-      if (useFig) showZu(st.fig);
       scroll();
       return after();
     };
@@ -2578,7 +2592,7 @@
     const lead = state.nextLead || [];            // ★「もう一席」の 一言・園の 送り (nextStory)
     state.nextLead = null;
     // ★2026-11-15 見直し: 札を 見た あと「もう一席」で 画面が ずれた まま 進んだ (scroll は 下へ 追う だけ)。
-    //   ★二席目 から: 席の 頭の 印を 置き、★その 印を 画面の 上 (見出しの 下) へ 送る (動きを 減らす 設定に かかわらず 瞬時)。
+    //   ★二席目 から: 席の 頭の 印を 置き、★その 印を 画面の 上 (見出しの 下) へ 送る (★2026-11-23 から なめらかに。動きを 減らす 設定では 瞬時)。
     //   ★2026-11-22: 前の 席は 畳まない (上へ 戻れば 読める)。★印は 高さ 0 の 行 (画面の 位置を 測る ため。読み上げには 出ない)
     if (state.count > 1) {
       const m = document.createElement("div");
@@ -2586,15 +2600,17 @@
       m.setAttribute("aria-hidden", "true");
       put(m);
       setFollow(true);
+      hideZu(); setMidashi(st.title);                 // ★枠を 先に 替えて から 測る (見直し r9 H5: 後で 替えると 瞬時の 補正が なめらかな 送りを 打ち切る)
       try {
         const head = $("kozahead").getBoundingClientRect();
         const top = m.getBoundingClientRect().top + scrollY() - Math.max(0, head.bottom - head.top);
-        autoScrollTo(Math.max(0, Math.round(top)));
+        autoScrollTo(Math.max(0, Math.round(top)), !lessMotion());   // ★二席目の 頭へも スクロールで (2026-11-23 見直しの 声「節目で 飛ぶ」)
       } catch (e) {}
     }
     state.lastCorrect = null;
     state.sages.add(st.sage);
     $("sageBox").hidden = true;
+    state.cardShown = false;
     $("sources").hidden = true;
     $("sourcesBtn").setAttribute("aria-expanded", "false");
     $("mekuri").textContent = st.title;
@@ -2607,8 +2623,7 @@
     // ★席の 頭: 前の 写真・図を 下げ、見出しは 演目名 (まくらまでは 場面に 入れない)。
     //   ★前段の 写真だけは 最初の 場面まで 残す (★下げると 再訪の 筋で 一瞬で 消える)
     const fadeOut = !(state.bg && state.bg.opening) && bgOut();   // ★消え終わるまで 語りを 待たせる (最後の next)
-    hideZu();
-    setMidashi(st.title);
+    withHead(() => { hideZu(); setMidashi(st.title); });
     // ★この端末で はじめて 一席 聴いた 時刻 (現地で 開いたとき「何時間 前に 聴いたか」を 出す)
     if (!store.get(FIRST_KEY)) store.set(FIRST_KEY, new Date().toISOString());
     // ★mondo = 本題に 入るまでの 問答の 数 (★一席目の 約束「三つだけ」の 見張り)
@@ -2787,7 +2802,7 @@
     //     (4 択の 直後の「さて、ここからがオチ」が 肩透かしに なっていた 見直し)。★写真と 図を 下げる のは 同じ
     const toOchi = () => {
       const out = bgOut();
-      hideZu();
+      withHead(hideZu);
       const go = () => {
         if (st.yokoku === false) return blank(sage);
         say("さて、ここからがオチでございます。", "shi yokoku", () => blank(sage));
@@ -2852,10 +2867,23 @@
   function revealCard() {
     try {
       const box = $("sageBox");
-      if (!box || box.hidden) return;
+      if (!box || box.hidden || !follow.on) return;   // ★読み返し中は 引き戻さない (見直し r9 H3)
+      state.cardShown = true;
       const top = box.getBoundingClientRect().top;
       const dy = Math.min(Math.round(window.innerHeight * 0.5), Math.round(top - (headBottom() + 8)));
       if (dy > 0) autoScrollBy(dy, !lessMotion());
+    } catch (e) {}
+  }
+  /** ★札を 一度 見せた あとは、謎かけの 文などで 下へ 押し出されても ★画面から 消さない (上の CARD_PEEK px は 見えている)
+   *  (2026-11-23 作者の判断「画面から 消えない 程度で 札を 下へ 押し出すのは OK」。見直し r9 H1: 謎かけで 札が 画面の 外へ 押し戻されていた) */
+  const CARD_PEEK = 140;
+  function cardPeek(instant) {
+    try {
+      const box = $("sageBox");
+      if (!box || box.hidden || !follow.on || !state.cardShown) return;
+      const top = box.getBoundingClientRect().top;
+      const lim = window.innerHeight - CARD_PEEK;
+      if (top > lim) autoScrollBy(Math.round(top - lim), !instant && !lessMotion());
     } catch (e) {}
   }
   function showCard(st) {

@@ -99,8 +99,8 @@
           "head": "江戸の終わりの襲撃計画",
           "from": 2,
           "to": 4,
-          "img": "illust_bust",
-          "label": "幕末の 老中の 胸像 (イラスト。姿は 想像)"
+          "img": "photo_bust",
+          "label": "幕末の 老中の 胸像 (写真)"
         },
         {
           "head": "大臣の、国もとでの顔",
@@ -184,7 +184,7 @@
           "head": "白と黒のぬいぐるみ",
           "from": 0,
           "to": 1,
-          "img": "illust_zoo_gate"
+          "img": "photo_zoo_gate"
         },
         {
           "head": "最初にパンダと呼ばれた者",
@@ -430,7 +430,7 @@
       "ochiWhat": "西山公園の「祈りの道」に並ぶ石像",
       "card": {
         "top": "お地蔵さんの道に",
-        "big": "ドラえもんの\n石造がある",
+        "big": "ドラえもんの\n石像がある",
         "bottom": "福井県鯖江市 西山公園「祈りの道」(約900m・約420体)"
       },
       "facts": [
@@ -457,7 +457,7 @@
           "head": "大人の見るものはない?",
           "from": 0,
           "to": 1,
-          "img": "illust_inori2"
+          "img": "photo_inori"
         },
         {
           "head": "祈りの道と彫り手たち",
@@ -553,8 +553,8 @@
           "head": "築城の許しと設計図",
           "from": 2,
           "to": 3,
-          "img": "illust_bust",
-          "label": "幕末の 老中の 胸像 (イラスト。姿は 想像)"
+          "img": "photo_bust",
+          "label": "幕末の 老中の 胸像 (写真)"
         },
         {
           "head": "表札だけの城",
@@ -634,7 +634,7 @@
           "head": "めがねの町の名のり",
           "from": 0,
           "to": 1,
-          "img": "illust_entrance"
+          "img": "photo_entrance"
         },
         {
           "head": "公園に立つ贈り物",
@@ -1219,7 +1219,7 @@
           "head": "新宿から来たお客",
           "from": 0,
           "to": 1,
-          "img": "illust_michinoeki"
+          "img": "photo_michinoeki"
         },
         {
           "head": "大久保の花の名所",
@@ -1503,7 +1503,8 @@
         {
           "head": "いちばん多い品種",
           "from": 2,
-          "to": 2
+          "to": 2,
+          "img": "photo_tsutsuji_slope"
         },
         {
           "head": "きりの悪い合計",
@@ -1593,7 +1594,7 @@
           "head": "誰が読む、動物園の年表",
           "from": 0,
           "to": 1,
-          "img": "illust_zoo_gate"
+          "img": "photo_zoo_gate"
         },
         {
           "head": "淡々と並ぶ年の欄",
@@ -1863,7 +1864,7 @@
           "head": "子どもの遊べるところ",
           "from": 0,
           "to": 1,
-          "img": "illust_pandarando3"
+          "img": "photo_pandarando"
         },
         {
           "head": "となりにできたもの",
@@ -2027,7 +2028,7 @@
           "head": "道の駅の貸し部屋",
           "from": 0,
           "to": 1,
-          "img": "illust_koryu"
+          "img": "photo_koryu"
         },
         {
           "head": "料金の表の書き方",
@@ -2366,7 +2367,7 @@
           "head": "噴水の上がる時間",
           "from": 0,
           "to": 1,
-          "img": "illust_fountain_am"
+          "img": "photo_fountain"
         },
         {
           "head": "市のページの時間の表",
@@ -2460,7 +2461,8 @@
         {
           "head": "山じゅうのつつじの数",
           "from": 2,
-          "to": 3
+          "to": 3,
+          "img": "photo_tsutsuji_slope"
         },
         {
           "head": "北の庭の花",
@@ -2625,7 +2627,7 @@
           "head": "年表に何度も出る野球場",
           "from": 0,
           "to": 2,
-          "img": "illust_baseball"
+          "img": "photo_baseball"
         },
         {
           "head": "造成から始まる工事",
@@ -2712,7 +2714,7 @@
           "head": "こぱんだらんどの遊具",
           "from": 0,
           "to": 1,
-          "img": "illust_kopanda"
+          "img": "photo_kopanda"
         },
         {
           "head": "体にちなんだ遊具の名",
@@ -3185,7 +3187,7 @@
           "head": "人気の遊び場",
           "from": 2,
           "to": 2,
-          "img": "illust_pandarando3"
+          "img": "photo_pandarando"
         },
         {
           "head": "となりのもうひとつ",
@@ -3451,7 +3453,7 @@
           "head": "表にある天気の欄",
           "from": 2,
           "to": 3,
-          "img": "illust_east_gate"
+          "img": "photo_east_gate"
         },
         {
           "head": "雪の日はどれほど",
@@ -3538,7 +3540,7 @@
           "head": "暖かいほど人が来る?",
           "from": 0,
           "to": 1,
-          "img": "illust_east_gate"
+          "img": "photo_east_gate"
         },
         {
           "head": "最高気温の欄で数える",
@@ -3631,7 +3633,7 @@
           "head": "平日はどこも同じ?",
           "from": 0,
           "to": 1,
-          "img": "illust_east_gate"
+          "img": "photo_east_gate"
         },
         {
           "head": "曜日で分けた市の表",
@@ -3921,7 +3923,7 @@
           "head": "会館前の停められる数",
           "from": 2,
           "to": 3,
-          "img": "illust_parking"
+          "img": "photo_parking"
         },
         {
           "head": "出ていった車の数",
@@ -4014,7 +4016,7 @@
           "head": "月ごとに足した車の表",
           "from": 2,
           "to": 3,
-          "img": "illust_parking"
+          "img": "photo_parking"
         },
         {
           "head": "長い夏の欄",
@@ -4175,7 +4177,7 @@
           "head": "入口のめがねの時計",
           "from": 0,
           "to": 1,
-          "img": "illust_meganetokei"
+          "img": "photo_meganetokei_clock"
         },
         {
           "head": "贈り物と、市の募集の紙",
@@ -4185,7 +4187,8 @@
         {
           "head": "もう片方のレンズ",
           "from": 4,
-          "to": 5
+          "to": 5,
+          "img": "photo_meganetokei_lens"
         }
       ]
     },
@@ -4243,12 +4246,13 @@
           "head": "半分の丸のベンチ",
           "from": 0,
           "to": 1,
-          "img": "illust_pandabench"
+          "img": "photo_pandabench"
         },
         {
           "head": "真上から見た並び",
           "from": 2,
-          "to": 2
+          "to": 2,
+          "img": "photo_pandabench_top"
         },
         {
           "head": "どこが指か",

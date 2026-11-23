@@ -1,6 +1,6 @@
 /* 自動生成: python tools/build.py  (手で編集しない) */
 window.HANASHI = {
- "builtAt": "2026-11-22 21:59",
+ "builtAt": "2026-11-23 22:38",
  "prefectures": [
   "北海道",
   "青森県",
@@ -7675,7 +7675,7 @@ window.HANASHI = {
    "source": "鯖江市「眼鏡型時計モニュメントに掲載する鯖江市のＰＲデザイン募集要項」(令和4年)",
    "url": "https://www.city.sabae.fukui.jp/about_city/koho_kocho/kishahappyo/reiwa4/20220406.files/20220406-05.pdf",
    "confidence": "high",
-   "note": "★白地のレンズに入れるデザインを募集した(令和4年3〜4月)。★いまどの絵が入っているかは、この資料には無い。★現地の見た目は未確認。  確認日 2026-11-14。",
+   "note": "★白地のレンズに入れるデザインを募集した(令和4年3〜4月)。★いまどの絵が入っているかは、この資料には無い。  確認日 2026-11-14。★(2026-11-23 現地で 撮影) 表裏とも 片方の レンズが 時計、もう片方に レッサーパンダの 絵 (表 = つつじと / 裏 = 眼鏡を かけた)。裏の 文字盤に「鯖江ライオンズクラブ 60th Anniversary」。★絵の 作者・選ばれた 経緯は 現地の 見た目からは 分からないので 語らない。",
    "verified": true
   },
   {
@@ -7695,7 +7695,7 @@ window.HANASHI = {
    "source": "鯖江市 観光ページ「西山公園でたっぷり遊ぼ！」",
    "url": "https://www.city.sabae.fukui.jp/kanko/feature/nishiyama.html",
    "confidence": "high",
-   "note": "★「鐘」の名だが、いま鳴るのはマリンバの演奏。★名称板の有無は未確認。  確認日 2026-11-14。",
+   "note": "★「鐘」の名だが、いま鳴るのはマリンバの演奏。★(2026-11-23 現地) 名称板は 無い (撮影者の 確認)。頂上の 塔は 拡声器が 並んだ 形。  確認日 2026-11-14。",
    "verified": true
   },
   {
@@ -7879,8 +7879,8 @@ window.HANASHI = {
      "head": "江戸の終わりの襲撃計画",
      "from": 2,
      "to": 4,
-     "img": "illust_bust",
-     "label": "幕末の 老中の 胸像 (イラスト。姿は 想像)"
+     "img": "photo_bust",
+     "label": "幕末の 老中の 胸像 (写真)"
     },
     {
      "head": "大臣の、国もとでの顔",
@@ -7965,7 +7965,7 @@ window.HANASHI = {
      "head": "白と黒のぬいぐるみ",
      "from": 0,
      "to": 1,
-     "img": "illust_zoo_gate"
+     "img": "photo_zoo_gate"
     },
     {
      "head": "最初にパンダと呼ばれた者",
@@ -8240,7 +8240,7 @@ window.HANASHI = {
    "ochiWhat": "西山公園の「祈りの道」に並ぶ石像",
    "card": {
     "top": "お地蔵さんの道に",
-    "big": "ドラえもんの\n石造がある",
+    "big": "ドラえもんの\n石像がある",
     "bottom": "福井県鯖江市 西山公園「祈りの道」(約900m・約420体)"
    },
    "facts": [
@@ -8267,7 +8267,7 @@ window.HANASHI = {
      "head": "大人の見るものはない?",
      "from": 0,
      "to": 1,
-     "img": "illust_inori2"
+     "img": "photo_inori"
     },
     {
      "head": "祈りの道と彫り手たち",
@@ -8287,7 +8287,7 @@ window.HANASHI = {
      "420"
     ]
    },
-   "cardImg": "illust_inori2"
+   "cardImg": "photo_inori"
   },
   {
    "id": "S06",
@@ -8371,8 +8371,8 @@ window.HANASHI = {
      "head": "築城の許しと設計図",
      "from": 2,
      "to": 3,
-     "img": "illust_bust",
-     "label": "幕末の 老中の 胸像 (イラスト。姿は 想像)"
+     "img": "photo_bust",
+     "label": "幕末の 老中の 胸像 (写真)"
     },
     {
      "head": "表札だけの城",
@@ -8453,7 +8453,7 @@ window.HANASHI = {
      "head": "めがねの町の名のり",
      "from": 0,
      "to": 1,
-     "img": "illust_entrance"
+     "img": "photo_entrance"
     },
     {
      "head": "公園に立つ贈り物",
@@ -8926,7 +8926,7 @@ window.HANASHI = {
     ],
     "when": "after"
    },
-   "cardImg": "illust_east_gate"
+   "cardImg": "photo_east_gate"
   },
   {
    "id": "S12",
@@ -9026,7 +9026,7 @@ window.HANASHI = {
     "when": "after"
    },
    "furiBelief": "b_dino_only",
-   "cardImg": "illust_east_gate"
+   "cardImg": "photo_east_gate"
   },
   {
    "id": "S13",
@@ -9105,7 +9105,7 @@ window.HANASHI = {
      "head": "新宿から来たお客",
      "from": 0,
      "to": 1,
-     "img": "illust_michinoeki"
+     "img": "photo_michinoeki"
     },
     {
      "head": "大久保の花の名所",
@@ -9400,7 +9400,8 @@ window.HANASHI = {
     {
      "head": "いちばん多い品種",
      "from": 2,
-     "to": 2
+     "to": 2,
+     "img": "photo_tsutsuji_slope"
     },
     {
      "head": "きりの悪い合計",
@@ -9491,7 +9492,7 @@ window.HANASHI = {
      "head": "誰が読む、動物園の年表",
      "from": 0,
      "to": 1,
-     "img": "illust_zoo_gate"
+     "img": "photo_zoo_gate"
     },
     {
      "head": "淡々と並ぶ年の欄",
@@ -9777,7 +9778,7 @@ window.HANASHI = {
      "head": "子どもの遊べるところ",
      "from": 0,
      "to": 1,
-     "img": "illust_pandarando3"
+     "img": "photo_pandarando"
     },
     {
      "head": "となりにできたもの",
@@ -9790,7 +9791,7 @@ window.HANASHI = {
      "to": 4
     }
    ],
-   "cardImg": "illust_kopanda"
+   "cardImg": "photo_kopanda"
   },
   {
    "id": "S30",
@@ -9952,7 +9953,7 @@ window.HANASHI = {
      "head": "道の駅の貸し部屋",
      "from": 0,
      "to": 1,
-     "img": "illust_koryu"
+     "img": "photo_koryu"
     },
     {
      "head": "料金の表の書き方",
@@ -9977,7 +9978,7 @@ window.HANASHI = {
     "note": "鯖江市 道の駅西山公園 利用案内",
     "when": "after"
    },
-   "cardImg": "illust_koryu"
+   "cardImg": "photo_koryu"
   },
   {
    "id": "S32",
@@ -10139,7 +10140,7 @@ window.HANASHI = {
      "to": 4
     }
    ],
-   "cardImg": "illust_michinoeki"
+   "cardImg": "photo_michinoeki"
   },
   {
    "id": "S34",
@@ -10304,7 +10305,7 @@ window.HANASHI = {
      "head": "噴水の上がる時間",
      "from": 0,
      "to": 1,
-     "img": "illust_fountain_am"
+     "img": "photo_fountain"
     },
     {
      "head": "市のページの時間の表",
@@ -10318,7 +10319,7 @@ window.HANASHI = {
     }
    ],
    "furiBelief": "b_fountain_morning",
-   "cardImg": "illust_fountain_am"
+   "cardImg": "photo_fountain"
   },
   {
    "id": "S36",
@@ -10399,14 +10400,16 @@ window.HANASHI = {
     {
      "head": "山じゅうのつつじの数",
      "from": 2,
-     "to": 3
+     "to": 3,
+     "img": "photo_tsutsuji_slope"
     },
     {
      "head": "北の庭の花",
      "from": 4,
      "to": 6
     }
-   ]
+   ],
+   "cardImg": "photo_north_garden"
   },
   {
    "id": "S37",
@@ -10565,7 +10568,7 @@ window.HANASHI = {
      "head": "年表に何度も出る野球場",
      "from": 0,
      "to": 2,
-     "img": "illust_baseball"
+     "img": "photo_baseball"
     },
     {
      "head": "造成から始まる工事",
@@ -10579,7 +10582,7 @@ window.HANASHI = {
     }
    ],
    "furiBelief": "b_main_first",
-   "cardImg": "illust_baseball"
+   "cardImg": "photo_baseball"
   },
   {
    "id": "S39",
@@ -10653,7 +10656,7 @@ window.HANASHI = {
      "head": "こぱんだらんどの遊具",
      "from": 0,
      "to": 1,
-     "img": "illust_kopanda"
+     "img": "photo_kopanda"
     },
     {
      "head": "体にちなんだ遊具の名",
@@ -10666,7 +10669,7 @@ window.HANASHI = {
      "to": 5
     }
    ],
-   "cardImg": "illust_kopanda"
+   "cardImg": "photo_kopanda"
   },
   {
    "id": "S40",
@@ -10770,7 +10773,7 @@ window.HANASHI = {
     "note": "鯖江市オープンデータ (人流データ・推計。株式会社Agoop「マチレポ」提供データ)",
     "when": "after"
    },
-   "cardImg": "illust_east_gate"
+   "cardImg": "photo_east_gate"
   },
   {
    "id": "S41",
@@ -11081,7 +11084,7 @@ window.HANASHI = {
     ],
     "when": "after"
    },
-   "cardImg": "illust_parking"
+   "cardImg": "photo_michinoeki"
   },
   {
    "id": "S44",
@@ -11156,7 +11159,7 @@ window.HANASHI = {
      "head": "人気の遊び場",
      "from": 2,
      "to": 2,
-     "img": "illust_pandarando3"
+     "img": "photo_pandarando"
     },
     {
      "head": "となりのもうひとつ",
@@ -11165,7 +11168,7 @@ window.HANASHI = {
     }
    ],
    "furiBelief": "b_park_kids",
-   "cardImg": "illust_kopanda"
+   "cardImg": "photo_kopanda"
   },
   {
    "id": "S45",
@@ -11265,7 +11268,7 @@ window.HANASHI = {
     "max": 100,
     "when": "after"
    },
-   "cardImg": "illust_east_gate"
+   "cardImg": "photo_east_gate"
   },
   {
    "id": "S46",
@@ -11448,7 +11451,7 @@ window.HANASHI = {
      "head": "表にある天気の欄",
      "from": 2,
      "to": 3,
-     "img": "illust_east_gate"
+     "img": "photo_east_gate"
     },
     {
      "head": "雪の日はどれほど",
@@ -11456,7 +11459,7 @@ window.HANASHI = {
      "to": 5
     }
    ],
-   "cardImg": "illust_east_gate"
+   "cardImg": "photo_east_gate"
   },
   {
    "id": "S48",
@@ -11536,7 +11539,7 @@ window.HANASHI = {
      "head": "暖かいほど人が来る?",
      "from": 0,
      "to": 1,
-     "img": "illust_east_gate"
+     "img": "photo_east_gate"
     },
     {
      "head": "最高気温の欄で数える",
@@ -11550,7 +11553,7 @@ window.HANASHI = {
     }
    ],
    "furiBelief": "b_warm_more",
-   "cardImg": "illust_east_gate"
+   "cardImg": "photo_east_gate"
   },
   {
    "id": "S49",
@@ -11630,7 +11633,7 @@ window.HANASHI = {
      "head": "平日はどこも同じ?",
      "from": 0,
      "to": 1,
-     "img": "illust_east_gate"
+     "img": "photo_east_gate"
     },
     {
      "head": "曜日で分けた市の表",
@@ -11644,7 +11647,7 @@ window.HANASHI = {
     }
    ],
    "furiBelief": "b_monday_low",
-   "cardImg": "illust_east_gate"
+   "cardImg": "photo_east_gate"
   },
   {
    "id": "S50",
@@ -11923,7 +11926,7 @@ window.HANASHI = {
      "head": "会館前の停められる数",
      "from": 2,
      "to": 3,
-     "img": "illust_parking"
+     "img": "photo_parking"
     },
     {
      "head": "出ていった車の数",
@@ -11932,7 +11935,7 @@ window.HANASHI = {
     }
    ],
    "furiBelief": "b_parking_full",
-   "cardImg": "illust_parking"
+   "cardImg": "photo_parking"
   },
   {
    "id": "S53",
@@ -12017,7 +12020,7 @@ window.HANASHI = {
      "head": "月ごとに足した車の表",
      "from": 2,
      "to": 3,
-     "img": "illust_parking"
+     "img": "photo_parking"
     },
     {
      "head": "長い夏の欄",
@@ -12026,7 +12029,7 @@ window.HANASHI = {
     }
    ],
    "furiBelief": "b_all_year",
-   "cardImg": "illust_parking"
+   "cardImg": "photo_parking"
   },
   {
    "id": "S54",
@@ -12180,7 +12183,7 @@ window.HANASHI = {
      "head": "入口のめがねの時計",
      "from": 0,
      "to": 1,
-     "img": "illust_meganetokei"
+     "img": "photo_meganetokei_clock"
     },
     {
      "head": "贈り物と、市の募集の紙",
@@ -12190,10 +12193,11 @@ window.HANASHI = {
     {
      "head": "もう片方のレンズ",
      "from": 4,
-     "to": 5
+     "to": 5,
+     "img": "photo_meganetokei_lens"
     }
    ],
-   "cardImg": "illust_meganetokei"
+   "cardImg": "photo_meganetokei"
   },
   {
    "id": "S56",
@@ -12249,12 +12253,13 @@ window.HANASHI = {
      "head": "半分の丸のベンチ",
      "from": 0,
      "to": 1,
-     "img": "illust_pandabench"
+     "img": "photo_pandabench"
     },
     {
      "head": "真上から見た並び",
      "from": 2,
-     "to": 2
+     "to": 2,
+     "img": "photo_pandabench_top"
     },
     {
      "head": "どこが指か",
@@ -12262,7 +12267,7 @@ window.HANASHI = {
      "to": 4
     }
    ],
-   "cardImg": "illust_pandabench"
+   "cardImg": "photo_pandabench"
   },
   {
    "id": "S57",
@@ -12330,7 +12335,8 @@ window.HANASHI = {
      "from": 3,
      "to": 4
     }
-   ]
+   ],
+   "cardImg": "photo_ainokane"
   }
  ],
  "prefStories": [
@@ -21558,8 +21564,8 @@ window.HANASHI = {
       "head": "のんびり見えた殿様",
       "from": 0,
       "to": 2,
-      "img": "illust_bust",
-      "label": "幕末の 老中の 胸像 (イラスト。姿は 想像)"
+      "img": "photo_bust",
+      "label": "幕末の 老中の 胸像 (写真)"
      },
      {
       "head": "京で取り締まりを指揮した役目",
@@ -22017,7 +22023,7 @@ window.HANASHI = {
     ],
     "md": "05-05",
     "isToday": true,
-    "cardImg": "illust_east_gate"
+    "cardImg": "photo_east_gate"
    }
   ],
   "01-24": [
@@ -22603,7 +22609,7 @@ window.HANASHI = {
       "head": "昼過ぎの晴れ舞台",
       "from": 0,
       "to": 0,
-      "img": "illust_zoo_gate"
+      "img": "photo_zoo_gate"
      },
      {
       "head": "秋生まれではない子",
@@ -22680,7 +22686,7 @@ window.HANASHI = {
     "セイコー納入事例",
     "デザイン募集 (koubo.jp)"
    ],
-   "verified_onsite": null,
+   "verified_onsite": "2026-11-23",
    "nextLineClosed": "この続きは、まだ 支度の 途中でございます。今日のところは、この入口の 時計まで。"
   },
   {
@@ -22707,7 +22713,7 @@ window.HANASHI = {
     "報道機関連絡票 2026-08-20",
     "市長 提案理由説明 2026-08-26"
    ],
-   "verified_onsite": null,
+   "verified_onsite": "2026-11-23",
    "nextLineClosed": "この続きは、まだ 支度の 途中でございます。今日のところは、この広場まで。"
   },
   {
@@ -22759,8 +22765,8 @@ window.HANASHI = {
     "市 観光ページ",
     "施設案内"
    ],
-   "verified_onsite": null,
-   "note": "★名称板の有無は 未確認 (見直し)。★ヒントは 名札の 場所を 言わず、音 (マリンバ = S57 の オチ) も 言わない (2026-11-20 見直し)"
+   "verified_onsite": "2026-11-23",
+   "note": "★(2026-11-23) 現地に「愛の鐘」の 名の 札は 無い (撮影者の 確認)。★作者の 判断で 出す。★ヒントは 名札の 場所を 言わず、音 (マリンバ = S57 の オチ) も 言わない (2026-11-20 見直し)"
   },
   {
    "id": "G4",
@@ -22774,7 +22780,7 @@ window.HANASHI = {
    "next": null,
    "verified_web": [],
    "verified_onsite": null,
-   "note": "★未定。Web で 裏が 取れない。★G3 の あとは レジへ 送らずに 結ぶ (2026-11-20 見直し)"
+   "note": "★未定。Web で 裏が 取れない。★G3 の あとは レジへ 送らずに 結ぶ (2026-11-20 見直し)。★(2026-11-23 作者の判断) 資料の 提案「店先の 1 台」(説明資料案 Q23) では、ここ (レジ前) に レジ横の 1 台へ つなげる 噺 (戻りの一席) を 入れる として 置く。★作るのは 発表会の あと"
   }
  ]
 };
