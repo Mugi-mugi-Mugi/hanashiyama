@@ -240,6 +240,7 @@ function drive(opt, plan, N) {
     const ls = a.labels();
     if (!ls.length) { if (!a.byId.sageBox.hidden) { a.click("again"); continue; } break; }
     if (ls.length === 1 && ls[0] === "次へ") { a.pick(0); continue; }
+    if (ls.includes("(form)") && !a.byId.sageBox.hidden) { a.click("again"); continue; }   // ★札の あとの 現地の 謎かけ (keepGenchi の とき) は 答えずに もう一席
     if (ls.includes("(form)")) { a.submit(""); continue; }
     const i = plan.length ? ls.indexOf(plan[0]) : -1;
     if (i >= 0) { plan.shift(); a.pick(i); continue; }

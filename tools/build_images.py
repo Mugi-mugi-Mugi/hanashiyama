@@ -133,43 +133,50 @@ EXT = [
 # ★自分たちで 描いた イラスト (2026-11-15)。★元の 写真と 構図を 変えた ものだけ (翻案に しない)
 #   ★めがね時計は 文字盤の 社名を 消した 版。★レンズの 中の 絵は 想像 (実物と 違う ことが ある)
 OWN = [
-    ("city_photos_for_illust_20261115/manga_illustrations/manga_14_nologo.png", "illust_meganetokei",
-     "めがね時計 (イラスト。レンズの 絵は 想像)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/manga_18.png", "illust_pandabench",
-     "結びの広場の レッサーパンダベンチ (イラスト)"),
-    # ★2026-11-15: 写真の 無い 席を 埋める 13 枚 (イラスト依頼表。描かない もの = オチの 先回り を 外して 描いた)
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_bust.png", "illust_bust",
-     "間部詮勝の 胸像 (イラスト。姿は 想像)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_zoo_gate.png", "illust_zoo_gate",
-     "西山動物園の 入口 (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_east_gate.png", "illust_east_gate",
-     "西山公園の 東側の 入口 (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_14-16/illust_pandarando3.png", "illust_pandarando3",   # ★2 は 動物の 顔の 飾りが あり 描き直し (16)
-     "パンダらんどの 遊具 (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_kopanda.png", "illust_kopanda",
-     "こぱんだらんど (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_inori2.png", "illust_inori2",
-     "祈りの道の お地蔵さん (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_parking.png", "illust_parking",
-     "嚮陽会館前の 駐車場 (イラスト。工事中)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_baseball.png", "illust_baseball",
-     "西山公園の 野球場 (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_fountain_am.png", "illust_fountain_am",
-     "朝の 大噴水 (イラスト。形は 想像)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_entrance.png", "illust_entrance",
-     "西山公園の 正面入口の 広場 (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_koryu.png", "illust_koryu",
-     "道の駅の 交流室の 入口 (イラスト)"),
-    ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_michinoeki.png", "illust_michinoeki",
-     "道の駅西山公園 (イラスト。形は 想像)"),
+    # ★2026-11-23: 14 枚は 現地で 撮った 写真に 置き換えた (OWN_PHOTOS)。★写真の 無い 季節の 3 枚だけ イラストで 残す
     ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_all_13/illust_shinryoku.png", "illust_shinryoku",
      "西山公園の 夏の 木立 (イラスト)"),
-    # ★2026-11-15: 季節の 食い違いを 直す 版 (14・15)
     ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_14-16/illust_east_gate_winter.png", "illust_east_gate_winter",
      "西山公園の 東側の 入口・冬 (イラスト)"),
     ("city_photos_for_illust_20261115/manga_illustrations/nishiyama_illust_14-16/illust_zoo_gate_summer.png", "illust_zoo_gate_summer",
      "西山動物園の 入口・夏 (イラスト)"),
 ]
+# ★現地で 撮った 写真 (2026-11-23 撮影・夕方)。★名前を 付けた 写し = data/raw/own_photos_20261123/ (元は (作業メモ。公開に含めない) に 残す)。
+#   ★人の 顔・社名・答えが 読める 札・個人の 連絡先は ぼかした / モザイク。★色は photo_fix.py で 直した 版 (fixed/)。
+#   ★S05 の 答え (ドラえもんの 石像) が 写った 1 枚 (IMG_1232) は 使わない。★ほかの 石像 2 枚も 外した (札で「ドラえもん」の 文と 並ぶと 読み違える。見直し r9 B-6)。
+#   ★どの 席にも 出ない 写真 (結びの広場・展望台・西山橋) は 軽く する ため 外した (見直し r9 B-8。写しは 残す)★こぱんだらんどの 寝耳ベンチは 写っていない (撮影者に確認)
+OWN_PHOTO_DIR = ("own_photos_20261123", "fixed")
+OWN_PHOTOS = [
+    ("P11_michinoeki", "photo_michinoeki", "道の駅西山公園 (写真)"),
+    ("michinoeki_upper", "photo_michinoeki", "道の駅西山公園の 上の 入口 (写真)"),
+    ("P12_koryu", "photo_koryu", "道の駅の 交流室の 入口 (写真。貼り紙は ぼかした)"),
+    ("P04_pandabench", "photo_pandabench", "結びの広場の レッサーパンダベンチ (写真)"),
+    ("A03_pandabench_top", "photo_pandabench_top", "結びの広場の レッサーパンダベンチを 上から (写真)"),
+    ("P15_zoo_gate", "photo_zoo_gate", "西山動物園の 入口 (写真)"),
+    ("own_panda_1", "panda", "西山動物園の レッサーパンダ (写真)"),
+    ("own_panda_2", "panda", "西山動物園の レッサーパンダ (写真)"),
+    ("own_panda_3", "panda", "西山動物園の レッサーパンダ (写真)"),
+    ("own_panda_4", "panda", "西山動物園の レッサーパンダ (写真)"),
+    ("P05_inori", "photo_inori", "祈りの道 (写真)"),
+    ("A02_ainokane", "photo_ainokane", "頂上の 愛の鐘 (写真)"),
+    ("P06_pandarando", "photo_pandarando", "パンダらんどの 遊具 (写真)"),
+    ("P07_kopanda", "photo_kopanda", "こぱんだらんど (写真)"),
+    ("P01_bust", "photo_bust", "間部詮勝の 胸像 (写真。台座の 字は ぼかした)"),
+    ("A01_kyoyoteien", "kyoyo_teien", "嚮陽庭園 (上段の庭) (写真)"),
+    ("A08_north_garden", "photo_north_garden", "北の庭 (写真。花の 無い 11 月)"),
+    ("P03_entrance", "photo_entrance", "西山公園の エントランス広場 (写真)"),
+    ("P02b_meganetokei_clock", "photo_meganetokei_clock", "めがね時計の 時計の レンズ (写真。文字盤の 社名は ぼかした)"),   # ★S55 の 1 場面目 (両方の レンズを 見せると 振りを 先に 崩す。見直し r9 H9)
+    ("P02_meganetokei", "photo_meganetokei", "めがね時計 (写真。文字盤の 社名は ぼかした)"),
+    ("meganetokei_ura", "photo_meganetokei", "めがね時計の 裏 (写真)"),
+    ("A04_meganetokei_lens", "photo_meganetokei_lens", "めがね時計の もう片方の レンズ (写真)"),
+    ("P08_fountain", "photo_fountain", "大噴水 (写真)"),
+    ("A07_tsutsuji_slope", "photo_tsutsuji_slope", "つつじの 斜面 (11 月。写真)"),
+    ("P09_east_gate", "photo_east_gate", "西山公園の 東側の 入口 (写真)"),
+    ("P13_parking", "photo_parking", "西山公園の 駐車場 (写真)"),   # ★場所は 推定 (言い切らない。見直し r9)
+    ("P13b_parking_from_bridge", "photo_parking", "嚮陽会館前の 駐車場 (道の駅と 公園を つなぐ 通路から。写真)"),   # ★IMG_1261 (場所は 撮影者に確認)
+    ("P14_baseball", "photo_baseball", "西山公園の 野球場 (写真。看板の 連絡先は ぼかした)"),
+]
+OWN_PHOTO_CREDIT = "写真: Mugi-mugi-Mugi (CC BY 4.0)"
 OWN_CREDIT = "イラスト: Mugi-mugi-Mugi (CC BY 4.0)"
 
 
@@ -293,8 +300,9 @@ CROP43 = {
 
 # ★札に 使う 群 (2026-11-20。札の 写真の 割り当ての 手順書 = 作業メモ)。★つつじ・紅葉は 前から ある (GROUPS)
 CARD_FROM_SMALL = ["panda", "kyoyo_teien", "furui_ski", "murakami", "illumination_sa", "nishiyama_sakura",
-                   "illust_east_gate", "illust_kopanda", "illust_parking", "illust_meganetokei", "illust_inori2",
-                   "illust_koryu", "illust_michinoeki", "illust_fountain_am", "illust_baseball", "illust_pandabench"]
+                   "photo_east_gate", "photo_kopanda", "photo_parking", "photo_meganetokei", "photo_inori",
+                   "photo_koryu", "photo_michinoeki", "photo_fountain", "photo_baseball", "photo_pandabench",
+                   "photo_ainokane", "photo_north_garden"]   # ★2026-11-23 イラスト → 写真。★パンダらんどの 札は 当たる 席が 無いので 外した (見直し r9 B-8)
 
 
 def shrink(path, width, band=BAND):
@@ -410,6 +418,13 @@ def main():
             continue
         g = small.setdefault(key, {"credit": OWN_CREDIT, "url": "", "shots": []})
         g["shots"].append(dict(shrink_small(src), credit=OWN_CREDIT, url="", label=label))
+    for name, key, label in OWN_PHOTOS:       # ★現地で 撮った 写真 (2026-11-23)
+        src = P("data", "raw", OWN_PHOTO_DIR[0], OWN_PHOTO_DIR[1], name + "_fixed.jpg")
+        if not os.path.exists(src):
+            print("  見つからない:", src)
+            continue
+        g = small.setdefault(key, {"credit": OWN_PHOTO_CREDIT, "url": "", "shots": []})
+        g["shots"].append(dict(shrink_small(src), credit=OWN_PHOTO_CREDIT, url="", label=label))
     man = ext_manifest()
     for fn, key in EXT:                       # ★外部の 自由に 使える 写真 (1 枚ずつ 条件を 確かめた もの)
         src = P("data", "raw", "ext_20261114", fn)
@@ -446,7 +461,7 @@ def main():
         g = small.get(k)
         if not g or k in out:
             continue
-        w = 640 if k == "panda" else WIDTH
+        w = 640 if (k == "panda" or k.startswith("photo_")) else WIDTH   # ★2026-11-23 現地で 撮った 写真の 札も 640 で 軽く (作者の判断「容量 重いので 軽く」)
         cs = []
         for s in g["shots"]:
             if not s.get("_src") or not os.path.exists(s["_src"]):

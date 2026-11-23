@@ -133,6 +133,9 @@ function runPass(seed, date, word, kin, viaList, plan, opt) {
   let bootErr = null;
   try {
     load(bundleSrc); load(keysSrc); load(kinSrc);
+    // ★2026-11-23: 本物の 台帳で G1・G2 が「現地で 確かめた」に なった。★試験は 謎かけを 出さない 状態を 基準に し (opt.keepGenchi で 本物の まま)、
+    //   ★謎かけを 試す ときだけ 下で 個別に 確かめた ことに する
+    if (!opt.keepGenchi) (win.HANASHI.genchi || []).forEach((g) => { g.verified_onsite = null; });
     // ★現地の 謎かけを 試すときだけ「現地で 確かめた」ことに する (★本物の 台帳は 触らない)
     (opt.verify || []).forEach((id) => { const g = win.HANASHI.genchi.find((x) => x.id === id); if (g) g.verified_onsite = "2026-11-20"; });
     // ★台本を 試しに 書き換える (★図の 場面・img2 の ように まだ 台本に 無い 形を 試す。★本物は 触らない)
@@ -508,6 +511,13 @@ ok(std.loaded.every((s) => /^data\/img\/[a-z_]+\.js$/.test(s)) && std.loaded.len
 ok(std.loaded.some((s) => /card_/.test(s)), "札の 写真の 群も 読んだ");
 ok(std.byId.shinko.hidden === false && /now|done/.test(std.byId.stg2.className), "進みぐあい (まくら → 本題 → サゲ) が 出て サゲまで 進む");
 
+// ★2026-11-23 謎かけ (本物の 台帳): G1・G2・G3 は 日付あり / G2b・G4 は まだ。★ここは 台帳の 突き合わせ だけ (本物の まま 通す 試験は test_motion ㉔・㉕)
+{
+  const HB0 = (() => { const w = {}; new Function("window", bundleSrc)(w); return w.HANASHI; })();
+  const gv = Object.fromEntries((HB0.genchi || []).map((g) => [g.id, g.verified_onsite]));
+  ok(gv.G1 === "2026-11-23" && gv.G2 === "2026-11-23" && gv.G3 === "2026-11-23" && gv.G2b == null && gv.G4 == null,
+     "本物の 台帳: G1・G2・G3 は 2026-11-23 (G3 は 作者の判断) / G2b・G4 は まだ (" + JSON.stringify(gv) + ")");
+}
 // ★P1-1 現地の 二席目。★確かめていない (verified_onsite = null) 謎かけは 出さない
 ok(!/西山公園に置いてまいりました/.test(std.talkText), "現地で 確かめていない 謎かけは 出さない");
 const gj = runPass(0, "2026-09-23", "赤", "", false, ["いや、べつに", "県外から", "関東", "茨城県", "思う"], { verify: ["G1"] });
@@ -1487,6 +1497,8 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
        "  4.0 の 写真の 札だけ「(一部を切り出して使用)」(見直し B-1。2.1 JP は 付けない: " + j21.slice(0, 30) + "…)");
     ok(/札も CC BY-SA 4\.0/.test(sa) && /by-sa\/4\.0/.test(sa), "  継承 (BY-SA) の 写真なら 札も BY-SA と 書く");
     ok(/cardCredit\(img\.credit\)/.test(fs3), "  札の 描画は cardCredit を 使う");
+    const own = "写真: Mugi-mugi-Mugi (CC BY 4.0)";
+    ok(cc(own) === own && C3.shortCredit(own) === own, "  現地で 撮った 写真 (作者 本人) の 札・隅書きは「写真: Mugi-mugi-Mugi (CC BY 4.0)」だけ (二重に しない: " + cc(own) + " / " + C3.shortCredit(own) + ")");
   }
   // ★2026-11-22 作者の判断: 札の 下の ボタンは 横一列 (字は ボタンの 中で 折り返して よい)。「オチの文を写す」は 外した
   {

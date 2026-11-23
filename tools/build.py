@@ -1345,7 +1345,7 @@ def build_today(rows, row_src=None):
         today[md][-1]["scenes"][0]["img"] = (
             "panda@" + short_name(oldest["個体名"])
             if short_name(oldest["個体名"]) in pnames and short_name(oldest["個体名"]) not in PHOTO_NAME_UNSURE
-            else ("illust_zoo_gate_summer" if 5 <= m <= 8 else "illust_zoo_gate"))
+            else ("illust_zoo_gate_summer" if 5 <= m <= 8 else "photo_zoo_gate"))
 
     # 2) 暦に固定された話 (事実台帳の日付だけ)
     today["11-28"].append({
@@ -1354,7 +1354,7 @@ def build_today(rows, row_src=None):
         #   言い直しで、「命日」も 題・振りで 先に 出ていた)。★作者の判断 = B 案「この山」で 落とす。
         #   ★問いは 松陰 (ひっくり返しに 触れない)。★ひっくり返し (悪役 → 領民の 庭を 自ら 開いた人) は サゲで 初めて 出す。
         #   ★「今日が 命日」は 追い足しで 言う。★本題の「造らせた」は 出典 (F01「自ら鋤や鍬を持って」) と 食い違うので やめた
-        "scenes": [{"head": "のんびり見えた殿様", "from": 0, "to": 2, "img": "illust_bust", "label": "幕末の 老中の 胸像 (イラスト。姿は 想像)"}, {"head": "京で取り締まりを指揮した役目", "from": 3, "to": 4}, {"head": "狙われた人の、その後", "from": 5, "to": 6}],
+        "scenes": [{"head": "のんびり見えた殿様", "from": 0, "to": 2, "img": "photo_bust", "label": "幕末の 老中の 胸像 (写真)"}, {"head": "京で取り締まりを指揮した役目", "from": 3, "to": 4}, {"head": "狙われた人の、その後", "from": 5, "to": 6}],
         "id": "T-1128",
         "ochiType": "反転",
         "zekai": "ドンデン",
@@ -1652,7 +1652,7 @@ def build_today(rows, row_src=None):
             {"who": "客", "text": "終わりまで書いてあるんだ。"},
         ],
         "scenes": [
-            {"head": "昼過ぎの晴れ舞台", "from": 0, "to": 0, "img": "illust_zoo_gate"},
+            {"head": "昼過ぎの晴れ舞台", "from": 0, "to": 0, "img": "photo_zoo_gate"},
             {"head": "秋生まれではない子", "from": 1, "to": 2},
             {"head": "貼り紙に書かれた時刻", "from": 3, "to": 4},
         ],
@@ -1679,30 +1679,34 @@ CARD_RULES = [
     (r"スキー場", "furui_ski"),
     (r"村上|姉妹都市|もとの領地", "murakami"),
     (r"はじまりの庭|嚮陽|殿様の家|間部", "kyoyo_teien"),
-    (r"こぱんだらんど", "illust_kopanda"),
-    (r"パンダらんど|遊具", "illust_pandarando3"),
-    (r"ベンチ", "illust_pandabench"),
-    (r"時計", "illust_meganetokei"),
-    (r"噴水", "illust_fountain_am"),
-    (r"駐車場", "illust_parking"),
-    (r"野球場", "illust_baseball"),
-    (r"貸し部屋|交流室", "illust_koryu"),
-    (r"道の駅", "illust_michinoeki"),
-    (r"祈りの道|お地蔵|ドラえもん", "illust_inori2"),
+    (r"愛の鐘", "photo_ainokane"),          # ★2026-11-23 現地の 写真 (★場面には 出さない: 「鐘で ない」が オチを 先に 言う)
+    (r"北の庭|花菖蒲", "photo_north_garden"),
+    (r"こぱんだらんど", "photo_kopanda"),
+    (r"パンダらんど|遊具", "photo_pandarando"),
+    (r"ベンチ", "photo_pandabench"),
+    (r"時計", "photo_meganetokei"),
+    (r"噴水", "photo_fountain"),
+    (r"貸し部屋|交流室", "photo_koryu"),
+    (r"道の駅", "photo_michinoeki"),          # ★駐車場より 先 (S43 = 道の駅の 駐車場。見直し r9 B-7)
+    (r"駐車場", "photo_parking"),
+    (r"野球場", "photo_baseball"),
+    (r"祈りの道|お地蔵|ドラえもん", "photo_inori"),
     (r"新幹線", "shinkansen"),
     (r"恐竜", "dino"),
     (r"サンドーム|イルミネーション|冬の", "illumination_sa"),
     (r"もみじ|紅葉", "koyo"),
     (r"さくら|桜", "nishiyama_sakura"),
     (r"つつじ", "tsutsuji"),
-    (r"人出|人の数|来訪|推し量", "illust_east_gate"),
+    (r"人出|人の数|来訪|推し量", "photo_east_gate"),
     (r"レッサーパンダ|西山動物園", "panda"),
 ]
 
 
 # ★札に 出さない 群 (席ごと)。★S07 の 札の めがね時計の 絵は 赤い 縁 = 現地の 謎かけ G1「あのふち、何色」の 答えを
 #   先に 見せる (見直し)。★G1 に 答えた あとに 開く S55 は そのまま
-CARD_NOT = {"S07": {"illust_meganetokei"}}
+CARD_NOT = {"S07": {"photo_meganetokei"},
+            # ★愛の鐘の 写真 (スピーカーの 塔) は S57 の 札 だけ (S30・S46 の 札に 出すと S57 の オチ「鐘で ない、マリンバ」を 先に 見せる。見直し r9)
+            "S30": {"photo_ainokane"}, "S46": {"photo_ainokane"}}
 
 
 def attach_card_img(all_stories):

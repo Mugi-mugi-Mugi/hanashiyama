@@ -602,7 +602,7 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   const b1 = (a.win._scrollBy || []).length;
   for (let k = 0; k < 40; k += 1) { a.byId.talk.children.forEach((c) => { c.getBoundingClientRect = low; }); a.advance(50); }
   const s2 = (a.win._scrollBy || []).slice(b1).filter((d) => d > 0);
-  ok(s2.some((d) => d >= 30), "㉑ いちばん 新しい 行が 画面から 落ちそうなら すぐ 送る (" + s2.slice(0, 3).join(",") + ")");
+  ok(s2.length > 0 && s2.every((d) => d >= 30 && d <= 36), "㉑ 新しい 行が 画面から 落ちそうなら 落ちる ぶん (30px) + 6px まで すぐ 送る (見直し r9 H2: 上限を 丸ごと 外さない。" + s2.slice(0, 3).join(",") + ")");
 }
 
 // ㉒ 札を 渡した あと (「お持ち帰りを」の 一言の あと) 画面を 半分 ほど 下へ 送る (2026-11-22 見直しの 声「下へ スクロールしないと 出てこない」)
@@ -617,6 +617,72 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   const s = (a.win._scrollBy || []).slice(b0);
   const told = a.talkEls().some((c) => /この札を お持ち帰りを/.test(txt(c)));
   ok(told && s.indexOf(400) >= 0, "㉒「お持ち帰りを」の あと 画面の 半分 (400px) 下へ 送る (" + s.filter((d) => d > 0).join(",") + ")");
+}
+
+// ㉓ 節目で 見出しの 枠 (見出し・図) の 高さが 変わっても 語りを 動かさない (2026-11-23 見直しの 声「節目で 飛ぶ」)
+{
+  const a = mk({ date: "2026-11-28" });
+  // ★模擬の 枠の 高さ = 見出しが 出ていれば 30 + 図が 出ていれば 300
+  Object.defineProperty(a.byId.kozahead, "offsetHeight", { get: () => (a.byId.midashi.hidden ? 0 : 30) + (a.byId.zu.hidden ? 0 : 300) });
+  a.click("open"); a.settle();
+  a.win.scrollY = 500; a.fireWin("scroll");
+  const b0 = (a.win._scrollBy || []).length;
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  const m0 = a.byId.midashi.hidden;
+  for (let k = 0; k < 400 && a.byId.midashi.hidden; k += 1) { a.win.scrollY = 5000; a.advance(20); }
+  const s = (a.win._scrollBy || []).slice(b0);
+  ok(m0 === true && !a.byId.midashi.hidden && s.indexOf(30) >= 0, "㉓ 見出しが 出て 枠が 30px 高く なったら、画面も 30px 合わせる (" + s.filter((d) => d !== 0).slice(0, 5).join(",") + ")");
+}
+
+// ㉔ 本物の 台帳 (2026-11-23 から G1・G2 が 出る) の まま 実演の 筋: 一席目の 札の あと 謎かけが 出て も「もう一席」で 二席目へ 進める
+{
+  const a = mk({ date: "2026-11-28", keepGenchi: true });
+  a.click("open"); a.settle();
+  const first = a.labels();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
+  a.pick("吉田松陰"); a.settle();
+  const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.pick(want); a.settle();
+  const riddle = a.talkEls().some((c) => /めがねの形の時計/.test(txt(c))) && a.labels().indexOf("(form)") >= 0;
+  a.click("again"); a.settle();
+  const sh = a.shown();
+  ok(first.indexOf("いま、公園におります") >= 0, "㉔ 本物の 台帳でも 最初の 問いに「いま、公園におります」(" + first.join("/") + ")");
+  ok(riddle && sh[0] === "T-1128" && sh[1] === "P-埼玉県" && a.errors.length === 0,
+     "㉔ 一席目の 札の あと G1 の 謎かけが 出て、「もう一席」で 二席目 P-埼玉県 へ (" + sh.join(">") + ")");
+}
+
+// ㉕ 謎かけで 札が 押し出されても 画面から 消さない (2026-11-23 作者の判断「画面から 消えない 程度なら 押し出して よい」。見直し r9 H1)
+{
+  const a = mk({ date: "2026-11-28", keepGenchi: true });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
+  a.pick("吉田松陰"); a.settle();
+  a.byId.sageBox.getBoundingClientRect = () => ({ top: 900, bottom: 1500, left: 0, right: 100, width: 100, height: 600 });   // ★謎かけの 文で 札が 画面の 下 (800) より 外へ
+  const b0 = (a.win._scrollBy || []).length;
+  const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.pick(want); a.settle();
+  const s = (a.win._scrollBy || []).slice(b0);
+  const riddle = a.labels().indexOf("(form)") >= 0;
+  ok(riddle && s.indexOf(240) >= 0, "㉕ 謎かけの 欄が 出た あとも 札の 上 140px が 画面に 残る ように 送る (900 → 660。" + s.filter((d) => d > 0).slice(0, 6).join(",") + ")");
+}
+
+// ㉖ 読み返し中は 札を 見せる 送り (半分) も しない (見直し r9 H3。「読み返している 間は 引き戻さない」)
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰"); a.settle();
+  a.byId.sageBox.getBoundingClientRect = () => ({ top: 900, bottom: 1500, left: 0, right: 100, width: 100, height: 600 });
+  a.win.scrollY = 3000; a.fireWin("scroll"); a.advance(1500);
+  a.fireWin("wheel", { deltaY: -120 }); a.win.scrollY = 2700; a.fireWin("scroll");
+  const b0 = (a.win._scrollBy || []).length;
+  const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.fireWin("wheel", { deltaY: -120 });
+  // ★選択肢を 押すと 追い直す (H1 の 直し) ので、押した あとに もう一度 上へ 戻して 読み返し中に する
+  a.pick(want); a.advance(50); a.fireWin("wheel", { deltaY: -120 }); a.win.scrollY = (a.win.scrollY || 0) - 300; a.fireWin("scroll");
+  a.settle();
+  const s = (a.win._scrollBy || []).slice(b0);
+  ok(a.byId.tsuzuki.hidden === false && s.indexOf(400) < 0, "㉖ 読み返し中は「お持ち帰りを」の あとの 半分の 送り (400px) を しない (" + s.filter((d) => d > 0).slice(0, 5).join(",") + ")");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");

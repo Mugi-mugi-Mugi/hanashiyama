@@ -127,7 +127,7 @@ function makeApp(opt) {
   };
   const sizes = opt.sizes || null;              // class → px (打ち出しの 速さの 見積もり)
   const win = {
-    scrollTo(x, y) { (this._scrollTo = this._scrollTo || []).push([x, y]); this.scrollY = y; }, scrollBy(a, b) { const dy = typeof a === "object" ? a.top : b; this.scrollY = (this.scrollY || 0) + (dy || 0); (this._scrollBy = this._scrollBy || []).push(dy); }, innerHeight: 800, scrollY: 0,
+    scrollTo(x, y) { const yy = typeof x === "object" ? x.top : y; (this._scrollTo = this._scrollTo || []).push([0, yy]); this.scrollY = yy; }, scrollBy(a, b) { const dy = typeof a === "object" ? a.top : b; this.scrollY = (this.scrollY || 0) + (dy || 0); (this._scrollBy = this._scrollBy || []).push(dy); }, innerHeight: 800, scrollY: 0,
     handlers: {}, addEventListener(n, f) { (this.handlers[n] = this.handlers[n] || []).push(f); },   // ★2026-11-22 追従の 試験 (scroll・wheel を 起こす)
       // ★scrollTo は 記録する (もう一席で 頭へ 戻すかを 見る) confirm: () => (opt.confirm !== false),
     matchMedia: (qq) => ({ matches: (!!opt.reduce && /prefers-reduced-motion:\s*reduce/.test(qq)) || (!!opt.mobile && /max-width/.test(qq)) }),
@@ -151,6 +151,8 @@ function makeApp(opt) {
   let bootErr = null;
   try {
     load(SRC.bundle); load(SRC.keys); load(SRC.kin);
+    // ★2026-11-23: 本物の 台帳で G1・G2 が 確かめ 済みに なった。★試験は 謎かけを 出さない 状態が 基準 (opt.keepGenchi で 本物の まま)
+    if (!opt.keepGenchi && win.HANASHI && win.HANASHI.genchi) win.HANASHI.genchi.forEach((g) => { g.verified_onsite = null; });
     if (opt.patch) opt.patch(win);
     load(opt.srcPatch ? opt.srcPatch(SRC.app) : SRC.app);
   } catch (e) { bootErr = e; }
