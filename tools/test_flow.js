@@ -1500,6 +1500,13 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
     const own = "写真: Mugi-mugi-Mugi (CC BY 4.0)";
     ok(cc(own) === own && C3.shortCredit(own) === own, "  現地で 撮った 写真 (作者 本人) の 札・隅書きは「写真: Mugi-mugi-Mugi (CC BY 4.0)」だけ (二重に しない: " + cc(own) + " / " + C3.shortCredit(own) + ")");
   }
+  // ★2026-11-24 作者の判断: 高座の 上に 定式幕 (黒・萌黄・柿) を 画面の 1/8 ほど 残す。見出しの 枠は その 下に 付く
+  {
+    const css5 = fs.readFileSync(path.join(ROOT, "app", "style.css"), "utf8");
+    ok(/<div class="maku-band" aria-hidden="true"><\/div>/.test(HTML) && /--makuh: 12\.5dvh/.test(css5) && /\.maku-band \{[^}]*position: fixed[^}]*height: var\(--makuh\)/.test(css5)
+       && /\.kozahead \{ top: var\(--makuh\); \}/.test(css5) && /\.koza \{ padding-top: calc\(16px \+ var\(--makuh\)\); \}/.test(css5),
+       "高座の 上に 幕の 帯 (画面の 1/8・固定・読み上げない)、見出しの 枠と 中身は その 下");
+  }
   // ★2026-11-22 作者の判断: 札の 下の ボタンは 横一列 (字は ボタンの 中で 折り返して よい)。「オチの文を写す」は 外した
   {
     const css4 = fs.readFileSync(path.join(ROOT, "app", "style.css"), "utf8");

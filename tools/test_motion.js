@@ -605,18 +605,19 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   ok(s2.length > 0 && s2.every((d) => d >= 30 && d <= 36), "㉑ 新しい 行が 画面から 落ちそうなら 落ちる ぶん (30px) + 6px まで すぐ 送る (見直し r9 H2: 上限を 丸ごと 外さない。" + s2.slice(0, 3).join(",") + ")");
 }
 
-// ㉒ 札を 渡した あと (「お持ち帰りを」の 一言の あと) 画面を 半分 ほど 下へ 送る (2026-11-22 見直しの 声「下へ スクロールしないと 出てこない」)
+// ㉒ 最後の 問いに 答えたら その 問いを 見出しの すぐ 下へ 送り、下の 札を 大きく 見せる (2026-11-24 作者の判断。前は「お持ち帰りを」の あと 画面の 半分)
 {
   const a = mk({ date: "2026-11-28" });
   toFirstSeat(a); a.settle();
   a.pick("吉田松陰"); a.settle();
-  a.byId.sageBox.getBoundingClientRect = () => ({ top: 900, bottom: 1500, left: 0, right: 100, width: 100, height: 600 });
+  const q = a.talkEls().filter((c) => /行ってみたい気持ちは/.test(txt(c))).pop();
+  q.getBoundingClientRect = () => ({ top: 700, bottom: 740, left: 0, right: 100, width: 100, height: 40 });   // ★見出しの 下端は 100 (模擬)
   const b0 = (a.win._scrollBy || []).length;
   const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
   a.pick(want); a.settle();
   const s = (a.win._scrollBy || []).slice(b0);
   const told = a.talkEls().some((c) => /この札を お持ち帰りを/.test(txt(c)));
-  ok(told && s.indexOf(400) >= 0, "㉒「お持ち帰りを」の あと 画面の 半分 (400px) 下へ 送る (" + s.filter((d) => d > 0).join(",") + ")");
+  ok(told && s.indexOf(592) >= 0 && s.indexOf(400) < 0, "㉒ 最後の 問いに 答えたら 問いを 見出しの 下 (108) へ 送る (700 → 108 = 592px)・半分の 送りは しない (" + s.filter((d) => d > 0).slice(0, 5).join(",") + ")");
 }
 
 // ㉓ 節目で 見出しの 枠 (見出し・図) の 高さが 変わっても 語りを 動かさない (2026-11-23 見直しの 声「節目で 飛ぶ」)
@@ -667,22 +668,21 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   ok(riddle && s.indexOf(240) >= 0, "㉕ 謎かけの 欄が 出た あとも 札の 上 140px が 画面に 残る ように 送る (900 → 660。" + s.filter((d) => d > 0).slice(0, 6).join(",") + ")");
 }
 
-// ㉖ 読み返し中は 札を 見せる 送り (半分) も しない (見直し r9 H3。「読み返している 間は 引き戻さない」)
+// ㉖ 札を 見せた あと 読み返しに 入ったら、札まわりの 送り (cardPeek ほか) を しない (見直し r9 H3。「読み返している 間は 引き戻さない」)
 {
-  const a = mk({ date: "2026-11-28" });
-  toFirstSeat(a); a.settle();
+  const a = mk({ date: "2026-11-28", keepGenchi: true });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
   a.pick("吉田松陰"); a.settle();
   a.byId.sageBox.getBoundingClientRect = () => ({ top: 900, bottom: 1500, left: 0, right: 100, width: 100, height: 600 });
-  a.win.scrollY = 3000; a.fireWin("scroll"); a.advance(1500);
-  a.fireWin("wheel", { deltaY: -120 }); a.win.scrollY = 2700; a.fireWin("scroll");
-  const b0 = (a.win._scrollBy || []).length;
   const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
-  a.fireWin("wheel", { deltaY: -120 });
-  // ★選択肢を 押すと 追い直す (H1 の 直し) ので、押した あとに もう一度 上へ 戻して 読み返し中に する
-  a.pick(want); a.advance(50); a.fireWin("wheel", { deltaY: -120 }); a.win.scrollY = (a.win.scrollY || 0) - 300; a.fireWin("scroll");
+  a.pick(want); a.advance(1300);
+  a.fireWin("wheel", { deltaY: -120 }); a.win.scrollY = (a.win.scrollY || 0) - 300; a.fireWin("scroll");
+  const paused = a.byId.tsuzuki.hidden === false;
+  const b0 = (a.win._scrollBy || []).length;
   a.settle();
-  const s = (a.win._scrollBy || []).slice(b0);
-  ok(a.byId.tsuzuki.hidden === false && s.indexOf(400) < 0, "㉖ 読み返し中は「お持ち帰りを」の あとの 半分の 送り (400px) を しない (" + s.filter((d) => d > 0).slice(0, 5).join(",") + ")");
+  const s = (a.win._scrollBy || []).slice(b0).filter((d) => d > 0);
+  ok(paused && s.length === 0, "㉖ 読み返し中は 謎かけの 文が 足されても 札まわりの 送りを しない (読み返し " + paused + " / 送り " + s.slice(0, 5).join(",") + ")");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");
