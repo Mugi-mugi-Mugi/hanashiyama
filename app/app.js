@@ -3223,8 +3223,23 @@
       say("その場所へ 行けば 分かる 謎かけを、ひとつ。", "shi", () => askRiddle(n.spot)));
   }
 
-  function askRiddle(spot) {
+  /** ★謎かけに 答えた あと (外れて 言い直した・「いまは よしておく」)、★札が 見える ところ (札の 下の ボタンまで) まで 送る。
+   *  ★ただし 謎かけの お題 (toiEl) が 見出しの すぐ 下に 来たら そこで 止める (2026-11-24 作者の判断
+   *  「答えた 後で 札が 見えなく なる → なぞかけの お題を 一番 上に して、札が 見える ところまで スクロール」)。
+   *  ★読み返し中は 送らない */
+  function riddleAndCard(toiEl) {
+    try {
+      const box = $("sageBox");
+      if (!toiEl || !box || box.hidden || !follow.on) return;
+      const toTop = Math.round(toiEl.getBoundingClientRect().top - (headBottom() + 8));
+      const need = Math.round(box.getBoundingClientRect().bottom - (footTop() - 8));
+      const dy = Math.min(toTop, need);
+      if (dy > 0) autoScrollBy(dy, !lessMotion());
+    } catch (e) {}
+  }
+  function askRiddle(spot, again) {
     say(spot.riddle, "shi toi", () => {
+      const toiEl = $("talk").lastElementChild;     // ★この 謎かけの お題の 行
       const box = $("choices");
       box.innerHTML = "";
       const form = document.createElement("form");
@@ -3262,15 +3277,20 @@
         if (Core.riddleOk(spot, v)) return unlock(spot);
         log("genchi_miss", null, { spot: spot.id });
         // ★「惜しい」では なく ★ヒントを 一つ
-        say("それが、違うんで。ヒントを ひとつ。" + (spot.hint || ""), "shi", () => askRiddle(spot));
+        say("それが、違うんで。ヒントを ひとつ。" + (spot.hint || ""), "shi", () => askRiddle(spot, true));
       });
       later.addEventListener("click", () => {
         clearChoices();
         state.readChars = 0;
         // ★2026-11-20: 「幕の 上の」は 画面の 上の ほうと 読めた → ★どこに 出るかを 言う
-        say("結構でございます。続きは、いつか 現地で。札の 下か、次に 開いた ときの 最初の 画面の「現地の謎かけに答える」から、いつでも どうぞ。", "shi", refreshGenchi);
+        say("結構でございます。続きは、いつか 現地で。札の 下か、次に 開いた ときの 最初の 画面の「現地の謎かけに答える」から、いつでも どうぞ。", "shi", () => {
+          refreshGenchi();
+          requestAnimationFrame(() => riddleAndCard(toiEl));   // ★答えた あと: お題を 上限に 札が 見える ところまで
+        });
       });
-      scroll();
+      // ★外れて 言い直した ときは お題を 上限に 札が 見える ところまで (★はじめて 出す ときは ふだんの 追従)
+      if (again) requestAnimationFrame(() => riddleAndCard(toiEl));
+      else scroll();
     });
   }
 
