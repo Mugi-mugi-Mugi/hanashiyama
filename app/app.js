@@ -1932,7 +1932,25 @@
     const h0 = (hd && hd.offsetHeight) || 0;
     fn();
     const d = ((hd && hd.offsetHeight) || 0) - h0;
-    if (d && scrollY() > 0) autoScrollBy(d, false);
+    if (!d || !(scrollY() > 0)) return;
+    autoScrollBy(d, false);
+    if (d > 0 && follow.on) unhideLatest(d);
+  }
+  /** ★枠が 伸びた (図が 出た・見出しが 2 行) とき、★流れていた 行を 伸びた 枠の 裏に 置かない
+   *  (2026-11-24 見直しの 声「途中に 表が 入った 際に、今 流していた 文字が 隠れた」)。
+   *  ★位置を 保つ 補正 (上の d) は、語りが 画面の 上の ほうに ある とき (席の 頭など)、その 行を 図の 裏へ 入れていた。
+   *  ★いちばん 新しい 行が 画面の 下の 置き場に 来る まで、★補正した ぶん (d) を 上限に なめらかに 戻す
+   *  (★画面が 語りで 埋まって いる ときは 戻す 幅が 0 = 今までと 同じ) */
+  function unhideLatest(d) {
+    try {
+      const kids = $("talk").children;
+      let last = $("choices").lastElementChild;
+      for (let i = kids.length - 1; !last && i >= 0; i -= 1) if (!hasCls(kids[i], "sr")) last = kids[i];
+      if (!last) return;
+      const goal = window.innerHeight - bottomRoom(hasCls($("koza"), "haikei-on") ? 140 : 90);
+      const back = Math.min(d, Math.round(goal - last.getBoundingClientRect().bottom));
+      if (back > 0) autoScrollBy(-back, !lessMotion());
+    } catch (e) {}
   }
   /** 見出し (★高座の 上に 残る 1 行)。★空なら 隠す */
   function setMidashi(text) {
@@ -2864,18 +2882,24 @@
       loadImg(["card_" + ((state.photo && state.photo.ck) || cardKey(st))], () => showCard(st)));
   }
 
-  /** ★札を 渡した あと (「お持ち帰りを」の 一言の あと)、画面を 半分 ほど 下へ 送って 札を 見せる
-   *  (2026-11-22 見直しの 声「下へ スクロールしないと 出てこない」。★札は 選択肢の 下に あり、追従は 語りと 選択肢しか 見ていなかった)。
-   *  ★札の 上端が 見出しの 下に 来たら そこで 止める (送りすぎない) */
-  function revealCard() {
+  /** ★札を 渡す 一言 (「お持ち帰りを」) を 言い終えて ★間を 空けて から、★札の 上端を 見出しの すぐ 下へ なめらかに 送る
+   *  (2026-11-24 作者の案「最後、全部 文字出しが 終わって 間を 空けて、札を 画面 上部まで スクロール」。
+   *  ★謎かけが 出る 筋は「謎かけの 前に 札を 上へ」= 作者の判断。謎かけの 文は 札の 上に 足され、札を 下へ 押す (cardPeek で 上 140px は 残す))。
+   *  ★前の 2 案 (2026-11-22「お持ち帰りを」の あと 画面の 半分 / 2026-11-24 朝 最後の 問いを 見出しの 下へ) は やめた。
+   *  ★読み返し中は 送らない (見直し r9 H3)。★札は 見せた ことに する */
+  const CARD_MA = 1500, CARD_GO = 700;   // ★言い終えて から 送る までの 間 / 送って から 謎かけの 文 までの 間 (★どちらも タップで 飛ばせる)
+  function cardToTop() {
     try {
-      const box = $("sageBox");
-      if (!box || box.hidden || !follow.on) return;   // ★読み返し中は 引き戻さない (見直し r9 H3)
       state.cardShown = true;
-      const top = box.getBoundingClientRect().top;
-      const dy = Math.min(Math.round(window.innerHeight * 0.5), Math.round(top - (headBottom() + 8)));
+      const box = $("sageBox");
+      if (!box || box.hidden || !follow.on) return;
+      const dy = Math.round(box.getBoundingClientRect().top - (headBottom() + 8));
       if (dy > 0) autoScrollBy(dy, !lessMotion());
     } catch (e) {}
+  }
+  function handOver(st) {
+    say("よろしければ、この札を お持ち帰りを。「この札をもらう」で、お手元に 残ります。", "shi", () =>
+      matsu(CARD_MA, () => { cardToTop(); matsu(CARD_GO, () => offerGenchi(st)); }));
   }
   /** ★札を 一度 見せた あとは、謎かけの 文などで 下へ 押し出されても ★画面から 消さない (上の CARD_PEEK px は 見えている)
    *  (2026-11-23 作者の判断「画面から 消えない 程度で 札を 下へ 押し出すのは OK」。見直し r9 H1: 謎かけで 札が 画面の 外へ 押し戻されていた) */
@@ -2887,16 +2911,6 @@
       const top = box.getBoundingClientRect().top;
       const lim = window.innerHeight - CARD_PEEK;
       if (top > lim) autoScrollBy(Math.round(top - lim), !instant && !lessMotion());
-    } catch (e) {}
-  }
-  /** ★最後の 問いの 行を 見出しの すぐ 下へ 送る (なめらかに)。★その 下に 札が 大きく 見える (2026-11-24 作者の判断)。
-   *  ★読み返し中は 送らない。★札は 見せた ことに する (謎かけの 文で 押し出されても cardPeek で 消さない) */
-  function showQuestionAndCard(qEl) {
-    try {
-      state.cardShown = true;
-      if (!qEl || !follow.on || $("sageBox").hidden) return;
-      const dy = Math.round(qEl.getBoundingClientRect().top - (headBottom() + 8));
-      if (dy > 0) autoScrollBy(dy, !lessMotion());
     } catch (e) {}
   }
   function showCard(st) {
@@ -2913,7 +2927,7 @@
       // ★2026-11-20 作者の判断: ★もう 公園に いる 人 (謎かけで 開いた 現地の 席 / 最初に「いま、公園におります」) には
       //   「行ってみたい気持ち」を 聞かない。★札 → 次の 謎かけへ。★来訪は 謎かけに 当たった 記録で 測る
       if (st.genchi || state.onsite) {
-        return say("よろしければ、この札を お持ち帰りを。「この札をもらう」で、お手元に 残ります。", "shi", () => { revealCard(); offerGenchi(st); });
+        return handOver(st);
       }
       // ★二席目 からは「さきほどは、「…」で」(2026-11-20。前の 席の 終わりにも 伺って いるので「はじめに」では 合わない)
       //   ★2026-11-21: 何も 伺って いない 回 (前の 答えが 無い) に「はじめに、お気持ちを伺いました」と 言わない
@@ -2922,7 +2936,6 @@
       const sayFirst = (f) => (first ? say(first, "shi", f) : f());
       sayFirst(() =>
         say("いま、いかがです。西山公園、行ってみたい気持ちは。", "shi", () => {
-        const qEl = $("talk").lastElementChild;      // ★この 問いの 行 (答えた あと ここまで 送って 札を 大きく 見せる)
         return ask(
           [
             { label: "やっぱり、べつに", value: 1 },
@@ -2930,7 +2943,6 @@
             { label: "行ってみたい", value: 5 },
           ],
           (v, label) => {
-            showQuestionAndCard(qEl);                 // ★2026-11-24 作者の判断: 最後の 問いに 答えたら その 問いまで 送り、下の 札を 大きく 見せる
             const d = state.q0 == null ? null : v - state.q0;
             log("q1", st, { value: v });
             if (d != null) log("delta", st, { delta: d, before: state.q0, after: v });
@@ -2943,8 +2955,7 @@
               : d === 0 && v >= 5 ? "変わらず、行ってみたいと。ありがたいことで。"
               : d === 0 ? "動きませんか。精進いたします。" : "しくじりました。次で挽回を。";
             // ★「お持ちを」だけでは 何を 持つか 分からない (2026-11-15 見直し) → 札だと 言う
-            // ★札は もう 見えている (問いまで 送った) ので、ここでは 半分の 送り (revealCard) を しない (問いが 画面の 上に 隠れる)
-            say(r, "shi", () => say("よろしければ、この札を お持ち帰りを。「この札をもらう」で、お手元に 残ります。", "shi", () => offerGenchi(st)));
+            say(r, "shi", () => handOver(st));
           }
         );
         })
