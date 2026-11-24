@@ -867,5 +867,32 @@ for (const [fb, want] of [[500, -58], [720, -24]]) {
   ok(n1 === n0, "㊲ 「場」を 開いた まま 画面を 6 回 タップしても 行は 増えない (" + n0 + " → " + n1 + ")");
 }
 
+// ㊳ 謎かけに 答えた あと (外れ・いまは よしておく)、お題を 上限に 札が 見える ところまで 送る (2026-11-24 作者の判断)
+//    ★お題の 上端 400 → 見出しの 下 (108) まで 292px / 札の 下端 1500 → 足元の 上 (744) まで 756px → 少ない ほう 292 (お題で 止める)
+//    ★札の 下端 780 → 36px (札が 見えたら 止める)
+for (const [mode, cardBottom, want] of [["miss", 1500, 292], ["miss", 780, 36], ["later", 1500, 292]]) {
+  const a = mk({ date: "2026-11-28", keepGenchi: true });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
+  a.pick("吉田松陰"); a.settle();
+  const w0 = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.pick(w0); a.settle();
+  a.byId.sageBox.getBoundingClientRect = () => ({ top: cardBottom - 600, bottom: cardBottom, left: 0, right: 100, width: 100, height: 600 });
+  const pinToi = () => a.talkEls().forEach((c) => { if (hasC(c, "toi")) c.getBoundingClientRect = () => ({ top: 400, bottom: 440, left: 0, right: 100, width: 100, height: 40 }); });
+  pinToi();
+  const form = a.byId.choices.children[0];
+  const b0 = (a.win._scrollBy || []).length;
+  if (mode === "miss") {
+    form.children[0].value = "みどり";
+    (form.handlers.submit || []).forEach((f) => f({ type: "submit", preventDefault() {} }));
+  } else {
+    form.children[1].children[1].click();
+  }
+  for (let k = 0; k < 1500 && (mode === "miss" ? a.labels().indexOf("(form)") < 0 : a.byId.genchiAgain.hidden); k += 1) { pinToi(); a.advance(20); }
+  for (let k = 0; k < 20; k += 1) { pinToi(); a.advance(20); }
+  const s = (a.win._scrollBy || []).slice(b0).filter((d) => d > 6);
+  ok(s.indexOf(want) >= 0 && s.every((d) => d <= want), "㊳ " + (mode === "miss" ? "外れ" : "いまは よしておく") + "・札の 下端 " + cardBottom + " → " + want + "px 送る (送り " + s.slice(0, 5).join(",") + ")");
+}
+
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");
 process.exit(fail.length ? 1 : 0);
