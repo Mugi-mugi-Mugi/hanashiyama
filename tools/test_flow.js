@@ -878,7 +878,7 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
   const diff = isHex ? ratio(tone, PAPER) : 0;
   ok(isHex && diff >= 3, "羽織の 帯 " + tone + " と 紙の 地の 差 " + diff.toFixed(2) + ":1 (3 以上 = 見える 差。前は 1.09)");
   const onTxt = (declOf(".midashi", "color") || "").trim();
-  const offTxt = (declOf(".koza.haori-nugi .midashi", "color") || "").trim().replace("var(--ink)", "#1d1a16");
+  const offTxt = (declOf(".koza.ji-sumi .midashi", "color") || "").trim().replace("var(--ink)", "#1d1a16");
   const rOn = isHex && /^#[0-9a-f]{6}$/i.test(onTxt) ? ratio(onTxt, tone) : 0;
   const rOff = /^#[0-9a-f]{6}$/i.test(offTxt) ? ratio(offTxt, PAPER) : 0;
   ok(rOn >= 4.5 && rOff >= 4.5, "見出しの 字: 羽織の 帯の 上 " + rOn.toFixed(2) + " / 脱いだ あと (紙) " + rOff.toFixed(2) + " (4.5 以上)");
@@ -927,7 +927,8 @@ const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) +
   const bad = rows.filter(([, a, b]) => !(isH(a) && isH(b) && ratio(a, b) >= 4.5));
   ok(!bad.length, "帯の 外の 字は 4.5:1 以上 (" + rows.map(([n, a, b]) => n + " " + (isH(a) && isH(b) ? ratio(a, b).toFixed(2) : "?")).join(" / ") + ")");
   ok(declOf(".talk .tatami", "position") === null && declOf(".tatami-btn", "display") === null, "畳みの 規則 (.tatami / .tatami-btn) は 残して いない");
-  ok(/✓/.test(declOf(".shinko li.done::before", "content") || "") && declOf(".shinko li.now", "font-weight") === "bold",
+  // ★✓ は 場所を 最初から 取り (見えない)、済んだ 段で 見せる (2026-11-24 見直し r10 A-3)
+  ok(/✓/.test(declOf(".shinko li::before", "content") || "") && declOf(".shinko li.done::before", "visibility") === "visible" && declOf(".shinko li.now", "font-weight") === "bold",
      "進行の めくりの いまの 段を 色だけで 示さない (済んだ 段に ✓ / いまの 段は 太字)");
   ok(declOf(".footbar", "flex-wrap") === "wrap" && declOf(".footbar .link", "white-space") === "nowrap" && declOf(".footbar .link", "min-height") === "44px",
      "足元の ボタンは 語の 途中で 折れず (nowrap + wrap)、高さ 44px");
@@ -1503,7 +1504,7 @@ if (!meinichi.err && meinichi.told[0] === "T-1128" && meinichi.marks.furi != nul
   // ★2026-11-24 作者の判断: 高座の 上に 定式幕 (黒・萌黄・柿) を 画面の 1/8 ほど 残す。見出しの 枠は その 下に 付く
   {
     const css5 = fs.readFileSync(path.join(ROOT, "app", "style.css"), "utf8");
-    ok(/<div class="maku-band" aria-hidden="true"><\/div>/.test(HTML) && /--makuh: 12\.5dvh/.test(css5) && /\.maku-band \{[^}]*position: fixed[^}]*height: var\(--makuh\)/.test(css5)
+    ok(/<div class="maku-band" aria-hidden="true"><\/div>/.test(HTML) && /--makuh: 12\.5svh/.test(css5) && /\.maku-band \{[^}]*position: fixed[^}]*height: var\(--makuh\)/.test(css5)
        && /\.kozahead \{ top: var\(--makuh\); \}/.test(css5) && /\.koza \{ padding-top: calc\(16px \+ var\(--makuh\)\); \}/.test(css5),
        "高座の 上に 幕の 帯 (画面の 1/8・固定・読み上げない)、見出しの 枠と 中身は その 下");
   }

@@ -605,36 +605,35 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   ok(s2.length > 0 && s2.every((d) => d >= 30 && d <= 36), "㉑ 新しい 行が 画面から 落ちそうなら 落ちる ぶん (30px) + 6px まで すぐ 送る (見直し r9 H2: 上限を 丸ごと 外さない。" + s2.slice(0, 3).join(",") + ")");
 }
 
-// ㉒ 札は「お持ち帰りを」を 言い終えて 間を 空けて から 見出しの すぐ 下へ 送る (2026-11-24 作者の案・判断「謎かけの 前に 札を 上へ」)
+// ㉒ 札は「お持ち帰りを」を 言い終えて 間を 空けて から 送る (2026-11-24 作者の案・判断「謎かけの 前に 札を 上へ」)。
+//    ★送り先は 語りの 終わり (★札の 上端では ない。謎かけの 文は 語りの 終わりに 足される = 2026-11-24 見直しの 声「文面が 題目の 下に 入る」)
+//    ★模擬の 行は 下端 680・札の 上端 700・見出しの 下端 100 → 680 − 108 = 572
+const pinTalk = (a, top, bottom) => a.byId.talk.children.forEach((c) => { c.getBoundingClientRect = () => ({ top, bottom, left: 0, right: 100, width: 100, height: bottom - top }); });
+const step = (a, top, bottom) => { pinTalk(a, top, bottom); a.advance(20); };
 {
   const a = mk({ date: "2026-11-28", keepGenchi: true });
   a.click("open"); a.settle();
   for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
   a.pick("吉田松陰"); a.settle();
-  a.byId.sageBox.getBoundingClientRect = () => ({ top: 700, bottom: 1300, left: 0, right: 100, width: 100, height: 600 });   // ★見出しの 下端は 100 (模擬)
+  a.byId.sageBox.getBoundingClientRect = () => ({ top: 700, bottom: 1300, left: 0, right: 100, width: 100, height: 600 });
   const b0 = (a.win._scrollBy || []).length;
   const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
   a.pick(want);
   const told = () => a.talkEls().some((c) => /この札を お持ち帰りを/.test(txt(c)));
-  for (let k = 0; k < 600 && !told(); k += 1) a.advance(20);
-  const early = (a.win._scrollBy || []).slice(b0).indexOf(592);
-  // ★「お持ち帰りを」の 行が 打ち終わる (次の 行が 足される か 送る) まで の 時刻と、札を 送った 時刻・謎かけの 文が 出た 時刻
-  const sent = () => (a.win._scrollBy || []).slice(b0).indexOf(592) >= 0;
+  for (let k = 0; k < 600 && !told(); k += 1) step(a, 640, 680);
+  const early = (a.win._scrollBy || []).slice(b0).indexOf(572);
+  const sent = () => (a.win._scrollBy || []).slice(b0).indexOf(572) >= 0;
   const lead = () => a.talkEls().some((c) => /現地でだけ聞ける/.test(txt(c)));
-  const tHand = a.talkEls().filter((c) => /この札を お持ち帰りを/.test(txt(c))).pop();
-  const fullHand = () => tHand && tHand.textContent.indexOf("お手元に 残ります。") >= 0 && !(tHand.children || []).some((x) => /mada/.test(x.className || ""));
-  for (let k = 0; k < 600 && !fullHand() && !sent(); k += 1) a.advance(20);
   const tDone = a.now;
-  for (let k = 0; k < 600 && !sent(); k += 1) a.advance(20);
+  for (let k = 0; k < 600 && !sent(); k += 1) step(a, 640, 680);
   const tSent = a.now;
-  for (let k = 0; k < 600 && !lead(); k += 1) a.advance(20);
+  for (let k = 0; k < 600 && !lead(); k += 1) step(a, 640, 680);
   const tLead = a.now;
   const atLead = sent();
-  a.settle();
+  for (let k = 0; k < 600 && a.labels().indexOf("(form)") < 0; k += 1) step(a, 640, 680);
   const s = (a.win._scrollBy || []).slice(b0);
-  const iCard = s.indexOf(592);
-  ok(told() && iCard >= 0 && s.indexOf(400) < 0, "㉒ 札を 見出しの 下 (108) へ 送る (700 → 108 = 592px)・半分の 送りは しない (" + s.filter((d) => d > 0).slice(0, 6).join(",") + ")");
-  ok(early < 0 && atLead && lead() && tSent - tDone >= 1200 && tLead - tSent >= 500, "㉒ 送るのは「お持ち帰りを」の 後・謎かけの 文の 前 (行が 出て から (打ち出しを 含む) " + (tSent - tDone) + "ms・送って から 謎かけまで " + (tLead - tSent) + "ms・早い送り " + early + ")");
+  ok(told() && s.indexOf(572) >= 0 && s.indexOf(592) < 0 && s.indexOf(400) < 0, "㉒ 語りの 終わり (680) を 見出しの 下 (108) へ 送る (572px。札の 上端 (592) ・半分 (400) では ない。" + s.filter((d) => d > 6).slice(0, 6).join(",") + ")");
+  ok(early < 0 && atLead && lead() && tLead - tSent >= 500, "㉒ 送るのは「お持ち帰りを」の 後・謎かけの 文の 前 (行が 出て から (打ち出しを 含む) " + (tSent - tDone) + "ms・送って から 謎かけまで " + (tLead - tSent) + "ms・早い送り " + early + ")");
 }
 
 // ㉓ 節目で 見出しの 枠 (見出し・図) の 高さが 変わっても 語りを 動かさない (2026-11-23 見直しの 声「節目で 飛ぶ」)
@@ -688,18 +687,24 @@ for (const [bottom, want] of [[340, -30], [640, -20]]) {
 }
 
 // ㉕ 謎かけで 札が 押し出されても 画面から 消さない (2026-11-23 作者の判断「画面から 消えない 程度なら 押し出して よい」。見直し r9 H1)
-{
+//    ★謎かけの 文 (模擬の 上端 400) が 見出しの 下に 十分 残る とき
+// ㉘ ★ただし 謎かけの 文を 見出しの 裏へ 押し上げて まで 札を 残さない (2026-11-24 見直しの 声「文面が 題目の 下に 入る」)
+//    ★謎かけの 文の 上端 150 → 見出しの 下 (108) まで 42px だけ 送る (札の 上 140px の ための 240px は 送らない)
+for (const [top, want, bad, name] of [[400, 240, null, "㉕ 謎かけの 欄が 出た あとも 札の 上 140px が 画面に 残る ように 送る (900 → 660)"],
+                                     [150, 42, 240, "㉘ 謎かけの 文が 長い ときは 文を 見出しの 下に 残す ほうを 先に (42px まで。240px は 送らない)"]]) {
   const a = mk({ date: "2026-11-28", keepGenchi: true });
   a.click("open"); a.settle();
   for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
   a.pick("吉田松陰"); a.settle();
   a.byId.sageBox.getBoundingClientRect = () => ({ top: 900, bottom: 1500, left: 0, right: 100, width: 100, height: 600 });   // ★謎かけの 文で 札が 画面の 下 (800) より 外へ
   const b0 = (a.win._scrollBy || []).length;
-  const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
-  a.pick(want); a.settle();
+  const want0 = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.pick(want0);
+  for (let k = 0; k < 1500 && a.labels().indexOf("(form)") < 0; k += 1) step(a, top, top + 40);
+  for (let k = 0; k < 20; k += 1) step(a, top, top + 40);
   const s = (a.win._scrollBy || []).slice(b0);
   const riddle = a.labels().indexOf("(form)") >= 0;
-  ok(riddle && s.indexOf(240) >= 0, "㉕ 謎かけの 欄が 出た あとも 札の 上 140px が 画面に 残る ように 送る (900 → 660。" + s.filter((d) => d > 0).slice(0, 6).join(",") + ")");
+  ok(riddle && s.indexOf(want) >= 0 && (bad == null || s.indexOf(bad) < 0), name + " (" + s.filter((d) => d > 6).slice(0, 6).join(",") + ")");
 }
 
 // ㉖ 札を 見せた あと 読み返しに 入ったら、札まわりの 送り (cardPeek ほか) を しない (見直し r9 H3。「読み返している 間は 引き戻さない」)
@@ -717,6 +722,149 @@ for (const [bottom, want] of [[340, -30], [640, -20]]) {
   a.settle();
   const s = (a.win._scrollBy || []).slice(b0).filter((d) => d > 0);
   ok(paused && s.length === 0, "㉖ 読み返し中は 謎かけの 文が 足されても 札まわりの 送りを しない (読み返し " + paused + " / 送り " + s.slice(0, 5).join(",") + ")");
+}
+
+// ---- 見直し r10 (2026-11-24 作者の案「スクロール以外で 文字が 飛ぶ・隠れる」) ----
+// ㉙ 札の 写真を 読み込む 間に「別の噺」→ 前の 席の 札・最後の 問いを 新しい 席に 割り込ませない (r10 A-1)
+{
+  const a = mk({ date: "2026-11-28", loadDelay: (s) => (/img\/card_/.test(s) ? 600000 : 0) });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  for (let k = 0; k < 400 && a.labels().indexOf("吉田松陰") < 0; k += 1) { a.advance(500); if (a.labels()[0] === "次へ") a.pick("次へ"); }
+  a.pick("吉田松陰");
+  for (let k = 0; k < 4000 && !a.talkEls().some((c) => /札を一枚、お出しします/.test(txt(c))); k += 1) a.advance(100);
+  a.advance(3000);
+  a.click("other");
+  a.advance(20000);
+  const labels0 = a.labels().join("/");
+  a.advance(600000);
+  const old = a.talkEls().some((c) => /いま、いかがです/.test(txt(c)));
+  ok(a.byId.sageBox.hidden && !old && a.labels().indexOf("行ってみたい") < 0 && a.errors.length === 0,
+     "㉙ 札の 読み込み中に「別の噺」→ 読み終わっても 前の 席の 札・問いは 出ない (札 " + (a.byId.sageBox.hidden ? "隠れた まま" : "出た") + " / 選択肢 " + labels0 + " → " + a.labels().join("/") + ")");
+}
+// ㉚ 「場」を 開いて いる 間は 語りを 止め、閉じたら 続ける (r10 A-2・作者の判断)
+{
+  const a = mk({ date: "2026-11-28" });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  a.advance(3000);
+  const n = () => a.talkEls().filter((c) => hasC(c, "line")).length;
+  const n0 = n();
+  a.click("baBtn");
+  a.advance(30000);
+  const n1 = n();
+  a.click("closeBa");
+  a.advance(10000);
+  const n2 = n();
+  ok(!a.byId.ba.hidden === false && n1 === n0 && n2 > n1, "㉚ 「場」を 開いた 30 秒は 行が 増えず (" + n0 + " → " + n1 + ")、閉じたら 続く (→ " + n2 + ")");
+}
+// ㉛ 打っている 行の 頭を 見出しの 裏へ 送らない (r10 B-2・A-5: 行の 上端 104 = 見出しの 下端 100 + 4)
+{
+  const a = mk({ date: "2026-11-28" });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  a.advance(2000);
+  const b0 = (a.win._scrollBy || []).length;
+  for (let k = 0; k < 150; k += 1) { pinTalk(a, 104, 760); a.advance(20); }
+  const s = (a.win._scrollBy || []).slice(b0).filter((d) => d > 0);
+  ok(s.length === 0, "㉛ 長い 行 (上端 104・下端 760) を 打っている 間、行の 頭を 見出しの 裏へ 送らない (送り " + s.slice(0, 5).join(",") + ")");
+}
+// ㉜ 足元が 2 段 (92px) に 折れたら、その ぶん 上に 置く (r10 B-3・A-6。前は 決め打ちの「下から 90px」)
+{
+  const a = mk({ date: "2026-11-28" });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  a.advance(2000);
+  a.byId.footbar.getBoundingClientRect = () => ({ top: 708, bottom: 800, left: 0, right: 100, width: 100, height: 92 });
+  const b0 = (a.win._scrollBy || []).length;
+  for (let k = 0; k < 150; k += 1) { pinTalk(a, 660, 700); a.advance(20); }
+  const s = (a.win._scrollBy || []).slice(b0).filter((d) => d > 0);
+  // ★落ちる 線 = 足元の 上端 708 − 22 = 686 (前は 決め打ちの 800 − 70 = 730)。下端 700 は 14px 落ちる → 打ち出し中は 14 + 6 = 20px ずつ (前は 6px ずつ)
+  ok(s.length > 0 && s.indexOf(20) >= 0 && s.every((d) => d <= 20), "㉜ 足元 92px なら 落ちる 線を 足元の 上 (686) に 置き、行の 下端 700 を すぐ 上げる (20px ずつ。送り " + s.slice(0, 5).join(",") + ")");
+}
+// ㉝ 札の 上の タップは 早送りに しない (r10 A-11)
+{
+  const a = mk({ date: "2026-11-28" });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  a.advance(1500);
+  const n = () => a.talkEls().filter((c) => hasC(c, "line")).length;
+  const n0 = n();
+  for (let k = 0; k < 6; k += 1) a.byId.card.click();
+  const n1 = n();
+  for (let k = 0; k < 6; k += 1) a.byId.talk.click();
+  const n2 = n();
+  ok(n1 === n0 && n2 > n1, "㉝ 札の タップでは 進まず (" + n0 + " → " + n1 + ")、語りの タップでは 進む (→ " + n2 + ")");
+}
+
+// ---- 見直し r11 (2026-11-24 作者の案「修正の 結果と 影響の 見直し」) ----
+// ㉞ 鳴き声の 出典は 一席目でも 出る・札の 下の 決まった 場所・何度 押しても 語りに 行を 足さない (r11 A-1 の 回帰)
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰"); a.settle();
+  const n0 = a.talkEls().length;
+  const shown0 = !a.byId.sageBox.hidden;
+  a.byId.koe.click(); a.settle();
+  a.byId.koe.click(); a.settle();
+  const cr = a.byId.koeCredit;
+  ok(shown0 && cr && cr.hidden === false && /鳴き声/.test(cr.textContent) && a.talkEls().length === n0,
+     "㉞ 一席目の 札で 鳴き声を 2 回 押すと 出典が 札の 下に 出て (" + (cr ? (cr.hidden ? "隠れた まま" : "出た") : "欄 なし") + ")、語りの 行は 増えない (" + n0 + " → " + a.talkEls().length + ")");
+  a.click("again"); a.settle();
+  ok(cr && cr.hidden === true, "㉞ 次の 席では 出典を 隠す");
+}
+// ㉟ 問いが 1px だけ 見出しに かかって いても 守る (r11 A-2: 上端で 見ていたので 守りが 外れ、窓の 大きさ変更・早送りで 問いを 見出しの 裏へ 押し上げた)
+//    ★問いの 上端 99・下端 140 (見出しの 下端 100)、選択肢の 下端 740 → 送るのは 落ちる ぶん (740 − 730 = 10px) だけ
+{
+  const a = mk({ date: "2026-11-28" });
+  toFirstSeat(a); a.settle();
+  const q = a.talkEls().filter((c) => hasC(c, "toi")).pop();
+  q.getBoundingClientRect = () => ({ top: 99, bottom: 140, left: 0, right: 100, width: 100, height: 41 });
+  a.byId.choices.children.forEach((c) => { c.getBoundingClientRect = () => ({ top: 700, bottom: 740, left: 0, right: 100, width: 100, height: 40 }); });
+  const b0 = (a.win._scrollBy || []).length;
+  a.fireWin("resize"); a.advance(400);
+  const s = (a.win._scrollBy || []).slice(b0).filter((d) => d > 0);
+  ok(!!q && s.length > 0 && Math.max.apply(null, s) <= 10, "㉟ 窓の 大きさ変更の あと、1px かかった 問いを それ以上 見出しの 裏へ 送らない (送り " + s.slice(0, 4).join(",") + "。10px まで)");
+}
+// ㊱ 打ち込み欄に 触れたら (キーボード)、見出しの 裏の 問いを 戻す。★ただし 欄を キーボード・足元の 下へ 入れる ほどは 戻さない (r10 B-4 / r11 B-3)
+//    ★問いの 上端 50 (見出しの 下 108 まで 58px)・足元の 上端 752 → 欄の 下端の 限り 744。欄の 下端 500 → 58px 戻す / 720 → 24px だけ
+for (const [fb, want] of [[500, -58], [720, -24]]) {
+  const a = mk({ date: "2026-11-28", keepGenchi: true });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
+  a.pick("吉田松陰"); a.settle();
+  const want0 = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.pick(want0); a.settle();
+  const form = a.byId.choices.children[0];
+  const input = form && form.children[0];
+  const q = a.talkEls().filter((c) => hasC(c, "toi")).pop();
+  if (q) q.getBoundingClientRect = () => ({ top: 50, bottom: 90, left: 0, right: 100, width: 100, height: 40 });
+  if (input) input.getBoundingClientRect = () => ({ top: fb - 40, bottom: fb, left: 0, right: 100, width: 100, height: 40 });
+  const b0 = (a.win._scrollBy || []).length;
+  if (input) (input.handlers.focus || []).forEach((f) => f({ type: "focus" }));
+  a.advance(400);
+  const s = (a.win._scrollBy || []).slice(b0);
+  ok(!!input && s.indexOf(want) >= 0, "㊱ 欄の 下端 " + fb + " で 触れたら 問いを " + want + "px 戻す (送り " + s.slice(0, 4).join(",") + ")");
+}
+
+// ㊲ 「場」を 開いて いる 間に 画面 (パネルの 外の 縁) を タップしても 語りを 続けない (r11 A-3)
+{
+  const a = mk({ date: "2026-11-28" });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  a.advance(3000);
+  const n = () => a.talkEls().filter((c) => hasC(c, "line")).length;
+  a.click("baBtn");
+  const n0 = n();
+  for (let k = 0; k < 6; k += 1) { a.byId.talk.click(); a.advance(2000); }
+  const n1 = n();
+  ok(n1 === n0, "㊲ 「場」を 開いた まま 画面を 6 回 タップしても 行は 増えない (" + n0 + " → " + n1 + ")");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");

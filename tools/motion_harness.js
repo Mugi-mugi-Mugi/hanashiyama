@@ -51,7 +51,7 @@ function makeApp(opt) {
     const e = {
       tagName: (tag || "div").toUpperCase(), parent: null,
       children: [], _text: "", _html: "", handlers: {}, style: {}, dataset: {},
-      hidden: false, value: "", className: "", src: "", disabled: false,
+      hidden: false, value: "", className: "", src: "", disabled: false, isConnected: true, play() { return { catch() {} }; },
       classList: { _s: new Set(), add(x) { this._s.add(x); }, remove(x) { this._s.delete(x); }, contains(x) { return this._s.has(x); } },
       get textContent() { return this._text || this.children.map((c) => c.textContent).join(""); },
       set textContent(v) { this._text = String(v); this.children = []; },
@@ -67,7 +67,7 @@ function makeApp(opt) {
       // ★フォーカスの 行き先を 見る (2026-11-15 見直し): focus() で doc.activeElement を 替える / contains() は 親を たどる
       focus() { doc.activeElement = this; }, remove() {}, select() {},
       contains(n) { while (n) { if (n === this) return true; n = n.parent; } return false; },
-      closest(sel) { let n = this; while (n) { if (sel === "button" && n.tagName === "BUTTON") return n; if (sel === "a" && n.tagName === "A") return n; n = n.parent; } return null; },
+      closest(sel) { let n = this; while (n) { if (sel === "button" && n.tagName === "BUTTON") return n; if (sel === "a" && n.tagName === "A") return n; if (sel[0] === "#" && n.id === sel.slice(1)) return n; n = n.parent; } return null; },
       getBoundingClientRect() { return { top: 0, bottom: 100, left: 0, right: 100, width: 100, height: 100 }; },
       click() { if (this.disabled) return; const ev = { target: this, preventDefault() {}, stopPropagation() { ev._stop = true; } };
                 (this.handlers.click || []).forEach((f) => f(ev));
@@ -82,6 +82,7 @@ function makeApp(opt) {
   ids.forEach((i) => {
     const tag = html.match(new RegExp('<([a-z0-9]+)[^>]*id="' + i + '"[^>]*>'));
     byId[i] = el(tag ? tag[1] : "div");
+    byId[i].id = i;
     byId[i].hidden = !!(tag && /\shidden(\s|>|=)/.test(tag[0]));
   });
   // 親子 (泡立ちを 見るため): footbar・sageBox の ボタン → koza
