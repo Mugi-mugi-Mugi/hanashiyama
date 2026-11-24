@@ -605,19 +605,36 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   ok(s2.length > 0 && s2.every((d) => d >= 30 && d <= 36), "㉑ 新しい 行が 画面から 落ちそうなら 落ちる ぶん (30px) + 6px まで すぐ 送る (見直し r9 H2: 上限を 丸ごと 外さない。" + s2.slice(0, 3).join(",") + ")");
 }
 
-// ㉒ 最後の 問いに 答えたら その 問いを 見出しの すぐ 下へ 送り、下の 札を 大きく 見せる (2026-11-24 作者の判断。前は「お持ち帰りを」の あと 画面の 半分)
+// ㉒ 札は「お持ち帰りを」を 言い終えて 間を 空けて から 見出しの すぐ 下へ 送る (2026-11-24 作者の案・判断「謎かけの 前に 札を 上へ」)
 {
-  const a = mk({ date: "2026-11-28" });
-  toFirstSeat(a); a.settle();
+  const a = mk({ date: "2026-11-28", keepGenchi: true });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
   a.pick("吉田松陰"); a.settle();
-  const q = a.talkEls().filter((c) => /行ってみたい気持ちは/.test(txt(c))).pop();
-  q.getBoundingClientRect = () => ({ top: 700, bottom: 740, left: 0, right: 100, width: 100, height: 40 });   // ★見出しの 下端は 100 (模擬)
+  a.byId.sageBox.getBoundingClientRect = () => ({ top: 700, bottom: 1300, left: 0, right: 100, width: 100, height: 600 });   // ★見出しの 下端は 100 (模擬)
   const b0 = (a.win._scrollBy || []).length;
   const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
-  a.pick(want); a.settle();
+  a.pick(want);
+  const told = () => a.talkEls().some((c) => /この札を お持ち帰りを/.test(txt(c)));
+  for (let k = 0; k < 600 && !told(); k += 1) a.advance(20);
+  const early = (a.win._scrollBy || []).slice(b0).indexOf(592);
+  // ★「お持ち帰りを」の 行が 打ち終わる (次の 行が 足される か 送る) まで の 時刻と、札を 送った 時刻・謎かけの 文が 出た 時刻
+  const sent = () => (a.win._scrollBy || []).slice(b0).indexOf(592) >= 0;
+  const lead = () => a.talkEls().some((c) => /現地でだけ聞ける/.test(txt(c)));
+  const tHand = a.talkEls().filter((c) => /この札を お持ち帰りを/.test(txt(c))).pop();
+  const fullHand = () => tHand && tHand.textContent.indexOf("お手元に 残ります。") >= 0 && !(tHand.children || []).some((x) => /mada/.test(x.className || ""));
+  for (let k = 0; k < 600 && !fullHand() && !sent(); k += 1) a.advance(20);
+  const tDone = a.now;
+  for (let k = 0; k < 600 && !sent(); k += 1) a.advance(20);
+  const tSent = a.now;
+  for (let k = 0; k < 600 && !lead(); k += 1) a.advance(20);
+  const tLead = a.now;
+  const atLead = sent();
+  a.settle();
   const s = (a.win._scrollBy || []).slice(b0);
-  const told = a.talkEls().some((c) => /この札を お持ち帰りを/.test(txt(c)));
-  ok(told && s.indexOf(592) >= 0 && s.indexOf(400) < 0, "㉒ 最後の 問いに 答えたら 問いを 見出しの 下 (108) へ 送る (700 → 108 = 592px)・半分の 送りは しない (" + s.filter((d) => d > 0).slice(0, 5).join(",") + ")");
+  const iCard = s.indexOf(592);
+  ok(told() && iCard >= 0 && s.indexOf(400) < 0, "㉒ 札を 見出しの 下 (108) へ 送る (700 → 108 = 592px)・半分の 送りは しない (" + s.filter((d) => d > 0).slice(0, 6).join(",") + ")");
+  ok(early < 0 && atLead && lead() && tSent - tDone >= 1200 && tLead - tSent >= 500, "㉒ 送るのは「お持ち帰りを」の 後・謎かけの 文の 前 (行が 出て から (打ち出しを 含む) " + (tSent - tDone) + "ms・送って から 謎かけまで " + (tLead - tSent) + "ms・早い送り " + early + ")");
 }
 
 // ㉓ 節目で 見出しの 枠 (見出し・図) の 高さが 変わっても 語りを 動かさない (2026-11-23 見直しの 声「節目で 飛ぶ」)
@@ -634,6 +651,23 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   for (let k = 0; k < 400 && a.byId.midashi.hidden; k += 1) { a.win.scrollY = 5000; a.advance(20); }
   const s = (a.win._scrollBy || []).slice(b0);
   ok(m0 === true && !a.byId.midashi.hidden && s.indexOf(30) >= 0, "㉓ 見出しが 出て 枠が 30px 高く なったら、画面も 30px 合わせる (" + s.filter((d) => d !== 0).slice(0, 5).join(",") + ")");
+}
+
+// ㉗ 枠が 伸びた (表・見出し) とき、流れていた 行を 枠の 裏に 置かない (2026-11-24 見直しの 声「途中に 表が 入った 際に、今 流していた 文字が 隠れた」)
+//    ★語りが 画面の 上の ほう (行の 下端 340・置き場 710) → 補正 +30 の あと すぐ −30 で 戻す / 画面が ほぼ 語りで 埋まって いる (下端 640・写真の ある 場面の 置き場 660) → 戻すのは 20 だけ
+for (const [bottom, want] of [[340, -30], [640, -20]]) {
+  const a = mk({ date: "2026-11-28" });
+  Object.defineProperty(a.byId.kozahead, "offsetHeight", { get: () => (a.byId.midashi.hidden ? 0 : 30) + (a.byId.zu.hidden ? 0 : 300) });
+  const at = () => ({ top: bottom - 40, bottom: bottom, left: 0, right: 100, width: 100, height: 40 });
+  a.click("open"); a.settle();
+  a.win.scrollY = 500; a.fireWin("scroll");
+  const b0 = (a.win._scrollBy || []).length;
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  for (let k = 0; k < 400 && a.byId.midashi.hidden; k += 1) { a.byId.talk.children.forEach((c) => { c.getBoundingClientRect = at; }); a.win.scrollY = 5000; a.advance(20); }
+  const s = (a.win._scrollBy || []).slice(b0);
+  const i = s.indexOf(30);
+  ok(!a.byId.midashi.hidden && i >= 0 && s[i + 1] === want, "㉗ 枠が 30px 伸びた あと、新しい 行の 下端 " + bottom + " → " + want + "px 戻す (" + s.slice(Math.max(0, i), i + 3).join(",") + ")");
 }
 
 // ㉔ 本物の 台帳 (2026-11-23 から G1・G2 が 出る) の まま 実演の 筋: 一席目の 札の あと 謎かけが 出て も「もう一席」で 二席目へ 進める
