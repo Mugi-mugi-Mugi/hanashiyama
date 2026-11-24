@@ -10,6 +10,12 @@
 }
 
 * { box-sizing: border-box; }
+/* ★iPhone の Safari が 横向きで 字を 勝手に 大きく しない (100% = 利用者の 拡大は 殺さない。見直し r10 B-8)。
+   ★ブラウザの 自動の 位置合わせ (scroll anchoring) は 切る: 位置は app.js が 合わせる (withHead・withTop)。
+     ★Chrome だけ 二重に 合わせて 飛ぶのを 防ぎ、Safari (自動の 合わせ が 無い) と 同じ 動きに そろえる (見直し r10 A-3・B-5) */
+html { overflow-anchor: none; }
+/* ★字の 自動拡大を 止めるのは iPhone の Safari だけ (見直し r11 B: Android の Chrome の 字の 大きさの 設定を 殺さない ため) */
+@supports (-webkit-touch-callout: none) { html { -webkit-text-size-adjust: 100%; } }
 
 body {
   margin: 0;
@@ -25,7 +31,8 @@ body {
   /* ★スマホは 上下の 帯 (URL 欄など) を 除いた 高さ。100vh だと 帯のぶん はみ出す */
   min-height: 100dvh;
   display: flex;
-  align-items: center;
+  /* ★上寄せ (見直し r10 B-12: 上下 中央 寄せ だと「はじめての方へ」を 開いた とき 押した 見出しごと 上へ 飛んだ)。上の 空きは .maku-inner */
+  align-items: flex-start;
   justify-content: center;
   /* ★定式幕 (黒・萌黄・柿) の 三色。白は 定式幕に 無く、広い画面で 目を 引きすぎた */
   background: repeating-linear-gradient(90deg,
@@ -38,7 +45,7 @@ body {
   padding: 44px 44px 36px;
   border: 2px solid var(--gold);
   max-width: 640px;              /* ★狭すぎて 文が 途中で 折れていた */
-  margin: 24px;
+  margin: max(24px, 8vh) 24px 24px;
 }
 .maku h1 {
   font-size: clamp(3rem, 14vw, 5rem);
@@ -476,7 +483,15 @@ footer .credit { opacity: 0.75; }
 }
 .shinko li { padding: 2px 8px; border: 1px solid #d8cdb9; border-radius: 2px; background: #fff; }
 .shinko li.done { color: var(--muted); background: transparent; }
-.shinko li.done::before { content: "✓"; margin-right: 2px; }
+/* ★✓ は 札の 左上の 角に 小さく 重ねる = 幅を 取らない (見直し r10 A-3: 付く たびに 幅が 増え 段が 折れた /
+     r11: 場所を 取ると 360px で 2 段に なる 席が 倍に 増えた → 作者の判断「角に 小さく」) */
+.shinko li { position: relative; }
+.shinko li::before {
+  content: "✓"; visibility: hidden; position: absolute; left: -4px; top: -7px;
+  font-size: 0.7rem; line-height: 1; padding: 1px 2px; border-radius: 6px;
+  background: var(--paper); color: var(--ink); border: 1px solid #d8cdb9;
+}
+.shinko li.done::before { visibility: visible; }
 .shinko li.now { color: #fff; background: var(--vermilion); border-color: var(--vermilion); font-weight: bold; }
 .shinko[hidden] { display: none; }
 
@@ -488,6 +503,7 @@ footer .credit { opacity: 0.75; }
   white-space: nowrap; cursor: pointer; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 .tsuzuki-btn[hidden] { display: none; }
+.koza.haikei-on .tsuzuki-btn { bottom: calc(var(--footh, 52px) + 66px); }   /* ★隅書きが 2 行でも かぶらない (見直し r11 B-2) */   /* ★写真の 隅書きに かぶせない (見直し r10 A-13・B-11) */
 /* ★語りの 最後の 行を 写真の 上 (画面の 半分まで) に 持ち上げられる ように、高座の 終わりに 余白 (★選択肢を 消して 下が 縮んでも 画面が 引き戻されない) */
 .koza::after { content: ""; display: block; height: 70vh; }
 /* ★席の 頭の 印 (二席目から)。★高さ 0 = 位置を 測る だけ */
@@ -518,6 +534,9 @@ footer .credit { opacity: 0.75; }
 .zu { padding: 8px 0 2px; }
 .zu .figure { margin: 0 auto; animation: none; }
 .zu .figure svg { max-height: calc(42vh - 30px); width: auto; max-width: 100%; margin: 0 auto; }
+/* ★低い 画面 だけ 縮める: 帯・足元・見出しと 語りの 窓 (約 3 行) を 残した 高さ まで (見直し r10 B-1: 投影 200%・スマホ 横で 図が 窓を ふさいだ)。
+   ★ふつうの 縦の スマホ・投影では 前の 大きさ (42vh − 30px) の まま (見直し r11 B-1: 一律 4 割に したら 図の 字が 縮んだ) */
+@supports (height: 1svh) { .zu .figure svg { max-height: min(calc(42vh - 30px), max(90px, calc(100svh - var(--makuh) - var(--footh, 52px) - 160px))); } }
 
 /* ★背景の 写真 = 高座の 後ろに 1 枚。★場面が 替わった ときだけ 差し替える。
    ★ゆっくり ズーム などの 背景を 動かす 演出は 入れない (出る ときに 一度 薄く 現れる だけ) */
@@ -592,9 +611,11 @@ footer .credit { opacity: 0.75; }
 }
 /* ★2026-11-16 見直し:「情報が 多すぎる。1 行に」→ ★写真の 名前 | 出どころ・条件 を 1 行。★はみ出す 分は … で 切る。
    ★正式な 表示 (作品名・提供者・ライセンスの 全文) は CREDITS.md (CC BY は 媒体に 合った 妥当な 方法での 表示で よい) */
-.haikei-cap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.haikei-cap b { display: inline; font-size: 0.8rem; letter-spacing: 0.02em; }
-.haikei-cap span { display: inline; font-size: 0.7rem; opacity: 0.92; }
+/* ★(見直し r10 B-11) 写真の 名前 (何の 写真か = ㊹) は 切らない。★… で 切るのは 出典の 側 (名前が 長い ときは 名前が 2 行に なる) */
+/*   ★(見直し r11 B-2) 名前は 縮めない (縮めると 語の 途中で 折れた)。★出典は 残りが 6 字 ぶん 無ければ 次の 行へ (出典を 0 幅に して 消さない) */
+.haikei-cap { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: flex-end; white-space: nowrap; overflow: hidden; }
+.haikei-cap b { display: inline; flex: 0 0 auto; max-width: 100%; white-space: normal; word-break: auto-phrase; font-size: 0.8rem; letter-spacing: 0.02em; }
+.haikei-cap span { display: inline; flex: 1 1 0; min-width: 6em; overflow: hidden; text-overflow: ellipsis; text-align: right; font-size: 0.7rem; opacity: 0.92; }
 .haikei-cap span::before { content: " ｜ "; opacity: 0.7; }
 
 
@@ -669,7 +690,8 @@ footer .credit { opacity: 0.75; }
 .koza.haori-nugi .kozahead::before { opacity: 0; }
 /* ★羽織の 帯の 上の 見出しは 紙の 色の 字 (13.7:1)。縁の 色は 金 (6.5:1) */
 .midashi { color: #f6f0e3; border-left-color: var(--gold); }
-.koza.haori-nugi .midashi { color: var(--ink); border-left-color: var(--vermilion); }
+/* ★字の 色は 地の 色替え (0.25 秒) の 半ばで 替える (app.js の stage が ji-sumi を 0.125 秒 遅れて 付け外す。見直し r10 A-9・B-10: 字だけ 先に 替わり 0.25 秒 読めなかった) */
+.koza.ji-sumi .midashi { color: var(--ink); border-left-color: var(--vermilion); }
 
 /* 仕草 = 上下 (かみしも) の 首振り。★話し手が 替わった 台詞だけ (app.js が shigusa を 付ける)。
    ★客は 右から、私は 左から 5px 寄る。★同じ 話し手が 続く 台詞は 寄せない */
@@ -710,7 +732,8 @@ footer .credit { opacity: 0.75; }
    ★どちらも 1 塊で 置き、並ばない ときは 段の 札が 下の 行へ 回る (wrap)。★語の 途中では 折れない。
    ★スマホの めくりは 題の 字数で 大きさを 変える (app.js が data-n に 字数を 入れる)。
      8 字 = 1rem / 9 字 以上 = 0.95rem。★130 席の 題 (最長 12 字) で 360px でも 1 塊で 収まる。
-     ★段の 札と 同じ 行に 並ぶのは 390px で 129 席 / 360px で 93 席 (10 字 以上は 段の 札が 下の 行) */
+     ★段の 札と 同じ 行に 並ぶのは 390px で 129 席 / 360px で 93 席 (10 字 以上は 段の 札が 下の 行)。
+     ★(2026-11-24 見直し r10) ✓ の 場所を 最初から 取る ように した ので 段の 札は 3 つで 約 40px 広い (★この 席数は 測り直して いない) */
 .kozatop { flex-wrap: wrap; row-gap: 6px; }
 .mekuri, .shinko, .shinko li { white-space: nowrap; }
 .mekuri { flex: 0 1 auto; min-width: 0; }
@@ -790,7 +813,8 @@ footer .credit { opacity: 0.75; }
 /* ---- 2026-11-24 作者の判断: スクロールしても 画面の 上 (1/8 ほど) に 定式幕 (黒・萌黄・柿) を 少し 残す ---- */
 /*   ★幕の 帯は 画面に 固定。★場面の 見出しの 枠 (kozahead) は 帯の すぐ 下に 付く。★高座の 中身は 帯の 下から 始まる */
 :root { --makuh: 12.5vh; }
-@supports (height: 1dvh) { :root { --makuh: 12.5dvh; } }
+/* ★svh = アドレスバーが 出ている ときの 高さ (伸び縮み しない)。★dvh だと バーの たびに 帯・枠・語りが 7〜10px 跳ねた (見直し r10 B-7) */
+@supports (height: 1svh) { :root { --makuh: 12.5svh; } }
 .maku-band {
   position: fixed; top: 0; left: 0; right: 0; height: var(--makuh); z-index: 3; pointer-events: none;
   background: repeating-linear-gradient(90deg,
@@ -803,3 +827,7 @@ footer .credit { opacity: 0.75; }
   .maku-band { background-size: 132px 100%; }
   .koza { padding-top: calc(12px + var(--makuh)); }
 }
+
+/* ★鳴き声の 出典は 札の 下の 決まった 場所 (見直し r10 A-10 / r11 A-1) */
+.koe-credit { margin: 8px 0 0; font-family: var(--sans); font-size: 0.78rem; line-height: 1.5; color: var(--muted); }
+.koe-credit[hidden] { display: none; }

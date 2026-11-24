@@ -1181,6 +1181,13 @@
     });
     if (n === 1) addCls($("koza"), "haori-nugi");
     else if (n <= 0) rmCls($("koza"), "haori-nugi");
+    // ★見出しの 字の 色は 地の 色替え (0.25 秒) の 途中 (60ms) で 替える (見直し r10 A-9・B-10 / r11 B-4)。★動きを 減らす 設定では 地も すぐ 替わるので すぐ
+    if (n === 1 || n <= 0) {
+      const on = n === 1;
+      clearTimeout(stage.ji);
+      const set = () => (on ? addCls($("koza"), "ji-sumi") : rmCls($("koza"), "ji-sumi"));
+      if (lessMotion()) set(); else stage.ji = setTimeout(set, 60);   // ★ease の 地の 変わりに 合わせて 60ms (見直し r11 B-4: 125ms では 本題の 入りが 縮まなかった)
+    }
   }
 
   /** ★問答を 1 つ 数える。★県外 → 地方 → 県 は 1 つ (P0-2 の 数え方) */
@@ -1430,7 +1437,8 @@
   function bottomRoom(base) {
     try {
       const h = window.innerHeight;
-      let room = base;
+      // ★決め打ちの base (90 / 140 / 160) は 足元 1 段 (48px) の つもり。★足元が 大きい 字で 2〜3 段に 折れたら その ぶん 足す (見直し r10 B-3・A-6)
+      let room = base + footExtra();
       const cap = $("haikeiCap");
       if (cap && !cap.hidden) {
         const top = cap.getBoundingClientRect().top;
@@ -1443,6 +1451,16 @@
       return base;
     }
   }
+  /** 足元 (固定の 操作列) の 上端。★測れない ときは 画面の 下から 48px */
+  function footTop() {
+    try {
+      const r = $("footbar").getBoundingClientRect();
+      if (r.height > 0 && r.top > 0 && r.top <= window.innerHeight) return r.top;
+    } catch (e) {}
+    return window.innerHeight - 48;
+  }
+  /** 足元が 1 段 (48px) より 高い ぶん */
+  function footExtra() { return Math.max(0, Math.round(window.innerHeight - footTop() - 48)); }
   /** 背景の 写真の 見えている 上端 (画面の 座標)。★枠に 全体を 入れて 下に 寄せる (contain・bottom) ので 元の 縦横比から 出す。
    *  ★写真が 出ていない・読み込み前 (縦横が 0) は null */
   function photoTop() {
@@ -1481,7 +1499,7 @@
     const last = $("choices").lastElementChild || $("talk").lastElementChild;
     if (!last) return true;
     const r = last.getBoundingClientRect();
-    return r.bottom <= window.innerHeight - bottomRoom(90) + 24;
+    return r.bottom <= Math.max(window.innerHeight - bottomRoom(90), headBottom() + 48) + 24;   // ★scroll() と 同じ 置き場 (見直し r11 A-5)
   }
   /** ★上へ 戻そうと した 操作 だけを 数える (2026-11-22 見直し: スマホの タップでも mousedown が 出て、
    *  タップの 直後の 上への 動き (図が 消えた・文字盤が 閉じた 等) を 読み返しと 取り違えうる)。
@@ -1534,23 +1552,32 @@
     const a = anchorEl();
     if (!a) return dy;
     const keep = a.getBoundingClientRect().top - (headBottom() + 6);
-    const must = lastBottom - (window.innerHeight - 70);
-    return Math.max(Math.min(dy, keep), must, 0);
+    // ★残す 行が ★丸ごと 見出しの 上に 出ている = 守る ものが 無い → ふだんの 追従 (見直し r10 A-6)。
+    //   ★上端で 見ると 1px かかった だけで 守りが 外れ、問い・サゲを 見出しの 裏へ 押し上げた (見直し r11 A-2) → ★下端で 見る
+    if (a.getBoundingClientRect().bottom < headBottom() + 6) return dy;
+    return Math.max(Math.min(dy, keep), mustBy(lastBottom), 0);
   }
   // ★一度に 送る 量の 上限 (2026-11-22 見直しの 声「写真を 入れる・変える 際に、流れていた 文章が 一気に 飛ぶ」)。
   //   ★写真が 入ると 写真の 上に 空ける 幅が いきなり 画面の 半分 近くに 広がり、その 差を 一度に 押し上げていた。
   //   ★打ち出しの 途中は 1 字ごとに DRIFT px まで (少しずつ 上へ 流れる)。★選択肢などで 一度だけ 送る ときは JUMP px まで。
   //   ★ただし いちばん 新しい 行が 画面から 落ちそうな ときは すぐ 送る (読めない ほうが 困る)
   const DRIFT = 6, JUMP = 72;
-  function mustBy(lastBottom) { return lastBottom - (window.innerHeight - 70); }
+  function mustBy(lastBottom) { return lastBottom - (footTop() - 22); }   // ★足元の 上 22px (足元 1 段 なら 前の「下から 70px」と 同じ)
   /** 打っている最中は、行の下端が画面に収まるまでだけ追う (画面が跳ねないように) */
+  // ★(2026-11-24 見直し r10 B-1・B-2・A-5) 打ち出し中は ★段落の 箱の 下端では なく ★いま 見せた 字 を 追う
+  //   (箱は 最後の 形で 先に 取る (.mada) ので、箱の 下端を 追うと 長い 段落の 頭の 行が 打っている 最中に 見出しの 裏へ 押し上げられた)。
+  //   ★置き場が 見出しの 枠の 下端より 上に 来る (画面が 低い・図が 大きい) ときは 置き場を 下げる。★打っている 字を 見出しの 裏へ 送らない
   function keepBottom() {
     if (!typing || !follow.on) return;
-    const r = typing.el.getBoundingClientRect();
-    const margin = bottomRoom(160); // 選択肢と足元のぶん
-    if (r.bottom > window.innerHeight - margin) {
-      let dy = sendBy(r.bottom - (window.innerHeight - margin), r.bottom);
+    const t = typing;
+    const el = (t.chars && t.i > 0 && t.chars[t.i - 1]) || t.el;
+    const r = el.getBoundingClientRect();
+    const hb = headBottom();
+    const goal = Math.max(window.innerHeight - bottomRoom(160), hb + (r.height || 0) + 8);   // 選択肢と足元のぶん
+    if (r.bottom > goal) {
+      let dy = sendBy(r.bottom - goal, r.bottom);
       if (dy > 0) dy = Math.min(dy, Math.max(DRIFT, mustBy(r.bottom) + DRIFT));   // ★落ちそうな ときも 落ちる ぶん + DRIFT まで (見直し r9 H2: 前は 上限が 丸ごと 外れ 409px 送った)
+      if (dy > 0) dy = Math.min(dy, Math.max(0, Math.round(r.top - (hb + 6))));   // ★打っている 字の 頭を 見出しの 裏へ 入れない
       if (dy > 0) autoScrollBy(dy, false);
     }
     cardPeek(true);                                  // ★札の 上に 謎かけの 文が 足されても 札を 消さない
@@ -1569,15 +1596,17 @@
       const r = last.getBoundingClientRect();
       // ★写真の ある ときは 隅の 出典の ぶん 余白を 多めに (選択肢が 出典の 下に 入らないように)
       const room = bottomRoom(hasCls($("koza"), "haikei-on") ? 140 : 90);
-      const goal = window.innerHeight - room;
+      const hb = headBottom();
+      const goal = Math.max(window.innerHeight - room, hb + 48);   // ★置き場を 見出しの 枠の 裏に 置かない (見直し r10 B-1: 画面が 低い・図が 大きい)
       // ★下に はみ出したら 上げる。★新しい 行が 画面の 上に 隠れて いたら (見出しの 裏より 上) 見える ところまで 下げる
       //   (★上の ほうに 見えて いる ときは 動かさない = 二席目の 頭を 画面の 上へ 送った 直後を 崩さない)
       //   ★札を 見ている (札が 出ている) 間は 上へ 戻さない (見直し: 札・タネ明かしを 見に 下へ 送った 直後に 引き戻された)
       if (r.bottom > goal) {
         let dy = sendBy(r.bottom - goal, r.bottom);
         if (dy > 0) dy = Math.min(dy, Math.max(JUMP, mustBy(r.bottom) + JUMP));   // ★一気に 飛ばさない (上の DRIFT / JUMP。落ちそうな ときも 落ちる ぶん + JUMP まで)
+        if (dy > 0) dy = Math.min(dy, Math.max(0, Math.round(r.top - (hb + 6))));   // ★新しい 行 (選択肢) の 頭を 見出しの 裏へ 入れない (見直し r10 A-5)
         if (dy > 0) autoScrollBy(dy, !lessMotion());
-      } else if (r.bottom < headBottom() + 8 && $("sageBox").hidden) autoScrollBy(r.bottom - goal, !lessMotion());
+      } else if (r.bottom < hb + 8 && $("sageBox").hidden) autoScrollBy(r.bottom - goal, !lessMotion());
       cardPeek();
     });
   }
@@ -1680,6 +1709,28 @@
     scroll();
   }
 
+  /** ★打ち込み欄に 触れたら (スマホの キーボードが 出る)、★問いの 行を 見出しの 下に・★欄の 下の ボタンを キーボードの 上に (見直し r10 B-4)。
+   *  ★キーボードが 出きるのを 待って (350ms) から 一度 だけ。★問いを 隠して まで ボタンを 上げない */
+  function keepAskInView(input) {
+    if (!input || typeof input.addEventListener !== "function") return;
+    input.addEventListener("focus", () => setTimeout(() => {
+      try {
+        if (!follow.on || !input.isConnected) return;
+        const vv = root.visualViewport;
+        const bottom = Math.min(vv ? vv.offsetTop + vv.height : window.innerHeight, footTop()) - 8;   // ★キーボード と 足元の 上 (見直し r11 A)
+        const form = input.closest ? input.closest("form") : null;
+        const fb = (form || input).getBoundingClientRect().bottom;
+        let dy = Math.max(0, Math.round(fb - bottom));
+        const q = anchorEl();
+        if (q) {
+          const room = Math.round(q.getBoundingClientRect().top - (headBottom() + 8));
+          // ★問いが 見出しの 裏 → 戻す。★ただし 欄 (ボタン) を キーボードの 下へ 入れる ほどは 戻さない (見直し r11 B-3)
+          dy = room < 0 ? -Math.min(-room, Math.max(0, Math.round(bottom - fb))) : Math.min(dy, room);
+        }
+        if (dy) autoScrollBy(dy, !lessMotion());
+      } catch (e) {}
+    }, 350));
+  }
   /** オチの直前の 空白。★声なら 息を のむ ところ (法則2) */
   /** ★短い 間。★答えの 直前に 一拍 置く (2026-09-25 の 声: 「もったいぶって」) */
   function ma(ms, after) {
@@ -1888,11 +1939,16 @@
     const img = $("haikeiImg"), old = $("haikeiOld");
     const uri = pick.shot.dataUri;
     const was = !box.hidden && !hasCls(box, "kieru") && img.getAttribute ? img.getAttribute("src") : null;
+    const wasHidden = !!box.hidden;
     rmCls(box, "kieru"); rmCls(cap, "kieru");
-    $("haikeiLabel").textContent = pick.label || "";
     // ★隅書きは 1 行 (2026-11-16 見直し)。★出どころ (と 作者)・条件を 短く。★正式な 表示は CREDITS.md / 読み上げと title には 全文
-    $("haikeiCredit").textContent = Core.shortCredit(pick.credit || "");
-    if ($("haikeiCap").setAttribute) $("haikeiCap").setAttribute("title", (pick.label || "") + " ／ " + (pick.credit || ""));
+    // ★隅書きは 写真が 替わる ときに 一緒に 替える (見直し r10 A-8: 読み込みの 間、前の 写真に 次の 写真の 名前が 付いていた)
+    const setCap = () => {
+      $("haikeiLabel").textContent = pick.label || "";
+      $("haikeiCredit").textContent = Core.shortCredit(pick.credit || "");
+      if ($("haikeiCap").setAttribute) $("haikeiCap").setAttribute("title", (pick.label || "") + " ／ " + (pick.credit || ""));
+    };
+    if (wasHidden) setCap();                         // ★写真の 箱が 出て いなかった (はじめの 1 枚) ときだけ すぐ。★消えかけ の 写真には 新しい 名前を 付けない (見直し r11)
     box.hidden = false;
     cap.hidden = false;
     addCls($("koza"), "haikei-on");
@@ -1903,6 +1959,7 @@
     const tok = (setHaikei.tok = (setHaikei.tok || 0) + 1);
     const swap = () => {
       if (tok !== setHaikei.tok) return;                 // ★待つ 間に 別の 写真が 頼まれた
+      setCap();
       if (was === uri) { img.src = uri; return; }        // ★同じ 写真なら フェードし直さない
       if (old) {
         if (was) old.setAttribute("src", was);
@@ -1932,7 +1989,7 @@
     const h0 = (hd && hd.offsetHeight) || 0;
     fn();
     const d = ((hd && hd.offsetHeight) || 0) - h0;
-    if (!d || !(scrollY() > 0)) return;
+    if (!d || (d < 0 && !(scrollY() > 0))) return;   // ★伸びた ときは 一番 上 (scrollY = 0) でも 送る (見直し r10 A-15。下には 70vh の 余白)
     autoScrollBy(d, false);
     if (d > 0 && follow.on) unhideLatest(d);
   }
@@ -1947,10 +2004,19 @@
       let last = $("choices").lastElementChild;
       for (let i = kids.length - 1; !last && i >= 0; i -= 1) if (!hasCls(kids[i], "sr")) last = kids[i];
       if (!last) return;
-      const goal = window.innerHeight - bottomRoom(hasCls($("koza"), "haikei-on") ? 140 : 90);
+      const goal = Math.max(window.innerHeight - bottomRoom(hasCls($("koza"), "haikei-on") ? 140 : 90), headBottom() + 48);
       const back = Math.min(d, Math.round(goal - last.getBoundingClientRect().bottom));
       if (back > 0) autoScrollBy(-back, !lessMotion());
     } catch (e) {}
+  }
+  /** ★上の 段 (めくり・段の 札。文書の 流れの 中) の 高さが 変わる ときも 画面を 合わせる (見直し r10 A-3・A-4・B-5:
+   *  題の 字数で 段の 札が 2 行目に 回る と、その 下の 語り 全体が 約 36px ずれていた)。★ブラウザの 自動の 合わせ (scroll anchoring) は 切っている (CSS) */
+  function withTop(fn) {
+    const tp = document.querySelector ? document.querySelector(".kozatop") : null;
+    const h0 = (tp && tp.offsetHeight) || 0;
+    fn();
+    const d = ((tp && tp.offsetHeight) || 0) - h0;
+    if (d && (d > 0 || scrollY() > 0)) autoScrollBy(d, false);
   }
   /** 見出し (★高座の 上に 残る 1 行)。★空なら 隠す */
   function setMidashi(text) {
@@ -2038,7 +2104,9 @@
   }
   /** 長い 場面の 途中で 写真を 1 枚 差し替える (img2)。★一拍は 置かない。★畳まない */
   function swapImg2(s, after) {
+    const gen = state.gen;
     loadImg([specGroup(s.img2)], () => {
+      if (state.gen !== gen) return;               // ★読み終わる 前に 別の 噺へ 移った (見直し r10 A-1)
       const pick = smallPhoto(s.img2);
       if (!pick) return after();
       if (s.label2) pick.label = s.label2;
@@ -2055,7 +2123,9 @@
     if (state.openingShown) return after();
     state.openingShown = true;
     const spec = state.kin ? "panda" : seasonKey();
+    const gen = state.gen;
     loadImg([specGroup(spec)], () => {
+      if (state.gen !== gen) return;               // ★読み終わる 前に 別の 噺へ 移った (見直し r10 A-1)
       const pick = smallPhoto(spec);
       if (pick) {
         pick.opening = true;
@@ -2446,6 +2516,7 @@
       input.placeholder = "例: 旭山動物園 / 城めぐり / 雪";
       input.setAttribute("aria-label", "お好きなもの");
       input.setAttribute("enterkeyhint", "send");
+      keepAskInView(input);
       const ok = document.createElement("button");
       ok.type = "submit";
       ok.className = "btn choice";
@@ -2464,8 +2535,8 @@
       box.appendChild(form);
       // ★スマホでは 触れて 初めて 文字盤を 出す。
       //   先に 出すと 文字盤が 下半分を 覆い、下の ボタンが 隠れる (2026-09-23)
-      const narrow = !!(root.matchMedia && root.matchMedia("(max-width: 640px)").matches);
-      if (!narrow) input.focus();
+      const narrow = !!(root.matchMedia && (root.matchMedia("(max-width: 640px)").matches || root.matchMedia("(pointer: coarse)").matches));   // ★指で 触る 端末は 横向きでも (見直し r11 B)
+      if (!narrow) { try { input.focus({ preventScroll: true }); } catch (e) {} }   // ★一度に 飛ばさない (見直し r10 A-14・B-9)
       choicesShown(narrow ? ok : input, "（お好きなものを 打ち込めます。ほかに「やっぱり いい」）");
       const done = (text) => {
         clearChoices();
@@ -2612,13 +2683,23 @@
     // ★2026-11-15 見直し: 札を 見た あと「もう一席」で 画面が ずれた まま 進んだ (scroll は 下へ 追う だけ)。
     //   ★二席目 から: 席の 頭の 印を 置き、★その 印を 画面の 上 (見出しの 下) へ 送る (★2026-11-23 から なめらかに。動きを 減らす 設定では 瞬時)。
     //   ★2026-11-22: 前の 席は 畳まない (上へ 戻れば 読める)。★印は 高さ 0 の 行 (画面の 位置を 測る ため。読み上げには 出ない)
+    // ★めくり (題)・段の 札を ★先に 替える (見直し r10 A-4・B-5: 送り先を 測った あとで 替えると 1 段 分 ずれ、新しい 席の 1 行目が 見出しの 裏に 入った)
+    withTop(() => {
+      $("mekuri").textContent = st.title;
+      // ★題の 字数 (スマホで 大きさを 変える。16 字 以上は 16)。★めくりを 折らない (2026-11-21)
+      $("mekuri").dataset.n = String(Math.min(16, Array.from(String(st.title || "")).length));
+      stage(0);
+    });
+    $("mekuri").classList.remove("flip");
+    void $("mekuri").offsetWidth;
+    $("mekuri").classList.add("flip");
     if (state.count > 1) {
       const m = document.createElement("div");
       m.className = "seat-start";
       m.setAttribute("aria-hidden", "true");
       put(m);
       setFollow(true);
-      hideZu(); setMidashi(st.title);                 // ★枠を 先に 替えて から 測る (見直し r9 H5: 後で 替えると 瞬時の 補正が なめらかな 送りを 打ち切る)
+      withHead(() => { hideZu(); setMidashi(st.title); });   // ★枠を 先に 替えて から 測る (★高さの 変化は 合わせる = 見直し r11 B: 自動の 位置合わせを 切った ので) (見直し r9 H5: 後で 替えると 瞬時の 補正が なめらかな 送りを 打ち切る)
       try {
         const head = $("kozahead").getBoundingClientRect();
         // ★見出しの 枠は 幕の 帯 (画面の 1/8) の 下に 付く (2026-11-24) → 送り先は 帯 + 枠の 高さ ぶん 上
@@ -2631,16 +2712,11 @@
     state.lastCorrect = null;
     state.sages.add(st.sage);
     $("sageBox").hidden = true;
+    $("koeCredit").hidden = true;
     state.cardShown = false;
+    state.cardFrom = null;
     $("sources").hidden = true;
     $("sourcesBtn").setAttribute("aria-expanded", "false");
-    $("mekuri").textContent = st.title;
-    // ★題の 字数 (スマホで 大きさを 変える。16 字 以上は 16)。★めくりを 折らない (2026-11-21)
-    $("mekuri").dataset.n = String(Math.min(16, Array.from(String(st.title || "")).length));
-    $("mekuri").classList.remove("flip");
-    void $("mekuri").offsetWidth;
-    $("mekuri").classList.add("flip");
-    stage(0);
     // ★席の 頭: 前の 写真・図を 下げ、見出しは 演目名 (まくらまでは 場面に 入れない)。
     //   ★前段の 写真だけは 最初の 場面まで 残す (★下げると 再訪の 筋で 一瞬で 消える)
     const fadeOut = !(state.bg && state.bg.opening) && bgOut();   // ★消え終わるまで 語りを 待たせる (最後の next)
@@ -2878,8 +2954,10 @@
   function afterSage(st) {
     // ★札は「出します」と言ってから出す (黙って出ると 何の絵か 分からない)
     // ★札の 写真 (3 枚目) を 読み終えてから 描く
-    say("ここで、今日のオチを書いた札を一枚、お出しします。", "shi", () =>
-      loadImg(["card_" + ((state.photo && state.photo.ck) || cardKey(st))], () => showCard(st)));
+    say("ここで、今日のオチを書いた札を一枚、お出しします。", "shi", () => {
+      const gen = state.gen;                         // ★読み込みの 間に「別の噺」→ 前の 席の 札・問いを 割り込ませない (見直し r10 A-1)
+      loadImg(["card_" + ((state.photo && state.photo.ck) || cardKey(st))], () => { if (state.gen === gen) showCard(st); });
+    });
   }
 
   /** ★札を 渡す 一言 (「お持ち帰りを」) を 言い終えて ★間を 空けて から、★札の 上端を 見出しの すぐ 下へ なめらかに 送る
@@ -2888,12 +2966,32 @@
    *  ★前の 2 案 (2026-11-22「お持ち帰りを」の あと 画面の 半分 / 2026-11-24 朝 最後の 問いを 見出しの 下へ) は やめた。
    *  ★読み返し中は 送らない (見直し r9 H3)。★札は 見せた ことに する */
   const CARD_MA = 1500, CARD_GO = 700;   // ★言い終えて から 送る までの 間 / 送って から 謎かけの 文 までの 間 (★どちらも タップで 飛ばせる)
+  //   ★(2026-11-24 見直しの 声「最後に 謎かけを 出す 際に、文面が 題目の 下に 入って しまう」) 原因は 2 つ:
+  //     ①札の 上端を 見出しの 下に 合わせて いた → 謎かけの 文は 札の 上 (語りの 終わり) に 足されるので、間の 空き (約 24px) ぶん 見出しの 裏に 入った
+  //       → ★語りの 終わりを 見出しの 下に 合わせる (札は その 空き ぶん 下)
+  //     ②謎かけの 文が 長いと、札の 上 140px を 残す 送り (cardPeek) が 文ごと 上へ 押し上げた
+  //       → ★札を 送った あとに 足した 最初の 行 (state.cardFrom) を 見出しの 下に 残す ほうを 優先 (札は 画面の 下へ 出て よい)
+  function talkEnd() {
+    const kids = $("talk").children;
+    for (let i = kids.length - 1; i >= 0; i -= 1) if (!hasCls(kids[i], "sr")) return kids[i].getBoundingClientRect().bottom;
+    return null;
+  }
+  /** 札を 送った あとに 足した 最初の 行 (★無ければ null) */
+  function afterCardFirst() {
+    const kids = $("talk").children;
+    if (state.cardFrom == null) return null;
+    for (let i = state.cardFrom; i < kids.length; i += 1) if (!hasCls(kids[i], "sr")) return kids[i];
+    return null;
+  }
   function cardToTop() {
     try {
       state.cardShown = true;
+      state.cardFrom = $("talk").children.length;
       const box = $("sageBox");
       if (!box || box.hidden || !follow.on) return;
-      const dy = Math.round(box.getBoundingClientRect().top - (headBottom() + 8));
+      const end = talkEnd();
+      const top = Math.min(box.getBoundingClientRect().top, end == null ? Infinity : end);
+      const dy = Math.round(top - (headBottom() + 8));
       if (dy > 0) autoScrollBy(dy, !lessMotion());
     } catch (e) {}
   }
@@ -2909,13 +3007,19 @@
       const box = $("sageBox");
       if (!box || box.hidden || !follow.on || !state.cardShown) return;
       const top = box.getBoundingClientRect().top;
-      const lim = window.innerHeight - CARD_PEEK;
-      if (top > lim) autoScrollBy(Math.round(top - lim), !instant && !lessMotion());
+      const lim = window.innerHeight - CARD_PEEK - footExtra();   // ★足元が 2〜3 段の ときは その ぶん 上 (見直し r11 B)
+      let dy = Math.round(top - lim);
+      const first = afterCardFirst();                // ★札の 後に 足した 謎かけの 文を 見出しの 裏へ 押し上げない (2026-11-24)
+      if (first) dy = Math.min(dy, Math.round(first.getBoundingClientRect().top - (headBottom() + 8)));
+      if (dy > 0) autoScrollBy(dy, !instant && !lessMotion());
     } catch (e) {}
   }
   function showCard(st) {
+    const gen = state.gen;
+    drawCard(st, () => { if (state.gen === gen) showCardNow(st); });   // ★札の 写真が 読めて から 出す (見直し r10 A-16)
+  }
+  function showCardNow(st) {
     {
-      drawCard(st);
       // ★札は 絵 (canvas)。★読み上げには オチの 文を 渡す (見直し)
       $("card").setAttribute("aria-label", "オチ札：" + st.sage);
       renderSources(st);
@@ -3130,6 +3234,7 @@
       input.placeholder = "その場で 見て、答えを";
       input.setAttribute("aria-label", "謎かけの答え");
       input.setAttribute("enterkeyhint", "send");
+      keepAskInView(input);
       const ok = document.createElement("button");
       ok.type = "submit";
       ok.className = "btn choice";
@@ -3217,6 +3322,7 @@
     if (!spot) return refreshGenchi();
     $("genchiAgain").hidden = true;
     clearChoices();
+    state.cardFrom = $("talk").children.length;     // ★ここから 足す 謎かけの 文を 札の 送りで 見出しの 裏へ 押し上げない
     state.genchiOffered = true;
     say("では、お預けの 謎かけを。", "shi", () => askRiddle(spot));
   }
@@ -3299,15 +3405,32 @@
 
   // ---- 重ねて 出す パネル (場・全国の園)。★dialog の 役割 / 開いたら 中へ / Esc で 閉じる / 閉じたら 戻す
   //   (2026-11-15 見直し)。★Tab は パネルの 中を 回す (aria-modal)
+  // ★パネル (場・全国の園) を 開いて いる 間は 語りを 止める (2026-11-24 作者の判断。見直し r10 A-2: 裏で 30 秒に 11 行 進んでいた)。
+  //   ★閉じたら 止めた ところから 続ける。★打ちかけの 行は その まま (残りを 打つ) / 待ちの 間は 少し おいて 次へ
+  let panelPaused = null;
+  function pauseForPanel() {
+    if (panelPaused || !typing) return;
+    clearTimeout(typing.timer);
+    panelPaused = typing;
+  }
+  function resumeFromPanel() {
+    const t = panelPaused;
+    panelPaused = null;
+    if (!t || typing !== t) return;                  // ★止めて いる 間に 別の 流れへ 移った (早送り・はじめから など)
+    if (!t.done) t.timer = setTimeout(step, 300);
+    else t.timer = setTimeout(() => { if (typing === t) { typing = null; if (t.after) t.after(); } }, 1200);   // ★閉じて 一拍 (元の 待ちの 残りは 持たない)
+  }
   function openPanel(id) {
     const a = document.activeElement;
     if (!panelFrom && a && a !== document.body) panelFrom = a;
+    pauseForPanel();
     $(id).hidden = false;
     focusTo($(id));
   }
   function closePanel(id) {
     if ($(id).hidden) return;
     $(id).hidden = true;
+    if ($("ba").hidden && $("kin").hidden) resumeFromPanel();
     const back = panelFrom;
     panelFrom = null;
     if (back && back.isConnected !== false) focusTo(back);
@@ -3351,7 +3474,7 @@
   }
 
   // ---- オチ札 -----------------------------------------------------------
-  function drawCard(st) {
+  function drawCard(st, ready) {
     const cv = $("card");
     const ctx = cv.getContext("2d");
     const W = cv.width, Hh = cv.height;
@@ -3446,8 +3569,11 @@
       ctx.font = "bold 40px " + serif;
       ctx.fillText("はなし山", W - 150, Hh - 130 - off);
     };
-    if (img && !img.el.complete) img.el.onload = paint;
-    paint();
+    // ★写真が まだ 読めて いない ときは 読めて から 描いて 出す (見直し r10 A-16: 写真なしの 札 → 写真ありの 札 に 一瞬で 替わった)。
+    //   ★読めない ときも 0.4 秒で 出す (写真なしの 札)。読めたら 描き直す
+    const go = () => { paint(); if (ready) { const r = ready; ready = null; r(); } };
+    if (img && !img.el.complete) { img.el.onload = go; setTimeout(go, 400); }
+    else go();
   }
 
   /** 札に 敷く 写真の 群 (つつじ / 紅葉)。★席の 頭で 決めて 先に 読む */
@@ -3555,6 +3681,10 @@
   });
   $("koza").addEventListener("click", (e) => {
     if (e.target.closest("button") || e.target.closest("a")) return;
+    // ★札・タネ明かしの 中の タップ・文字を なぞって 選んだ ときは 先へ 進めない (見直し r10 A-11: 札を 見ている 間に 語りが 飛んだ)
+    if (e.target.closest("#sageBox")) return;
+    if (panelPaused) return;                          // ★「場」などを 開いて いる 間の タップ (パネルの 外の 縁) で 続けない (見直し r11 A-3)
+    try { if (root.getSelection && String(root.getSelection() || "").length > 0) return; } catch (er) {}
     setFollow(true);                                       // ★画面の タップ = 先へ (見直し)
     if (!typing && state.pauseFn) return state.pauseFn();   // ★「次へ」で 止めている ときは 画面の タップでも 続ける
     hurry();
@@ -3605,7 +3735,17 @@
     typeLabel();
     setFootH();
   });
-  if (typeof root.addEventListener === "function") root.addEventListener("resize", setFootH);
+  // ★回転・窓の 大きさ変更・アドレスバー: 足元の 高さを 測り直し、追従中なら 置き場へ 送り直す (見直し r10 A-7・B-16。間引き 150ms)
+  let resizeT = null;
+  function onResize() {
+    setFootH();
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => { if (follow.on && !$("koza").hidden) { if (typing && !typing.done) keepBottom(); else scroll(); } }, 150);
+  }
+  if (typeof root.addEventListener === "function") {
+    root.addEventListener("resize", onResize);
+    root.addEventListener("orientationchange", onResize);
+  }
   // ★「はじめから」は ★園の入口も 含めて まっさらに 戻す
   //   単に reload すると ?kin= が 残り、同じ園から 始まってしまう
   showBuilt();
@@ -3629,10 +3769,11 @@
     if (!root.HANASHI_KOE) {                 // ★押されて はじめて 読む (279KB)
       $("koe").disabled = true;
       $("koe").textContent = "読み込んでいます…";
+      const gen = state.gen;
       return lazy("data/koe.js", () => {
         $("koe").textContent = "レッサーパンダの鳴き声を聞く";
         $("koe").disabled = false;
-        $("koe").click();
+        if (state.gen === gen && !$("sageBox").hidden) $("koe").click();   // ★読み込みの 間に 席を 移ったら 鳴らさない (見直し r10 A-10)
       });
     }
     const bank = (root.HANASHI_KOE || {}).redpanda;
@@ -3646,11 +3787,9 @@
     const pr = koeEl.play();
     if (pr && pr.catch) pr.catch(() => {});
     log("koe", state.current);
-    const c = document.createElement("p");
-    c.className = "line ato";
-    c.textContent = bank.credit;
-    put(c);
-    scroll();
+    // ★出典は 札の 下の 決まった 場所に 出す (見直し r10 A-10: 押す たびに 札の 上に 1 行 増えた / 見直し r11 A-1: 世代で 数えたら 一席目で 出なく なった)
+    $("koeCredit").textContent = bank.credit;
+    $("koeCredit").hidden = false;
     $("koe").disabled = true;
     setTimeout(() => { $("koe").disabled = false; }, 1200);
   });
