@@ -1269,6 +1269,8 @@
     // ★2026-11-15 見直しの 声「改行位置が ずれる」: 打ち終わりに 数字・「」が 太く 大きく なって 行が 組み直されていた。
     //   ★最初から 飾りつきの 全文を 置き、★まだの 字は 見えない (.mada) ように して 1 字ずつ 見せる
     if (typeOn && text) typing.chars = reserve(p, text, key);
+    // ★包みの 字が 文と 数で 合わない (〈傍点〉の 括弧・数字の 後の 空白は 飾りで 消える / 絵文字は 2 単位) ときは 包みの 字で 間を 決める (見直し r12)
+    if (typing.chars && typing.chars.length !== text.length) typing.seq = typing.chars.map((c) => c.textContent);
     if (!typeOn) {                 // ★足元で「一度に出す」を 選んだとき
       typing.i = text.length;
       step();
@@ -1307,8 +1309,14 @@
       .replace(/〈([^〉]{1,20})〉/g, '<em class="ten">$1</em>');
   }
 
+  /** 打ち終わり。★1 字ずつの 包み (reserve) が ある ときは ★置き直さず 全部の 字を 見せる だけ
+   *  (2026-11-25 見直しの 声「文字を 出した 後、スクロール すると 改行・文字間が 変わる。スマホだけ」:
+   *  打ち終わりに 飾りつきの 全文で 置き直していた。iPhone の Safari は 包みごとに 字を 組む ので、置き直すと 字間が 詰まって 改行が 動いた。
+   *  ★PC の Chrome は 包みを またいで 組む ので 変わらなかった)。★包みが 無い とき (一度に 出す・最小の DOM) は 飾りつきで 置く。
+   *  ★古い 行の 包みを あとで ほどく (掃除する) と 同じ 症状が 戻る = ★ほどかない (見直し r12) */
   function land(t) {
-    t.el.innerHTML = deco(t.full, t.key);
+    if (t.chars) t.chars.forEach((c) => { c.className = ""; });
+    else t.el.innerHTML = deco(t.full, t.key);
     t.chars = null;
   }
   /** ★飾りつきの 全文を 置き、字を 1 字ずつ 見えない span に 包む。★包めない 所 (煙試験の 最小 DOM) では null */
@@ -1331,9 +1339,8 @@
         });
         n.parentNode.replaceChild(frag, n);
       });
-      // ★サロゲート (絵文字など) で 数が 合わない ときは 使わない (★従来の 打ち方に 戻す)
-      if (chars.length !== text.length) { el.textContent = ""; return null; }
-      return chars;
+      // ★数が 合わなくても 包みで 打つ (見直し r12: 前は 素の 字で 打って 打ち終わりに 置き直していた = 改行・字間が 動く 道が 残っていた)
+      return chars.length ? chars : null;
     } catch (e) {
       el.textContent = "";
       return null;
@@ -1366,15 +1373,17 @@
   }
   function waitFor(t) {
     const i = t.i - 1;
-    const c = t.full[i];
+    const src = t.seq || t.full;                     // ★包みの 字 (数が 合わない とき) か 文
+    const c = src[i];
     // ★サゲの 中の 読点は 噺家の 間の 置き場 (2026-11-21 見直し r7 項目 9)。★地の文の 倍
     if (c === "、") return t.sage ? SAGE_TOTEN : 300;
     if (c === "。" || c === "?" || c === "？") return 420;
     if (c === "…") return t.slow === 1.2 ? GUESS_MA / 2 : 200;   // ★推量の「……」は 2 字で 約 0.8 秒 (くすっと 笑う 間)
     let w = SPEED.base;
-    if (/[0-9０-９]/.test(c) || /[0-9０-９][,，\.]?$/.test(t.full.slice(Math.max(0, i - 1), i))) w = SPEED.kazu;
+    const prev = t.seq ? t.seq.slice(Math.max(0, i - 1), i).join("") : t.full.slice(Math.max(0, i - 1), i);
+    if (/[0-9０-９]/.test(c) || /[0-9０-９][,，\.]?$/.test(prev)) w = SPEED.kazu;
     // 括弧の 内側か どうかは、そこまでの 開き括弧の 数で 見る
-    const upto = t.full.slice(0, t.i);
+    const upto = t.seq ? t.seq.slice(0, t.i).join("") : t.full.slice(0, t.i);
     const inTen = (upto.split("〈").length - 1) > (upto.split("〉").length - 1);
     const inKagi = (upto.split("「").length - 1) > (upto.split("」").length - 1);
     if (inTen) w = SPEED.ten;
@@ -1393,7 +1402,7 @@
   function step() {
     if (!typing) return;
     const t = typing;
-    if (t.i >= t.full.length) {
+    if (t.i >= (t.chars ? t.chars.length : t.full.length)) {
       t.done = true;
       if (t.full) land(t);
       const pause = endPause(t.full);
@@ -1416,8 +1425,8 @@
     const t = typing;
     clearTimeout(t.timer);
     if (!t.done) {
-      t.el.textContent = t.full;
-      t.i = t.full.length;
+      if (!t.chars) t.el.textContent = t.full;      // ★包みが ある ときは 置き直さない (land で 全部 見せる)
+      t.i = t.chars ? t.chars.length : t.full.length;
       t.done = true;
       if (t.full) land(t);
       t.timer = setTimeout(() => {
@@ -2173,7 +2182,7 @@
     try {
       const h = $("footbar").offsetHeight;
       const st = $("koza").style;
-      if (h > 0 && st && typeof st.setProperty === "function") st.setProperty("--footh", h + "px");
+      if (h > 0 && st && typeof st.setProperty === "function") withHead(() => st.setProperty("--footh", h + "px"));   // ★図の 高さの 変化を 合わせる (見直し r12 B-6)
     } catch (e) {}
   }
   /** 幕 (や 一覧) から 高座へ。★押した ボタンが 隠れて フォーカスが 行き場を 失わないよう 高座へ 移す */
@@ -3027,7 +3036,14 @@
       stage(3);
       showKoe(st);
       scroll();
-      if ($("genchiAgain")) $("genchiAgain").hidden = true;   // ★札の 流れの 終わりで 出し直す (refreshGenchi)
+      // ★札の 流れの 終わりで 出し直す (refreshGenchi)。★出る 見込みが ある (この 席で 謎かけを 出す / お預けが ある) ときは
+      //   ★見えない まま 場所を 取って おく (見直し r12 B-1: あとから 足すと 札の 下の ボタンの 幅と 折り返しが 変わった)
+      if ($("genchiAgain")) {
+        let may = false;
+        try { may = !!nextSpot(st).spot || Core.liveSpots(H).some((x) => x.id === genchiState().pending); } catch (e) {}
+        $("genchiAgain").hidden = !may;
+        if (may) addCls($("genchiAgain"), "yoyaku"); else rmCls($("genchiAgain"), "yoyaku");
+      }
       // ★2026-11-20 作者の判断: ★もう 公園に いる 人 (謎かけで 開いた 現地の 席 / 最初に「いま、公園におります」) には
       //   「行ってみたい気持ち」を 聞かない。★札 → 次の 謎かけへ。★来訪は 謎かけに 当たった 記録で 測る
       if (st.genchi || state.onsite) {
@@ -3331,7 +3347,7 @@
     const g = genchiState();
     const on = Core.liveSpots(H).some((x) => x.id === g.pending);
     $("genchiBtn").hidden = !on;
-    if ($("genchiAgain")) $("genchiAgain").hidden = !on;
+    if ($("genchiAgain")) { $("genchiAgain").hidden = !on; rmCls($("genchiAgain"), "yoyaku"); }
   }
   refreshGenchi();
 
@@ -3788,10 +3804,10 @@
   $("koe").addEventListener("click", () => {
     if (!root.HANASHI_KOE) {                 // ★押されて はじめて 読む (279KB)
       $("koe").disabled = true;
-      $("koe").textContent = "読み込んでいます…";
+      $("koe").setAttribute("aria-busy", "true");   // ★字は 替えない (見直し r12 B-2: 替えると 札の 下の ボタンが 全部 折り直した)
       const gen = state.gen;
       return lazy("data/koe.js", () => {
-        $("koe").textContent = "レッサーパンダの鳴き声を聞く";
+        $("koe").setAttribute("aria-busy", "false");
         $("koe").disabled = false;
         if (state.gen === gen && !$("sageBox").hidden) $("koe").click();   // ★読み込みの 間に 席を 移ったら 鳴らさない (見直し r10 A-10)
       });

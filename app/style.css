@@ -831,3 +831,5 @@ footer .credit { opacity: 0.75; }
 /* ★鳴き声の 出典は 札の 下の 決まった 場所 (見直し r10 A-10 / r11 A-1) */
 .koe-credit { margin: 8px 0 0; font-family: var(--sans); font-size: 0.78rem; line-height: 1.5; color: var(--muted); }
 .koe-credit[hidden] { display: none; }
+/* ★出る 見込みの「現地の謎かけに答える」は 見えない まま 場所を 取る (見直し r12 B-1) */
+.actions .btn.yoyaku { visibility: hidden; }
