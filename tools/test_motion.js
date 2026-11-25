@@ -888,10 +888,58 @@ for (const [mode, cardBottom, want] of [["miss", 1500, 292], ["miss", 780, 36], 
   } else {
     form.children[1].children[1].click();
   }
-  for (let k = 0; k < 1500 && (mode === "miss" ? a.labels().indexOf("(form)") < 0 : a.byId.genchiAgain.hidden); k += 1) { pinToi(); a.advance(20); }
+  // ★「いまは よしておく」は 返しの あと refreshGenchi で 場所取り (yoyaku) が 外れる (2026-11-25 から 札を 出す ときに 場所を 取る)
+  for (let k = 0; k < 1500 && (mode === "miss" ? a.labels().indexOf("(form)") < 0 : (a.byId.genchiAgain.hidden || hasC(a.byId.genchiAgain, "yoyaku"))); k += 1) { pinToi(); a.advance(20); }
   for (let k = 0; k < 20; k += 1) { pinToi(); a.advance(20); }
   const s = (a.win._scrollBy || []).slice(b0).filter((d) => d > 6);
   ok(s.indexOf(want) >= 0 && s.every((d) => d <= want), "㊳ " + (mode === "miss" ? "外れ" : "いまは よしておく") + "・札の 下端 " + cardBottom + " → " + want + "px 送る (送り " + s.slice(0, 5).join(",") + ")");
+}
+
+// ---- 見直し r12 (2026-11-25 見直しの 声「文字を 出した 後、スクロール すると 改行・文字間が 変わる。スマホだけ」) ----
+// ㊴ 字の 包み (1 字ずつの span) の 道で、打ち終わった 行を 置き直さない (タップ・打ちかけで 別の 噺・早送り・一度に 出す でも)
+//    ★模擬 DOM に 字の 包みを 持たせる (walker)。★見る もの = 包みで 打った 行 (はじめの 書き込みが html) に 2 回目の 書き込みが 無い / 見えない 字が 残らない
+{
+  const a = mk({ date: "2026-11-28", walker: true });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "茨城県"]) { a.pick(l); a.settle(); }
+  a.pick("思う");
+  a.advance(1200); for (let k = 0; k < 3; k += 1) { a.byId.talk.click(); a.advance(150); }   // ★タップ
+  a.advance(1500); a.click("other"); a.settle();                                             // ★打ちかけで 別の 噺
+  a.advance(800); a.click("skip"); a.settle();                                               // ★早送り
+  const lines = [];
+  (function walk(n) { (n.children || []).forEach((c) => { if (hasC(c, "line")) lines.push(c); }); })(a.byId.talk);
+  const wrapped = lines.filter((c) => c._w && c._w[0] === "html");
+  const rewritten = wrapped.filter((c) => c._w.length > 1);
+  let mada = 0; (function w(n) { (n.children || []).forEach((c) => { if (c.className === "mada") mada += 1; w(c); }); })(a.byId.talk);
+  ok(wrapped.length >= 10 && rewritten.length === 0 && mada === 0 && a.errors.length === 0,
+     "㊴ 包みで 打った 行 " + wrapped.length + " 本、打ち終わりの 置き直し " + rewritten.length + " 本・見えない まま の 字 " + mada + " 個 (どちらも 0)");
+}
+// ㊵ 包みの 字が 文と 数で 合わない 文 (〈傍点〉の 括弧・数字の 後の 空白・絵文字) も 包みで 打ち、置き直さない (見直し r12 A-2・B-3)
+{
+  const odd = "はい、〈これ〉は 3 匹 🐼 の公園の話でございます。";
+  const a = mk({ date: "2026-11-28", walker: true, srcPatch: (src) => src.replace("はい、これは鯖江の公園の話でございます。", odd) });
+  a.click("open");
+  for (let k = 0; k < 200; k += 1) { a.advance(50); if (a.labels().length) break; }
+  const line = a.talkEls().find((c) => c._html && /3/.test(c._html) && /ござい/.test(c._html));
+  let mada = 0; if (line) (function w(n) { (n.children || []).forEach((c) => { if (c.className === "mada") mada += 1; w(c); }); })(line);
+  ok(!!line && line._w[0] === "html" && line._w.length === 1 && mada === 0 && a.errors.length === 0,
+     "㊵ 数の 合わない 文も 包みで 打ち (はじめの 書き込み " + (line ? line._w[0] : "-") + ")、置き直さない (書き込み " + (line ? line._w.length : "-") + " 回・見えない 字 " + mada + ")");
+}
+
+// ㊶ 札の 下の「現地の謎かけに答える」は、出る 見込みの 席では 札を 出した ときから 見えない まま 場所を 取る (見直し r12 B-1)
+{
+  const a = mk({ date: "2026-11-28", keepGenchi: true });
+  a.click("open"); a.settle();
+  for (const l of ["いや、べつに", "県外から", "関東", "埼玉県", "思う"]) { a.pick(l); a.settle(); }
+  a.pick("吉田松陰");
+  for (let k = 0; k < 4000 && a.byId.sageBox.hidden; k += 1) a.advance(20);
+  const g = a.byId.genchiAgain;
+  const atCard = !g.hidden && hasC(g, "yoyaku");
+  a.settle();
+  const w0 = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
+  a.pick(w0); a.settle();
+  a.byId.choices.children[0].children[1].children[1].click(); a.settle();   // ★いまは よしておく
+  ok(atCard && !g.hidden && !hasC(g, "yoyaku"), "㊶ 札を 出した ときから 場所を 取り (" + atCard + ")、お預けに なったら 見せる (" + (!g.hidden && !hasC(g, "yoyaku")) + ")");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");

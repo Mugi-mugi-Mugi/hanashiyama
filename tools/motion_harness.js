@@ -31,6 +31,27 @@ function makeApp(opt) {
   let now = 0, seq = 0;
   const q = [];                                      // [time, seq, fn, id]
   const errors = [];
+  // ★opt.walker (2026-11-25 見直し r12): 字の 包み (reserve の 1 字ずつの span) の 道を 通す。
+  //   innerHTML を 子に 組み立て、createTreeWalker・DocumentFragment・replaceChild を 持たせる (見直しの 写しの 仕掛けを 取り込んだ)。
+  //   ★既定は 切る (これまでの 試験は 素の 字の 道の まま)。★行ごとの 書き込み (_w) は いつも 数える
+  function tnode(v) { return { nodeType: 3, nodeValue: v, parent: null, get parentNode() { return this.parent; }, get textContent() { return this.nodeValue; }, children: [], className: "",
+    getBoundingClientRect() { return { top: 0, bottom: 100, left: 0, right: 100, width: 100, height: 100 }; } }; }
+  const VOID = { wbr: 1, br: 1, img: 1, input: 1, hr: 1, meta: 1 };
+  function PARSE(rootEl, h) {
+    const st = [rootEl]; const re = /<([/]?)([a-zA-Z][a-zA-Z0-9]*)([^>]*?)([/]?)>|&(amp|lt|gt);|[^<&]+|[<&]/g; let m;
+    const top = () => st[st.length - 1];
+    const addText = (t) => { const p = top(); const last = p.children[p.children.length - 1]; if (last && last.nodeType === 3) last.nodeValue += t; else { const n = tnode(t); n.parent = p; p.children.push(n); } };
+    while ((m = re.exec(h))) {
+      if (m[2]) {
+        const tag = m[2].toLowerCase();
+        if (m[1]) { if (st.length > 1) st.pop(); continue; }
+        const e = el(tag); const cm = /class="([^"]*)"/.exec(m[3] || ""); if (cm) e.className = cm[1];
+        e.parent = top(); top().children.push(e);
+        if (!(VOID[tag] || m[4])) st.push(e);
+      } else if (m[5]) addText({ amp: "&", lt: "<", gt: ">" }[m[5]]);
+      else addText(m[0]);
+    }
+  }
   const setT = (f, ms) => { const id = ++seq; q.push([now + (ms || 0), id, f, id]); return id; };
   const clearT = (id) => { const i = q.findIndex((x) => x[3] === id); if (i >= 0) q.splice(i, 1); };
   const runOne = () => {
@@ -54,9 +75,14 @@ function makeApp(opt) {
       hidden: false, value: "", className: "", src: "", disabled: false, isConnected: true, play() { return { catch() {} }; },
       classList: { _s: new Set(), add(x) { this._s.add(x); }, remove(x) { this._s.delete(x); }, contains(x) { return this._s.has(x); } },
       get textContent() { return this._text || this.children.map((c) => c.textContent).join(""); },
-      set textContent(v) { this._text = String(v); this.children = []; },
+      set textContent(v) { (this._w = this._w || []).push("text"); this._text = String(v); this.children.forEach((c) => { c.parent = null; }); this.children = []; },
+      nodeType: 1, get parentNode() { return this.parent; },
+      replaceChild(nw, old) { const i = this.children.indexOf(old); if (i < 0) throw new Error("replaceChild: not a child");
+        const add = nw.isFrag ? nw.children.slice() : [nw]; add.forEach((c) => { c.parent = this; }); this.children.splice(i, 1, ...add); old.parent = null; return old; },
       get innerHTML() { return this._html; },
-      set innerHTML(v) { this._html = String(v); if (v === "") this.children.forEach((c) => { c.parent = null; }), this.children = []; },
+      set innerHTML(v) { (this._w = this._w || []).push("html"); this._html = String(v);
+        if (v === "" || opt.walker) { this.children.forEach((c) => { c.parent = null; }); this.children = []; }
+        if (opt.walker) { this._text = ""; if (v !== "") { try { PARSE(this, String(v)); } catch (e) { this.children = []; } } } },
       get lastElementChild() { return this.children[this.children.length - 1] || null; },
       get offsetWidth() { return 100; },
       appendChild(c) { c.parent = this; this.children.push(c); return c; },
@@ -143,6 +169,12 @@ function makeApp(opt) {
   win.HANASHI_NOW = () => now;                   // ★追従の 時刻 (app.js の nowMs) も 仮想の 時計で
   if (sizes) win.getComputedStyle = (n) => ({ fontSize: String(sizes(n.className || "")) + "px" });
   const doc = { createElement: el, getElementById: (i) => byId[i] || null, body: el("body"), head, execCommand: () => true, activeElement: null };
+  if (opt.walker) Object.assign(doc, {
+    createTextNode: (v) => tnode(String(v)),
+    createDocumentFragment: () => { const f = el("#frag"); f.isFrag = true; return f; },
+    createTreeWalker: (r) => { const list = []; (function walk(n) { (n.children || []).forEach((c) => { if (c.nodeType === 3) list.push(c); else walk(c); }); })(r);
+      let i = -1; return { get currentNode() { return list[i]; }, nextNode() { i += 1; return i < list.length ? list[i] : null; } }; },
+  });
   doc.activeElement = doc.body;
   const Img = function () { this.complete = true; this.naturalWidth = 10; };
   const load = (src) => new Function("window", "document", "localStorage", "location", "setTimeout",
