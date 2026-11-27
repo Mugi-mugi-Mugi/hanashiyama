@@ -3031,6 +3031,7 @@
     {
       // ★札は 絵 (canvas)。★読み上げには オチの 文を 渡す (見直し)
       $("card").setAttribute("aria-label", "オチ札：" + st.sage);
+      $("nudge").hidden = true;
       renderSources(st);
       $("sageBox").hidden = false;
       stage(3);
@@ -3691,7 +3692,24 @@
       a.click();
       setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     });
+    state.cardSaved = st.id;
+    $("nudge").hidden = true;
     log("saved", st);
+  }
+
+  /** 札の 下の「もう一席」。★札を もらわずに 押したら、一度だけ 声を かけて 止まる (2026-11-27 評価者の 声:
+   *  「札を 受け取らずに 進んだら 取れなくなった」。札の 絵は 次の 席で 描き直すので 戻せない)。
+   *  ★声を かけるのは この 訪問で 一度だけ (札の いらない 人を 毎席 止めない)。★もう一度 押せば 進む */
+  function againClick() {
+    const st = state.current;
+    if (!state.nudged && st && !$("sageBox").hidden && state.cardSaved !== st.id) {
+      state.nudged = true;
+      const n = $("nudge");
+      n.textContent = "札は、まだお手元にございません。「この札をもらう」で残ります。いらなければ、もう一度「もう一席」を。";
+      n.hidden = false;
+      return;
+    }
+    nextStory();
   }
 
   function exportLog() {
@@ -3748,7 +3766,7 @@
     if (!typing) scroll();
   });
   $("other").addEventListener("click", nextStory);
-  $("again").addEventListener("click", nextStory);
+  $("again").addEventListener("click", againClick);
   $("save").addEventListener("click", saveCard);
   $("sourcesBtn").addEventListener("click", () => {
     $("sources").hidden = !$("sources").hidden;
