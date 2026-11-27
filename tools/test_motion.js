@@ -181,7 +181,7 @@ for (const d of [300, 1500]) {
   a.pick("吉田松陰"); a.settle();
   ok(!a.byId.sageBox.hidden, "札まで 進んだ");
   a.byId.again.focus();
-  a.click("again");
+  a.again();
   ok(a.doc.activeElement === a.byId.koza, "もう一席: 隠れる 札の 箱から フォーカスを 高座へ");
   a.settle();
   const fe = a.doc.activeElement;
@@ -327,7 +327,7 @@ for (const d of [300, 1500]) {
   a.pick("吉田松陰"); a.settle();
   const nBefore = a.talkEls().length;
   const s0 = (a.win._scrollTo || []).length;
-  a.click("again");
+  a.again();
   const furiN = () => a.talkEls().filter((c) => /(^| )furi( |$)/.test(c.className || "")).length;
   const f0 = furiN();
   for (let k = 0; k < 2000 && furiN() === f0; k += 1) a.advance(20);
@@ -360,7 +360,7 @@ function toSaitama(a) {
   for (const l of ["いや、べつに", "県外から", "関東", "埼玉県"]) { a.pick(l); a.settle(); }
   a.pick("思う"); a.settle();
   a.pick("吉田松陰"); a.settle();
-  a.click("again"); a.settle();
+  a.again(); a.settle();
   for (let k = 0; k < 20 && a.labels().length && a.labels().indexOf("3園") < 0; k += 1) { a.pick(0); a.settle(); }
 }
 /** サゲ → 註 → 推量 の 時刻 (5ms 刻み) */
@@ -549,7 +549,7 @@ for (const [name, o] of [["一字ずつ", {}], ["一度に", { store: { "hanashi
   a.fireWin("scroll");
   ok(btn.hidden === true, "⑲ 自分で 上へ 戻した スクロールは、ホイールを 回した 直後でも 読み返しと 見ない");
   a.settle(); a.pick("吉田松陰"); a.settle();
-  a.click("again");
+  a.again();
   a.settle();
   const tk = a.talkEls().filter((c) => has(c, "tatami")).length;
   ok(tk === 0 && a.errors.length === 0, "⑲ 二席 聴いても 畳んだ 行は 0・例外 0 (" + tk + " / " + a.errors.length + ")");
@@ -679,7 +679,7 @@ for (const [bottom, want] of [[340, -30], [640, -20]]) {
   const want = a.labels().indexOf("行ってみたい") >= 0 ? "行ってみたい" : a.labels()[0];
   a.pick(want); a.settle();
   const riddle = a.talkEls().some((c) => /めがねの形の時計/.test(txt(c))) && a.labels().indexOf("(form)") >= 0;
-  a.click("again"); a.settle();
+  a.again(); a.settle();
   const sh = a.shown();
   ok(first.indexOf("いま、公園におります") >= 0, "㉔ 本物の 台帳でも 最初の 問いに「いま、公園におります」(" + first.join("/") + ")");
   ok(riddle && sh[0] === "T-1128" && sh[1] === "P-埼玉県" && a.errors.length === 0,
@@ -815,7 +815,7 @@ for (const [top, want, bad, name] of [[400, 240, null, "㉕ 謎かけの 欄が 
   const cr = a.byId.koeCredit;
   ok(shown0 && cr && cr.hidden === false && /鳴き声/.test(cr.textContent) && a.talkEls().length === n0,
      "㉞ 一席目の 札で 鳴き声を 2 回 押すと 出典が 札の 下に 出て (" + (cr ? (cr.hidden ? "隠れた まま" : "出た") : "欄 なし") + ")、語りの 行は 増えない (" + n0 + " → " + a.talkEls().length + ")");
-  a.click("again"); a.settle();
+  a.again(); a.settle();
   ok(cr && cr.hidden === true, "㉞ 次の 席では 出典を 隠す");
 }
 // ㉟ 問いが 1px だけ 見出しに かかって いても 守る (r11 A-2: 上端で 見ていたので 守りが 外れ、窓の 大きさ変更・早送りで 問いを 見出しの 裏へ 押し上げた)
@@ -940,6 +940,35 @@ for (const [mode, cardBottom, want] of [["miss", 1500, 292], ["miss", 780, 36], 
   a.pick(w0); a.settle();
   a.byId.choices.children[0].children[1].children[1].click(); a.settle();   // ★いまは よしておく
   ok(atCard && !g.hidden && !hasC(g, "yoyaku"), "㊶ 札を 出した ときから 場所を 取り (" + atCard + ")、お預けに なったら 見せる (" + (!g.hidden && !hasC(g, "yoyaku")) + ")");
+}
+
+// ㊷ 札を もらわずに「もう一席」を 押したら、一度だけ 声を かけて 止まる (2026-11-27 評価者の 声「札が 取れなくなった」)
+//   ★上の 文 (語り) は 動かさない (声は ボタンの 下)。★もう一度 押せば 進む。★この 訪問で 二度目からは 止めない。★札を もらって いれば 止めない
+{
+  const a = mk({ date: "2026-11-28", store: { "hanashiyama.type.v1": "0" } });
+  toFirstSeat(a); a.settle();
+  a.pick("吉田松陰"); a.settle();
+  const n0 = a.shown().length, t0 = a.talk().length;
+  a.click("again"); a.settle();
+  const stopped = !a.byId.sageBox.hidden && !a.byId.nudge.hidden && /この札をもらう/.test(a.byId.nudge.textContent)
+    && a.shown().length === n0 && a.talk().length === t0;
+  a.click("again"); a.settle();
+  const went = a.byId.sageBox.hidden || a.shown().length > n0;
+  // 二席目の 札まで 進めて、もう 止めない こと
+  for (let k = 0; k < 40 && a.byId.sageBox.hidden; k += 1) { const ls = a.labels(); if (!ls.length) break; a.pick(ls[0]); a.settle(); }
+  const n1 = a.shown().length;
+  const atCard2 = !a.byId.sageBox.hidden;
+  a.click("again"); a.settle();
+  const once = atCard2 && a.byId.nudge.hidden && (a.byId.sageBox.hidden || a.shown().length > n1);
+  // 札を もらった 人は 止めない
+  const b = mk({ date: "2026-11-28", store: { "hanashiyama.type.v1": "0" } });
+  toFirstSeat(b); b.settle();
+  b.pick("吉田松陰"); b.settle();
+  const m0 = b.shown().length;
+  b.click("save"); b.click("again"); b.settle();
+  const savedGo = b.byId.nudge.hidden && (b.byId.sageBox.hidden || b.shown().length > m0);
+  ok(stopped && went && once && savedGo && a.errors.length === 0 && b.errors.length === 0,
+     "㊷ 札を もらわずに もう一席 → 一度 声を かけて 止まる (" + stopped + ")・もう一度で 進む (" + went + ")・二度目は 止めない (" + once + ")・もらって いれば 止めない (" + savedGo + ")");
 }
 
 console.log(fail.length ? "NG " + fail.length + " 件" : "ALL OK");

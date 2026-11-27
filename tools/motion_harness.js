@@ -113,7 +113,7 @@ function makeApp(opt) {
   });
   // 親子 (泡立ちを 見るため): footbar・sageBox の ボタン → koza
   ["skip", "typeBtn", "other", "baBtn", "restart", "talk", "choices", "tsuzuki", "sageBox", "midashi", "zu", "haikei", "mekuri"].forEach((i) => { byId[i].parent = byId.koza; });
-  ["save", "koe", "again", "sourcesBtn", "sources", "card"].forEach((i) => { byId[i].parent = byId.sageBox; });
+  ["save", "koe", "again", "sourcesBtn", "sources", "card", "nudge"].forEach((i) => { byId[i].parent = byId.sageBox; });
   ["exportLog", "clearLog", "closeBa", "baBody", "baH"].forEach((i) => { if (byId[i]) byId[i].parent = byId.ba; });
   ["closeKin", "kinBody", "kinNote", "kinH"].forEach((i) => { if (byId[i]) byId[i].parent = byId.kin; });
   byId.koza.tagName = "MAIN";
@@ -234,6 +234,8 @@ function makeApp(opt) {
     },
     tap() { try { const ev = { target: byId.talk, preventDefault() {}, stopPropagation() {} }; byId.koza.handlers.click.forEach((f) => f(ev)); } catch (e) { errors.push({ at: now, e }); } },
     click(id) { try { byId[id].click(); } catch (e) { errors.push({ at: now, e }); } },
+    // ★「もう一席」を 進むまで 押す (札を もらって いないと 一度 声を かけて 止まる。2026-11-27)
+    again() { api.click("again"); if (byId.nudge && !byId.nudge.hidden && !byId.sageBox.hidden) api.click("again"); },
     talk() { return byId.talk.children.map((c) => c.textContent); },
     talkEls() { return byId.talk.children; },
     log() { try { const v = JSON.parse(store["hanashiyama.log.v1"] || "[]"); return Array.isArray(v) ? v : []; } catch (e) { return []; } },

@@ -249,6 +249,7 @@ function runPass(seed, date, word, kin, viaList, plan, opt) {
     for (let more = 0; opt.until && more < 80 && toldNow().indexOf(opt.until) < 0; more += 1) {
       const n = toldNow().length;
       byId.again.click();
+      if (!byId.nudge.hidden && !byId.sageBox.hidden) byId.again.click();   // ★札を もらって いないと 一度 止まる (2026-11-27)
       drain();
       if (toldNow().length === n) break;          // ★種切れ (もう 出る 席が 無い)
     }
